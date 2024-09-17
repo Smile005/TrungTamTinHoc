@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-import { Table, Button, Dropdown, Menu, Layout } from 'antd';
+import { Table, Button, Dropdown, Menu, Layout, Tag, TableColumnsType, Input, GetProps } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { HocVienType } from '../types/HocVienType';
 import HocVienModal01 from '../components/HocVienModal01';
+import '../styles/TableCustom.css';
+
+type SearchProps = GetProps<typeof Input.Search>;
+
+const { Search } = Input;
+
+const onSearch: SearchProps['onSearch'] = (value, _e, info) => console.log(info?.source, value);
 
 const HocVien: React.FC = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -29,7 +36,7 @@ const HocVien: React.FC = () => {
         setIsModalVisible(false);
     };
 
-    const columns = [
+    const columns: TableColumnsType<HocVienType> = [
         {
             title: 'Mã học viên',
             dataIndex: 'maHocVien',
@@ -44,6 +51,24 @@ const HocVien: React.FC = () => {
             title: 'Giới tính',
             dataIndex: 'gioiTinh',
             key: 'gioiTinh',
+            filters: [
+                { text: 'Nam', value: 'Nam' },
+                { text: 'Nữ', value: 'Nữ' },
+            ],
+            onFilter: (value, record) => record.gioiTinh.indexOf(value as string) === 0,
+            render: (gioiTinh: string): JSX.Element => {
+                let color = '';
+                if (gioiTinh === 'Nam') {
+                    color = 'geekblue';
+                } else if (gioiTinh === 'Nữ') {
+                    color = 'volcano';
+                }
+                return (
+                    <Tag color={color} key={gioiTinh}>
+                        {gioiTinh.toUpperCase()}
+                    </Tag>
+                );
+            },
         },
         {
             title: 'Ngày sinh',
@@ -54,6 +79,27 @@ const HocVien: React.FC = () => {
             title: 'Tình trạng',
             dataIndex: 'tinhTrang',
             key: 'tinhTrang',
+            filters: [
+                { text: 'Chưa đăng ký', value: 'Chưa đăng ký' },
+                { text: 'Đang học', value: 'Đang học' },
+                { text: 'Đã tốt nghiệp', value: 'Đã tốt nghiệp' },
+            ],
+            onFilter: (value, record) => record.tinhTrang.indexOf(value as string) === 0,
+            render: (tinhTrang: string): JSX.Element => {
+                let color = '';
+                if (tinhTrang === 'Chưa đăng ký') {
+                    color = 'green';
+                } else if (tinhTrang === 'Đang học') {
+                    color = 'geekblue';
+                } else if (tinhTrang === 'Đã tốt nghiệp') {
+                    color = 'volcano';
+                }
+                return (
+                    <Tag color={color} key={tinhTrang}>
+                        {tinhTrang.toUpperCase()}
+                    </Tag>
+                );
+            },
         },
         {
             title: 'Quản lý',
@@ -61,7 +107,9 @@ const HocVien: React.FC = () => {
             render: (_: any, record: HocVienType) => {
                 const menu = (
                     <Menu onClick={(e) => handleMenuClick(e, record)}>
-                        <Menu.Item key="edit">Chỉnh sửa</Menu.Item>
+                        <Menu.Item key="edit">Xem thông tin</Menu.Item>
+                        <Menu.Item key="dangKy">Đăng ký</Menu.Item>
+                        <Menu.Item key="tinhTrang">Đổi tình trạng</Menu.Item>
                         <Menu.Item key="delete">Xóa</Menu.Item>
                     </Menu>
                 );
@@ -76,7 +124,22 @@ const HocVien: React.FC = () => {
 
     return (
         <Layout>
-            <Table columns={columns} dataSource={data} pagination={{ pageSize: 10 }} />
+            <h1 style={{ display: 'flex', justifyContent: 'center' }}>QUẢN LÝ HỌC VIÊN</h1>
+            <div className="button-container">
+                <Search className="custom-search" placeholder="Nhập tên học viên" onSearch={onSearch} enterButton />
+                <div className="button-container">
+                    <Button className='custom-button'>Hoàn tác</Button>
+                    <Button className='custom-button'>Thêm</Button>
+                    <Button className='custom-button'>Nhập Excel</Button>
+                </div>
+            </div>
+            <Table
+                className="custom-table"
+                columns={columns}
+                dataSource={data}
+                pagination={{ pageSize: 10 }}
+                style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
+            />
 
             <HocVienModal01
                 visible={isModalVisible}
@@ -87,7 +150,6 @@ const HocVien: React.FC = () => {
         </Layout>
     );
 };
-
 export default HocVien;
 
 // Dữ liệu mẫu cho bảng
@@ -130,7 +192,7 @@ const data: HocVienType[] = [
         tenHocVien: 'Đỗ Minh Quang',
         gioiTinh: 'Nam',
         ngaySinh: '07/03/2003',
-        tinhTrang: 'Đang học',
+        tinhTrang: 'Đã tốt nghiệp',
     },
     {
         key: '6',
@@ -162,7 +224,7 @@ const data: HocVienType[] = [
         tenHocVien: 'Nguyễn Văn Phong',
         gioiTinh: 'Nam',
         ngaySinh: '15/08/1998',
-        tinhTrang: 'Đã tốt nghiệp',
+        tinhTrang: 'Chưa đăng ký',
     },
     {
         key: '10',
