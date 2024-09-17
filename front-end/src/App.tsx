@@ -60,9 +60,9 @@ const App: React.FC = () => {
             </Content>
           </Layout>
         </Layout>
-        <Footer style={{ textAlign: 'center', backgroundColor: 'red' }}>
+        {/* <Footer style={{ textAlign: 'center', backgroundColor: 'red' }}>
           Ant Design ©{new Date().getFullYear()} Created by Ant UED
-        </Footer>
+        </Footer> */}
       </Layout>
     </Router>
   );
