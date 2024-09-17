@@ -19,7 +19,7 @@ const NhanVien: React.FC = () => {
     // Hàm xử lý khi chọn menu
     const handleMenuClick = (e: any, record: NhanVienType) => {
         if (e.key === 'edit') {
-            setSelectedRecord(record);  // Lưu lại thông tin học viên được chọn
+            setSelectedRecord(record);  // Lưu lại thông tin nhân viên được chọn
             setIsModalVisible(true); // Hiển thị modal khi chọn chức năng "Chỉnh sửa"
         }
     };
@@ -32,8 +32,8 @@ const NhanVien: React.FC = () => {
 
     // Hàm xử lý khi submit form chỉnh sửa
     const handleOk = (values: any) => {
-        console.log('Cập nhật thông tin học viên:', values);
-        // Thực hiện cập nhật thông tin học viên ở đây
+        console.log('Cập nhật thông tin nhân viên:', values);
+        // Thực hiện cập nhật thông tin nhân viên ở đây
         setIsModalVisible(false);
     };
 
@@ -127,7 +127,7 @@ const NhanVien: React.FC = () => {
         <Layout>
             <h1 style={{ display: 'flex', justifyContent: 'center' }}>QUẢN LÝ NHÂN VIÊN</h1>
             <div className="button-container">
-                <Search className="custom-search" placeholder="Nhập tên học viên" onSearch={onSearch} enterButton />
+                <Search className="custom-search" placeholder="Nhập tên nhân viên" onSearch={onSearch} enterButton />
                 <div className="button-container">
                     <Button className='custom-button'>Hoàn tác</Button>
                     <Button className='custom-button'>Thêm</Button>
