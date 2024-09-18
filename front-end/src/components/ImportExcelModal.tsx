@@ -1,13 +1,25 @@
 import React, { useState } from 'react';
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, message, Upload } from 'antd';
+import { Button, message, Modal, Upload } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
-const UploadComponent: React.FC = () => {
+interface ImportExcelModalProps {
+    visible: boolean;
+    onCancel: () => void;
+    modalType: 'hocvien' | 'nhanvien' | 'lophoc'; // Thêm loại modal
+}
+
+const ImportExcelModal: React.FC<ImportExcelModalProps> = ({ visible, onCancel, modalType }) => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploading, setUploading] = useState(false);
+
+    const excelFilePath = modalType === 'hocvien'
+        ? '/excel/hocvien.xlsx'
+        : modalType === 'nhanvien'
+            ? '/excel/nhanvien.xlsx'
+            : '/excel/lophoc.xlsx'; // Thêm đường dẫn cho lớp học
 
     const handleUpload = () => {
         const formData = new FormData();
@@ -60,7 +72,16 @@ const UploadComponent: React.FC = () => {
     };
 
     return (
-        <div style={{width: '160px', height:'120px'}}>
+        <Modal
+            title={modalType === 'hocvien' ? 'Nhập Excel Học Viên' : 'Nhập Excel Nhân Viên'}
+            visible={visible}
+            onCancel={onCancel}
+            footer={null}
+        >
+            <div>
+                Tải file Excel {modalType === 'hocvien' ? 'Học viên' : 'Nhân viên'} mẫu
+                <a href={excelFilePath} download> tại đây</a>
+            </div>
             <Upload {...props}>
                 <Button icon={<UploadOutlined />}>Chọn file Excel</Button>
             </Upload>
@@ -71,10 +92,10 @@ const UploadComponent: React.FC = () => {
                 loading={uploading}
                 style={{ marginTop: 16 }}
             >
-                {uploading ? 'Đang upload' : 'Bắt đầu upload'}
+                {uploading ? 'Đang upload' : 'Chọn'}
             </Button>
-        </div>
+        </Modal>
     );
 };
 
-export default UploadComponent;
+export default ImportExcelModal;

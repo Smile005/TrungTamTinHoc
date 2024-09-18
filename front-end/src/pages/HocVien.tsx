@@ -4,6 +4,7 @@ import { MoreOutlined } from '@ant-design/icons';
 import { HocVienType } from '../types/HocVienType';
 import HocVienModal01 from '../components/HocVienModal01';
 import '../styles/TableCustom.css';
+import ImportExcelModal from '../components/ImportExcelModal';
 
 type SearchProps = GetProps<typeof Input.Search>;
 
@@ -12,28 +13,41 @@ const { Search } = Input;
 const onSearch: SearchProps['onSearch'] = (value, _e, info) => console.log(info?.source, value);
 
 const HocVien: React.FC = () => {
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isImportModalVisible, setIsImportModalVisible] = useState(false); // Modal Nhập Excel
+    const [modalType, setModalType] = useState<'hocvien' | 'nhanvien'>('hocvien'); // Biến để xác định loại modal
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false); // Modal Chỉnh sửa
     const [selectedRecord, setSelectedRecord] = useState<HocVienType | null>(null);
 
     // Hàm xử lý khi chọn menu
     const handleMenuClick = (e: any, record: HocVienType) => {
         if (e.key === 'edit') {
             setSelectedRecord(record);  // Lưu lại thông tin học viên được chọn
-            setIsModalVisible(true); // Hiển thị modal khi chọn chức năng "Chỉnh sửa"
+            setIsEditModalVisible(true); // Hiển thị modal khi chọn chức năng "Chỉnh sửa"
         }
     };
 
-    // Đóng Modal
-    const handleCancel = () => {
-        setIsModalVisible(false);
-        setSelectedRecord(null);
+    const showImportModal = (type: 'hocvien' | 'nhanvien') => {
+        setModalType(type);
+        setIsImportModalVisible(true);
     };
+
+    // // Hàm mở modal Chỉnh sửa
+    // const showEditModal = () => {
+    //     setIsEditModalVisible(true);
+    // };
+
+    // Hàm đóng modal
+    const handleCancel = () => {
+        setIsImportModalVisible(false);
+        setIsEditModalVisible(false);
+    };
+
 
     // Hàm xử lý khi submit form chỉnh sửa
     const handleOk = (values: any) => {
         console.log('Cập nhật thông tin học viên:', values);
         // Thực hiện cập nhật thông tin học viên ở đây
-        setIsModalVisible(false);
+        setIsEditModalVisible(false);
     };
 
     const columns: TableColumnsType<HocVienType> = [
@@ -54,9 +68,16 @@ const HocVien: React.FC = () => {
             filters: [
                 { text: 'Nam', value: 'Nam' },
                 { text: 'Nữ', value: 'Nữ' },
+                { text: 'Undefined', value: 'Undefined' },
             ],
-            onFilter: (value, record) => record.gioiTinh.indexOf(value as string) === 0,
-            render: (gioiTinh: string): JSX.Element => {
+            onFilter: (value, record) => {
+                if (value === 'Undefined') {
+                    return record.gioiTinh === undefined; // Trả về true nếu gioiTinh là undefined
+                }
+                if (record.gioiTinh === undefined) return false; // Trả về false thay vì "undefined"
+                return record.gioiTinh.indexOf(value as string) === 0;
+            },
+            render: (gioiTinh: string | undefined): JSX.Element => {
                 let color = '';
                 if (gioiTinh === 'Nam') {
                     color = 'geekblue';
@@ -65,7 +86,7 @@ const HocVien: React.FC = () => {
                 }
                 return (
                     <Tag color={color} key={gioiTinh}>
-                        {gioiTinh.toUpperCase()}
+                        {gioiTinh ? gioiTinh : 'Undefined'}
                     </Tag>
                 );
             },
@@ -74,6 +95,16 @@ const HocVien: React.FC = () => {
             title: 'Ngày sinh',
             dataIndex: 'ngaySinh',
             key: 'ngaySinh',
+        },
+        {
+            title: 'Số điện thoại',
+            dataIndex: 'sdt',
+            key: 'sdt',
+        },
+        {
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
         },
         {
             title: 'Tình trạng',
@@ -104,6 +135,7 @@ const HocVien: React.FC = () => {
         {
             title: 'Quản lý',
             key: 'action',
+            width: '6%',
             render: (_: any, record: HocVienType) => {
                 const menu = (
                     <Menu onClick={(e) => handleMenuClick(e, record)}>
@@ -126,11 +158,18 @@ const HocVien: React.FC = () => {
         <Layout>
             <h1 style={{ display: 'flex', justifyContent: 'center' }}>QUẢN LÝ HỌC VIÊN</h1>
             <div className="button-container">
-                <Search className="custom-search" placeholder="Nhập tên học viên" onSearch={onSearch} enterButton />
+                <Search
+                    className="custom-search"
+                    placeholder="Nhập tên học viên"
+                    onSearch={onSearch}
+                    enterButton
+                />
                 <div className="button-container">
                     <Button className='custom-button'>Hoàn tác</Button>
                     <Button className='custom-button'>Thêm</Button>
-                    <Button className='custom-button'>Nhập Excel</Button>
+                    <Button className='custom-button' onClick={() => showImportModal('hocvien')}>
+                        Nhập Excel
+                    </Button> {/* Thêm sự kiện onClick */}
                 </div>
             </div>
             <Table
@@ -141,12 +180,19 @@ const HocVien: React.FC = () => {
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
 
+            <ImportExcelModal
+                visible={isImportModalVisible}
+                onCancel={handleCancel}
+                modalType={modalType} // Truyền loại modal
+            />
+
             <HocVienModal01
-                visible={isModalVisible}
+                visible={isEditModalVisible}
                 onCancel={handleCancel}
                 onOk={handleOk}
                 initialValues={selectedRecord || {}}
             />
+
         </Layout>
     );
 };
@@ -174,7 +220,7 @@ const data: HocVienType[] = [
         key: '3',
         maHocVien: 'HV240003',
         tenHocVien: 'Lê Văn Thành',
-        gioiTinh: 'Nam',
+        gioiTinh: undefined,
         ngaySinh: '15/09/2000',
         tinhTrang: 'Đang học',
     },

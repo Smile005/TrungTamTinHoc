@@ -10,3 +10,15 @@
 .custom-button {
     margin-right: 10px;
 }
+.custom-table .ant-table-thead > tr > th {
+    background-color: #4CAF50; /* Màu nền cho header */
+    color: white; /* Màu chữ cho header */
+}
+
+.custom-table .ant-table-tbody > tr:nth-child(odd) {
+    background-color: #f9f9f9; /* Màu nền cho các dòng lẻ */
+}
+
+.custom-table .ant-table-tbody > tr:nth-child(even) {
+    background-color: #ffffff; /* Màu nền cho các dòng chẵn */
+}
