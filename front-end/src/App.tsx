@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import { Layout, Menu, theme} from 'antd';
+import { Layout, Menu, theme } from 'antd';
 import { TeamOutlined } from '@ant-design/icons';
 import HocVien from './pages/HocVien';
 import NhanVien from './pages/NhanVien';
@@ -27,13 +27,16 @@ const App: React.FC = () => {
     <Router>
       <Layout>
         <Header className='custom-header'>
-          <div className="demo-logo" />
+          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <img style={{width: '50px', height: '50px', marginTop: '25px', borderRadius: '15px' }} src="https://res.cloudinary.com/dhyt592i7/image/upload/v1726678695/tbwrtghdd2iftpdgconm.png" />
+            <h1 style={{ color: 'white', marginLeft: '15px' }}>Trung Tâm Prometheus</h1>
+          </div>
           <p style={{ color: 'white' }}>Đây là header</p>
         </Header>
         <Layout>
           <Sider width={250} style={{ background: colorBgContainer }}>
             <Menu className='custom-menu' mode="inline" defaultSelectedKeys={['1']}>
-                <Menu.Item key="1"><Link to="/">Trang chủ</Link></Menu.Item>
+              <Menu.Item key="1"><Link to="/">Trang chủ</Link></Menu.Item>
               <SubMenu key="group01" icon={<TeamOutlined />} title="Chức năng của quản lý">
                 <Menu.Item key="2"><Link to="/nhanvien">Nhân viên</Link></Menu.Item>
               </SubMenu>
