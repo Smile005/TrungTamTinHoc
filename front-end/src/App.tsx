@@ -31,7 +31,7 @@ const App: React.FC = () => {
           <p style={{ color: 'white' }}>Đây là header</p>
         </Header>
         <Layout>
-          <Sider width={250} style={{ background: colorBgContainer }}>
+          <Sider width={260} style={{ background: colorBgContainer }}>
             <Menu className='custom-menu' mode="inline" defaultSelectedKeys={['1']}>
                 <Menu.Item key="1"><Link to="/">Trang chủ</Link></Menu.Item>
               <SubMenu key="group01" icon={<TeamOutlined />} title="Chức năng của quản lý">
