@@ -9,6 +9,7 @@
   align-items: center; 
   height: '80px';
   justify-content: space-between; 
+  background-color: rgb(35, 30, 31);
 }
 
 /* Style fo the entire menu */
@@ -18,6 +19,29 @@
   font-size: 16px;
   height: 100%; 
 }
+.custom-trigger {
+  background-color: rgb(35, 30, 31);
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.sider-fixed {
+  position: fixed;
+  height: 100vh; 
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.main-content {
+  margin-left: 250px; /* Khoảng cách bằng với chiều rộng của Sider */
+  padding: 20px;
+  overflow-y: auto;
+  height: 100vh;
+}
+
 
 /* Style for the menu items */
 /* .custom-menu .ant-menu-item {
