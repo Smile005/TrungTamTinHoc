@@ -26,6 +26,21 @@
   justify-content: center;
   align-items: center;
 }
+.sider-fixed {
+  position: fixed;
+  height: 100vh; /* Chiều cao toàn màn hình */
+  left: 0;
+  top: 0;
+  z-index: 1000; /* Đảm bảo Sider luôn nằm trên */
+  overflow: hidden;
+}
+
+.main-content {
+  margin-left: 250px; /* Khoảng cách bằng với chiều rộng của Sider */
+  padding: 20px;
+  overflow-y: auto;
+  height: 100vh;
+}
 
 
 /* Style for the menu items */

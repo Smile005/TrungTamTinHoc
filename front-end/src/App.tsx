@@ -58,8 +58,8 @@ const App: React.FC = () => {
               <Menu.Item key="1" icon={<MenuOutlined />}>
                 <Link to="/">Trang chủ</Link>
               </Menu.Item>
-              <SubMenu key="group01" icon={<UserOutlined />} title="Quản nhân sự">
-                <Menu.Item key="2" >
+              <SubMenu key="group01" icon={<UserOutlined />} title="Chức năng nhân viên">
+                <Menu.Item key="2">
                   <Link to="/nhanvien">Nhân viên</Link>
                 </Menu.Item>
               </SubMenu>

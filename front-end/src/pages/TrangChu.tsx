@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/TableCustom.css';
 
-const HomePage: React.FC = () => {
+const TrangChu: React.FC = () => {
   return (
     <div className="home-page">
       <div className="banner">
@@ -36,4 +36,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage;
+export default TrangChu;
