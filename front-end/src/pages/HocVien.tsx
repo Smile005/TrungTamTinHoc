@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, TableColumnsType, Input, GetProps } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { HocVienType } from '../types/HocVienType';
+import ThemHocVienModal from '../components/ThemHocVienModal';
 import HocVienModal01 from '../components/HocVienModal01';
 import '../styles/TableCustom.css';
 import ImportExcelModal from '../components/ImportExcelModal';
@@ -13,9 +14,11 @@ const { Search } = Input;
 const onSearch: SearchProps['onSearch'] = (value, _e, info) => console.log(info?.source, value);
 
 const HocVien: React.FC = () => {
+    const [isThemHocVienModalVisible, setIsThemHocVienModalVisible] = useState(false); // Modal Thêm Học Viên
     const [isImportModalVisible, setIsImportModalVisible] = useState(false); // Modal Nhập Excel
-    const [modalType, setModalType] = useState<'hocvien' | 'nhanvien'>('hocvien'); // Biến để xác định loại modal
     const [isEditModalVisible, setIsEditModalVisible] = useState(false); // Modal Chỉnh sửa
+    const [modalType, setModalType] = useState<'hocvien' | 'nhanvien'>('hocvien'); // Biến để xác định loại modal
+
     const [selectedRecord, setSelectedRecord] = useState<HocVienType | null>(null);
 
     // Hàm xử lý khi chọn menu
@@ -31,17 +34,21 @@ const HocVien: React.FC = () => {
         setIsImportModalVisible(true);
     };
 
-    // // Hàm mở modal Chỉnh sửa
-    // const showEditModal = () => {
-    //     setIsEditModalVisible(true);
-    // };
+    const showHocVienModal = () => {
+        setIsThemHocVienModalVisible(true);
+    };
+
+    const handleThemHocVien = (hocVien: HocVienType) => {
+        console.log('Học viên mới:', hocVien);
+        handleCancel();
+    };
 
     // Hàm đóng modal
     const handleCancel = () => {
+        setIsThemHocVienModalVisible(false);
         setIsImportModalVisible(false);
         setIsEditModalVisible(false);
     };
-
 
     // Hàm xử lý khi submit form chỉnh sửa
     const handleOk = (values: any) => {
@@ -55,6 +62,7 @@ const HocVien: React.FC = () => {
             title: 'Mã học viên',
             dataIndex: 'maHocVien',
             key: 'maHocVien',
+            width: '8%',
         },
         {
             title: 'Họ và tên',
@@ -65,6 +73,7 @@ const HocVien: React.FC = () => {
             title: 'Giới tính',
             dataIndex: 'gioiTinh',
             key: 'gioiTinh',
+            width: '6%',
             filters: [
                 { text: 'Nam', value: 'Nam' },
                 { text: 'Nữ', value: 'Nữ' },
@@ -95,21 +104,25 @@ const HocVien: React.FC = () => {
             title: 'Ngày sinh',
             dataIndex: 'ngaySinh',
             key: 'ngaySinh',
+            width: '6%',
         },
         {
             title: 'Số điện thoại',
             dataIndex: 'sdt',
             key: 'sdt',
+            width: '8%',
         },
         {
             title: 'Email',
             dataIndex: 'email',
             key: 'email',
+            width: '10%',
         },
         {
             title: 'Tình trạng',
             dataIndex: 'tinhTrang',
             key: 'tinhTrang',
+            width: '6%',
             filters: [
                 { text: 'Chưa đăng ký', value: 'Chưa đăng ký' },
                 { text: 'Đang học', value: 'Đang học' },
@@ -131,6 +144,11 @@ const HocVien: React.FC = () => {
                     </Tag>
                 );
             },
+        },
+        {
+            title: 'Ghi chú',
+            dataIndex: 'ghiChu',
+            key: 'ghiChu',
         },
         {
             title: 'Quản lý',
@@ -166,7 +184,7 @@ const HocVien: React.FC = () => {
                 />
                 <div className="button-container">
                     <Button className='custom-button'>Hoàn tác</Button>
-                    <Button className='custom-button'>Thêm</Button>
+                    <Button className='custom-button' onClick={showHocVienModal}>Thêm</Button>
                     <Button className='custom-button' onClick={() => showImportModal('hocvien')}>
                         Nhập Excel
                     </Button> {/* Thêm sự kiện onClick */}
@@ -178,6 +196,12 @@ const HocVien: React.FC = () => {
                 dataSource={data}
                 pagination={{ pageSize: 10 }}
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
+            />
+
+            <ThemHocVienModal
+                visible={isThemHocVienModalVisible}
+                onCancel={handleCancel}
+                onSubmit={handleThemHocVien}
             />
 
             <ImportExcelModal
