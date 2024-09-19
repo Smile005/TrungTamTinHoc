@@ -28,10 +28,10 @@
 }
 .sider-fixed {
   position: fixed;
-  height: 100vh; /* Chiều cao toàn màn hình */
+  height: 100vh; 
   left: 0;
   top: 0;
-  z-index: 1000; /* Đảm bảo Sider luôn nằm trên */
+  z-index: 1000;
   overflow: hidden;
 }
 
