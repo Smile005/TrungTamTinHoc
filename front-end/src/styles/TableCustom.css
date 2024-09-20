@@ -104,7 +104,7 @@ body, html {
   .view-more {
     display: inline-block;
     padding: 8px 16px;
-    background-color: #f4b400;
+    background-color: rgba(0, 0, 0, 0.5); 
     color: white;
     border-radius: 4px;
     text-decoration: none;
@@ -112,7 +112,7 @@ body, html {
   }
   
   .view-more:hover {
-    background-color: #e59500;
+    background-color: rgba(0, 0, 0, 0.5); 
   }
   
   /* Responsive design */
