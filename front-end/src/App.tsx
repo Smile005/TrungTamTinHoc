@@ -22,7 +22,6 @@ const AppLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
 
-  // Determine which menu item should be selected based on the current route
   const getSelectedKey = () => {
     if (location.pathname.startsWith('/nhanvien')) return '2';
     if (location.pathname.startsWith('/hocvien')) return '3';
@@ -31,7 +30,7 @@ const AppLayout: React.FC = () => {
     if (location.pathname.startsWith('/lichhoc')) return '6';
     if (location.pathname.startsWith('/phonghoc')) return '7';
     if (location.pathname.startsWith('/cahoc')) return '8';
-    return '1'; // default to 'Trang chủ'
+    return '1'; 
   };
 
   return (
@@ -66,8 +65,8 @@ const AppLayout: React.FC = () => {
           <Menu
             className="custom-menu"
             mode="inline"
-            defaultSelectedKeys={[getSelectedKey()]} // Use dynamic key based on current route
-            selectedKeys={[getSelectedKey()]} // Ensure the key is updated on route change
+            defaultSelectedKeys={[getSelectedKey()]} 
+            selectedKeys={[getSelectedKey()]} 
           >
             <Menu.Item key="1" icon={<MenuOutlined />}>
               <Link to="/">Trang chủ</Link>
@@ -132,7 +131,6 @@ const AppLayout: React.FC = () => {
   );
 };
 
-// The Router must wrap the AppLayout
 const App: React.FC = () => {
   return (
     <Router>

@@ -16,6 +16,12 @@ interface DataType {
 const sheet1Data: DataType[] = [
   { key: '1', maSo: '1', tieuDe: 'Chương trình IELTS 123', noiDung: '', tongSoBuoi: 30 },
   { key: '2', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
+  { key: '3', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
+  { key: '4', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
+  { key: '5', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
+  { key: '6', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
+  { key: '7', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
+  { key: '8', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
 ];
 
 const sheet2Data: DataType[] = [
@@ -65,11 +71,11 @@ const getColumns = (startIndex: number) => [
 const LopHoc: React.FC = () => {
   return (
     <Tabs defaultActiveKey="1">
-      <TabPane tab="Trang tính 1" key="1">
+      <TabPane tab="Trang tính " key="1">
         <Table
-          columns={getColumns(0)}  // Bắt đầu từ 0
+          columns={getColumns(0)}  
           dataSource={sheet1Data}
-          pagination={false}
+          pagination={{ pageSize: 6 }}  
           rowKey="key"
         />
       </TabPane>
