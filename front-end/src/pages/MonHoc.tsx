@@ -77,17 +77,17 @@ const MonHoc: React.FC = () => {
     <Tabs defaultActiveKey="1">
       <TabPane tab="Lập trình" key="1">
         <Table
-          columns={getColumns(0)}  // Bắt đầu từ 0
+          columns={getColumns(0)}  
           dataSource={sheet1Data}
-          pagination={{ pageSize: 5 }}  // Cấu hình pagination với kích thước trang là 5
+          pagination={{ pageSize: 6 }}  
           rowKey="key"
         />
       </TabPane>
       <TabPane tab="Tin học văn phòng" key="2">
         <Table
-          columns={getColumns(sheet1Data.length)}  // Bắt đầu từ độ dài của trang tính 1
+          columns={getColumns(sheet1Data.length)}  
           dataSource={sheet2Data}
-          pagination={{ pageSize: 5 }}  // Cấu hình pagination với kích thước trang là 5
+          pagination={{ pageSize: 6 }}  
           rowKey="key"
         />
       </TabPane>
