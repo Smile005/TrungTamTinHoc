@@ -10,6 +10,7 @@ import MonHoc from './pages/MonHoc';
 import LichHoc from './pages/LichHoc';
 import HocVienTable from './pages/Testing';
 import PhongHoc from './pages/PhongHoc';
+import CaHoc from './pages/CaHoc';
 import './App.css';
 
 const { SubMenu } = Menu;
@@ -125,6 +126,7 @@ const AppLayout: React.FC = () => {
               <Route path="/monhoc" element={<MonHoc />} />
               <Route path="/testing" element={<HocVienTable />} />
               <Route path="/phonghoc" element={<PhongHoc />} />
+              <Route path="/cahoc" element={<CaHoc />} />
             </Routes>
           </Content>
         </Layout>

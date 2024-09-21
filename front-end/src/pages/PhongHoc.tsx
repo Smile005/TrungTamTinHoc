@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Tabs, Table, Button, Input, Row, Col } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import '../styles/TableCustom.css';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -31,7 +32,7 @@ const getColumns = (startIndex: number) => [
   {
     title: 'STT',
     key: 'stt',
-    render: (_: any, __: DataType, index: number) => startIndex + index + 1, // Số thứ tự liên tục
+    render: (_: any, __: DataType, index: number) => startIndex + index + 1, 
   },
   {
     title: 'Mã Phòng',
@@ -60,7 +61,7 @@ const getColumns = (startIndex: number) => [
   },
 ];
 
-const LopHoc: React.FC = () => {
+const PhongHoc: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [filteredData1, setFilteredData1] = useState(sheet1Data);
   const [filteredData2, setFilteredData2] = useState(sheet2Data);
@@ -87,6 +88,7 @@ const LopHoc: React.FC = () => {
   return (
     <Row gutter={16}>
       <Col span={24} style={{ textAlign: 'right', marginTop: '20px' }}>
+        <h1 className='top-left-context'>Quản Lý Phòng Học</h1>
         <Search
           placeholder="Tìm kiếm mã phòng, số lượng, trạng thái"
           onSearch={onSearch}
@@ -101,7 +103,7 @@ const LopHoc: React.FC = () => {
             <Table
               columns={getColumns(0)}
               dataSource={filteredData1}
-              pagination={{ pageSize: 6 }}
+              pagination={{ pageSize: 5 }}
               rowKey="key"
             />
           </TabPane>
@@ -109,7 +111,7 @@ const LopHoc: React.FC = () => {
             <Table
               columns={getColumns(filteredData1.length)}
               dataSource={filteredData2}
-              pagination={{ pageSize: 6 }}
+              pagination={{ pageSize: 5 }}
               rowKey="key"
             />
           </TabPane>
@@ -119,4 +121,4 @@ const LopHoc: React.FC = () => {
   );
 };
 
-export default LopHoc;
+export default PhongHoc;
