@@ -9,6 +9,7 @@ import TrangChu from './pages/TrangChu';
 import MonHoc from './pages/MonHoc';
 import LichHoc from './pages/LichHoc';
 import HocVienTable from './pages/Testing';
+import PhongHoc from './pages/PhongHoc';
 import './App.css';
 
 const { SubMenu } = Menu;
@@ -123,6 +124,7 @@ const AppLayout: React.FC = () => {
               <Route path="/lophoc" element={<LopHoc />} />
               <Route path="/monhoc" element={<MonHoc />} />
               <Route path="/testing" element={<HocVienTable />} />
+              <Route path="/phonghoc" element={<PhongHoc />} />
             </Routes>
           </Content>
         </Layout>
