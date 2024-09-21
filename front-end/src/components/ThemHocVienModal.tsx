@@ -18,11 +18,11 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
   useEffect(() => {
     if (visible) {
       form.setFieldsValue({
-        gioiTinh: 'Nam', // Đặt giá trị mặc định cho gioiTinh
-        ngaySinh: moment(), // Đặt giá trị mặc định cho ngày sinh là hôm nay
+        gioiTinh: 'Nam', 
+        ngaySinh: moment(), 
       });
     }
-  }, [visible]);
+  }, [visible, form]);
 
   const handleUpload = (file: RcFile) => {
     if (!file || !(file instanceof Blob)) {
