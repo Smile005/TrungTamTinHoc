@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Tabs, Table, Button, Input, Row, Col } from 'antd';
+import {  Table, Button, Input, Row, Col } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import '../styles/TableCustom.css';
 
-const { TabPane } = Tabs;
 const { Search } = Input;
 
 interface DataType {
@@ -22,17 +21,13 @@ const sheet1Data: DataType[] = [
   { key: '5', maPhong: 'PHA05', soLuong: 40, trangThai: 'Sẵn sàng' },
 ];
 
-const sheet2Data: DataType[] = [
-  { key: '1', maPhong: 'PHB03', soLuong: 40, trangThai: 'Chưa mở' },
-  { key: '2', maPhong: 'PHB04', soLuong: 40, trangThai: 'Sẵn sàng' },
-];
 
 // Cột của bảng
 const getColumns = (startIndex: number) => [
   {
     title: 'STT',
     key: 'stt',
-    render: (_: any, __: DataType, index: number) => startIndex + index + 1, 
+    render: (_: any, __: DataType, index: number) => startIndex + index + 1,
   },
   {
     title: 'Mã Phòng',
@@ -64,7 +59,6 @@ const getColumns = (startIndex: number) => [
 const PhongHoc: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [filteredData1, setFilteredData1] = useState(sheet1Data);
-  const [filteredData2, setFilteredData2] = useState(sheet2Data);
 
   const onSearch = (value: string) => {
     setSearchText(value);
@@ -75,14 +69,9 @@ const PhongHoc: React.FC = () => {
       item.soLuong.toString().includes(value) ||
       item.trangThai.toLowerCase().includes(value.toLowerCase())
     );
-    const filteredSheet2 = sheet2Data.filter((item) =>
-      item.maPhong.toLowerCase().includes(value.toLowerCase()) ||
-      item.soLuong.toString().includes(value) ||
-      item.trangThai.toLowerCase().includes(value.toLowerCase())
-    );
+
 
     setFilteredData1(filteredSheet1);
-    setFilteredData2(filteredSheet2);
   };
 
   return (
@@ -98,24 +87,12 @@ const PhongHoc: React.FC = () => {
         />
       </Col>
       <Col span={24}>
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="Dãy A" key="1">
-            <Table
-              columns={getColumns(0)}
-              dataSource={filteredData1}
-              pagination={{ pageSize: 5 }}
-              rowKey="key"
-            />
-          </TabPane>
-          <TabPane tab="Dãy B" key="2">
-            <Table
-              columns={getColumns(filteredData1.length)}
-              dataSource={filteredData2}
-              pagination={{ pageSize: 5 }}
-              rowKey="key"
-            />
-          </TabPane>
-        </Tabs>
+        <Table
+          columns={getColumns(0)}
+          dataSource={filteredData1}
+          pagination={{ pageSize: 5 }}
+          rowKey="key"
+        />
       </Col>
     </Row>
   );
