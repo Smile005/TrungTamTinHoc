@@ -1,65 +1,86 @@
-import React from 'react';
-import { Tabs, Table, Button } from 'antd';
+import React, { useState } from 'react';
+import { Tabs, Table, Button, Input, Row, Col } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const { TabPane } = Tabs;
+const { Search } = Input;
 
-interface DataType {
+interface LopHocDataType {
   key: string;
-  maSo: string;
-  tieuDe: string;
-  noiDung: string;
-  tongSoBuoi: number;
+  maLopHoc: string;
+  tenLopHoc: string;
+  maMonHoc: string;
+  maGiaoVien: string;
+  ngayBatDau: string; // date dưới dạng chuỗi
+  soLuong: string;
+  trangThai: string;
+  ghiChu: string;
 }
 
-// Dữ liệu mẫu cho các trang tính khác nhau
-const sheet1Data: DataType[] = [
-  { key: '1', maSo: '1', tieuDe: 'Chương trình IELTS 123', noiDung: '', tongSoBuoi: 30 },
-  { key: '2', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
-  { key: '3', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
-  { key: '4', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
-  { key: '5', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
-  { key: '6', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
-  { key: '7', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
-  { key: '8', maSo: 'IELTS1', tieuDe: 'Chương trình IELTS 1', noiDung: '', tongSoBuoi: 20 },
+const sheet1Data: LopHocDataType[] = [
+  { key: '1', maLopHoc: 'LH001', tenLopHoc: 'Lớp A', maMonHoc: 'MH001', maGiaoVien: 'GV001', ngayBatDau: '2023-09-22', soLuong: '30', trangThai: 'Còn trống', ghiChu: '' },
+  { key: '2', maLopHoc: 'LH002', tenLopHoc: 'Lớp B', maMonHoc: 'MH002', maGiaoVien: 'GV002', ngayBatDau: '2023-09-22', soLuong: '25', trangThai: 'Đang hoạt động', ghiChu: '' },
+  { key: '3', maLopHoc: 'LH002', tenLopHoc: 'Lớp C', maMonHoc: 'MH002', maGiaoVien: 'GV002', ngayBatDau: '2023-09-22', soLuong: '25', trangThai: 'Đang hoạt động', ghiChu: '' },
+  { key: '4', maLopHoc: 'LH002', tenLopHoc: 'Lớp D', maMonHoc: 'MH002', maGiaoVien: 'GV002', ngayBatDau: '2023-09-22', soLuong: '25', trangThai: 'Đang hoạt động', ghiChu: '' },
+  { key: '5', maLopHoc: 'LH002', tenLopHoc: 'Lớp E', maMonHoc: 'MH002', maGiaoVien: 'GV002', ngayBatDau: '2023-09-22', soLuong: '25', trangThai: 'Đang hoạt động', ghiChu: '' },
 ];
 
-const sheet2Data: DataType[] = [
-  { key: '3', maSo: 'CT2', tieuDe: 'Chương trình 2', noiDung: 'Môn này cực hot', tongSoBuoi: 24 },
-  { key: '4', maSo: 'BE1', tieuDe: 'Business English 1', noiDung: '', tongSoBuoi: 24 },
+const sheet2Data: LopHocDataType[] = [
+  { key: '3', maLopHoc: 'LH003', tenLopHoc: 'Lớp C', maMonHoc: 'MH003', maGiaoVien: 'GV003', ngayBatDau: '2023-09-22', soLuong: '20', trangThai: 'Còn trống', ghiChu: '' },
+  { key: '4', maLopHoc: 'LH004', tenLopHoc: 'Lớp D', maMonHoc: 'MH004', maGiaoVien: 'GV004', ngayBatDau: '2023-09-22', soLuong: '30', trangThai: 'Đang hoạt động', ghiChu: '' },
+  
 ];
 
-// Cột của bảng
 const getColumns = (startIndex: number) => [
   {
     title: 'STT',
     key: 'stt',
-    render: (_: any, __: DataType, index: number) => startIndex + index + 1,  // Số thứ tự liên tục
+    render: (_: any, __: LopHocDataType, index: number) => startIndex + index + 1,  // Số thứ tự liên tục
   },
   {
-    title: 'Mã số',
-    dataIndex: 'maSo',
-    key: 'maSo',
+    title: 'Mã Lớp Học',
+    dataIndex: 'maLopHoc',
+    key: 'maLopHoc',
   },
   {
-    title: 'Tiêu đề',
-    dataIndex: 'tieuDe',
-    key: 'tieuDe',
+    title: 'Tên Lớp Học',
+    dataIndex: 'tenLopHoc',
+    key: 'tenLopHoc',
   },
   {
-    title: 'Nội dung',
-    dataIndex: 'noiDung',
-    key: 'noiDung',
+    title: 'Mã Môn Học',
+    dataIndex: 'maMonHoc',
+    key: 'maMonHoc',
   },
   {
-    title: 'Tổng số buổi',
-    dataIndex: 'tongSoBuoi',
-    key: 'tongSoBuoi',
+    title: 'Mã Giáo Viên',
+    dataIndex: 'maGiaoVien',
+    key: 'maGiaoVien',
+  },
+  {
+    title: 'Ngày Bắt Đầu',
+    dataIndex: 'ngayBatDau',
+    key: 'ngayBatDau',
+  },
+  {
+    title: 'Số Lượng',
+    dataIndex: 'soLuong',
+    key: 'soLuong',
+  },
+  {
+    title: 'Trạng Thái',
+    dataIndex: 'trangThai',
+    key: 'trangThai',
+  },
+  {
+    title: 'Ghi Chú',
+    dataIndex: 'ghiChu',
+    key: 'ghiChu',
   },
   {
     title: 'Quản lý',
     key: 'action',
-    render: (_: any, record: DataType) => (
+    render: (_: any, record: LopHocDataType) => (
       <span>
         <Button type="link" icon={<EditOutlined />} />
         <Button type="link" icon={<DeleteOutlined />} />
@@ -69,25 +90,65 @@ const getColumns = (startIndex: number) => [
 ];
 
 const LopHoc: React.FC = () => {
+  const [searchText, setSearchText] = useState('');
+  const [filteredData1, setFilteredData1] = useState(sheet1Data);
+  const [filteredData2, setFilteredData2] = useState(sheet2Data);
+
+  const onSearch = (value: string) => {
+    const filteredSheet1 = sheet1Data.filter((item) =>
+      item.maLopHoc.toLowerCase().includes(value.toLowerCase()) ||
+      item.tenLopHoc.toLowerCase().includes(value.toLowerCase()) ||
+      item.maMonHoc.toLowerCase().includes(value.toLowerCase()) ||
+      item.maGiaoVien.toLowerCase().includes(value.toLowerCase()) ||
+      item.trangThai.toLowerCase().includes(value.toLowerCase())
+    );
+
+    const filteredSheet2 = sheet2Data.filter((item) =>
+      item.maLopHoc.toLowerCase().includes(value.toLowerCase()) ||
+      item.tenLopHoc.toLowerCase().includes(value.toLowerCase()) ||
+      item.maMonHoc.toLowerCase().includes(value.toLowerCase()) ||
+      item.maGiaoVien.toLowerCase().includes(value.toLowerCase()) ||
+      item.trangThai.toLowerCase().includes(value.toLowerCase())
+    );
+
+    setFilteredData1(filteredSheet1);
+    setFilteredData2(filteredSheet2);
+    setSearchText(value);
+  };
+
   return (
-    <Tabs defaultActiveKey="1">
-      <TabPane tab="Trang tính " key="1">
-        <Table
-          columns={getColumns(0)}  
-          dataSource={sheet1Data}
-          pagination={{ pageSize: 6 }}  
-          rowKey="key"
-        />
-      </TabPane>
-      <TabPane tab="Trang tính 2" key="2">
-        <Table
-          columns={getColumns(sheet1Data.length)}  // Bắt đầu từ độ dài của trang tính 1
-          dataSource={sheet2Data}
-          pagination={false}
-          rowKey="key"
-        />
-      </TabPane>
-    </Tabs>
+    <>
+      <Row justify="end" style={{ marginBottom: 16 }}>
+        <Col span={24} style={{ textAlign: 'right', marginTop: '20px' }}>
+          <h1 className='top-left-context'>Quản Lý Lớp Học</h1>
+          <Search
+            placeholder="Tìm kiếm "
+            onSearch={onSearch}
+            style={{ width: 300 }}
+            value={searchText}
+            onChange={(e) => onSearch(e.target.value)}
+          />
+        </Col>
+      </Row>
+      <Tabs defaultActiveKey="1">
+        <TabPane tab="Danh sách lớp 1" key="1">
+          <Table
+            columns={getColumns(0)}
+            dataSource={filteredData1}
+            pagination={{ pageSize: 5 }}
+            rowKey="key"
+          />
+        </TabPane>
+        <TabPane tab="Danh sách lớp 2" key="2">
+          <Table
+            columns={getColumns(filteredData1.length)}  
+            dataSource={filteredData2}
+            pagination={false}
+            rowKey="key"
+          />
+        </TabPane>
+      </Tabs>
+    </>
   );
 };
 
