@@ -91,7 +91,7 @@ const LopHoc: React.FC = () => {
   return (
     <>
       <Row justify="end" style={{ marginBottom: 16 }}>
-        <Col span={24} style={{ textAlign: 'right', marginTop: '20px' }}>
+        <Col span={24} className='col-header'>
           <h1 className='top-left-context'>Quản Lý Lớp Học</h1>
           <Search
             placeholder="Tìm kiếm "

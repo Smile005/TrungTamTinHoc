@@ -76,7 +76,7 @@ const PhongHoc: React.FC = () => {
 
   return (
     <Row gutter={16}>
-      <Col span={24} style={{ textAlign: 'right', marginTop: '20px' }}>
+      <Col span={24} className='col-header'>
         <h1 className='top-left-context'>Quản Lý Phòng Học</h1>
         <Search
           placeholder="Tìm kiếm mã phòng, số lượng, trạng thái"
