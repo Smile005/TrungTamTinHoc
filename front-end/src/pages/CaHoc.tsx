@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Input, Row, Col, message } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
-import ThemCaHocModal from '../components/ThemCaHocModal'; 
+import ThemCaHocModal from '../components/ThemCaHocModal';
 
 const { Search } = Input;
 
@@ -14,12 +14,12 @@ interface DataType {
 }
 
 const sheetData: DataType[] = [
-    { key: '1', maCa: 'CA01', batDau: '08:00', ketThuc: '10:00', trangThai: 'Sẵn sàng' },
-    { key: '2', maCa: 'CA02', batDau: '10:00', ketThuc: '12:00', trangThai: 'Sẵn sàng' },
-    { key: '3', maCa: 'CA03', batDau: '13:00', ketThuc: '14:00', trangThai: 'Sẵn sàng' },
-    { key: '4', maCa: 'CA04', batDau: '15:00', ketThuc: '18:00', trangThai: 'Sẵn sàng' },
-    { key: '5', maCa: 'CA05', batDau: '18:00', ketThuc: '20:00', trangThai: 'Sẵn sàng' },
-    { key: '6', maCa: 'CA06', batDau: '07:00', ketThuc: '09:00', trangThai: 'Chưa mở' },
+    { key: '1', maCa: 'CA01', batDau: '08:00', ketThuc: '10:00', trangThai: 'Đang hoạt động' },
+    { key: '2', maCa: 'CA02', batDau: '10:00', ketThuc: '12:00', trangThai: 'Đang hoạt động' },
+    { key: '3', maCa: 'CA03', batDau: '13:00', ketThuc: '14:00', trangThai: 'Đang hoạt động' },
+    { key: '4', maCa: 'CA04', batDau: '15:00', ketThuc: '18:00', trangThai: 'Đang hoạt động' },
+    { key: '5', maCa: 'CA05', batDau: '18:00', ketThuc: '20:00', trangThai: 'Đang hoạt động' },
+    { key: '6', maCa: 'CA06', batDau: '07:00', ketThuc: '09:00', trangThai: 'Đang hoạt động' },
 ];
 
 const getColumns = (startIndex: number) => [
@@ -106,13 +106,15 @@ const CaHoc: React.FC = () => {
 
     return (
         <Row gutter={16}>
-            <Col span={12} style={{ textAlign: 'left', marginTop: '20px', marginBottom: '35px' }}>
+            <Col span={12} className='col-header'>
                 <h1 className='top-left-context'>Quản Lý Ca Học</h1>
-                <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
-                    Thêm Ca Học
-                </Button>
+                <div className='icon-add'>
+                    <Button type="primary" icon={<PlusOutlined />} onClick={showModal}>
+                        Thêm Ca Học
+                    </Button>
+                </div>
             </Col>
-            <Col span={12} style={{ textAlign: 'right', marginTop: '92.5px'}}>
+            <Col span={12} style={{ textAlign: 'right', marginTop: '92.5px' }}>
                 <Search
                     placeholder="Tìm kiếm mã ca, thời gian, trạng thái"
                     onSearch={onSearch}

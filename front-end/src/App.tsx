@@ -11,6 +11,7 @@ import LichHoc from './pages/LichHoc';
 import HocVienTable from './pages/Testing';
 import PhongHoc from './pages/PhongHoc';
 import CaHoc from './pages/CaHoc';
+import TaiKhoan from './pages/TaiKhoan';  
 import './App.css';
 
 const { SubMenu } = Menu;
@@ -121,7 +122,7 @@ const AppLayout: React.FC = () => {
             </SubMenu>
             <SubMenu key="group04" icon={<ReadOutlined />} title="Thi">
               <Menu.Item key="11">
-                <Link to="/ds_thi">Danh sách thi</Link>
+                <Link to="/ds_thi">Danh sách lịch thi</Link>
               </Menu.Item>
               <Menu.Item key="12">
                 <Link to="/nhapdiem">Nhập điểm</Link>
@@ -155,7 +156,7 @@ const AppLayout: React.FC = () => {
           >
             <Routes>
               <Route path="/" element={<TrangChu />} />
-              <Route path="/taikhoan" element={<PhongHoc />} />
+              <Route path="/taikhoan" element={<TaiKhoan />} />  {/* Thêm route cho TaiKhoan */}
               <Route path="/nhanvien" element={<NhanVien />} />
               <Route path="/hocvien" element={<HocVien />} />
               <Route path="/phonghoc" element={<PhongHoc />} />

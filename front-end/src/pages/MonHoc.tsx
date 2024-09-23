@@ -1,22 +1,13 @@
 import React, { useState } from 'react';
 import {  Table, Button, Input, Row, Col } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import {MonHocType} from '../types/MonHocType'
 
 const { Search } = Input;
 
-interface MonHocDataType {
-  key: string;
-  maMonHoc: string;
-  tenMonHoc: string;
-  soBuoiHoc: number;
-  hocPhi: number;
-  moTa: string;
-  trangThai: string;
-  ghiChu: string;
-}
 
 // Dữ liệu mẫu cho các trang tính khác nhau
-const sheet1Data: MonHocDataType[] = [
+const sheet1Data: MonHocType[] = [
   { key: '1', maMonHoc: 'MH01', tenMonHoc: 'DOT.net', soBuoiHoc: 30, hocPhi: 5000000, moTa: '', trangThai: 'Đang mở', ghiChu: '' },
   { key: '2', maMonHoc: 'MH02', tenMonHoc: 'Java nâng cao', soBuoiHoc: 20, hocPhi: 4500000, moTa: '', trangThai: 'Đang mở', ghiChu: '' },
   { key: '3', maMonHoc: 'MH03', tenMonHoc: 'PHP Tổng hợp', soBuoiHoc: 24, hocPhi: 4000000, moTa: 'Môn này cực hot', trangThai: 'Đang mở', ghiChu: '' },
@@ -29,7 +20,7 @@ const getColumns = (startIndex: number) => [
   {
     title: 'STT',
     key: 'stt',
-    render: (_: any, __: MonHocDataType, index: number) => startIndex + index + 1,  // Số thứ tự liên tục
+    render: (_: any, __: MonHocType, index: number) => startIndex + index + 1,  // Số thứ tự liên tục
   },
   {
     title: 'Mã Môn Học',
@@ -69,7 +60,7 @@ const getColumns = (startIndex: number) => [
   {
     title: 'Quản lý',
     key: 'action',
-    render: (_: any, record: MonHocDataType) => (
+    render: (_: any, record: MonHocType) => (
       <span>
         <Button type="link" icon={<EditOutlined />} />
         <Button type="link" icon={<DeleteOutlined />} />

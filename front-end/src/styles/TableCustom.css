@@ -142,13 +142,16 @@ body, html {
   color: #000;
   text-align: left;
 }
-.top-left-context2 {
-  font-size: '30px';
-  color: #000;
-  text-align: left;
-  position: absolute;
-}
+
 .search-cate {
   position: relative;
   margin-top: '15px';
+}
+.col-header{
+  text-align: right;
+  margin-top: '20px';
+}
+.icon-add{
+  text-align: left;
+
 }
