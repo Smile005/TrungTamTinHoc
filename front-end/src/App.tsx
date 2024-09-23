@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, useLocation } from 'react-router-dom';
 import { Layout, Menu, theme } from 'antd';
-import { TeamOutlined, SettingOutlined, MenuUnfoldOutlined, MenuFoldOutlined, ReadOutlined, UserOutlined, SolutionOutlined } from '@ant-design/icons';
+import { ScheduleOutlined, BuildOutlined, SettingOutlined, MenuUnfoldOutlined, MenuFoldOutlined, ReadOutlined, UserOutlined, SolutionOutlined, AppstoreOutlined } from '@ant-design/icons';
 import HocVien from './pages/HocVien';
 import NhanVien from './pages/NhanVien';
 import LopHoc from './pages/LopHoc';
@@ -14,7 +14,7 @@ import CaHoc from './pages/CaHoc';
 import TaiKhoan from './pages/TaiKhoan';  
 import './App.css';
 
-const { SubMenu } = Menu;
+const { SubMenu } = Menu; 
 const { Header, Content, Sider } = Layout;
 
 const AppLayout: React.FC = () => {
@@ -81,7 +81,7 @@ const AppLayout: React.FC = () => {
             mode="inline"
             selectedKeys={[getSelectedKey()]}  // Dynamically set selected keys
           >
-            <Menu.Item key="0" icon={<UserOutlined />}>
+            <Menu.Item key="0" icon={<AppstoreOutlined />}>
               <Link to="/">Trang chủ</Link>
             </Menu.Item>
             <SubMenu key="group01" icon={<UserOutlined />} title="Tổ chức">
@@ -104,7 +104,7 @@ const AppLayout: React.FC = () => {
                 <Link to="/monhoc">Môn học</Link>
               </Menu.Item>
             </SubMenu>
-            <SubMenu key="group02" icon={<TeamOutlined />} title="Lập kế hoạch">
+            <SubMenu key="group02" icon={<ScheduleOutlined />} title="Lập kế hoạch">
               <Menu.Item key="7">
                 <Link to="/lophoc">Lớp học</Link>
               </Menu.Item>
@@ -128,7 +128,7 @@ const AppLayout: React.FC = () => {
                 <Link to="/nhapdiem">Nhập điểm</Link>
               </Menu.Item>
             </SubMenu>
-            <SubMenu key="group05" icon={<ReadOutlined />} title="Thống kê">
+            <SubMenu key="group05" icon={<BuildOutlined />} title="Thống kê">
               <Menu.Item key="13">
                 <Link to="/tk_hocvien">Thống kê học viên</Link>
               </Menu.Item>
