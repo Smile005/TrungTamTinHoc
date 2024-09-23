@@ -21,11 +21,10 @@ const HocVien: React.FC = () => {
 
     const [selectedRecord, setSelectedRecord] = useState<HocVienType | null>(null);
 
-    // Hàm xử lý khi chọn menu
     const handleMenuClick = (e: any, record: HocVienType) => {
         if (e.key === 'edit') {
-            setSelectedRecord(record);  // Lưu lại thông tin học viên được chọn
-            setIsEditModalVisible(true); // Hiển thị modal khi chọn chức năng "Chỉnh sửa"
+            setSelectedRecord(record);  
+            setIsEditModalVisible(true); 
         }
     };
 
@@ -43,17 +42,14 @@ const HocVien: React.FC = () => {
         handleCancel();
     };
 
-    // Hàm đóng modal
     const handleCancel = () => {
         setIsThemHocVienModalVisible(false);
         setIsImportModalVisible(false);
         setIsEditModalVisible(false);
     };
 
-    // Hàm xử lý khi submit form chỉnh sửa
     const handleOk = (values: any) => {
         console.log('Cập nhật thông tin học viên:', values);
-        // Thực hiện cập nhật thông tin học viên ở đây
         setIsEditModalVisible(false);
     };
 
@@ -207,7 +203,7 @@ const HocVien: React.FC = () => {
             <ImportExcelModal
                 visible={isImportModalVisible}
                 onCancel={handleCancel}
-                modalType={modalType} // Truyền loại modal
+                modalType={modalType} 
             />
 
             <HocVienModal01

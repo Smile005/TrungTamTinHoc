@@ -4,7 +4,7 @@ export interface HocVienType {
     tenHocVien: string;
     img?: string;
     ngayVaoHoc?: string;
-    gioiTinh?: string;
+    gioiTinh?: "Nam" | "Nữ";
     ngaySinh?: string;
     sdt?: string;
     email?: string;
