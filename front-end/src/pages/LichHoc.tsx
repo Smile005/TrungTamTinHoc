@@ -126,7 +126,7 @@ const LichHoc: React.FC = () => {
               {listData.map((item) => (
                 <li key={item.maBuoiHoc} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span>
-                    - {item.tenLopHoc} - {item.caHoc.maCa} - {item.phongHoc.maPhongHoc} - {item.giaoVien.tenNhanVien}
+                    - {item.tenLopHoc} - {item.caHoc.maCa} - {item.phongHoc.maPhong} - {item.giaoVien.tenNhanVien}
                   </span>
                   <Dropdown overlay={menu} trigger={['click']}>
                     <Button icon={<MoreOutlined />} />
@@ -167,8 +167,8 @@ const getListData = (value: Dayjs): BuoiHocType[] => {
           maBuoiHoc: 'BH001',
           tenLopHoc: 'Lập trình Web',
           ngayHoc: value.toDate(),
-          caHoc: { maCa: 'CA01', batDau: "07:00", ketThuc: "10:00", trangThai: 'Đang hoạt động', ghiChu: 'Ca học bình thường' },
-          phongHoc: { maPhongHoc: 'PH01', soLuong: 30, trangThai: 'Đang hoạt động', ghiChu: 'Phòng học lý thuyết' },
+          caHoc: {key: '1', maCa: 'CA01', batDau: "07:00", ketThuc: "10:00", trangThai: 'Đang hoạt động', ghiChu: 'Ca học bình thường' },
+          phongHoc: {key: '1', maPhong: 'PH01', soLuong: 30, trangThai: 'Đang hoạt động', ghiChu: 'Phòng học lý thuyết' },
           giaoVien: { key: 'GV001', maNhanVien: 'NV001', tenNhanVien: 'Nguyễn Văn A', gioiTinh: 'nam', ngaySinh: '1990-01-01', tinhTrang: 'Đang làm việc' },
           loai: 'Ngày học',
           trangThai: 'Đã lên lịch',
@@ -178,8 +178,8 @@ const getListData = (value: Dayjs): BuoiHocType[] => {
           maBuoiHoc: 'BH002',
           tenLopHoc: 'Thi giữa kỳ',
           ngayHoc: value.toDate(),
-          caHoc: { maCa: 'CA02', batDau: "07:00", ketThuc: "10:00", trangThai: 'Đang hoạt động', ghiChu: 'Ca thi' },
-          phongHoc: { maPhongHoc: 'PH02', soLuong: 30, trangThai: 'Đang hoạt động', ghiChu: 'Phòng thi' },
+          caHoc: { key: '1', maCa: 'CA02', batDau: "07:00", ketThuc: "10:00", trangThai: 'Đang hoạt động', ghiChu: 'Ca thi' },
+          phongHoc: {key: '1', maPhong: 'PH02', soLuong: 30, trangThai: 'Đang hoạt động', ghiChu: 'Phòng thi' },
           giaoVien: { key: 'GV002', maNhanVien: 'NV002', tenNhanVien: 'Trần Thị B', gioiTinh: 'nữ', ngaySinh: '1992-05-15', tinhTrang: 'Đang làm việc' },
           loai: 'Ngày thi',
           trangThai: 'Đã lên lịch',
@@ -193,8 +193,8 @@ const getListData = (value: Dayjs): BuoiHocType[] => {
           maBuoiHoc: 'BH003',
           tenLopHoc: 'Nghỉ lễ',
           ngayHoc: value.toDate(),
-          caHoc: { maCa: 'CA03', batDau: "07:00", ketThuc: "10:00", trangThai: 'Đang hoạt động', ghiChu: 'Ngày nghỉ lễ' },
-          phongHoc: { maPhongHoc: 'PH03', soLuong: 30, trangThai: 'Ngưng hoạt động', ghiChu: 'Không có lớp' },
+          caHoc: { key: '1', maCa: 'CA03', batDau: "07:00", ketThuc: "10:00", trangThai: 'Đang hoạt động', ghiChu: 'Ngày nghỉ lễ' },
+          phongHoc: {key: '1', maPhong: 'PH03', soLuong: 30, trangThai: 'Ngưng hoạt động', ghiChu: 'Không có lớp' },
           giaoVien: { key: 'GV003', maNhanVien: 'NV003', tenNhanVien: 'Lê Văn C', gioiTinh: 'nam', ngaySinh: '1985-12-20', tinhTrang: 'Đang làm việc' },
           loai: 'Ngày nghỉ',
           trangThai: 'Đã lên lịch',
