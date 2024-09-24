@@ -190,7 +190,7 @@ const HocVien: React.FC = () => {
                 className="custom-table"
                 columns={columns}
                 dataSource={data}
-                pagination={{ pageSize: 10 }}
+                pagination={{ pageSize: 5 }}
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
 
