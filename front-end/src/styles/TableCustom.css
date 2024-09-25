@@ -15,9 +15,7 @@
 
 .custom-table .ant-table-thead>tr>th {
   background-color: #4eb1f9;
-  /* Màu nền cho header */
   color: white;
-  /* Màu chữ cho header */
 }
 
 .custom-table .ant-table-tbody>tr:nth-child(odd) {
@@ -147,11 +145,18 @@ body, html {
   position: relative;
   margin-top: '15px';
 }
-.col-header{
+
+.col-header {
   text-align: right;
   margin-top: '20px';
 }
-.icon-add{
+
+.icon-add {
   text-align: left;
 
+}
+
+.page-name {
+  display: flex; 
+  justify-content: center;
 }

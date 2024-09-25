@@ -170,7 +170,7 @@ const HocVien: React.FC = () => {
 
     return (
         <Layout>
-            <h1 style={{ display: 'flex', justifyContent: 'center' }}>QUẢN LÝ HỌC VIÊN</h1>
+            <h1 className='page-name'>QUẢN LÝ HỌC VIÊN</h1>
             <div className="button-container">
                 <Search
                     className="custom-search"

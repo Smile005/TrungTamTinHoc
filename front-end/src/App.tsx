@@ -12,6 +12,8 @@ import HocVienTable from './pages/Testing';
 import PhongHoc from './pages/PhongHoc';
 import CaHoc from './pages/CaHoc';
 import TaiKhoan from './pages/TaiKhoan';  
+import TKHocVien from './pages/TKHocVien';
+import TKLopHoc from './pages/TKLopHoc';
 import './App.css';
 
 const { SubMenu } = Menu; 
@@ -156,7 +158,7 @@ const AppLayout: React.FC = () => {
           >
             <Routes>
               <Route path="/" element={<TrangChu />} />
-              <Route path="/taikhoan" element={<TaiKhoan />} />  {/* Thêm route cho TaiKhoan */}
+              <Route path="/taikhoan" element={<TaiKhoan />} />  
               <Route path="/nhanvien" element={<NhanVien />} />
               <Route path="/hocvien" element={<HocVien />} />
               <Route path="/phonghoc" element={<PhongHoc />} />
@@ -167,9 +169,9 @@ const AppLayout: React.FC = () => {
               <Route path="/lichhoc" element={<LichHoc />} />
               <Route path="/ds_thi" element={<LichHoc />} />
               <Route path="/nhapdiem" element={<LichHoc />} />
-              <Route path="/tk_hocvien" element={<MonHoc />} />
+              <Route path="/tk_hocvien" element={<TKHocVien />} />
               <Route path="/tk_giangvien" element={<PhongHoc />} />
-              <Route path="/tk_lophoc" element={<CaHoc />} />
+              <Route path="/tk_lophoc" element={<TKLopHoc />} />
               <Route path="/testing" element={<HocVienTable />} />
             </Routes>
           </Content>

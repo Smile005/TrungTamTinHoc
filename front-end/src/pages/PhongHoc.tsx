@@ -90,7 +90,7 @@ const PhongHoc: React.FC = () => {
 
   return (
     <Layout>
-      <h1 style={{ display: 'flex', justifyContent: 'center' }}>QUẢN LÝ PHÒNG HỌC</h1>
+      <h1 className='page-name'>QUẢN LÝ PHÒNG HỌC</h1>
       <div className="button-container">
         <Search
           className="custom-search"

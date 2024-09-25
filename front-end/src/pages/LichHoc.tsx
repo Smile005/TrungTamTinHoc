@@ -102,7 +102,7 @@ const LichHoc: React.FC = () => {
 
   return (
     <>
-      <h1 className='custom-h1'>QUẢN LÝ LỊCH HỌC</h1>
+      <h1 className='page-name'>QUẢN LÝ LỊCH HỌC</h1>
       <div className="custom-container">
         <Button className="custom-button" onClick={handleTodayClick}>Hoàn tác</Button>
         <Button className="custom-button" icon={<PlusOutlined />}>Thêm Buổi học</Button>

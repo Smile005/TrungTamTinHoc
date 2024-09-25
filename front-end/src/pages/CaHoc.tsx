@@ -124,7 +124,7 @@ const CaHoc: React.FC = () => {
                 className="custom-table"
                 columns={columns}
                 dataSource={filteredData} // Use filtered data for table rendering
-                pagination={{ pageSize: 10 }}
+                pagination={{ pageSize: 5 }}
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
         </Layout>

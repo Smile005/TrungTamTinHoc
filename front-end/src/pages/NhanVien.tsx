@@ -125,7 +125,7 @@ const NhanVien: React.FC = () => {
 
     return (
         <Layout>
-            <h1 style={{ display: 'flex', justifyContent: 'center' }}>QUẢN LÝ NHÂN VIÊN</h1>
+            <h1 className='page-name'>QUẢN LÝ NHÂN VIÊN</h1>
             <div className="button-container">
                 <Search className="custom-search" placeholder="Nhập tên nhân viên" onSearch={onSearch} enterButton />
                 <div className="button-container">
