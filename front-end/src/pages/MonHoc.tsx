@@ -47,7 +47,7 @@ const MonHoc: React.FC = () => {
       title: 'Mã Môn Học',
       dataIndex: 'maMonHoc',
       key: 'maMonHoc',
-      width: '15%',
+      width: '12%',
     },
     {
       title: 'Tên Môn Học',
@@ -87,12 +87,12 @@ const MonHoc: React.FC = () => {
       title: 'Ghi Chú',
       dataIndex: 'ghiChu',
       key: 'ghiChu',
-      width: '15%',
+      width: '10%',
     },
     {
       title: 'Quản lý',
       key: 'action',
-      width: '10%',
+      width: '15  %',
       render: (_: any, record: MonHocType) => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>

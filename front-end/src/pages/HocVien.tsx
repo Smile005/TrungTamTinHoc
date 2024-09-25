@@ -58,7 +58,7 @@ const HocVien: React.FC = () => {
             title: 'Mã học viên',
             dataIndex: 'maHocVien',
             key: 'maHocVien',
-            width: '8%',
+            width: '10%',
         },
         {
             title: 'Họ và tên',
@@ -106,7 +106,7 @@ const HocVien: React.FC = () => {
             title: 'Số điện thoại',
             dataIndex: 'sdt',
             key: 'sdt',
-            width: '8%',
+            width: '10%',
         },
         {
             title: 'Email',
@@ -149,7 +149,7 @@ const HocVien: React.FC = () => {
         {
             title: 'Quản lý',
             key: 'action',
-            width: '6%',
+            width: '8%',
             render: (_: any, record: HocVienType) => {
                 const menu = (
                     <Menu onClick={(e) => handleMenuClick(e, record)}>

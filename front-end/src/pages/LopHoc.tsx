@@ -46,25 +46,25 @@ const LopHoc: React.FC = () => {
       title: 'Mã Lớp Học',
       dataIndex: 'maLopHoc',
       key: 'maLopHoc',
-      width: '15%',
+      width: '12%',
     },
     {
       title: 'Tên Lớp Học',
       dataIndex: 'tenLopHoc',
       key: 'tenLopHoc',
-      width: '20%',
+      width: '12%',
     },
     {
       title: 'Mã Môn Học',
       dataIndex: 'maMonHoc',
       key: 'maMonHoc',
-      width: '10%',
+      width: '12%',
     },
     {
       title: 'Mã Giáo Viên',
       dataIndex: 'maGiaoVien',
       key: 'maGiaoVien',
-      width: '10%',
+      width: '12%',
     },
     {
       title: 'Ngày Bắt Đầu',
@@ -79,12 +79,6 @@ const LopHoc: React.FC = () => {
       width: '10%',
     },
     {
-      title: 'Học Phí',
-      dataIndex: 'hocPhi',
-      key: 'hocPhi',
-      width: '10%',
-    },
-    {
       title: 'Trạng Thái',
       dataIndex: 'trangThai',
       key: 'trangThai',
@@ -92,18 +86,18 @@ const LopHoc: React.FC = () => {
         let color = trangThai === 'Đang hoạt động' ? 'geekblue' : 'green';
         return <Tag color={color} key={trangThai}>{trangThai.toUpperCase()}</Tag>;
       },
-      width: '10%',
+      width: '8%',
     },
     {
       title: 'Ghi Chú',
       dataIndex: 'ghiChu',
       key: 'ghiChu',
-      width: '15%',
+      width: '10%',
     },
     {
       title: 'Quản lý',
       key: 'action',
-      width: '10%',
+      width: '8%',
       render: (_: any, record: LopHocType) => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>

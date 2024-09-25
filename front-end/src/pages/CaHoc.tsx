@@ -48,7 +48,7 @@ const CaHoc: React.FC = () => {
             title: 'Mã ca học',
             dataIndex: 'maCa',
             key: 'maCa',
-            width: '8%',
+            width: '10%',
         },
         {
             title: 'Bắt đầu',
@@ -84,7 +84,7 @@ const CaHoc: React.FC = () => {
         {
             title: 'Quản lý',
             key: 'action',
-            width: '6%',
+            width: '8%',
             render: (_: any, record: CaHocType) => {
                 const menu = (
                     <Menu onClick={(e) => handleMenuClick(e, record)}>
@@ -103,7 +103,7 @@ const CaHoc: React.FC = () => {
 
     return (
         <Layout>
-            <h1 style={{ display: 'flex', justifyContent: 'center' }}>QUẢN LÝ CA HỌC</h1>
+            <h1 className='page-name'>QUẢN LÝ CA HỌC</h1>
             <div className="button-container">
                 <Search
                     className="custom-search"
