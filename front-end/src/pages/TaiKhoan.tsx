@@ -84,7 +84,7 @@ const TaiKhoan: React.FC = () => {
 
   return (
     <Layout>
-      <h1 style={{ display: 'flex', justifyContent: 'center' }}>QUẢN LÝ TÀI KHOẢN</h1>
+      <h1 className='page-name'>QUẢN LÝ TÀI KHOẢN</h1>
       <div className="button-container">
         <Search
           className="custom-search"

@@ -24,7 +24,7 @@ const LichHoc: React.FC = () => {
 
   return (
     <>
-      <h1 style={{ textAlign: 'center' }}>QUẢN LÝ LỊCH HỌC</h1>
+      <h1 className='page-name'>QUẢN LÝ LỊCH HỌC</h1>
       <Calendar dateCellRender={dateCellRender} />
     </>
   );

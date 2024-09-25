@@ -122,7 +122,7 @@ const LopHoc: React.FC = () => {
 
   return (
     <Layout>
-      <h1 style={{ display: 'flex', justifyContent: 'center' }}>QUẢN LÝ LỚP HỌC</h1>
+      <h1 className='page-name'>QUẢN LÝ LỚP HỌC</h1>
       <div className="button-container">
         <Search
           className="custom-search"
