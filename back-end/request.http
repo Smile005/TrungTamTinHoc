@@ -1,0 +1,44 @@
+### Lấy tất cả nhân viên
+GET http://localhost:8081/api/nhan-vien
+Accept: application/json
+
+###
+
+### Thêm nhân viên
+POST http://localhost:8081/api/nhan-vien 
+Content-Type: application/json
+
+{
+    "maNhanVien": "NV001",
+    "tenNhanVien": "Nguyen Van A",
+    "img": "link_to_image",
+    "chucVu": "Nhân viên",
+    "ngayVaoLam": "2024-01-01",
+    "gioiTinh": "Nam",
+    "ngaySinh": "1990-01-01",
+    "sdt": "0123456789",
+    "email": "nguyenvana@example.com",
+    "diaChi": "Hà Nội",
+    "trangThai": "Đang làm việc",
+    "ghiChu": "Nhân viên tốt"
+}
+
+###
+
+### Cập nhật thông tin nhân viên
+PUT http://localhost:8081/api/nhan-vien/NV001 
+Content-Type: application/json
+
+{
+    "tenNhanVien": "Nguyen Van A",
+    "chucVu": "Trưởng phòng",
+    "trangThai": "Đang làm việc",
+    "ghiChu": "Nâng cao trình độ"
+}
+
+###
+
+### Xóa nhân viên
+DELETE http://localhost:8081/api/nhan-vien/NV001 
+
+###
