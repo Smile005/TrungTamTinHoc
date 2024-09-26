@@ -14,6 +14,7 @@ import CaHoc from './pages/CaHoc';
 import TaiKhoan from './pages/TaiKhoan';  
 import TKHocVien from './pages/TKHocVien';
 import TKLopHoc from './pages/TKLopHoc';
+import TKGiangVien from './pages/TKGiangVien';
 import './App.css';
 
 const { SubMenu } = Menu; 
@@ -170,7 +171,7 @@ const AppLayout: React.FC = () => {
               <Route path="/ds_thi" element={<LichHoc />} />
               <Route path="/nhapdiem" element={<LichHoc />} />
               <Route path="/tk_hocvien" element={<TKHocVien />} />
-              <Route path="/tk_giangvien" element={<PhongHoc />} />
+              <Route path="/tk_giangvien" element={<TKGiangVien />} />
               <Route path="/tk_lophoc" element={<TKLopHoc />} />
               <Route path="/testing" element={<HocVienTable />} />
             </Routes>

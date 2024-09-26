@@ -1,10 +1,10 @@
 export interface MonHocType {
-    key: string;
-    maMonHoc: string;
-    tenMonHoc: string;
-    soBuoiHoc: number;
-    hocPhi: number;
-    moTa: string;
-    trangThai: string;
-    ghiChu: string;
-  }
+  key: string;         // Thuộc tính key để giữ lại
+  maMonHoc: string;      // Mã môn học
+  tenMonHoc: string;     // Tên môn học
+  soBuoiHoc?: number;    // Số buổi học, có thể null
+  hocPhi?: number;       // Học phí, có thể null
+  moTa?: string;         // Mô tả, có thể null
+  trangThai?: string;    // Trạng thái, có thể null
+  ghiChu?: string; 
+}

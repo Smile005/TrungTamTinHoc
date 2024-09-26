@@ -28,8 +28,8 @@ const PhongHoc: React.FC = () => {
   const onSearch = (value: string) => {
     const filtered = initialData.filter((item) =>
       item.maPhong.toLowerCase().includes(value.toLowerCase()) ||
-      item.soLuong.toString().includes(value) ||
-      item.trangThai.toLowerCase().includes(value.toLowerCase())
+      item.soLuong?.toString().includes(value) ||
+      item.trangThai?.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredData(filtered);
     setSearchText(value);

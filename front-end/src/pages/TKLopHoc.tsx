@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Pie } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 
 Chart.register(ArcElement, Tooltip, Legend);
@@ -51,7 +51,7 @@ const TKLopHoc: React.FC = () => {
         <div style={{ width: '50%', margin: '0 auto' }}>
             <h1 className='page-name'>Thống Kê Lớp Học</h1>
             <div style={{ width: '500px', height: '500px', marginLeft: '50px'}}> 
-                <Pie data={chartData} options={chartOptions} />
+                <Doughnut data={chartData} options={chartOptions} />
             </div>
         </div>
     );

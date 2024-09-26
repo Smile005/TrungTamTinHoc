@@ -102,7 +102,7 @@ const LichHoc: React.FC = () => {
 
   return (
     <>
-      <h1 className='page-name'>QUẢN LÝ LỊCH HỌC</h1>
+      <h1 className='custom-h1'>QUẢN LÝ LỊCH HỌC</h1>
       <div className="custom-container">
         <Button className="custom-button" onClick={handleTodayClick}>Hoàn tác</Button>
         <Button className="custom-button" icon={<PlusOutlined />}>Thêm Buổi học</Button>
@@ -169,7 +169,7 @@ const getListData = (value: Dayjs): BuoiHocType[] => {
           ngayHoc: value.toDate(),
           caHoc: {key: '1', maCa: 'CA01', batDau: "07:00", ketThuc: "10:00", trangThai: 'Đang hoạt động', ghiChu: 'Ca học bình thường' },
           phongHoc: {key: '1', maPhong: 'PH01', soLuong: 30, trangThai: 'Đang hoạt động', ghiChu: 'Phòng học lý thuyết' },
-          giaoVien: { key: 'GV001', maNhanVien: 'NV001', tenNhanVien: 'Nguyễn Văn A', gioiTinh: 'nam', ngaySinh: '1990-01-01', tinhTrang: 'Đang làm việc' },
+          giaoVien: { key: 'GV001', maNhanVien: 'NV001', tenNhanVien: 'Nguyễn Văn A', gioiTinh: 'nam', ngaySinh: '1990-01-01', trangThai: 'Đang làm việc' },
           loai: 'Ngày học',
           trangThai: 'Đã lên lịch',
           ghiChu: 'Học sinh cần chuẩn bị tài liệu',
@@ -180,7 +180,7 @@ const getListData = (value: Dayjs): BuoiHocType[] => {
           ngayHoc: value.toDate(),
           caHoc: { key: '1', maCa: 'CA02', batDau: "07:00", ketThuc: "10:00", trangThai: 'Đang hoạt động', ghiChu: 'Ca thi' },
           phongHoc: {key: '1', maPhong: 'PH02', soLuong: 30, trangThai: 'Đang hoạt động', ghiChu: 'Phòng thi' },
-          giaoVien: { key: 'GV002', maNhanVien: 'NV002', tenNhanVien: 'Trần Thị B', gioiTinh: 'nữ', ngaySinh: '1992-05-15', tinhTrang: 'Đang làm việc' },
+          giaoVien: { key: 'GV002', maNhanVien: 'NV002', tenNhanVien: 'Trần Thị B', gioiTinh: 'nữ', ngaySinh: '1992-05-15', trangThai: 'Đang làm việc' },
           loai: 'Ngày thi',
           trangThai: 'Đã lên lịch',
           ghiChu: 'Học sinh tham gia thi giữa kỳ',
@@ -195,7 +195,7 @@ const getListData = (value: Dayjs): BuoiHocType[] => {
           ngayHoc: value.toDate(),
           caHoc: { key: '1', maCa: 'CA03', batDau: "07:00", ketThuc: "10:00", trangThai: 'Đang hoạt động', ghiChu: 'Ngày nghỉ lễ' },
           phongHoc: {key: '1', maPhong: 'PH03', soLuong: 30, trangThai: 'Ngưng hoạt động', ghiChu: 'Không có lớp' },
-          giaoVien: { key: 'GV003', maNhanVien: 'NV003', tenNhanVien: 'Lê Văn C', gioiTinh: 'nam', ngaySinh: '1985-12-20', tinhTrang: 'Đang làm việc' },
+          giaoVien: { key: 'GV003', maNhanVien: 'NV003', tenNhanVien: 'Lê Văn C', gioiTinh: 'nam', ngaySinh: '1985-12-20', trangThai: 'Đang làm việc' },
           loai: 'Ngày nghỉ',
           trangThai: 'Đã lên lịch',
           ghiChu: 'Nghỉ lễ Quốc khánh',

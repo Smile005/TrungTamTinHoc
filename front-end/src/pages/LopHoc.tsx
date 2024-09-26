@@ -8,16 +8,16 @@ const { Search } = Input;
 
 // Sample Data (Updated with existing and additional records)
 const initialData: LopHocType[] = [
-  { key: '1', maLopHoc: 'LH001', tenLopHoc: 'Lớp A', maMonHoc: 'MH001', maGiaoVien: 'GV001', ngayBatDau: '2023-09-22', soLuong: '30', trangThai: 'Còn trống', ghiChu: '', },
-  { key: '2', maLopHoc: 'LH002', tenLopHoc: 'Lớp B', maMonHoc: 'MH002', maGiaoVien: 'GV002', ngayBatDau: '2023-09-22', soLuong: '25', trangThai: 'Đang hoạt động', ghiChu: '', },
-  { key: '3', maLopHoc: 'LH002', tenLopHoc: 'Lớp C', maMonHoc: 'MH002', maGiaoVien: 'GV002', ngayBatDau: '2023-09-22', soLuong: '25', trangThai: 'Đang hoạt động', ghiChu: '', },
-  { key: '4', maLopHoc: 'LH002', tenLopHoc: 'Lớp D', maMonHoc: 'MH002', maGiaoVien: 'GV002', ngayBatDau: '2023-09-22', soLuong: '25', trangThai: 'Đang hoạt động', ghiChu: '', },
-  { key: '5', maLopHoc: 'LH002', tenLopHoc: 'Lớp E', maMonHoc: 'MH002', maGiaoVien: 'GV002', ngayBatDau: '2023-09-22', soLuong: '25', trangThai: 'Đang hoạt động', ghiChu: '', },
-  { key: '6', maLopHoc: 'LH003', tenLopHoc: 'Lớp Toán 12A', maMonHoc: 'MH001', maGiaoVien: 'GV001', ngayBatDau: '2024-01-10', soLuong: '30', trangThai: 'Hoạt động', ghiChu: '', },
-  { key: '7', maLopHoc: 'LH004', tenLopHoc: 'Lớp Lý thuyết đồ thị', maMonHoc: 'MH002', maGiaoVien: 'GV002', ngayBatDau: '2024-02-12', soLuong: '25', trangThai: 'Hoạt động', ghiChu: '', },
-  { key: '8', maLopHoc: 'LH005', tenLopHoc: 'Lớp Giải tích 11B', maMonHoc: 'MH003', maGiaoVien: 'GV001', ngayBatDau: '2024-03-15', soLuong: '28', trangThai: 'Hoạt động', ghiChu: 'Ghi chú về lớp', },
-  { key: '9', maLopHoc: 'LH006', tenLopHoc: 'Lớp Khoa học máy tính', maMonHoc: 'MH004', maGiaoVien: 'GV003', ngayBatDau: '2024-04-20', soLuong: '35', trangThai: 'Tạm ngưng', ghiChu: 'Chờ học viên mới', },
-  { key: '10', maLopHoc: 'LH007', tenLopHoc: 'Lớp Lập trình C cơ bản', maMonHoc: 'MH005', maGiaoVien: 'GV004', ngayBatDau: '2024-05-01', soLuong: '20', trangThai: 'Hoạt động', ghiChu: '', },
+  { key: '1', maLopHoc: 'LH001', tenLopHoc: 'Lớp A', maMonHoc: 'MH001', maGiangVien: 'GV001', ngayBatDau: '2023-09-22', soLuong: '30', trangThai: 'Còn trống', ghiChu: '', },
+  { key: '2', maLopHoc: 'LH002', tenLopHoc: 'Lớp B', maMonHoc: 'MH002', maGiangVien: 'GV002', ngayBatDau: '2023-09-22', soLuong: '25', trangThai: 'Đang hoạt động', ghiChu: '', },
+  { key: '3', maLopHoc: 'LH002', tenLopHoc: 'Lớp C', maMonHoc: 'MH002', maGiangVien: 'GV002', ngayBatDau: '2023-09-22', soLuong: '25', trangThai: 'Đang hoạt động', ghiChu: '', },
+  { key: '4', maLopHoc: 'LH002', tenLopHoc: 'Lớp D', maMonHoc: 'MH002', maGiangVien: 'GV002', ngayBatDau: '2023-09-22', soLuong: '25', trangThai: 'Đang hoạt động', ghiChu: '', },
+  { key: '5', maLopHoc: 'LH002', tenLopHoc: 'Lớp E', maMonHoc: 'MH002', maGiangVien: 'GV002', ngayBatDau: '2023-09-22', soLuong: '25', trangThai: 'Đang hoạt động', ghiChu: '', },
+  { key: '6', maLopHoc: 'LH003', tenLopHoc: 'Lớp Toán 12A', maMonHoc: 'MH001', maGiangVien: 'GV001', ngayBatDau: '2024-01-10', soLuong: '30', trangThai: 'Hoạt động', ghiChu: '', },
+  { key: '7', maLopHoc: 'LH004', tenLopHoc: 'Lớp Lý thuyết đồ thị', maMonHoc: 'MH002', maGiangVien: 'GV002', ngayBatDau: '2024-02-12', soLuong: '25', trangThai: 'Hoạt động', ghiChu: '', },
+  { key: '8', maLopHoc: 'LH005', tenLopHoc: 'Lớp Giải tích 11B', maMonHoc: 'MH003', maGiangVien: 'GV001', ngayBatDau: '2024-03-15', soLuong: '28', trangThai: 'Hoạt động', ghiChu: 'Ghi chú về lớp', },
+  { key: '9', maLopHoc: 'LH006', tenLopHoc: 'Lớp Khoa học máy tính', maMonHoc: 'MH004', maGiangVien: 'GV003', ngayBatDau: '2024-04-20', soLuong: '35', trangThai: 'Tạm ngưng', ghiChu: 'Chờ học viên mới', },
+  { key: '10', maLopHoc: 'LH007', tenLopHoc: 'Lớp Lập trình C cơ bản', maMonHoc: 'MH005', maGiangVien: 'GV004', ngayBatDau: '2024-05-01', soLuong: '20', trangThai: 'Hoạt động', ghiChu: '', },
 ];
 
 const LopHoc: React.FC = () => {
@@ -61,9 +61,9 @@ const LopHoc: React.FC = () => {
       width: '12%',
     },
     {
-      title: 'Mã Giáo Viên',
-      dataIndex: 'maGiaoVien',
-      key: 'maGiaoVien',
+      title: 'Mã Giảng Viên',
+      dataIndex: 'maGiangVien',
+      key: 'maGiangVien',
       width: '12%',
     },
     {
