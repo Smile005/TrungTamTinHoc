@@ -3,7 +3,7 @@ export interface LopHocType {
     maLopHoc: string;
     tenLopHoc: string;
     maMonHoc: string;
-    maGiaoVien: string;
+    maGiangVien: string;
     ngayBatDau: string; 
     soLuong: string;
     trangThai: string;

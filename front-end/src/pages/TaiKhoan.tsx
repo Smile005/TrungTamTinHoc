@@ -27,9 +27,10 @@ const TaiKhoan: React.FC = () => {
   // Handle search input
   const onSearch = (value: string) => {
     const filtered = initialData.filter((item) =>
-      item.maNhanVien.toLowerCase().includes(value.toLowerCase()) ||
-      item.phanQuyen.toString().includes(value) ||
-      item.trangThai.toLowerCase().includes(value.toLowerCase())
+      item.maNhanVien?.toLowerCase().includes(value.toLowerCase()) ||
+      item.matKhau?.toLowerCase().includes(value.toLowerCase()) ||
+      item.phanQuyen?.toString().includes(value) ||
+      item.trangThai?.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredData(filtered);
     setSearchText(value);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Button, Dropdown, Menu, Layout, Tag, Input } from 'antd';
+import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { MonHocType } from '../types/MonHocType';
 import '../styles/TableCustom.css';
@@ -29,16 +29,34 @@ const MonHoc: React.FC = () => {
     const filtered = initialData.filter((item) =>
       item.maMonHoc.toLowerCase().includes(value.toLowerCase()) ||
       item.tenMonHoc.toLowerCase().includes(value.toLowerCase()) ||
-      item.soBuoiHoc.toString().includes(value) ||
-      item.hocPhi.toString().includes(value) ||
-      item.trangThai.toLowerCase().includes(value.toLowerCase())
+      item.soBuoiHoc?.toString().includes(value) ||
+      item.hocPhi?.toString().includes(value) ||
+      item.trangThai?.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredData(filtered);
     setSearchText(value);
   };
 
   const handleMenuClick = (e: any, record: MonHocType) => {
-    console.log('Selected Record:', record);
+    if (e.key === 'edit') {
+      message.info(`Sửa môn học: ${record.tenMonHoc}`);
+    } else if (e.key === 'delete') {
+      message.info(`Xóa môn học: ${record.tenMonHoc}`);
+    }
+  };
+
+  const handleAddCourse = () => {
+    message.success("Thêm mới môn học!");
+  };
+
+  const handleUndo = () => {
+    setFilteredData(initialData);
+    setSearchText('');
+    message.info("Đã hoàn tác bộ lọc.");
+  };
+
+  const handleImportExcel = () => {
+    message.info("Chức năng nhập từ Excel!");
   };
 
   // Define table columns
@@ -92,7 +110,7 @@ const MonHoc: React.FC = () => {
     {
       title: 'Quản lý',
       key: 'action',
-      width: '15  %',
+      width: '10%',
       render: (_: any, record: MonHocType) => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>
@@ -122,11 +140,11 @@ const MonHoc: React.FC = () => {
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button'>Hoàn tác</Button>
-          <Button className='custom-button'>Thêm</Button>
-          <Button className='custom-button' >
+          <Button className='custom-button' onClick={handleUndo}>Hoàn tác</Button>
+          <Button className='custom-button' onClick={handleAddCourse}>Thêm</Button>
+          <Button className='custom-button' onClick={handleImportExcel}>
             Nhập Excel
-          </Button> {/* Thêm sự kiện onClick */}
+          </Button>
         </div>
       </div>
       <Table

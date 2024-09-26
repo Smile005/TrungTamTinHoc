@@ -124,7 +124,7 @@ const HocVien: React.FC = () => {
                 { text: 'Đang học', value: 'Đang học' },
                 { text: 'Đã tốt nghiệp', value: 'Đã tốt nghiệp' },
             ],
-            onFilter: (value, record) => record.tinhTrang.indexOf(value as string) === 0,
+            onFilter: (value, record) => record.tinhTrang?.indexOf(value as string) === 0,
             render: (tinhTrang: string): JSX.Element => {
                 let color = '';
                 if (tinhTrang === 'Chưa đăng ký') {
