@@ -1,11 +1,29 @@
+### Đăng ký tài khoản
+POST http://localhost:8081/auth/register
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV240011",
+  "matKhau": "123",
+  "phanQuyen": 1
+}
+
+
+### Đăng Nhập
+POST http://localhost:8081/auth/login
+Content-Type: application/json
+
+{
+    "maNhanVien": "NV240011",
+    "matKhau": "123"
+}
+
 ### Lấy tất cả nhân viên
 GET http://localhost:8081/api/nhan-vien
 Accept: application/json
 
-###
-
 ### Thêm nhân viên
-POST http://localhost:8081/api/nhan-vien 
+POST http://localhost:8081/api/nhan-vien
 Content-Type: application/json
 
 {
@@ -23,10 +41,8 @@ Content-Type: application/json
     "ghiChu": "Nhân viên tốt"
 }
 
-###
-
 ### Cập nhật thông tin nhân viên
-PUT http://localhost:8081/api/nhan-vien/NV001 
+PUT http://localhost:8081/api/nhan-vien/NV001
 Content-Type: application/json
 
 {
@@ -36,9 +52,7 @@ Content-Type: application/json
     "ghiChu": "Nâng cao trình độ"
 }
 
-###
-
 ### Xóa nhân viên
-DELETE http://localhost:8081/api/nhan-vien/NV001 
+DELETE http://localhost:8081/api/nhan-vien/NV001
 
 ###
