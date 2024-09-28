@@ -1,0 +1,13 @@
+.custom-h1 {
+  display: flex; 
+  justify-content: center;
+}
+.custom-container {
+    display: flex;
+    justify-content: flex-end;
+}
+.custom-button {
+    padding-right: 15px;
+    background-color: #4eb1f9;
+    color: white;
+}

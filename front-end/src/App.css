@@ -14,10 +14,10 @@
 
 /* Style fo the entire menu */
 .custom-menu {
-  background-color: #f0f2f5;
+  background-color: white;
   border-right: 1px solid #d9d9d9;
   font-size: 16px;
-  height: 100%; 
+  height: fit-content; 
 }
 .custom-trigger {
   background-color: rgb(35, 30, 31);

@@ -80,7 +80,7 @@ const ImportExcelModal: React.FC<ImportExcelModalProps> = ({ visible, onCancel, 
         >
             <div>
                 Tải file Excel {modalType === 'hocvien' ? 'Học viên' : 'Nhân viên'} mẫu
-                <a href={excelFilePath} download> tại đây</a>
+                <a href={excelFilePath} download > tại đây</a>
             </div>
             <Upload {...props}>
                 <Button icon={<UploadOutlined />}>Chọn file Excel</Button>

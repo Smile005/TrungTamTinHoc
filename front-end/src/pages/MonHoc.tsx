@@ -1,97 +1,161 @@
-import React from 'react';
-import { Tabs, Table, Button } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
+import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
+import { MoreOutlined } from '@ant-design/icons';
+import { MonHocType } from '../types/MonHocType';
+import '../styles/TableCustom.css';
 
-const { TabPane } = Tabs;
+const { Search } = Input;
 
-interface DataType {
-  key: string;
-  maSo: string;
-  tieuDe: string;
-  noiDung: string;
-  tongSoBuoi: number;
-}
-
-// Dữ liệu mẫu cho các trang tính khác nhau
-const sheet1Data: DataType[] = [
-  { key: '1', maSo: 'MH01', tieuDe: 'DOT.net', noiDung: '', tongSoBuoi: 30 },
-  { key: '2', maSo: 'MH02', tieuDe: 'Java nâng cao', noiDung: '', tongSoBuoi: 20 },
-  { key: '3', maSo: 'MH03', tieuDe: 'PHP Tổng hợp', noiDung: 'Môn này cực hot', tongSoBuoi: 24 },
-  { key: '4', maSo: 'MH04', tieuDe: 'JS và lập trình trên thiết bị di động', noiDung: '', tongSoBuoi: 24 },
-  { key: '5', maSo: 'MH04', tieuDe: 'JS và lập trình trên thiết bị di động', noiDung: '', tongSoBuoi: 24 },
-  { key: '6', maSo: 'MH04', tieuDe: 'JS và lập trình trên thiết bị di động', noiDung: '', tongSoBuoi: 24 },
-  { key: '7', maSo: 'MH04', tieuDe: 'JS và lập trình trên thiết bị di động', noiDung: '', tongSoBuoi: 24 },
-  { key: '8', maSo: 'MH04', tieuDe: 'JS và lập trình trên thiết bị di động', noiDung: '', tongSoBuoi: 24 },
-  { key: '9', maSo: 'MH04', tieuDe: 'JS và lập trình trên thiết bị di động', noiDung: '', tongSoBuoi: 24 },
-  { key: '10', maSo: 'MH04', tieuDe: 'JS và lập trình trên thiết bị di động', noiDung: '', tongSoBuoi: 24 },
-  { key: '11', maSo: 'MH04', tieuDe: 'JS và lập trình trên thiết bị di động', noiDung: '', tongSoBuoi: 24 },
-
-];
-
-const sheet2Data: DataType[] = [
-  { key: '1', maSo: 'MH03', tieuDe: 'Microsoft Office nâng cao', noiDung: 'Môn này cực hot', tongSoBuoi: 24 },
-  { key: '2', maSo: 'MH04', tieuDe: 'Tin học văn phòng phổ thông', noiDung: '', tongSoBuoi: 24 },
-];
-
-// Cột của bảng
-const getColumns = (startIndex: number) => [
-  {
-    title: 'STT',
-    key: 'stt',
-    render: (_: any, __: DataType, index: number) => startIndex + index + 1,  // Số thứ tự liên tục
-  },
-  {
-    title: 'Mã số',
-    dataIndex: 'maSo',
-    key: 'maSo',
-  },
-  {
-    title: 'Tiêu đề',
-    dataIndex: 'tieuDe',
-    key: 'tieuDe',
-  },
-  {
-    title: 'Nội dung',
-    dataIndex: 'noiDung',
-    key: 'noiDung',
-  },
-  {
-    title: 'Tổng số buổi',
-    dataIndex: 'tongSoBuoi',
-    key: 'tongSoBuoi',
-  },
-  {
-    title: 'Quản lý',
-    key: 'action',
-    render: (_: any, record: DataType) => (
-      <span>
-        <Button type="link" icon={<EditOutlined />} />
-        <Button type="link" icon={<DeleteOutlined />} />
-      </span>
-    ),
-  },
+// Sample Data
+const initialData: MonHocType[] = [
+  { key: '1', maMonHoc: 'MH001', tenMonHoc: 'Toán Cao Cấp', soBuoiHoc: 30, hocPhi: 1000000, moTa: 'Toán nâng cao cho sinh viên', trangThai: 'Hoạt động', ghiChu: '' },
+  { key: '2', maMonHoc: 'MH002', tenMonHoc: 'Lý thuyết đồ thị', soBuoiHoc: 25, hocPhi: 1200000, moTa: 'Môn học về lý thuyết đồ thị', trangThai: 'Tạm ngưng', ghiChu: 'Đang chỉnh sửa giáo trình' },
+  { key: '3', maMonHoc: 'MH003', tenMonHoc: 'Giải tích', soBuoiHoc: 20, hocPhi: 900000, moTa: 'Toán giải tích', trangThai: 'Hoạt động', ghiChu: '' },
+  { key: '4', maMonHoc: 'MH004', tenMonHoc: 'Khoa học máy tính', soBuoiHoc: 35, hocPhi: 1500000, moTa: 'Khoa học máy tính căn bản', trangThai: 'Hoạt động', ghiChu: '' },
+  { key: '5', maMonHoc: 'MH005', tenMonHoc: 'Lập trình C', soBuoiHoc: 40, hocPhi: 1700000, moTa: 'Ngôn ngữ lập trình C', trangThai: 'Hoạt động', ghiChu: '' },
+  { key: '6', maMonHoc: 'MH006', tenMonHoc: 'Phân tích dữ liệu', soBuoiHoc: 50, hocPhi: 2000000, moTa: 'Kỹ thuật phân tích dữ liệu', trangThai: 'Tạm ngưng', ghiChu: '' },
+  { key: '7', maMonHoc: 'MH007', tenMonHoc: 'Thị giác máy tính', soBuoiHoc: 45, hocPhi: 1800000, moTa: 'Nhập môn thị giác máy tính', trangThai: 'Hoạt động', ghiChu: '' },
+  { key: '8', maMonHoc: 'MH008', tenMonHoc: 'Xử lý ngôn ngữ tự nhiên', soBuoiHoc: 60, hocPhi: 2100000, moTa: 'Xử lý ngôn ngữ và văn bản', trangThai: 'Hoạt động', ghiChu: '' },
+  { key: '9', maMonHoc: 'MH009', tenMonHoc: 'Điện tử số', soBuoiHoc: 55, hocPhi: 1900000, moTa: 'Điện tử số cơ bản', trangThai: 'Tạm ngưng', ghiChu: '' },
+  { key: '10', maMonHoc: 'MH010', tenMonHoc: 'Vi mạch số', soBuoiHoc: 20, hocPhi: 1600000, moTa: 'Nhập môn vi mạch số', trangThai: 'Hoạt động', ghiChu: '' },
 ];
 
 const MonHoc: React.FC = () => {
+  const [searchText, setSearchText] = useState(''); // Search input state
+  const [filteredData, setFilteredData] = useState<MonHocType[]>(initialData); // Filtered data state
+
+  // Handle search input
+  const onSearch = (value: string) => {
+    const filtered = initialData.filter((item) =>
+      item.maMonHoc.toLowerCase().includes(value.toLowerCase()) ||
+      item.tenMonHoc.toLowerCase().includes(value.toLowerCase()) ||
+      item.soBuoiHoc?.toString().includes(value) ||
+      item.hocPhi?.toString().includes(value) ||
+      item.trangThai?.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredData(filtered);
+    setSearchText(value);
+  };
+
+  const handleMenuClick = (e: any, record: MonHocType) => {
+    if (e.key === 'edit') {
+      message.info(`Sửa môn học: ${record.tenMonHoc}`);
+    } else if (e.key === 'delete') {
+      message.info(`Xóa môn học: ${record.tenMonHoc}`);
+    }
+  };
+
+  const handleAddCourse = () => {
+    message.success("Thêm mới môn học!");
+  };
+
+  const handleUndo = () => {
+    setFilteredData(initialData);
+    setSearchText('');
+    message.info("Đã hoàn tác bộ lọc.");
+  };
+
+  const handleImportExcel = () => {
+    message.info("Chức năng nhập từ Excel!");
+  };
+
+  // Define table columns
+  const columns = [
+    {
+      title: 'Mã Môn Học',
+      dataIndex: 'maMonHoc',
+      key: 'maMonHoc',
+      width: '12%',
+    },
+    {
+      title: 'Tên Môn Học',
+      dataIndex: 'tenMonHoc',
+      key: 'tenMonHoc',
+      width: '20%',
+    },
+    {
+      title: 'Số Buổi Học',
+      dataIndex: 'soBuoiHoc',
+      key: 'soBuoiHoc',
+      width: '10%',
+    },
+    {
+      title: 'Học Phí',
+      dataIndex: 'hocPhi',
+      key: 'hocPhi',
+      width: '10%',
+    },
+    {
+      title: 'Mô Tả',
+      dataIndex: 'moTa',
+      key: 'moTa',
+      width: '20%',
+    },
+    {
+      title: 'Trạng Thái',
+      dataIndex: 'trangThai',
+      key: 'trangThai',
+      render: (trangThai: string): JSX.Element => {
+        let color = trangThai === 'Hoạt động' ? 'geekblue' : 'green';
+        return <Tag color={color} key={trangThai}>{trangThai.toUpperCase()}</Tag>;
+      },
+      width: '10%',
+    },
+    {
+      title: 'Ghi Chú',
+      dataIndex: 'ghiChu',
+      key: 'ghiChu',
+      width: '10%',
+    },
+    {
+      title: 'Quản lý',
+      key: 'action',
+      width: '10%',
+      render: (_: any, record: MonHocType) => {
+        const menu = (
+          <Menu onClick={(e) => handleMenuClick(e, record)}>
+            <Menu.Item key="edit">Sửa</Menu.Item>
+            <Menu.Item key="delete">Xóa</Menu.Item>
+          </Menu>
+        );
+        return (
+          <Dropdown overlay={menu}>
+            <Button type="link" icon={<MoreOutlined />} />
+          </Dropdown>
+        );
+      },
+    },
+  ];
+
   return (
-    <Tabs defaultActiveKey="1">
-      <TabPane tab="Lập trình" key="1">
-        <Table
-          columns={getColumns(0)}  // Bắt đầu từ 0
-          dataSource={sheet1Data}
-          pagination={{ pageSize: 5 }}  // Cấu hình pagination với kích thước trang là 5
-          rowKey="key"
+    <Layout>
+      <h1 className='page-name'>QUẢN LÝ MÔN HỌC</h1>
+      <div className="button-container">
+        <Search
+          className="custom-search"
+          placeholder="Tìm kiếm Môn Học, Số Buổi Học"
+          onSearch={onSearch}
+          enterButton
+          value={searchText}
+          onChange={(e) => onSearch(e.target.value)}
         />
-      </TabPane>
-      <TabPane tab="Tin học văn phòng" key="2">
-        <Table
-          columns={getColumns(sheet1Data.length)}  // Bắt đầu từ độ dài của trang tính 1
-          dataSource={sheet2Data}
-          pagination={{ pageSize: 5 }}  // Cấu hình pagination với kích thước trang là 5
-          rowKey="key"
-        />
-      </TabPane>
-    </Tabs>
+        <div className="button-container">
+          <Button className='custom-button' onClick={handleUndo}>Hoàn tác</Button>
+          <Button className='custom-button' onClick={handleAddCourse}>Thêm</Button>
+          <Button className='custom-button' onClick={handleImportExcel}>
+            Nhập Excel
+          </Button>
+        </div>
+      </div>
+      <Table
+        className="custom-table"
+        columns={columns}
+        dataSource={filteredData}
+        pagination={{ pageSize: 5 }}
+        rowKey="key"
+        style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
+      />
+    </Layout>
   );
 };
 

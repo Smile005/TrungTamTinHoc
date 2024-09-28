@@ -56,7 +56,7 @@ const NhanVien: React.FC = () => {
                 { text: 'Nam', value: 'Nam' },
                 { text: 'Nữ', value: 'Nữ' },
             ],
-            onFilter: (value, record) => record.gioiTinh.indexOf(value as string) === 0,
+            onFilter: (value, record) => record.gioiTinh?.indexOf(value as string) === 0,
             render: (gioiTinh: string): JSX.Element => {
                 let color = '';
                 if (gioiTinh === 'Nam') {
@@ -78,26 +78,27 @@ const NhanVien: React.FC = () => {
         },
         {
             title: 'Tình trạng',
-            dataIndex: 'tinhTrang',
-            key: 'tinhTrang',
+            dataIndex: 'trangThai',
+            key: 'trangThai',
             filters: [
                 { text: 'Thực tập sinh', value: 'Thực tập sinh' },
                 { text: 'Full time', value: 'Full time' },
                 { text: 'Part time', value: 'Part time' },
             ],
-            onFilter: (value, record) => record.tinhTrang.indexOf(value as string) === 0,
-            render: (tinhTrang: string): JSX.Element => {
+            onFilter: (value, record) => record.trangThai?.indexOf(value as string) === 0,  // Sử dụng trangThai thay vì trangThai
+            render: (trangThai: string): JSX.Element => {
                 let color = '';
-                if (tinhTrang === 'Thực tập sinh') {
+                if (trangThai === 'Thực tập sinh') {
                     color = 'green';
-                } else if (tinhTrang === 'Full time') {
+                } else if (trangThai === 'Full time') {
                     color = 'geekblue';
-                } else if (tinhTrang === 'Part time') {
+                } else if (trangThai === 'Part time') {
                     color = 'volcano';
                 }
+
                 return (
-                    <Tag color={color} key={tinhTrang}>
-                        {tinhTrang.toUpperCase()}
+                    <Tag color={color} key={trangThai}>
+                        {trangThai.toUpperCase()}
                     </Tag>
                 );
             },
@@ -110,7 +111,7 @@ const NhanVien: React.FC = () => {
                     <Menu onClick={(e) => handleMenuClick(e, record)}>
                         <Menu.Item key="edit">Xem thông tin</Menu.Item>
                         <Menu.Item key="dangKy">Đăng ký</Menu.Item>
-                        <Menu.Item key="tinhTrang">Đổi tình trạng</Menu.Item>
+                        <Menu.Item key="trangThai">Đổi tình trạng</Menu.Item>
                         <Menu.Item key="delete">Xóa</Menu.Item>
                     </Menu>
                 );
@@ -125,7 +126,7 @@ const NhanVien: React.FC = () => {
 
     return (
         <Layout>
-            <h1 style={{ display: 'flex', justifyContent: 'center' }}>QUẢN LÝ NHÂN VIÊN</h1>
+            <h1 className='page-name'>QUẢN LÝ NHÂN VIÊN</h1>
             <div className="button-container">
                 <Search className="custom-search" placeholder="Nhập tên nhân viên" onSearch={onSearch} enterButton />
                 <div className="button-container">
@@ -138,7 +139,7 @@ const NhanVien: React.FC = () => {
                 className="custom-table"
                 columns={columns}
                 dataSource={data}
-                pagination={{ pageSize: 10 }}
+                pagination={{ pageSize: 5 }}
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
 
@@ -161,7 +162,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Hà Đức Anh',
         gioiTinh: 'Nam',
         ngaySinh: '29/02/2002',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '2',
@@ -169,7 +170,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Nguyễn Thị Mai',
         gioiTinh: 'Nữ',
         ngaySinh: '12/04/2001',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '3',
@@ -177,7 +178,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Lê Văn Thành',
         gioiTinh: 'Nam',
         ngaySinh: '15/09/2000',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '4',
@@ -185,7 +186,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Phạm Thanh Hằng',
         gioiTinh: 'Nữ',
         ngaySinh: '22/11/1999',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '5',
@@ -193,7 +194,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Đỗ Minh Quang',
         gioiTinh: 'Nam',
         ngaySinh: '07/03/2003',
-        tinhTrang: 'Part time',
+        trangThai: 'Part time',
     },
     {
         key: '6',
@@ -201,7 +202,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Ngô Thị Lan',
         gioiTinh: 'Nữ',
         ngaySinh: '13/05/2000',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '7',
@@ -209,7 +210,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Vũ Văn Bình',
         gioiTinh: 'Nam',
         ngaySinh: '19/07/2001',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '8',
@@ -217,7 +218,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Trần Thị Duyên',
         gioiTinh: 'Nữ',
         ngaySinh: '01/01/2002',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '9',
@@ -225,7 +226,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Nguyễn Văn Phong',
         gioiTinh: 'Nam',
         ngaySinh: '15/08/1998',
-        tinhTrang: 'Thực tập sinh',
+        trangThai: 'Thực tập sinh',
     },
     {
         key: '10',
@@ -233,7 +234,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Lê Thị Hồng',
         gioiTinh: 'Nữ',
         ngaySinh: '05/09/2000',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '11',
@@ -241,7 +242,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Phạm Văn Khánh',
         gioiTinh: 'Nam',
         ngaySinh: '23/12/2002',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '12',
@@ -249,7 +250,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Nguyễn Văn Hưng',
         gioiTinh: 'Nam',
         ngaySinh: '30/03/2001',
-        tinhTrang: 'Part time',
+        trangThai: 'Part time',
     },
     {
         key: '13',
@@ -257,7 +258,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Nguyễn Thị Vân',
         gioiTinh: 'Nữ',
         ngaySinh: '09/06/2002',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '14',
@@ -265,7 +266,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Trần Văn Quý',
         gioiTinh: 'Nam',
         ngaySinh: '19/11/1999',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '15',
@@ -273,7 +274,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Hoàng Thị Ngọc',
         gioiTinh: 'Nữ',
         ngaySinh: '12/02/2003',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '16',
@@ -281,7 +282,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Đặng Minh Tuấn',
         gioiTinh: 'Nam',
         ngaySinh: '05/05/2002',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '17',
@@ -289,7 +290,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Bùi Thị Hồng Nhung',
         gioiTinh: 'Nữ',
         ngaySinh: '17/10/2001',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '18',
@@ -297,7 +298,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Phạm Văn Hải',
         gioiTinh: 'Nam',
         ngaySinh: '22/04/2000',
-        tinhTrang: 'Part time',
+        trangThai: 'Part time',
     },
     {
         key: '19',
@@ -305,7 +306,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Lê Thị Tuyết',
         gioiTinh: 'Nữ',
         ngaySinh: '18/09/2003',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '20',
@@ -313,7 +314,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Nguyễn Anh Đức',
         gioiTinh: 'Nam',
         ngaySinh: '03/07/2001',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '21',
@@ -321,7 +322,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Phạm Thị Hoa',
         gioiTinh: 'Nữ',
         ngaySinh: '29/01/2002',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '22',
@@ -329,7 +330,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Nguyễn Văn Bình',
         gioiTinh: 'Nam',
         ngaySinh: '15/03/2000',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '23',
@@ -337,7 +338,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Ngô Thị Hương',
         gioiTinh: 'Nữ',
         ngaySinh: '08/05/2001',
-        tinhTrang: 'Full time',
+        trangThai: 'Full time',
     },
     {
         key: '24',
@@ -345,7 +346,7 @@ const data: NhanVienType[] = [
         tenNhanVien: 'Trần Văn Sơn',
         gioiTinh: 'Nam',
         ngaySinh: '12/10/1999',
-        tinhTrang: 'Part time',
+        trangThai: 'Part time',
     },
 ];
 

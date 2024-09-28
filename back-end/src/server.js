@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 8081;
 app.use(bodyParser.json());
 
 // Middleware để gán db vào req
+
 app.use((req, res, next) => {
     req.db = db;
     next();

@@ -21,11 +21,10 @@ const HocVien: React.FC = () => {
 
     const [selectedRecord, setSelectedRecord] = useState<HocVienType | null>(null);
 
-    // Hàm xử lý khi chọn menu
     const handleMenuClick = (e: any, record: HocVienType) => {
         if (e.key === 'edit') {
-            setSelectedRecord(record);  // Lưu lại thông tin học viên được chọn
-            setIsEditModalVisible(true); // Hiển thị modal khi chọn chức năng "Chỉnh sửa"
+            setSelectedRecord(record);  
+            setIsEditModalVisible(true); 
         }
     };
 
@@ -43,17 +42,14 @@ const HocVien: React.FC = () => {
         handleCancel();
     };
 
-    // Hàm đóng modal
     const handleCancel = () => {
         setIsThemHocVienModalVisible(false);
         setIsImportModalVisible(false);
         setIsEditModalVisible(false);
     };
 
-    // Hàm xử lý khi submit form chỉnh sửa
     const handleOk = (values: any) => {
         console.log('Cập nhật thông tin học viên:', values);
-        // Thực hiện cập nhật thông tin học viên ở đây
         setIsEditModalVisible(false);
     };
 
@@ -62,7 +58,7 @@ const HocVien: React.FC = () => {
             title: 'Mã học viên',
             dataIndex: 'maHocVien',
             key: 'maHocVien',
-            width: '8%',
+            width: '10%',
         },
         {
             title: 'Họ và tên',
@@ -110,7 +106,7 @@ const HocVien: React.FC = () => {
             title: 'Số điện thoại',
             dataIndex: 'sdt',
             key: 'sdt',
-            width: '8%',
+            width: '10%',
         },
         {
             title: 'Email',
@@ -128,7 +124,7 @@ const HocVien: React.FC = () => {
                 { text: 'Đang học', value: 'Đang học' },
                 { text: 'Đã tốt nghiệp', value: 'Đã tốt nghiệp' },
             ],
-            onFilter: (value, record) => record.tinhTrang.indexOf(value as string) === 0,
+            onFilter: (value, record) => record.tinhTrang?.indexOf(value as string) === 0,
             render: (tinhTrang: string): JSX.Element => {
                 let color = '';
                 if (tinhTrang === 'Chưa đăng ký') {
@@ -153,7 +149,7 @@ const HocVien: React.FC = () => {
         {
             title: 'Quản lý',
             key: 'action',
-            width: '6%',
+            width: '8%',
             render: (_: any, record: HocVienType) => {
                 const menu = (
                     <Menu onClick={(e) => handleMenuClick(e, record)}>
@@ -174,7 +170,7 @@ const HocVien: React.FC = () => {
 
     return (
         <Layout>
-            <h1 style={{ display: 'flex', justifyContent: 'center' }}>QUẢN LÝ HỌC VIÊN</h1>
+            <h1 className='page-name'>QUẢN LÝ HỌC VIÊN</h1>
             <div className="button-container">
                 <Search
                     className="custom-search"
@@ -194,7 +190,7 @@ const HocVien: React.FC = () => {
                 className="custom-table"
                 columns={columns}
                 dataSource={data}
-                pagination={{ pageSize: 10 }}
+                pagination={{ pageSize: 5 }}
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
 
@@ -207,7 +203,7 @@ const HocVien: React.FC = () => {
             <ImportExcelModal
                 visible={isImportModalVisible}
                 onCancel={handleCancel}
-                modalType={modalType} // Truyền loại modal
+                modalType={modalType} 
             />
 
             <HocVienModal01
