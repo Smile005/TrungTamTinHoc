@@ -113,17 +113,19 @@ const MonHoc: React.FC = () => {
       width: '10%',
       render: (_: any, record: MonHocType) => {
         const menu = (
-          <Menu onClick={(e) => handleMenuClick(e, record)}>
-            <Menu.Item key="edit">Sửa</Menu.Item>
-            <Menu.Item key="delete">Xóa</Menu.Item>
-          </Menu>
+            <Menu onClick={(e) => handleMenuClick(e, record)}>
+                <Menu.Item key="edit">Xem thông tin</Menu.Item>
+                <Menu.Item key="dangKy">Đăng ký</Menu.Item>
+                <Menu.Item key="tinhTrang">Đổi tình trạng</Menu.Item>
+                <Menu.Item key="delete">Xóa</Menu.Item>
+            </Menu>
         );
         return (
-          <Dropdown overlay={menu}>
-            <Button type="link" icon={<MoreOutlined />} />
-          </Dropdown>
+            <Dropdown overlay={menu}>
+                <Button type="link" icon={<MoreOutlined />} />
+            </Dropdown>
         );
-      },
+    },
     },
   ];
 
