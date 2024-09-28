@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
-import { Table, Button, Dropdown, Menu, Layout, Tag, TableColumnsType, Input, GetProps } from 'antd';
+import { Table, Button, Dropdown, Menu, Layout, Tag, TableColumnsType, Input } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
-// import { NhanVienType } from '../types/NhanVienType';
+import ThemNhanVienModal from '../components/ThemNhanVienModal'; // Import modal mới
 import { NhanVienType } from '../types/NhanVienType';
 import NhanVienModal01 from '../components/NhanVienModal01';
 import '../styles/TableCustom.css';
 
-type SearchProps = GetProps<typeof Input.Search>;
-
 const { Search } = Input;
-
-const onSearch: SearchProps['onSearch'] = (value, _e, info) => console.log(info?.source, value);
 
 const NhanVien: React.FC = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isThemModalVisible, setIsThemModalVisible] = useState(false); // Modal thêm nhân viên
     const [selectedRecord, setSelectedRecord] = useState<NhanVienType | null>(null);
 
     // Hàm xử lý khi chọn menu
@@ -24,17 +21,27 @@ const NhanVien: React.FC = () => {
         }
     };
 
-    // Đóng Modal
+    // Đóng Modal chỉnh sửa
     const handleCancel = () => {
         setIsModalVisible(false);
         setSelectedRecord(null);
     };
 
-    // Hàm xử lý khi submit form chỉnh sửa
+    // Đóng Modal thêm nhân viên
+    const handleAddCancel = () => {
+        setIsThemModalVisible(false);
+    };
+
+    // Xử lý khi submit form chỉnh sửa
     const handleOk = (values: any) => {
         console.log('Cập nhật thông tin nhân viên:', values);
-        // Thực hiện cập nhật thông tin nhân viên ở đây
         setIsModalVisible(false);
+    };
+
+    // Xử lý khi submit form thêm nhân viên
+    const handleAddOk = (values: any) => {
+        console.log('Thêm nhân viên mới:', values);
+        setIsThemModalVisible(false);
     };
 
     const columns: TableColumnsType<NhanVienType> = [
@@ -58,17 +65,8 @@ const NhanVien: React.FC = () => {
             ],
             onFilter: (value, record) => record.gioiTinh?.indexOf(value as string) === 0,
             render: (gioiTinh: string): JSX.Element => {
-                let color = '';
-                if (gioiTinh === 'Nam') {
-                    color = 'geekblue';
-                } else if (gioiTinh === 'Nữ') {
-                    color = 'volcano';
-                }
-                return (
-                    <Tag color={color} key={gioiTinh}>
-                        {gioiTinh.toUpperCase()}
-                    </Tag>
-                );
+                let color = gioiTinh === 'Nam' ? 'geekblue' : 'volcano';
+                return <Tag color={color}>{gioiTinh.toUpperCase()}</Tag>;
             },
         },
         {
@@ -85,22 +83,13 @@ const NhanVien: React.FC = () => {
                 { text: 'Full time', value: 'Full time' },
                 { text: 'Part time', value: 'Part time' },
             ],
-            onFilter: (value, record) => record.trangThai?.indexOf(value as string) === 0,  // Sử dụng trangThai thay vì trangThai
+            onFilter: (value, record) => record.trangThai?.indexOf(value as string) === 0,
             render: (trangThai: string): JSX.Element => {
                 let color = '';
-                if (trangThai === 'Thực tập sinh') {
-                    color = 'green';
-                } else if (trangThai === 'Full time') {
-                    color = 'geekblue';
-                } else if (trangThai === 'Part time') {
-                    color = 'volcano';
-                }
-
-                return (
-                    <Tag color={color} key={trangThai}>
-                        {trangThai.toUpperCase()}
-                    </Tag>
-                );
+                if (trangThai === 'Thực tập sinh') color = 'green';
+                else if (trangThai === 'Full time') color = 'geekblue';
+                else if (trangThai === 'Part time') color = 'volcano';
+                return <Tag color={color}>{trangThai.toUpperCase()}</Tag>;
             },
         },
         {
@@ -128,10 +117,12 @@ const NhanVien: React.FC = () => {
         <Layout>
             <h1 className='page-name'>QUẢN LÝ NHÂN VIÊN</h1>
             <div className="button-container">
-                <Search className="custom-search" placeholder="Nhập tên nhân viên" onSearch={onSearch} enterButton />
+                <Search className="custom-search" placeholder="Nhập tên nhân viên" onSearch={(value) => console.log(value)} enterButton />
                 <div className="button-container">
                     <Button className='custom-button'>Hoàn tác</Button>
-                    <Button className='custom-button'>Thêm</Button>
+                    <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>
+                        Thêm
+                    </Button>
                     <Button className='custom-button'>Nhập Excel</Button>
                 </div>
             </div>
@@ -143,15 +134,24 @@ const NhanVien: React.FC = () => {
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
 
+            {/* Gọi modal chỉnh sửa */}
             <NhanVienModal01
                 visible={isModalVisible}
                 onCancel={handleCancel}
                 onOk={handleOk}
                 initialValues={selectedRecord || {}}
             />
+
+            {/* Gọi modal thêm nhân viên */}
+            <ThemNhanVienModal
+                visible={isThemModalVisible}
+                onCancel={handleAddCancel}
+                onSubmit={handleAddOk}
+            />
         </Layout>
     );
 };
+
 export default NhanVien;
 
 // Dữ liệu mẫu cho bảng
@@ -349,6 +349,7 @@ const data: NhanVienType[] = [
         trangThai: 'Part time',
     },
 ];
+
 
 
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
+import ThemCaHocModal from '../components/ThemCaHocModal'; // Import component ThemCaHocModal
 import { CaHocType } from '../types/CaHocType';
 import '../styles/TableCustom.css';
 
@@ -9,6 +10,7 @@ const { Search } = Input;
 const CaHoc: React.FC = () => {
     const [searchText, setSearchText] = useState(''); // State to track search input
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+    const [isThemCaModalVisible, setIsThemCaModalVisible] = useState(false); // State to track modal visibility
     const [selectedRecord, setSelectedRecord] = useState<CaHocType | null>(null);
 
     const handleMenuClick = (e: any, record: CaHocType) => {
@@ -27,6 +29,15 @@ const CaHoc: React.FC = () => {
         setIsEditModalVisible(false);
     };
 
+    const handleAddCaHoc = (values: any) => {
+        console.log('Thêm ca học mới:', values);
+        setIsThemCaModalVisible(false); 
+    };
+
+    const handleAddCancel = () => {
+        setIsThemCaModalVisible(false);
+    };
+
     const soGio = (batDau: string, ketThuc: string): number => {
         const start = new Date(`1970-01-01T${batDau}:00`);
         const end = new Date(`1970-01-01T${ketThuc}:00`);
@@ -38,7 +49,6 @@ const CaHoc: React.FC = () => {
         setSearchText(value);
     };
 
-    // Filtering the data based on search input (filtering by 'maCa')
     const filteredData = data.filter((record) =>
         record.maCa.toLowerCase().includes(searchText.toLowerCase())
     );
@@ -116,10 +126,12 @@ const CaHoc: React.FC = () => {
                 />
                 <div className="button-container">
                     <Button className='custom-button'>Hoàn tác</Button>
-                    <Button className='custom-button'>Thêm</Button>
+                    <Button className='custom-button' onClick={() => setIsThemCaModalVisible(true)}>
+                        Thêm
+                    </Button>
                     <Button className='custom-button' >
                         Nhập Excel
-                    </Button> {/* Thêm sự kiện onClick */}
+                    </Button> {/* Thêm sự kiện onClick nếu cần */}
                 </div>
             </div>
             <Table
@@ -128,6 +140,13 @@ const CaHoc: React.FC = () => {
                 dataSource={filteredData} // Use filtered data for table rendering
                 pagination={{ pageSize: 5 }}
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
+            />
+
+            {/* Gọi modal thêm ca học */}
+            <ThemCaHocModal
+                visible={isThemCaModalVisible}
+                onCancel={handleAddCancel}
+                onSubmit={handleAddCaHoc}
             />
         </Layout>
     );

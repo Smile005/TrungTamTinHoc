@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { MonHocType } from '../types/MonHocType';
+import ThemMonHocModal from '../components/ThemMonHocModal'; // Import modal thêm môn học
 import '../styles/TableCustom.css';
 
 const { Search } = Input;
@@ -23,6 +24,7 @@ const initialData: MonHocType[] = [
 const MonHoc: React.FC = () => {
   const [searchText, setSearchText] = useState(''); // Search input state
   const [filteredData, setFilteredData] = useState<MonHocType[]>(initialData); // Filtered data state
+  const [isModalVisible, setIsModalVisible] = useState(false); // Modal visibility state
 
   // Handle search input
   const onSearch = (value: string) => {
@@ -45,8 +47,22 @@ const MonHoc: React.FC = () => {
     }
   };
 
+  // Hiển thị modal thêm môn học
   const handleAddCourse = () => {
-    message.success("Thêm mới môn học!");
+    setIsModalVisible(true);
+  };
+
+  // Đóng modal
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  // Xử lý khi submit modal
+  const handleOk = (values: any) => {
+    const newData = [...filteredData, { key: String(filteredData.length + 1), ...values }];
+    setFilteredData(newData);
+    setIsModalVisible(false);
+    message.success('Thêm mới môn học thành công!');
   };
 
   const handleUndo = () => {
@@ -156,6 +172,13 @@ const MonHoc: React.FC = () => {
         pagination={{ pageSize: 5 }}
         rowKey="key"
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
+      />
+
+      {/* Modal thêm môn học */}
+      <ThemMonHocModal
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        onSubmit={handleOk}
       />
     </Layout>
   );
