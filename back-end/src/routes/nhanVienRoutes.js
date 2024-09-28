@@ -1,18 +1,12 @@
 const express = require('express');
+const router = express.Router();
 const nhanVienController = require('../controllers/nhanVienController');
 
-const router = express.Router();
-
-// Lấy tất cả nhân viên
-router.get('/nhan-vien', nhanVienController.getNhanVien);
-
-// Thêm nhân viên
-router.post('/nhan-vien', nhanVienController.addNhanVien);
-
-// Cập nhật nhân viên
-router.put('/nhan-vien/:maNhanVien', nhanVienController.updateNhanVien);
-
-// Xóa nhân viên
-router.delete('/nhan-vien/:maNhanVien', nhanVienController.deleteNhanVien);
+// Các routes
+router.get('/nhanvien', nhanVienController.getNhanVien);
+router.post('/nhanvien', nhanVienController.addNhanVien);
+router.put('/nhanvien/:maNhanVien', nhanVienController.updateNhanVien);
+router.delete('/nhanvien/:maNhanVien', nhanVienController.deleteNhanVien);
+router.get('/nhanvien/:maNhanVien', nhanVienController.findNhanVienById);
 
 module.exports = router;
