@@ -1,23 +1,25 @@
 const express = require('express');
-const nhanVienRoutes = require('./routes/nhanVienRoutes'); // Đường dẫn tới file routes
-const db = require('./config/db'); // Kết nối cơ sở dữ liệu
+const bodyParser = require('body-parser');
+const authRoutes = require('./routes/authRoutes'); 
+const { authenticateToken } = require('./middlewares/authMiddleware'); 
+const nhanVienRoutes = require('./routes/nhanVienRoutes');
+const db = require('./config/db'); 
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8081;
 
-// Middleware
-app.use(express.json());
+// Middleware để phân tích body của yêu cầu
+app.use(bodyParser.json());
 
-// Đưa db vào request để sử dụng trong routes
+// Middleware để gán db vào req
 app.use((req, res, next) => {
     req.db = db;
     next();
 });
 
-// Sử dụng các route
-app.use('/api', nhanVienRoutes);
+app.use('/auth', authRoutes); 
+app.use('/nhanvien', authenticateToken, nhanVienRoutes);
 
-// Khởi động server
 app.listen(PORT, () => {
     console.log(`Server đang chạy tại http://localhost:${PORT}`);
 });

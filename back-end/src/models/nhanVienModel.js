@@ -42,3 +42,18 @@ exports.deleteNhanVien = (maNhanVien, callback) => {
         callback(null, results);
     });
 };
+
+// Tìm nhân viên theo mã nhân viên
+exports.findNhanVienById = (maNhanVien, callback) => {
+    const query = 'SELECT * FROM NhanVien WHERE maNhanVien = ?';
+    db.query(query, [maNhanVien], (err, results) => {
+        if (err) {
+            return callback(err, null);
+        }
+        // Check if employee was found
+        if (results.length === 0) {
+            return callback(null, null);
+        }
+        callback(null, results[0]);
+    });
+};
