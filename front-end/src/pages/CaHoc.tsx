@@ -89,6 +89,8 @@ const CaHoc: React.FC = () => {
                 const menu = (
                     <Menu onClick={(e) => handleMenuClick(e, record)}>
                         <Menu.Item key="edit">Xem thông tin</Menu.Item>
+                        <Menu.Item key="dangKy">Đăng ký</Menu.Item>
+                        <Menu.Item key="tinhTrang">Đổi tình trạng</Menu.Item>
                         <Menu.Item key="delete">Xóa</Menu.Item>
                     </Menu>
                 );
