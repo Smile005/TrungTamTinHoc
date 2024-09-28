@@ -1,20 +1,26 @@
 const express = require('express');
-const nhanVienRoutes = require('./routes/nhanVienRoutes'); // Đường dẫn tới file routes
-const db = require('./config/db'); // Kết nối cơ sở dữ liệu
+const cors = require('cors');
+const loginRoutes = require('./routes/loginRoutes'); // Đường dẫn tới file routes
+const nhanVienRoutes = require('./routes/nhanVienRoutes');
+const db = require('./config/db');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8081;
 
-// Middleware
+// Sử dụng middleware cors để cho phép frontend truy cập vào backend
+app.use(cors());
+
+// Middleware xử lý JSON request body
 app.use(express.json());
 
-// Đưa db vào request để sử dụng trong routes
+// Đưa db vào req để có thể sử dụng trong các routes
 app.use((req, res, next) => {
     req.db = db;
     next();
 });
 
-// Sử dụng các route
+// Tích hợp route
+app.use('/api', loginRoutes);
 app.use('/api', nhanVienRoutes);
 
 // Khởi động server

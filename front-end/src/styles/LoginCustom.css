@@ -40,9 +40,10 @@
 .login-image {
   max-width: 500px;
   width: 100%;
-  margin-left: 15px; /* Tạo khoảng cách từ phía hình ảnh */
-  object-fit: cover; /* Đảm bảo hình ảnh không bị méo */
-  border-radius: 10px; /* Bo góc cho hình ảnh */
+  margin-left: 15px; 
+  object-fit: cover; 
+  border-radius: 10px;
+  height: 100%;
 }
 
 .right-side {

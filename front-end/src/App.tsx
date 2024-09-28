@@ -36,15 +36,15 @@ const AppLayout: React.FC = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const [collapsed, setCollapsed] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Quản lý trạng thái đăng nhập
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // State for managing authentication
   const location = useLocation();
 
-  // Kiểm tra nếu đường dẫn hiện tại là trang đăng nhập
+  // Check if the current route is the login page
   const isLoginPage = location.pathname === '/login';
 
   // Function to get the selected menu key based on the current path
-  const getSelectedKey = () => {
+  const getSelectedKey = (): string => {
     if (location.pathname === '/') return '0'; // Home page
     if (location.pathname.startsWith('/taikhoan')) return '1';
     if (location.pathname.startsWith('/nhanvien')) return '2';
@@ -64,8 +64,8 @@ const AppLayout: React.FC = () => {
   };
 
   return (
-    <Layout style={{ height: '100vh' }}> {/* Đảm bảo layout full chiều cao */}
-      {/* Chỉ hiển thị Header và Sider khi không ở trang đăng nhập */}
+    <Layout style={{ height: '100vh' }}> {/* Ensure full-height layout */}
+      {/* Only display Header and Sider when not on the login page */}
       {!isLoginPage && (
         <>
           <Header className="custom-header" style={{ background: '#000', color: '#fff' }}>
@@ -85,7 +85,7 @@ const AppLayout: React.FC = () => {
             <Sider
               collapsible
               collapsed={collapsed}
-              onCollapse={setCollapsed}
+              onCollapse={(value) => setCollapsed(value)}
               width={250}
               style={{ background: colorBgContainer, height: '100vh', overflow: 'auto' }} 
               trigger={
@@ -202,7 +202,7 @@ const AppLayout: React.FC = () => {
         </>
       )}
 
-      {isLoginPage && ( // Xử lý riêng cho trang Login
+      {isLoginPage && ( // Handle rendering of login page separately
         <Content style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Routes>
             <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
