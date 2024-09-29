@@ -1,28 +1,28 @@
 import React, { useState } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import SuaTaiKhoanModal from '../components/SuaTaiKhoanModal'; 
+import SuaTaiKhoanModal from '../components/SuaTaiKhoanModal';
 import { TaiKhoanType } from '../types/TaiKhoanType';
 import '../styles/TableCustom.css';
 
 const { Search } = Input;
 
 const initialData: TaiKhoanType[] = [
-  // { key: '1', maNhanVien: 'NV001', phanQuyen: 1, trangThai: 'Hoạt động' },
-  // { key: '2', maNhanVien: 'NV002', phanQuyen: 2, trangThai: 'Đã khóa' },
-  // { key: '3', maNhanVien: 'NV003', phanQuyen: 3, trangThai: 'Hoạt động' },
-  // { key: '4', maNhanVien: 'NV004', phanQuyen: 1, trangThai: 'Đã khóa' },
-  // { key: '5', maNhanVien: 'NV005', phanQuyen: 2, trangThai: 'Hoạt động' },
-  // { key: '6', maNhanVien: 'NV006', phanQuyen: 1, trangThai: 'Hoạt động' },
-  // { key: '7', maNhanVien: 'NV007', phanQuyen: 3, trangThai: 'Đã khóa' },
-  // { key: '8', maNhanVien: 'NV008', phanQuyen: 2, trangThai: 'Hoạt động' },
-  // { key: '9', maNhanVien: 'NV009', phanQuyen: 1, trangThai: 'Đã khóa' },
-  // { key: '10', maNhanVien: 'NV010', phanQuyen: 2, trangThai: 'Hoạt động' },
+  { maNhanVien: 'NV001', phanQuyen: 1, trangThai: 'Hoạt động' },
+  { maNhanVien: 'NV002', phanQuyen: 2, trangThai: 'Đã khóa' },
+  { maNhanVien: 'NV003', phanQuyen: 3, trangThai: 'Hoạt động' },
+  { maNhanVien: 'NV004', phanQuyen: 1, trangThai: 'Đã khóa' },
+  { maNhanVien: 'NV005', phanQuyen: 2, trangThai: 'Hoạt động' },
+  { maNhanVien: 'NV006', phanQuyen: 1, trangThai: 'Hoạt động' },
+  { maNhanVien: 'NV007', phanQuyen: 3, trangThai: 'Đã khóa' },
+  { maNhanVien: 'NV008', phanQuyen: 2, trangThai: 'Hoạt động' },
+  { maNhanVien: 'NV009', phanQuyen: 1, trangThai: 'Đã khóa' },
+  { maNhanVien: 'NV010', phanQuyen: 2, trangThai: 'Hoạt động' },
 ];
 
 const TaiKhoan: React.FC = () => {
-  const [searchText, setSearchText] = useState(''); 
-  const [filteredData, setFilteredData] = useState<TaiKhoanType[]>(initialData); 
+  const [searchText, setSearchText] = useState('');
+  const [filteredData, setFilteredData] = useState<TaiKhoanType[]>(initialData);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<TaiKhoanType | null>(null);
 
@@ -46,7 +46,7 @@ const TaiKhoan: React.FC = () => {
 
   const handleEditCancel = () => {
     setIsEditModalVisible(false);
-    setSelectedRecord(null); 
+    setSelectedRecord(null);
   };
 
   const handleEditSubmit = (values: any) => {

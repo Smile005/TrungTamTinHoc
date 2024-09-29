@@ -41,6 +41,33 @@
   overflow-y: auto;
   height: 100vh;
 }
+.user-infor {
+  position: absolute;
+  top: 4.5%;
+  right: 60px;
+  transform: translateY(-50%);
+}
+
+.user-name {
+  background-color: #fff;
+  color: #000;
+  border-radius: 50%; /* Tạo hình tròn */
+  padding: 10px;
+  text-align: center;
+  width: 55px; 
+  height: 55px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.user-infor .ant-btn {
+  padding: 0; 
+  border: none;
+  background: none;
+}
+
 
 
 /* Style for the menu items */

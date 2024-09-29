@@ -30,9 +30,10 @@ const Login: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         const token = data.token; // Token from API response
+        const userInfo = data.userInfo; // Giả sử API trả về thông tin người dùng như `maNhanVien`, `name`, và `email`
 
-        // Dispatch login action with the token
-        dispatch(login(token));
+        // Dispatch login action với token và thông tin người dùng
+        dispatch(login({ token, userInfo }));
         message.success('Đăng nhập thành công!');
         navigate('/'); // Redirect to home page after successful login
       } else {
