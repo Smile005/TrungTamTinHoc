@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, useLocation, Link } from 'react-router-dom';
+import { Route, Routes, Navigate, useLocation, Link } from 'react-router-dom'; // Không cần dùng BrowserRouter ở đây
 import { Layout, Menu, theme } from 'antd';
 import {
   ScheduleOutlined,
@@ -26,19 +26,23 @@ import TKHocVien from './pages/TKHocVien';
 import TKLopHoc from './pages/TKLopHoc';
 import TKGiangVien from './pages/TKGiangVien';
 import Login from './pages/Login'; // Import Login page
+import { useSelector } from 'react-redux';
+import { RootState } from './store/store';
 import './App.css';
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
-const AppLayout: React.FC = () => {
+const App: React.FC = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   const [collapsed, setCollapsed] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Quản lý trạng thái đăng nhập
-  const location = useLocation();
+  const location = useLocation(); // useLocation giờ sẽ hoạt động đúng vì BrowserRouter bao bọc App trong index.tsx
+
+  // Lấy trạng thái xác thực từ Redux
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   // Kiểm tra nếu đường dẫn hiện tại là trang đăng nhập
   const isLoginPage = location.pathname === '/login';
@@ -64,7 +68,7 @@ const AppLayout: React.FC = () => {
   };
 
   return (
-    <Layout style={{ height: '100vh' }}> {/* Đảm bảo layout full chiều cao */}
+    <Layout style={{ height: '100vh' }}>
       {/* Chỉ hiển thị Header và Sider khi không ở trang đăng nhập */}
       {!isLoginPage && (
         <>
@@ -87,7 +91,7 @@ const AppLayout: React.FC = () => {
               collapsed={collapsed}
               onCollapse={setCollapsed}
               width={250}
-              style={{ background: colorBgContainer, height: '100vh', overflow: 'auto' }} 
+              style={{ background: colorBgContainer, height: '100vh', overflow: 'auto' }}
               trigger={
                 <div className="custom-trigger">
                   {collapsed ? (
@@ -179,7 +183,7 @@ const AppLayout: React.FC = () => {
               >
                 <Routes>
                   <Route path="/" element={isAuthenticated ? <TrangChu /> : <Navigate to="/login" />} />
-                  <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+                  <Route path="/login" element={<Login />} />
                   <Route path="/taikhoan" element={isAuthenticated ? <TaiKhoan /> : <Navigate to="/login" />} />
                   <Route path="/nhanvien" element={isAuthenticated ? <NhanVien /> : <Navigate to="/login" />} />
                   <Route path="/hocvien" element={isAuthenticated ? <HocVien /> : <Navigate to="/login" />} />
@@ -188,9 +192,6 @@ const AppLayout: React.FC = () => {
                   <Route path="/monhoc" element={isAuthenticated ? <MonHoc /> : <Navigate to="/login" />} />
                   <Route path="/lophoc" element={isAuthenticated ? <LopHoc /> : <Navigate to="/login" />} />
                   <Route path="/lichhoc" element={isAuthenticated ? <LichHoc /> : <Navigate to="/login" />} />
-                  <Route path="/dangky" element={isAuthenticated ? <LichHoc /> : <Navigate to="/login" />} />
-                  <Route path="/ds_thi" element={isAuthenticated ? <LichHoc /> : <Navigate to="/login" />} />
-                  <Route path="/nhapdiem" element={isAuthenticated ? <LichHoc /> : <Navigate to="/login" />} />
                   <Route path="/tk_hocvien" element={isAuthenticated ? <TKHocVien /> : <Navigate to="/login" />} />
                   <Route path="/tk_giangvien" element={isAuthenticated ? <TKGiangVien /> : <Navigate to="/login" />} />
                   <Route path="/tk_lophoc" element={isAuthenticated ? <TKLopHoc /> : <Navigate to="/login" />} />
@@ -202,22 +203,16 @@ const AppLayout: React.FC = () => {
         </>
       )}
 
-      {isLoginPage && ( // Xử lý riêng cho trang Login
-        <Content style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      {/* Nếu là trang đăng nhập, không hiển thị Header và Sider */}
+      {isLoginPage && (
+        <Content style={{ padding: 24 }}>
           <Routes>
-            <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Navigate to="/login" />} />
           </Routes>
         </Content>
       )}
     </Layout>
-  );
-};
-
-const App: React.FC = () => {
-  return (
-    <Router>
-      <AppLayout />
-    </Router>
   );
 };
 

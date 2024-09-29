@@ -8,16 +8,16 @@ const { Search } = Input;
 
 // Sample Data
 const initialData: TaiKhoanType[] = [
-  { key: '1', maNhanVien: 'NV001', phanQuyen: 1, trangThai: 'Hoạt động' },
-  { key: '2', maNhanVien: 'NV002', phanQuyen: 2, trangThai: 'Đã khóa' },
-  { key: '3', maNhanVien: 'NV003', phanQuyen: 3, trangThai: 'Hoạt động' },
-  { key: '4', maNhanVien: 'NV004', phanQuyen: 1, trangThai: 'Đã khóa' },
-  { key: '5', maNhanVien: 'NV005', phanQuyen: 2, trangThai: 'Hoạt động' },
-  { key: '6', maNhanVien: 'NV006', phanQuyen: 1, trangThai: 'Hoạt động' },
-  { key: '7', maNhanVien: 'NV007', phanQuyen: 3, trangThai: 'Đã khóa' },
-  { key: '8', maNhanVien: 'NV008', phanQuyen: 2, trangThai: 'Hoạt động' },
-  { key: '9', maNhanVien: 'NV009', phanQuyen: 1, trangThai: 'Đã khóa' },
-  { key: '10', maNhanVien: 'NV010', phanQuyen: 2, trangThai: 'Hoạt động' },
+  // { key: '1', maNhanVien: 'NV001', phanQuyen: 1, trangThai: 'Hoạt động' },
+  // { key: '2', maNhanVien: 'NV002', phanQuyen: 2, trangThai: 'Đã khóa' },
+  // { key: '3', maNhanVien: 'NV003', phanQuyen: 3, trangThai: 'Hoạt động' },
+  // { key: '4', maNhanVien: 'NV004', phanQuyen: 1, trangThai: 'Đã khóa' },
+  // { key: '5', maNhanVien: 'NV005', phanQuyen: 2, trangThai: 'Hoạt động' },
+  // { key: '6', maNhanVien: 'NV006', phanQuyen: 1, trangThai: 'Hoạt động' },
+  // { key: '7', maNhanVien: 'NV007', phanQuyen: 3, trangThai: 'Đã khóa' },
+  // { key: '8', maNhanVien: 'NV008', phanQuyen: 2, trangThai: 'Hoạt động' },
+  // { key: '9', maNhanVien: 'NV009', phanQuyen: 1, trangThai: 'Đã khóa' },
+  // { key: '10', maNhanVien: 'NV010', phanQuyen: 2, trangThai: 'Hoạt động' },
 ];
 
 const TaiKhoan: React.FC = () => {

@@ -1,7 +1,6 @@
 export interface TaiKhoanType {
-  key: string;
   maNhanVien: string;       
-  matKhau?: string;          
+  matKhau: string;          
   phanQuyen: number;       
-  trangThai?: string;
+  trangThai: string;
 }
