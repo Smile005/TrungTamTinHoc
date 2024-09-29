@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Form, Input } from 'antd';
+import { Modal, Form, Input,Select } from 'antd';
 
 interface NhanVienModalProps {
     visible: boolean;
@@ -62,11 +62,15 @@ const NhanVienModal01: React.FC<NhanVienModalProps> = ({ visible, onCancel, onOk
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    label="Tình trạng"
-                    name="tinhTrang"
-                    rules={[{ required: true, message: 'Vui lòng nhập tình trạng!' }]}
+                    name="trangThai"
+                    label="Tình Trạng"
+                    rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
                 >
-                    <Input />
+                    <Select>
+                        <Select.Option value="Full time">Full time</Select.Option>
+                        <Select.Option value="Part time">Part time</Select.Option>
+                        <Select.Option value="Thực tập sinh">Thực tập sinh</Select.Option>
+                    </Select>
                 </Form.Item>
             </Form>
         </Modal>

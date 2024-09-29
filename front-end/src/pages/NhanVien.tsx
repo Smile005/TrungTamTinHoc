@@ -1,44 +1,39 @@
 import React, { useState } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, TableColumnsType, Input } from 'antd';
-import { MoreOutlined } from '@ant-design/icons';
+import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import ThemNhanVienModal from '../components/ThemNhanVienModal'; // Import modal mới
 import { NhanVienType } from '../types/NhanVienType';
-import NhanVienModal01 from '../components/NhanVienModal01';
+import NhanVienModal01 from '../components/SuaNhanVienModal';
 import '../styles/TableCustom.css';
 
 const { Search } = Input;
 
 const NhanVien: React.FC = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [isThemModalVisible, setIsThemModalVisible] = useState(false); // Modal thêm nhân viên
+    const [isThemModalVisible, setIsThemModalVisible] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<NhanVienType | null>(null);
 
-    // Hàm xử lý khi chọn menu
     const handleMenuClick = (e: any, record: NhanVienType) => {
         if (e.key === 'edit') {
-            setSelectedRecord(record);  // Lưu lại thông tin nhân viên được chọn
-            setIsModalVisible(true); // Hiển thị modal khi chọn chức năng "Chỉnh sửa"
+            setSelectedRecord(record);  
+            setIsModalVisible(true); 
         }
     };
 
-    // Đóng Modal chỉnh sửa
     const handleCancel = () => {
         setIsModalVisible(false);
         setSelectedRecord(null);
     };
 
-    // Đóng Modal thêm nhân viên
     const handleAddCancel = () => {
         setIsThemModalVisible(false);
     };
 
-    // Xử lý khi submit form chỉnh sửa
     const handleOk = (values: any) => {
         console.log('Cập nhật thông tin nhân viên:', values);
         setIsModalVisible(false);
     };
 
-    // Xử lý khi submit form thêm nhân viên
     const handleAddOk = (values: any) => {
         console.log('Thêm nhân viên mới:', values);
         setIsThemModalVisible(false);
@@ -98,10 +93,8 @@ const NhanVien: React.FC = () => {
             render: (_: any, record: NhanVienType) => {
                 const menu = (
                     <Menu onClick={(e) => handleMenuClick(e, record)}>
-                        <Menu.Item key="edit">Xem thông tin</Menu.Item>
-                        <Menu.Item key="dangKy">Đăng ký</Menu.Item>
-                        <Menu.Item key="tinhTrang">Đổi tình trạng</Menu.Item>
-                        <Menu.Item key="delete">Xóa</Menu.Item>
+                        <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
+                        <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
                     </Menu>
                 );
                 return (
@@ -133,8 +126,6 @@ const NhanVien: React.FC = () => {
                 pagination={{ pageSize: 5 }}
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
-
-            {/* Gọi modal chỉnh sửa */}
             <NhanVienModal01
                 visible={isModalVisible}
                 onCancel={handleCancel}
@@ -142,7 +133,6 @@ const NhanVien: React.FC = () => {
                 initialValues={selectedRecord || {}}
             />
 
-            {/* Gọi modal thêm nhân viên */}
             <ThemNhanVienModal
                 visible={isThemModalVisible}
                 onCancel={handleAddCancel}
