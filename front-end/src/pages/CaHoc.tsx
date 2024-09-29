@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input } from 'antd';
-import { MoreOutlined } from '@ant-design/icons';
-import ThemCaHocModal from '../components/ThemCaHocModal'; // Import component ThemCaHocModal
+import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import ThemCaHocModal from '../components/ThemCaHocModal'; 
+import SuaCaHocModal from '../components/SuaCaHocModal'; 
 import { CaHocType } from '../types/CaHocType';
 import '../styles/TableCustom.css';
 
 const { Search } = Input;
 
 const CaHoc: React.FC = () => {
-    const [searchText, setSearchText] = useState(''); // State to track search input
+    const [searchText, setSearchText] = useState(''); 
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const [isThemCaModalVisible, setIsThemCaModalVisible] = useState(false); // State to track modal visibility
+    const [isThemCaModalVisible, setIsThemCaModalVisible] = useState(false); 
     const [selectedRecord, setSelectedRecord] = useState<CaHocType | null>(null);
 
     const handleMenuClick = (e: any, record: CaHocType) => {
@@ -20,18 +21,18 @@ const CaHoc: React.FC = () => {
         }
     };
 
-    const handleCancel = () => {
+    const handleEditCancel = () => {
         setIsEditModalVisible(false);
     };
 
-    const handleOk = (values: any) => {
+    const handleEditSubmit = (values: any) => {
         console.log('Cập nhật thông tin ca học:', values);
         setIsEditModalVisible(false);
     };
 
     const handleAddCaHoc = (values: any) => {
         console.log('Thêm ca học mới:', values);
-        setIsThemCaModalVisible(false); 
+        setIsThemCaModalVisible(false);
     };
 
     const handleAddCancel = () => {
@@ -42,7 +43,7 @@ const CaHoc: React.FC = () => {
         const start = new Date(`1970-01-01T${batDau}:00`);
         const end = new Date(`1970-01-01T${ketThuc}:00`);
         const diffMs = end.getTime() - start.getTime();
-        return diffMs / (1000 * 60 * 60); // Convert to hours
+        return diffMs / (1000 * 60 * 60); 
     };
 
     const onSearch = (value: string) => {
@@ -98,10 +99,8 @@ const CaHoc: React.FC = () => {
             render: (_: any, record: CaHocType) => {
                 const menu = (
                     <Menu onClick={(e) => handleMenuClick(e, record)}>
-                        <Menu.Item key="edit">Xem thông tin</Menu.Item>
-                        <Menu.Item key="dangKy">Đăng ký</Menu.Item>
-                        <Menu.Item key="tinhTrang">Đổi tình trạng</Menu.Item>
-                        <Menu.Item key="delete">Xóa</Menu.Item>
+                        <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
+                        <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
                     </Menu>
                 );
                 return (
@@ -122,7 +121,7 @@ const CaHoc: React.FC = () => {
                     placeholder="Nhập mã ca học"
                     onSearch={onSearch}
                     enterButton
-                    style={{ backgroundColor: '#fff' }} // Changing button color to white
+                    style={{ backgroundColor: '#fff' }} 
                 />
                 <div className="button-container">
                     <Button className='custom-button'>Hoàn tác</Button>
@@ -131,22 +130,28 @@ const CaHoc: React.FC = () => {
                     </Button>
                     <Button className='custom-button' >
                         Nhập Excel
-                    </Button> {/* Thêm sự kiện onClick nếu cần */}
+                    </Button>
                 </div>
             </div>
             <Table
                 className="custom-table"
                 columns={columns}
-                dataSource={filteredData} // Use filtered data for table rendering
+                dataSource={filteredData} 
                 pagination={{ pageSize: 5 }}
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
 
-            {/* Gọi modal thêm ca học */}
             <ThemCaHocModal
                 visible={isThemCaModalVisible}
                 onCancel={handleAddCancel}
                 onSubmit={handleAddCaHoc}
+            />
+
+            <SuaCaHocModal
+                visible={isEditModalVisible}
+                onCancel={handleEditCancel}
+                onSubmit={handleEditSubmit}
+                initialValues={selectedRecord}
             />
         </Layout>
     );
@@ -154,7 +159,7 @@ const CaHoc: React.FC = () => {
 
 export default CaHoc;
 
-// Dữ liệu mẫu cho bảng
+// Sample Data
 const data: CaHocType[] = [
     {
         key: '1',

@@ -14,8 +14,8 @@ const ThemNhanVienModal: React.FC<ThemNhanVienModalProps> = ({ visible, onCancel
         form
             .validateFields()
             .then((values) => {
-                onSubmit(values); // Gửi dữ liệu về component cha khi submit
-                form.resetFields(); // Reset form sau khi submit
+                onSubmit(values); 
+                form.resetFields(); 
             })
             .catch((info) => {
                 console.log('Validate Failed:', info);
@@ -27,8 +27,8 @@ const ThemNhanVienModal: React.FC<ThemNhanVienModalProps> = ({ visible, onCancel
             title="Thêm Nhân Viên"
             visible={visible}
             onCancel={() => {
-                form.resetFields(); // Reset form khi modal bị hủy
-                onCancel(); // Gọi hàm onCancel từ component cha
+                form.resetFields(); 
+                onCancel(); 
             }}
             onOk={handleOk}
         >

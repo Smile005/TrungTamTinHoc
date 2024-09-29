@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input } from 'antd';
-import { MoreOutlined } from '@ant-design/icons';
+import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import SuaTaiKhoanModal from '../components/SuaTaiKhoanModal'; 
 import { TaiKhoanType } from '../types/TaiKhoanType';
 import '../styles/TableCustom.css';
 
 const { Search } = Input;
 
-// Sample Data
 const initialData: TaiKhoanType[] = [
   { key: '1', maNhanVien: 'NV001', phanQuyen: 1, trangThai: 'Hoạt động' },
   { key: '2', maNhanVien: 'NV002', phanQuyen: 2, trangThai: 'Đã khóa' },
@@ -21,14 +21,15 @@ const initialData: TaiKhoanType[] = [
 ];
 
 const TaiKhoan: React.FC = () => {
-  const [searchText, setSearchText] = useState(''); // Search input state
-  const [filteredData, setFilteredData] = useState<TaiKhoanType[]>(initialData); // Filtered data state
+  const [searchText, setSearchText] = useState(''); 
+  const [filteredData, setFilteredData] = useState<TaiKhoanType[]>(initialData); 
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<TaiKhoanType | null>(null);
 
   // Handle search input
   const onSearch = (value: string) => {
     const filtered = initialData.filter((item) =>
       item.maNhanVien.toLowerCase().includes(value.toLowerCase()) ||
-      item.matKhau?.toLowerCase().includes(value.toLowerCase()) ||
       item.phanQuyen.toString().includes(value) ||
       item.trangThai.toLowerCase().includes(value.toLowerCase())
     );
@@ -37,7 +38,20 @@ const TaiKhoan: React.FC = () => {
   };
 
   const handleMenuClick = (e: any, record: TaiKhoanType) => {
-    console.log('Selected Record:', record);
+    if (e.key === 'edit') {
+      setSelectedRecord(record);
+      setIsEditModalVisible(true);
+    }
+  };
+
+  const handleEditCancel = () => {
+    setIsEditModalVisible(false);
+    setSelectedRecord(null); 
+  };
+
+  const handleEditSubmit = (values: any) => {
+    console.log('Updated Tai Khoan:', values);
+    setIsEditModalVisible(false);
   };
 
   // Define table columns
@@ -69,19 +83,17 @@ const TaiKhoan: React.FC = () => {
       width: '10%',
       render: (_: any, record: TaiKhoanType) => {
         const menu = (
-            <Menu onClick={(e) => handleMenuClick(e, record)}>
-                <Menu.Item key="edit">Xem thông tin</Menu.Item>
-                <Menu.Item key="dangKy">Đăng ký</Menu.Item>
-                <Menu.Item key="tinhTrang">Đổi tình trạng</Menu.Item>
-                <Menu.Item key="delete">Xóa</Menu.Item>
-            </Menu>
+          <Menu onClick={(e) => handleMenuClick(e, record)}>
+            <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
+            <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
+          </Menu>
         );
         return (
-            <Dropdown overlay={menu}>
-                <Button type="link" icon={<MoreOutlined />} />
-            </Dropdown>
+          <Dropdown overlay={menu}>
+            <Button type="link" icon={<MoreOutlined />} />
+          </Dropdown>
         );
-    },
+      },
     },
   ];
 
@@ -102,7 +114,7 @@ const TaiKhoan: React.FC = () => {
           <Button className='custom-button'>Thêm</Button>
           <Button className='custom-button' >
             Nhập Excel
-          </Button> {/* Thêm sự kiện onClick */}
+          </Button>
         </div>
       </div>
 
@@ -113,6 +125,13 @@ const TaiKhoan: React.FC = () => {
         pagination={{ pageSize: 5 }}
         rowKey="key"
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
+      />
+
+      <SuaTaiKhoanModal
+        visible={isEditModalVisible}
+        onCancel={handleEditCancel}
+        onSubmit={handleEditSubmit}
+        initialValues={selectedRecord} // Passing the selected record for editing
       />
     </Layout>
   );
