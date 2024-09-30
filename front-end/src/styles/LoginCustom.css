@@ -1,85 +1,83 @@
-.login-container {
-  display: flex;
-  height: 100vh;
-  background-color: #3a99d8;
-}
-
-.login-left {
-  width: 40%;
-  background-color: #fff;
-  padding: 3rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-top-right-radius: 200px; 
-  border-bottom-right-radius: 200px; 
-}
-
-.login-right {
-  width: 60%;
-  background-color: #3a99d8;
+/* src/pages/Login.css */
+.login-page {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
+  width: 1000px;
+  padding: 0 30px;
+  background-color: #f9fafb;
+  margin-left: 350px;
 }
 
-.login-title {
+.login-form {
+  max-width: 400px;
+  width: 100%;
+  margin-right: 15px;
+}
+
+.login-form h2 {
+  margin-bottom: 24px;
   font-size: 24px;
-  margin-bottom: 20px;
+  font-weight: bold;
 }
 
-.login-btn {
+.login-form .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.login-form .ant-btn-primary {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  font-size: 16px;
-  border-radius: 5px;
-  font-weight: 600;
-}
-
-.forgot-password {
-  display: block;
-  margin-bottom: 15px;
-  text-align: right;
-  color: #666;
-  text-decoration: underline;
-}
-
-.login-submit-btn {
-  background-color: hsl(204, 75%, 58%);
+  height: 48px;
+  background-color: #4eb1f9;
   border: none;
-  color: white;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.login-form .ant-btn-primary:hover {
+  background-color: #3a99d8;
+  /* Thay đổi màu khi hover */
+}
+
+.login-image {
+  max-width: 500px;
   width: 100%;
-  height: 40px;
-  font-size: 16px;
-  padding: 10px 0;
-  border-radius: 5px;
+  margin-left: 15px;
+  /* Tạo khoảng cách từ phía hình ảnh */
+  object-fit: cover;
+  /* Đảm bảo hình ảnh không bị méo */
+  border-radius: 10px;
+  /* Bo góc cho hình ảnh */
 }
 
-.login-illustration {
-  max-width: 80%;
-  height: auto;
+.right-side {
+  flex: 1;
+  background-color: #4eb1f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0 10px 10px 0;
 }
 
-input[type="text"],
-input[type="password"] {
-  height: 35px;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+.social-login {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
 }
 
-@media (max-width: 768px) {
-  .login-container {
-    flex-direction: column;
-  }
+.social-login button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+  transition: opacity 0.3s;
+}
 
-  .login-left, .login-right {
-    width: 100%;
-  }
+.social-login button:hover {
+  opacity: 0.7;
+}
 
-  .login-right {
-    height: 50%;
-  }
+.login-txt {
+  text-align: center;
 }
