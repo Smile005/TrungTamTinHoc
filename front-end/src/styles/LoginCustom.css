@@ -1,11 +1,13 @@
 /* src/pages/Login.css */
 .login-page {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 0 50px;
+  width: 1000px;
+  padding: 0 30px;
   background-color: #f9fafb;
+  margin-left: 350px;
 }
 
 .login-form {
@@ -29,30 +31,33 @@
   height: 48px;
   background-color: #4eb1f9;
   border: none;
-  border-radius: 5px; /* Thêm bo góc cho nút đăng nhập */
+  border-radius: 5px;
   font-weight: bold;
 }
 
 .login-form .ant-btn-primary:hover {
-  background-color: #3a99d8; /* Thay đổi màu khi hover */
+  background-color: #3a99d8;
+  /* Thay đổi màu khi hover */
 }
 
 .login-image {
   max-width: 500px;
   width: 100%;
-  margin-left: 15px; 
-  object-fit: cover; 
+  margin-left: 15px;
+  /* Tạo khoảng cách từ phía hình ảnh */
+  object-fit: cover;
+  /* Đảm bảo hình ảnh không bị méo */
   border-radius: 10px;
-  height: 100%;
+  /* Bo góc cho hình ảnh */
 }
 
 .right-side {
   flex: 1;
-  background-color: #4eb1f9; /* Màu nền cho phần bên phải */
+  background-color: #4eb1f9;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 0 10px 10px 0; /* Bo góc cho phần bên phải */
+  border-radius: 0 10px 10px 0;
 }
 
 .social-login {
@@ -66,12 +71,13 @@
   background: none;
   cursor: pointer;
   font-size: 18px;
-  transition: opacity 0.3s; /* Thêm hiệu ứng khi hover */
+  transition: opacity 0.3s;
 }
 
 .social-login button:hover {
   opacity: 0.7;
 }
-.login-txt{
+
+.login-txt {
   text-align: center;
 }
