@@ -1,11 +1,12 @@
 import React from 'react';
 import { Modal, Form, Input,Select } from 'antd';
+import { NhanVienType } from '../types/NhanVienType';
 
 interface NhanVienModalProps {
     visible: boolean;
     onCancel: () => void;
     onOk: (values: any) => void;
-    initialValues: any;
+    initialValues: NhanVienType | null; 
 }
 
 const NhanVienModal01: React.FC<NhanVienModalProps> = ({ visible, onCancel, onOk, initialValues }) => {

@@ -3,7 +3,7 @@ import { Table, Button, Dropdown, Menu, Layout, Tag, TableColumnsType, Input } f
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import ThemNhanVienModal from '../components/ThemNhanVienModal'; // Import modal mới
 import { NhanVienType } from '../types/NhanVienType';
-import NhanVienModal01 from '../components/SuaNhanVienModal';
+import SuaNhanVienModal from '../components/SuaNhanVienModal';
 import '../styles/TableCustom.css';
 
 const { Search } = Input;
@@ -126,11 +126,11 @@ const NhanVien: React.FC = () => {
                 pagination={{ pageSize: 5 }}
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
-            <NhanVienModal01
+            <SuaNhanVienModal
                 visible={isModalVisible}
                 onCancel={handleCancel}
                 onOk={handleOk}
-                initialValues={selectedRecord || {}}
+                initialValues={selectedRecord}
             />
 
             <ThemNhanVienModal
@@ -339,7 +339,6 @@ const data: NhanVienType[] = [
         trangThai: 'Part time',
     },
 ];
-
 
 
 
