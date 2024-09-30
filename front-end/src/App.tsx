@@ -1,6 +1,5 @@
-// src/App.tsx
 import React, { useState } from 'react';
-import { Route, Routes, Navigate, useLocation, Link } from 'react-router-dom'; // Không cần dùng BrowserRouter ở đây vì đã bao bọc bên index.tsx
+import { Route, Routes, Navigate, useLocation, Link } from 'react-router-dom'; 
 import { Layout, Menu, Dropdown, Button, message, theme } from 'antd';
 import {
   ScheduleOutlined,
@@ -13,7 +12,7 @@ import {
   SolutionOutlined,
   AppstoreOutlined,
   LogoutOutlined,
-  InfoCircleOutlined,
+  AuditOutlined,
 } from '@ant-design/icons';
 import HocVien from './pages/HocVien';
 import NhanVien from './pages/NhanVien';
@@ -30,6 +29,7 @@ import TKLopHoc from './pages/TKLopHoc';
 import TKGiangVien from './pages/TKGiangVien';
 import Login from './pages/Login';
 import UserInfoModal from './components/UserInforModal';
+import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
 import { logout } from './store/slices/authSlice';
@@ -43,22 +43,31 @@ const App: React.FC = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const [collapsed, setCollapsed] = useState(false); 
-  const [isUserInfoModalVisible, setIsUserInfoModalVisible] = useState(false); 
-  const location = useLocation(); 
-  const dispatch = useDispatch(); 
+  const [collapsed, setCollapsed] = useState(false);
+  const [isUserInfoModalVisible, setIsUserInfoModalVisible] = useState(false);
+  const location = useLocation();
+  const dispatch = useDispatch();
+
 
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-  const userInfo = useSelector((state: RootState) => ({
+  const userInfo = useSelector((state: RootState): NhanVienType | null => ({
     maNhanVien: 'NV001',
-    name: 'Nguyen Van A',
+    tenNhanVien: 'Nguyen Van A',
+    gioiTinh: 'Nam',
+    ngaySinh: '15/12/1990',
+    sdt: '0987654321',
     email: 'nva@example.com',
-  })); 
+    diaChi: '123 Đường ABC, Quận XYZ, TP HCM',
+    trangThai: 'Full time',
+    chucVu: 'Developer',
+    ngayVaoLam: '01/01/2020'
+  }));
 
   const isLoginPage = location.pathname === '/login';
 
+
   const getSelectedKey = () => {
-    if (location.pathname === '/') return '0'; // Trang chủ
+    if (location.pathname === '/') return '0';
     if (location.pathname.startsWith('/taikhoan')) return '1';
     if (location.pathname.startsWith('/nhanvien')) return '2';
     if (location.pathname.startsWith('/hocvien')) return '3';
@@ -73,11 +82,11 @@ const App: React.FC = () => {
     if (location.pathname.startsWith('/tk_hocvien')) return '13';
     if (location.pathname.startsWith('/tk_giangvien')) return '14';
     if (location.pathname.startsWith('/tk_lophoc')) return '15';
-    return '0'; 
+    return '0';
   };
 
   const handleLogout = () => {
-    dispatch(logout()); 
+    dispatch(logout());
     message.success('Đã đăng xuất thành công!');
   };
 
@@ -104,11 +113,14 @@ const App: React.FC = () => {
 
               {isAuthenticated && userInfo && (
 
-                <div className='user-infor' onClick={handleUserInfo}>
-                  <Button type="link" className='' >
-                      <p className='user-name'>{userInfo.name.split(' ').pop() }</p>
+                <div className='user-info-container'>
+                  <Button type="link" className='user-info' onClick={handleUserInfo}>
+                    <p className='user-icon'><UserOutlined /></p>
+                    <p className='user-name'>{userInfo.tenNhanVien}</p>
                   </Button>
+                  <Button type="link" className='logout-btn' onClick={handleLogout} icon={<LogoutOutlined />} />
                 </div>
+
               )}
             </div>
           </Header>
@@ -138,7 +150,7 @@ const App: React.FC = () => {
                 <Menu.Item key="0" icon={<AppstoreOutlined />}>
                   <Link to="/">Trang chủ</Link>
                 </Menu.Item>
-                <SubMenu key="group01" icon={<UserOutlined />} title="Tổ chức">
+                <SubMenu key="group01" icon={<AuditOutlined />} title="Tổ chức">
                   <Menu.Item key="1">
                     <Link to="/taikhoan">Tài khoản</Link>
                   </Menu.Item>
@@ -240,7 +252,7 @@ const App: React.FC = () => {
           </Routes>
         </Content>
       )}
-      
+
       <UserInfoModal
         visible={isUserInfoModalVisible}
         onCancel={() => setIsUserInfoModalVisible(false)}
