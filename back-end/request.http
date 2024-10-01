@@ -1,0 +1,160 @@
+### 1. Đăng ký tài khoản
+POST http://localhost:8081/api/auth/register
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV001",
+  "matKhau": "password123",
+  "phanQuyen": 1
+}
+
+### 2. Đăng nhập
+POST http://localhost:8081/api/auth/login
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV240011",
+  "matKhau": "123"
+}
+
+### 3. Đổi mật khẩu
+POST http://localhost:8081/api/auth/change-password
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV001",
+  "oldPassword": "password123",
+  "newPassword": "newpassword123"
+}
+
+### 4. Lấy danh sách nhân viên
+GET http://localhost:8081/api/nhanvien
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMTEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzc1MDA3MCwiZXhwIjoxNzI3NzUzNjcwfQ.va-O27d6kXiEktVJL1Y_pDRD1OpTt7sE7tKy2ssgZ0w
+
+### 5. Thêm nhân viên
+POST http://localhost:8081/api/nhanvien
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV002",
+  "tenNhanVien": "Nguyen Van A",
+  "chucVu": "Developer",
+  "ngayVaoLam": "2022-01-01",
+  "gioiTinh": "Nam",
+  "ngaySinh": "1990-01-01",
+  "sdt": "0909123456",
+  "email": "nguyenvana@gmail.com",
+  "diaChi": "Hanoi",
+  "trangThai": "Đang hoạt động",
+  "ghiChu": ""
+}
+
+### 6. Lấy danh sách học viên
+GET http://localhost:8081/api/hocvien/ds-hocvien
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMTEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzc1MDg5MiwiZXhwIjoxNzI3NzU0NDkyfQ.IWi7SGUzOO7IbcK_2GgYy8jUsbYZRYzMc29Zw4b0WM0
+
+### 7. Thêm học viên
+POST http://localhost:8081/api/hocvien/them-hocvien
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMTEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzc1MDg5MiwiZXhwIjoxNzI3NzU0NDkyfQ.IWi7SGUzOO7IbcK_2GgYy8jUsbYZRYzMc29Zw4b0WM0
+Content-Type: application/json
+
+{
+  "maHocVien": "HV240001",
+  "tenHocVien": "Nguyen Van B",
+  "ngayVaoHoc": "2023-10-01",
+  "ngaySinh": "2000-05-15",
+  "gioiTinh": "Nam",
+  "sdt": "0909123456",
+  "email": "nguyenvanb@gmail.com",
+  "diaChi": "Hanoi"
+}
+
+### 8. Lấy danh sách phòng học
+GET http://localhost:8081/api/phonghoc
+Authorization: Bearer 
+
+### 9. Thêm phòng học
+POST http://localhost:8081/api/phonghoc
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "maPhong": "PH001",
+  "soLuong": 30,
+  "trangThai": "Đang hoạt động",
+  "ghiChu": "Phòng máy lạnh"
+}
+
+### 10. Lấy danh sách ca học
+GET http://localhost:8081/api/cahoc
+Authorization: Bearer 
+
+### 11. Thêm ca học
+POST http://localhost:8081/api/cahoc
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "maCa": "CA001",
+  "batDau": "08:00:00",
+  "ketThuc": "10:00:00",
+  "trangThai": "Đang hoạt động",
+  "ghiChu": "Ca sáng"
+}
+
+### 12. Lấy danh sách môn học
+GET http://localhost:8081/api/monhoc
+Authorization: Bearer 
+
+### 13. Thêm môn học
+POST http://localhost:8081/api/monhoc
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "maMonHoc": "MH001",
+  "tenMonHoc": "Lập trình Node.js",
+  "soBuoiHoc": 10,
+  "hocPhi": 5000000,
+  "moTa": "Khóa học lập trình Node.js cơ bản đến nâng cao",
+  "ghiChu": ""
+}
+
+### 14. Lấy danh sách lớp học
+GET http://localhost:8081/api/lophoc
+Authorization: Bearer 
+
+### 15. Thêm lớp học
+POST http://localhost:8081/api/lophoc
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "maLop": "LH001",
+  "tenLop": "Lớp lập trình Node.js",
+  "maMonHoc": "MH001",
+  "ngayBatDau": "2023-10-05",
+  "soLuong": 20,
+  "trangThai": "Đang hoạt động",
+  "ghiChu": "Lớp học dành cho người mới bắt đầu"
+}
+
+### 16. Lấy danh sách hóa đơn
+GET http://localhost:8081/api/hoadon
+Authorization: Bearer 
+
+### 17. Tạo hóa đơn
+POST http://localhost:8081/api/hoadon
+Authorization: Bearer 
+Content-Type: application/json
+
+{
+  "maHoaDon": "HD001",
+  "maNhanVien": "NV001",
+  "maHocVien": "HV001",
+  "ngayTaoHoaDon": "2023-10-01",
+  "trangThai": "Đang hoạt động",
+  "ghiChu": ""
+}
