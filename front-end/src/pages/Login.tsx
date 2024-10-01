@@ -14,7 +14,7 @@ const Login: React.FC = () => {
     setLoading(true);
     try {
       const apiPort = process.env.REACT_APP_API_PORT;
-      const response = await fetch(`http://localhost:${apiPort}/auth/login`, {
+      const response = await fetch(`http://localhost:${apiPort}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,11 +75,6 @@ const Login: React.FC = () => {
               className="input-pw"
               rules={[{ required: true, message: 'Vui lòng nhập password!' }]}>
               <Input.Password placeholder="password" />
-            </Form.Item>
-            <Form.Item>
-              <a href="/forgot-password" className="forgot-password">
-                Forgotpassword ？
-              </a>
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" className="login-submit-btn" loading={loading}>

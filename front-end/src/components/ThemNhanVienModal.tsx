@@ -1,5 +1,6 @@
 import React from 'react';
-import { Modal, Form, Input, DatePicker, Select, Radio } from 'antd';
+import { Modal, Form, Input, DatePicker, Select, Radio, message } from 'antd';
+import axios from 'axios';
 
 interface ThemNhanVienModalProps {
     visible: boolean;
@@ -14,8 +15,29 @@ const ThemNhanVienModal: React.FC<ThemNhanVienModalProps> = ({ visible, onCancel
         form
             .validateFields()
             .then((values) => {
-                onSubmit(values); 
-                form.resetFields(); 
+                // Format dữ liệu theo đúng API yêu cầu
+                const formattedValues = {
+                    maNhanVien: values.maNhanVien,
+                    tenNhanVien: values.tenNhanVien,
+                    gioiTinh: values.gioiTinh,
+                    ngaySinh: values.ngaySinh.format('YYYY-MM-DD'), // Format ngày sinh thành chuỗi yyyy-mm-dd
+                    trangThai: values.trangThai
+                };
+
+                // Gọi API để thêm nhân viên
+                axios.post('http://localhost:8081/api/nhanvien/them-nhanvien', formattedValues, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`, // Gửi token trong header
+                    }
+                })
+                .then(() => {
+                    message.success('Thêm nhân viên thành công');
+                    onSubmit(formattedValues); // Gọi callback để cập nhật lại bảng dữ liệu
+                    form.resetFields(); // Reset lại form sau khi submit thành công
+                })
+                .catch((error) => {
+                    message.error('Lỗi khi thêm nhân viên: ' + error.message);
+                });
             })
             .catch((info) => {
                 console.log('Validate Failed:', info);
