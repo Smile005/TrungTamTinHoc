@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
-import { MoreOutlined } from '@ant-design/icons';
+import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { MonHocType } from '../types/MonHocType';
+import ThemMonHocModal from '../components/ThemMonHocModal';
+import SuaMonHocModal from '../components/SuaMonHocModal'; // Import modal sửa môn học
 import '../styles/TableCustom.css';
 
 const { Search } = Input;
 
-// Sample Data
+// Dữ liệu mẫu đầy đủ
 const initialData: MonHocType[] = [
   { key: '1', maMonHoc: 'MH001', tenMonHoc: 'Toán Cao Cấp', soBuoiHoc: 30, hocPhi: 1000000, moTa: 'Toán nâng cao cho sinh viên', trangThai: 'Hoạt động', ghiChu: '' },
   { key: '2', maMonHoc: 'MH002', tenMonHoc: 'Lý thuyết đồ thị', soBuoiHoc: 25, hocPhi: 1200000, moTa: 'Môn học về lý thuyết đồ thị', trangThai: 'Tạm ngưng', ghiChu: 'Đang chỉnh sửa giáo trình' },
@@ -21,8 +23,11 @@ const initialData: MonHocType[] = [
 ];
 
 const MonHoc: React.FC = () => {
-  const [searchText, setSearchText] = useState(''); // Search input state
-  const [filteredData, setFilteredData] = useState<MonHocType[]>(initialData); // Filtered data state
+  const [searchText, setSearchText] = useState('');
+  const [filteredData, setFilteredData] = useState<MonHocType[]>(initialData);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<MonHocType | null>(null);
 
   // Handle search input
   const onSearch = (value: string) => {
@@ -39,27 +44,52 @@ const MonHoc: React.FC = () => {
 
   const handleMenuClick = (e: any, record: MonHocType) => {
     if (e.key === 'edit') {
-      message.info(`Sửa môn học: ${record.tenMonHoc}`);
+      setSelectedRecord(record);
+      setIsEditModalVisible(true);
     } else if (e.key === 'delete') {
       message.info(`Xóa môn học: ${record.tenMonHoc}`);
     }
   };
 
   const handleAddCourse = () => {
-    message.success("Thêm mới môn học!");
+    setIsModalVisible(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleEditCancel = () => {
+    setIsEditModalVisible(false);
+    setSelectedRecord(null);
+  };
+
+  const handleOk = (values: any) => {
+    const newData = [...filteredData, { key: String(filteredData.length + 1), ...values }];
+    setFilteredData(newData);
+    setIsModalVisible(false);
+    message.success('Thêm mới môn học thành công!');
+  };
+
+  const handleEditSubmit = (values: any) => {
+    const updatedData = filteredData.map((item) =>
+      item.key === selectedRecord?.key ? { ...selectedRecord, ...values } : item
+    );
+    setFilteredData(updatedData);
+    setIsEditModalVisible(false);
+    message.success('Sửa môn học thành công!');
   };
 
   const handleUndo = () => {
     setFilteredData(initialData);
     setSearchText('');
-    message.info("Đã hoàn tác bộ lọc.");
+    message.info('Đã hoàn tác bộ lọc.');
   };
 
   const handleImportExcel = () => {
-    message.info("Chức năng nhập từ Excel!");
+    message.info('Chức năng nhập từ Excel!');
   };
 
-  // Define table columns
   const columns = [
     {
       title: 'Mã Môn Học',
@@ -113,19 +143,21 @@ const MonHoc: React.FC = () => {
       width: '10%',
       render: (_: any, record: MonHocType) => {
         const menu = (
-            <Menu onClick={(e) => handleMenuClick(e, record)}>
-                <Menu.Item key="edit">Xem thông tin</Menu.Item>
-                <Menu.Item key="dangKy">Đăng ký</Menu.Item>
-                <Menu.Item key="tinhTrang">Đổi tình trạng</Menu.Item>
-                <Menu.Item key="delete">Xóa</Menu.Item>
-            </Menu>
+          <Menu onClick={(e) => handleMenuClick(e, record)}>
+            <Menu.Item key="edit" icon={<EditOutlined />}>
+              Xem và sửa thông tin
+            </Menu.Item>
+            <Menu.Item key="delete" icon={<DeleteOutlined />}>
+              Xóa
+            </Menu.Item>
+          </Menu>
         );
         return (
-            <Dropdown overlay={menu}>
-                <Button type="link" icon={<MoreOutlined />} />
-            </Dropdown>
+          <Dropdown overlay={menu}>
+            <Button type="link" icon={<MoreOutlined />} />
+          </Dropdown>
         );
-    },
+      },
     },
   ];
 
@@ -142,8 +174,12 @@ const MonHoc: React.FC = () => {
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button' onClick={handleUndo}>Hoàn tác</Button>
-          <Button className='custom-button' onClick={handleAddCourse}>Thêm</Button>
+          <Button className='custom-button' onClick={handleUndo}>
+            Hoàn tác
+          </Button>
+          <Button className='custom-button' onClick={handleAddCourse}>
+            Thêm
+          </Button>
           <Button className='custom-button' onClick={handleImportExcel}>
             Nhập Excel
           </Button>
@@ -156,6 +192,15 @@ const MonHoc: React.FC = () => {
         pagination={{ pageSize: 5 }}
         rowKey="key"
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
+      />
+
+      <ThemMonHocModal visible={isModalVisible} onCancel={handleCancel} onSubmit={handleOk} />
+
+      <SuaMonHocModal
+        visible={isEditModalVisible}
+        onCancel={handleEditCancel}
+        onSubmit={handleEditSubmit}
+        initialValues={selectedRecord}
       />
     </Layout>
   );

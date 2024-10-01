@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, TableColumnsType, Input, GetProps } from 'antd';
-import { MoreOutlined } from '@ant-design/icons';
+import { MoreOutlined, EditOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons';
 import { HocVienType } from '../types/HocVienType';
 import ThemHocVienModal from '../components/ThemHocVienModal';
 import HocVienModal01 from '../components/HocVienModal01';
@@ -14,17 +14,17 @@ const { Search } = Input;
 const onSearch: SearchProps['onSearch'] = (value, _e, info) => console.log(info?.source, value);
 
 const HocVien: React.FC = () => {
-    const [isThemHocVienModalVisible, setIsThemHocVienModalVisible] = useState(false); // Modal Thêm Học Viên
-    const [isImportModalVisible, setIsImportModalVisible] = useState(false); // Modal Nhập Excel
-    const [isEditModalVisible, setIsEditModalVisible] = useState(false); // Modal Chỉnh sửa
-    const [modalType, setModalType] = useState<'hocvien' | 'nhanvien'>('hocvien'); // Biến để xác định loại modal
+    const [isThemHocVienModalVisible, setIsThemHocVienModalVisible] = useState(false); 
+    const [isImportModalVisible, setIsImportModalVisible] = useState(false); 
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false); 
+    const [modalType, setModalType] = useState<'hocvien' | 'nhanvien'>('hocvien'); 
 
     const [selectedRecord, setSelectedRecord] = useState<HocVienType | null>(null);
 
     const handleMenuClick = (e: any, record: HocVienType) => {
         if (e.key === 'edit') {
-            setSelectedRecord(record);  
-            setIsEditModalVisible(true); 
+            setSelectedRecord(record);
+            setIsEditModalVisible(true);
         }
     };
 
@@ -77,9 +77,9 @@ const HocVien: React.FC = () => {
             ],
             onFilter: (value, record) => {
                 if (value === 'Undefined') {
-                    return record.gioiTinh === undefined; // Trả về true nếu gioiTinh là undefined
+                    return record.gioiTinh === undefined; 
                 }
-                if (record.gioiTinh === undefined) return false; // Trả về false thay vì "undefined"
+                if (record.gioiTinh === undefined) return false; 
                 return record.gioiTinh.indexOf(value as string) === 0;
             },
             render: (gioiTinh: string | undefined): JSX.Element => {
@@ -153,10 +153,9 @@ const HocVien: React.FC = () => {
             render: (_: any, record: HocVienType) => {
                 const menu = (
                     <Menu onClick={(e) => handleMenuClick(e, record)}>
-                        <Menu.Item key="edit">Xem thông tin</Menu.Item>
-                        <Menu.Item key="dangKy">Đăng ký</Menu.Item>
-                        <Menu.Item key="tinhTrang">Đổi tình trạng</Menu.Item>
-                        <Menu.Item key="delete">Xóa</Menu.Item>
+                        <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
+                        <Menu.Item key="dangKy" icon={<FormOutlined />}>Đăng ký</Menu.Item>
+                        <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
                     </Menu>
                 );
                 return (
@@ -183,7 +182,7 @@ const HocVien: React.FC = () => {
                     <Button className='custom-button' onClick={showHocVienModal}>Thêm</Button>
                     <Button className='custom-button' onClick={() => showImportModal('hocvien')}>
                         Nhập Excel
-                    </Button> {/* Thêm sự kiện onClick */}
+                    </Button> 
                 </div>
             </div>
             <Table
@@ -203,7 +202,7 @@ const HocVien: React.FC = () => {
             <ImportExcelModal
                 visible={isImportModalVisible}
                 onCancel={handleCancel}
-                modalType={modalType} 
+                modalType={modalType}
             />
 
             <HocVienModal01

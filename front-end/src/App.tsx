@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Route, Routes, Navigate, useLocation, Link } from 'react-router-dom'; // Không cần dùng BrowserRouter ở đây vì đã bọc trong index.tsx
-import { Layout, Menu, theme } from 'antd';
+import { Route, Routes, Navigate, useLocation, Link } from 'react-router-dom'; 
+import { Layout, Menu, Dropdown, Button, message, theme } from 'antd';
 import {
   ScheduleOutlined,
   BuildOutlined,
@@ -11,6 +11,8 @@ import {
   UserOutlined,
   SolutionOutlined,
   AppstoreOutlined,
+  LogoutOutlined,
+  AuditOutlined,
 } from '@ant-design/icons';
 import HocVien from './pages/HocVien';
 import NhanVien from './pages/NhanVien';
@@ -25,9 +27,12 @@ import TaiKhoan from './pages/TaiKhoan';
 import TKHocVien from './pages/TKHocVien';
 import TKLopHoc from './pages/TKLopHoc';
 import TKGiangVien from './pages/TKGiangVien';
-import Login from './pages/Login'; // Import Login page
-import { useSelector } from 'react-redux';
+import Login from './pages/Login';
+import UserInfoModal from './components/UserInforModal';
+import { NhanVienType } from './types/NhanVienType';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
+import { logout } from './store/slices/authSlice';
 import './App.css';
 
 const { SubMenu } = Menu;
@@ -39,17 +44,30 @@ const App: React.FC = () => {
   } = theme.useToken();
 
   const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation(); // `useLocation` giờ sẽ hoạt động đúng vì BrowserRouter đã bọc App trong index.tsx
+  const [isUserInfoModalVisible, setIsUserInfoModalVisible] = useState(false);
+  const location = useLocation();
+  const dispatch = useDispatch();
 
-  // Lấy trạng thái xác thực từ Redux
+
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const userInfo = useSelector((state: RootState): NhanVienType | null => ({
+    maNhanVien: 'NV001',
+    tenNhanVien: 'Nguyen Van A',
+    gioiTinh: 'Nam',
+    ngaySinh: '15/12/1990',
+    sdt: '0987654321',
+    email: 'nva@example.com',
+    diaChi: '123 Đường ABC, Quận XYZ, TP HCM',
+    trangThai: 'Full time',
+    chucVu: 'Developer',
+    ngayVaoLam: '01/01/2020'
+  }));
 
-  // Kiểm tra nếu đường dẫn hiện tại là trang đăng nhập
   const isLoginPage = location.pathname === '/login';
 
-  // Function to get the selected menu key based on the current path
+
   const getSelectedKey = () => {
-    if (location.pathname === '/') return '0'; // Home page
+    if (location.pathname === '/') return '0';
     if (location.pathname.startsWith('/taikhoan')) return '1';
     if (location.pathname.startsWith('/nhanvien')) return '2';
     if (location.pathname.startsWith('/hocvien')) return '3';
@@ -64,24 +82,46 @@ const App: React.FC = () => {
     if (location.pathname.startsWith('/tk_hocvien')) return '13';
     if (location.pathname.startsWith('/tk_giangvien')) return '14';
     if (location.pathname.startsWith('/tk_lophoc')) return '15';
-    return '0'; // Default to home page if no match
+    return '0';
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    message.success('Đã đăng xuất thành công!');
+  };
+
+  const handleUserInfo = () => {
+    setIsUserInfoModalVisible(true);
   };
 
   return (
     <Layout style={{ height: '100vh' }}>
-      {/* Chỉ hiển thị Header và Sider khi không ở trang đăng nhập */}
       {!isLoginPage && (
         <>
           <Header className="custom-header" style={{ background: '#000', color: '#fff' }}>
-            <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-              <img
-                style={{ width: '50px', height: '50px', marginTop: '5px', borderRadius: '15px' }}
-                src="https://res.cloudinary.com/dhyt592i7/image/upload/v1726735463/s7noroyd5bk6whepwsbu.png"
-                alt="Logo"
-              />
-              <Link to="/">
-                <h1 style={{ color: 'white', marginLeft: '15px' }}>Trung Tâm Prometheus</h1>
-              </Link>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+                <img
+                  style={{ width: '50px', height: '50px', marginTop: '5px', borderRadius: '15px' }}
+                  src="https://res.cloudinary.com/dhyt592i7/image/upload/v1726735463/s7noroyd5bk6whepwsbu.png"
+                  alt="Logo"
+                />
+                <Link to="/">
+                  <h1 style={{ color: 'white', marginLeft: '15px' }}>Trung Tâm Prometheus</h1>
+                </Link>
+              </div>
+
+              {isAuthenticated && userInfo && (
+
+                <div className='user-info-container'>
+                  <Button type="link" className='user-info' onClick={handleUserInfo}>
+                    <p className='user-icon'><UserOutlined /></p>
+                    <p className='user-name'>{userInfo.tenNhanVien}</p>
+                  </Button>
+                  <Button type="link" className='logout-btn' onClick={handleLogout} icon={<LogoutOutlined />} />
+                </div>
+
+              )}
             </div>
           </Header>
 
@@ -105,12 +145,12 @@ const App: React.FC = () => {
               <Menu
                 className="custom-menu"
                 mode="inline"
-                selectedKeys={[getSelectedKey()]} // Dynamically set selected keys
+                selectedKeys={[getSelectedKey()]}
               >
                 <Menu.Item key="0" icon={<AppstoreOutlined />}>
                   <Link to="/">Trang chủ</Link>
                 </Menu.Item>
-                <SubMenu key="group01" icon={<UserOutlined />} title="Tổ chức">
+                <SubMenu key="group01" icon={<AuditOutlined />} title="Tổ chức">
                   <Menu.Item key="1">
                     <Link to="/taikhoan">Tài khoản</Link>
                   </Menu.Item>
@@ -171,7 +211,7 @@ const App: React.FC = () => {
               </Menu>
             </Sider>
 
-            <Layout style={{ padding: isLoginPage ? '0' : '0 24px 24px' }}>
+            <Layout style={{ padding: '0 24px 24px' }}>
               <Content
                 style={{
                   padding: 24,
@@ -203,7 +243,7 @@ const App: React.FC = () => {
         </>
       )}
 
-      {/* Nếu là trang đăng nhập, không hiển thị Header và Sider */}
+
       {isLoginPage && (
         <Content style={{ padding: 24 }}>
           <Routes>
@@ -212,6 +252,13 @@ const App: React.FC = () => {
           </Routes>
         </Content>
       )}
+
+      <UserInfoModal
+        visible={isUserInfoModalVisible}
+        onCancel={() => setIsUserInfoModalVisible(false)}
+        userInfo={userInfo}
+        onLogout={handleLogout}
+      />
     </Layout>
   );
 };

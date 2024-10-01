@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input } from 'antd';
-import { MoreOutlined } from '@ant-design/icons';
+import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { PhongHocType } from '../types/PhongHocType';
+import ThemPhongHocModal from '../components/ThemPhongHocModal';
+import SuaPhongHocModal from '../components/SuaPhongHocModal'; // Import modal sửa phòng học
 import '../styles/TableCustom.css';
 
 const { Search } = Input;
@@ -21,10 +23,12 @@ const initialData: PhongHocType[] = [
 ];
 
 const PhongHoc: React.FC = () => {
-  const [searchText, setSearchText] = useState(''); // Search input state
-  const [filteredData, setFilteredData] = useState<PhongHocType[]>(initialData); // Filtered data state
+  const [searchText, setSearchText] = useState(''); 
+  const [filteredData, setFilteredData] = useState<PhongHocType[]>(initialData); 
+  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<PhongHocType | null>(null); 
 
-  // Handle search input
   const onSearch = (value: string) => {
     const filtered = initialData.filter((item) =>
       item.maPhong.toLowerCase().includes(value.toLowerCase()) ||
@@ -35,11 +39,40 @@ const PhongHoc: React.FC = () => {
     setSearchText(value);
   };
 
-  const handleMenuClick = (e: any, record: PhongHocType) => {
-    console.log('Selected Record:', record);
+  const showModal = () => {
+    setIsModalVisible(true);
   };
 
-  // Define table columns
+  // Hide modal thêm
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleOk = (values: any) => {
+    console.log('Thêm Phòng Học:', values);
+    const newData = [...filteredData, { key: String(filteredData.length + 1), ...values }];
+    setFilteredData(newData);
+    setIsModalVisible(false);
+  };
+
+  const handleMenuClick = (e: any, record: PhongHocType) => {
+    if (e.key === 'edit') {
+      setSelectedRecord(record); 
+      setIsEditModalVisible(true); 
+    }
+  };
+
+  const handleEditCancel = () => {
+    setIsEditModalVisible(false);
+  };
+
+  const handleEditSubmit = (values: any) => {
+    console.log('Sửa thông tin Phòng Học:', values);
+    const updatedData = filteredData.map((item) => (item.maPhong === values.maPhong ? values : item));
+    setFilteredData(updatedData);
+    setIsEditModalVisible(false);
+  };
+
   const columns = [
     {
       title: 'Mã Phòng',
@@ -59,7 +92,7 @@ const PhongHoc: React.FC = () => {
       key: 'trangThai',
       render: (trangThai: string): JSX.Element => {
         let color = trangThai === 'Đang hoạt động' ? 'geekblue' : 'green';
-        return <Tag color={color} key={trangThai}>{trangThai.toUpperCase()}</Tag>;
+        return <Tag color={color}>{trangThai.toUpperCase()}</Tag>;
       },
     },
     {
@@ -74,19 +107,17 @@ const PhongHoc: React.FC = () => {
       width: '10%',
       render: (_: any, record: PhongHocType) => {
         const menu = (
-            <Menu onClick={(e) => handleMenuClick(e, record)}>
-                <Menu.Item key="edit">Xem thông tin</Menu.Item>
-                <Menu.Item key="dangKy">Đăng ký</Menu.Item>
-                <Menu.Item key="tinhTrang">Đổi tình trạng</Menu.Item>
-                <Menu.Item key="delete">Xóa</Menu.Item>
-            </Menu>
+          <Menu onClick={(e) => handleMenuClick(e, record)}>
+            <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
+            <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
+          </Menu>
         );
         return (
-            <Dropdown overlay={menu}>
-                <Button type="link" icon={<MoreOutlined />} />
-            </Dropdown>
+          <Dropdown overlay={menu}>
+            <Button type="link" icon={<MoreOutlined />} />
+          </Dropdown>
         );
-    },
+      },
     },
   ];
 
@@ -103,11 +134,8 @@ const PhongHoc: React.FC = () => {
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button'>Hoàn tác</Button>
-          <Button className='custom-button'>Thêm</Button>
-          <Button className='custom-button' >
-            Nhập Excel
-          </Button> {/* Thêm sự kiện onClick */}
+          <Button className='custom-button' onClick={showModal}>Thêm</Button>
+          <Button className='custom-button'>Nhập Excel</Button>
         </div>
       </div>
       <Table
@@ -117,6 +145,19 @@ const PhongHoc: React.FC = () => {
         pagination={{ pageSize: 5 }}
         rowKey="key"
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
+      />
+
+      <ThemPhongHocModal
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        onSubmit={handleOk}
+      />
+
+      <SuaPhongHocModal
+        visible={isEditModalVisible}
+        onCancel={handleEditCancel}
+        onSubmit={handleEditSubmit}
+        initialValues={selectedRecord} 
       />
     </Layout>
   );

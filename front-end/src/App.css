@@ -1,24 +1,24 @@
-
-.demo-logo{
+.demo-logo {
   background-color: gray;
   height: 40px;
   width: 200px;
 }
-.custom-header{
-  display: flex; 
-  align-items: center; 
+
+.custom-header {
+  display: flex;
+  align-items: center;
   height: '80px';
-  justify-content: space-between; 
+  justify-content: space-between;
   background-color: rgb(35, 30, 31);
 }
 
-/* Style fo the entire menu */
 .custom-menu {
   background-color: white;
   border-right: 1px solid #d9d9d9;
   font-size: 16px;
-  height: fit-content; 
+  height: fit-content;
 }
+
 .custom-trigger {
   background-color: rgb(35, 30, 31);
   padding: 15px;
@@ -26,9 +26,10 @@
   justify-content: center;
   align-items: center;
 }
+
 .sider-fixed {
   position: fixed;
-  height: 100vh; 
+  height: 100vh;
   left: 0;
   top: 0;
   z-index: 1000;
@@ -36,38 +37,36 @@
 }
 
 .main-content {
-  margin-left: 250px; /* Khoảng cách bằng với chiều rộng của Sider */
+  margin-left: 250px;
   padding: 20px;
   overflow-y: auto;
   height: 100vh;
 }
 
+.user-info-container {
+  position: relative;
+  left: 1020px;
+  border-radius: '50%';
+  
+}
+.logout-btn {
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 25px; 
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+}
 
-/* Style for the menu items */
-/* .custom-menu .ant-menu-item {
-  padding: 10px 20px;
-  color: #333;
-} */
-
-/* Hover effect for menu items */
-/* .custom-menu .ant-menu-item:hover {
-  background-color: #e6f7ff;
-  color: #1890ff;
-} */
-
-/* Style for selected menu item */
-/* .custom-menu .ant-menu-item-selected {
-  background-color: #1890ff;
-  color: #fff;
-} */
-
-/* Style for submenu title */
-/* .custom-menu .ant-menu-submenu-title {
-  font-weight: bold;
-  color: #1890ff;
-} */
-
-/* Style for submenu item hover */
-/* .custom-menu .ant-menu-submenu-title:hover {
-  color: #40a9ff;
-} */
+.logout-btn:hover {
+  color: white; 
+}
+.user-name{
+  color: white;
+  font-size: 16px;
+}
+.user-icon{
+  color: white;
+  font-size: 20px;
+}
