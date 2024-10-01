@@ -8,16 +8,16 @@ const { Search } = Input;
 
 // Sample Data
 const initialData: TaiKhoanType[] = [
-  // { key: '1', maNhanVien: 'NV001', phanQuyen: 1, trangThai: 'Hoạt động' },
-  // { key: '2', maNhanVien: 'NV002', phanQuyen: 2, trangThai: 'Đã khóa' },
-  // { key: '3', maNhanVien: 'NV003', phanQuyen: 3, trangThai: 'Hoạt động' },
-  // { key: '4', maNhanVien: 'NV004', phanQuyen: 1, trangThai: 'Đã khóa' },
-  // { key: '5', maNhanVien: 'NV005', phanQuyen: 2, trangThai: 'Hoạt động' },
-  // { key: '6', maNhanVien: 'NV006', phanQuyen: 1, trangThai: 'Hoạt động' },
-  // { key: '7', maNhanVien: 'NV007', phanQuyen: 3, trangThai: 'Đã khóa' },
-  // { key: '8', maNhanVien: 'NV008', phanQuyen: 2, trangThai: 'Hoạt động' },
-  // { key: '9', maNhanVien: 'NV009', phanQuyen: 1, trangThai: 'Đã khóa' },
-  // { key: '10', maNhanVien: 'NV010', phanQuyen: 2, trangThai: 'Hoạt động' },
+  { maNhanVien: 'NV001', phanQuyen: 1, trangThai: 'Hoạt động' },
+  { maNhanVien: 'NV002', phanQuyen: 2, trangThai: 'Đã khóa' },
+  { maNhanVien: 'NV003', phanQuyen: 3, trangThai: 'Hoạt động' },
+  { maNhanVien: 'NV004', phanQuyen: 1, trangThai: 'Đã khóa' },
+  { maNhanVien: 'NV005', phanQuyen: 2, trangThai: 'Hoạt động' },
+  { maNhanVien: 'NV006', phanQuyen: 1, trangThai: 'Hoạt động' },
+  { maNhanVien: 'NV007', phanQuyen: 3, trangThai: 'Đã khóa' },
+  { maNhanVien: 'NV008', phanQuyen: 2, trangThai: 'Hoạt động' },
+  { maNhanVien: 'NV009', phanQuyen: 1, trangThai: 'Đã khóa' },
+  { maNhanVien: 'NV010', phanQuyen: 2, trangThai: 'Hoạt động' },
 ];
 
 const TaiKhoan: React.FC = () => {
@@ -69,19 +69,19 @@ const TaiKhoan: React.FC = () => {
       width: '10%',
       render: (_: any, record: TaiKhoanType) => {
         const menu = (
-            <Menu onClick={(e) => handleMenuClick(e, record)}>
-                <Menu.Item key="edit">Xem thông tin</Menu.Item>
-                <Menu.Item key="dangKy">Đăng ký</Menu.Item>
-                <Menu.Item key="tinhTrang">Đổi tình trạng</Menu.Item>
-                <Menu.Item key="delete">Xóa</Menu.Item>
-            </Menu>
+          <Menu onClick={(e) => handleMenuClick(e, record)}>
+            <Menu.Item key="edit">Xem thông tin</Menu.Item>
+            <Menu.Item key="dangKy">Đăng ký</Menu.Item>
+            <Menu.Item key="tinhTrang">Đổi tình trạng</Menu.Item>
+            <Menu.Item key="delete">Xóa</Menu.Item>
+          </Menu>
         );
         return (
-            <Dropdown overlay={menu}>
-                <Button type="link" icon={<MoreOutlined />} />
-            </Dropdown>
+          <Dropdown overlay={menu}>
+            <Button type="link" icon={<MoreOutlined />} />
+          </Dropdown>
         );
-    },
+      },
     },
   ];
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Route, Routes, Navigate, useLocation, Link } from 'react-router-dom'; // Không cần dùng BrowserRouter ở đây
+import { Route, Routes, Navigate, useLocation, Link } from 'react-router-dom'; // Không cần dùng BrowserRouter ở đây vì đã bọc trong index.tsx
 import { Layout, Menu, theme } from 'antd';
 import {
   ScheduleOutlined,
@@ -39,7 +39,7 @@ const App: React.FC = () => {
   } = theme.useToken();
 
   const [collapsed, setCollapsed] = useState(false);
-  const location = useLocation(); // useLocation giờ sẽ hoạt động đúng vì BrowserRouter bao bọc App trong index.tsx
+  const location = useLocation(); // `useLocation` giờ sẽ hoạt động đúng vì BrowserRouter đã bọc App trong index.tsx
 
   // Lấy trạng thái xác thực từ Redux
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
