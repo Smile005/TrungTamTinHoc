@@ -98,7 +98,7 @@ const App: React.FC = () => {
     <Layout style={{ height: '100vh' }}>
       {!isLoginPage && (
         <>
-          <Header className="custom-header" style={{ background: '#4eb1f9', color: '#fff' }}>
+          <Header className="custom-header" style={{ background: '#2591de', color: '#fff' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
                 <img

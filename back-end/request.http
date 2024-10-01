@@ -13,8 +13,8 @@ POST http://localhost:8081/api/auth/login
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV240011",
-  "matKhau": "123"
+  "maNhanVien": "NV001",
+  "matKhau": "password123"
 }
 
 ### 3. Đổi mật khẩu
@@ -33,12 +33,12 @@ GET http://localhost:8081/api/nhanvien
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMTEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzc1MDA3MCwiZXhwIjoxNzI3NzUzNjcwfQ.va-O27d6kXiEktVJL1Y_pDRD1OpTt7sE7tKy2ssgZ0w
 
 ### 5. Thêm nhân viên
-POST http://localhost:8081/api/nhanvien
-Authorization: Bearer 
+POST http://localhost:8081/api/nhanvien/them-nhanvien
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzc5OTM1MiwiZXhwIjoxNzI3ODAyOTUyfQ.sTWvekrst-viwuTyBGxM7NNFZBWwXA7Bgvo3Igu7-8o
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV002",
+  "maNhanVien": "NV008",
   "tenNhanVien": "Nguyen Van A",
   "chucVu": "Developer",
   "ngayVaoLam": "2022-01-01",
@@ -53,7 +53,7 @@ Content-Type: application/json
 
 ### 6. Lấy danh sách học viên
 GET http://localhost:8081/api/hocvien/ds-hocvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMTEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzc1MDg5MiwiZXhwIjoxNzI3NzU0NDkyfQ.IWi7SGUzOO7IbcK_2GgYy8jUsbYZRYzMc29Zw4b0WM0
+Authorization: Bearer 
 
 ### 7. Thêm học viên
 POST http://localhost:8081/api/hocvien/them-hocvien
@@ -157,4 +157,23 @@ Content-Type: application/json
   "ngayTaoHoaDon": "2023-10-01",
   "trangThai": "Đang hoạt động",
   "ghiChu": ""
+}
+
+### 18. Sửa NV
+POST http://localhost:8081/api/nhanvien/sua-nhanvien
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzc5NDM2OSwiZXhwIjoxNzI3Nzk3OTY5fQ.2Awa0zEDWmey6kqHgzPIyF2LkZuw-XeMAs0qCjdVUrI
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV001",
+  "tenNhanVien": "Nguyen Van v",
+  "chucVu": "Trưởng phòng",
+  "ngayVaoLam": "2022-01-15",
+  "gioiTinh": "Nam",
+  "ngaySinh": "1990-05-25",
+  "sdt": "0123456789",
+  "email": "nguyenvana@example.com",
+  "diaChi": "123 Đường ABC, Quận 1, TP.HCM",
+  "trangThai": "Đang hoạt động",
+  "ghiChu": "Ghi chú thêm về nhân viên."
 }

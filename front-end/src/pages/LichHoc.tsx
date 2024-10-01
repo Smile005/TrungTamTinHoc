@@ -169,10 +169,10 @@ const getListData = (value: Dayjs): BuoiHocType[] => {
           ngayHoc: value.toDate(),
           caHoc: {key: '1', maCa: 'CA01', batDau: "07:00", ketThuc: "10:00", trangThai: 'Đang hoạt động', ghiChu: 'Ca học bình thường' },
           phongHoc: {key: '1', maPhong: 'PH01', soLuong: 30, trangThai: 'Đang hoạt động', ghiChu: 'Phòng học lý thuyết' },
-          giaoVien: { key: 'GV001', maNhanVien: 'NV001', tenNhanVien: 'Nguyễn Văn A', gioiTinh: 'nam', ngaySinh: '1990-01-01', trangThai: 'Đang làm việc' },
+          giaoVien: { maNhanVien: 'NV001', tenNhanVien: 'Nguyễn Văn A', gioiTinh: 'nam', ngaySinh: '1990-01-01', trangThai: 'Đang làm việc' },
           loai: 'Ngày học',
           trangThai: 'Đã lên lịch',
-          ghiChu: 'Học sinh cần chuẩn bị tài liệu',
+          ghiChu: '',
         },
         {
           maBuoiHoc: 'BH002',
@@ -180,10 +180,10 @@ const getListData = (value: Dayjs): BuoiHocType[] => {
           ngayHoc: value.toDate(),
           caHoc: { key: '1', maCa: 'CA02', batDau: "07:00", ketThuc: "10:00", trangThai: 'Đang hoạt động', ghiChu: 'Ca thi' },
           phongHoc: {key: '1', maPhong: 'PH02', soLuong: 30, trangThai: 'Đang hoạt động', ghiChu: 'Phòng thi' },
-          giaoVien: { key: 'GV002', maNhanVien: 'NV002', tenNhanVien: 'Trần Thị B', gioiTinh: 'nữ', ngaySinh: '1992-05-15', trangThai: 'Đang làm việc' },
+          giaoVien: { maNhanVien: 'NV002', tenNhanVien: 'Trần Thị B', gioiTinh: 'nữ', ngaySinh: '1992-05-15', trangThai: 'Đang làm việc' },
           loai: 'Ngày thi',
           trangThai: 'Đã lên lịch',
-          ghiChu: 'Học sinh tham gia thi giữa kỳ',
+          ghiChu: '',
         },
       ];
       break;
@@ -195,10 +195,10 @@ const getListData = (value: Dayjs): BuoiHocType[] => {
           ngayHoc: value.toDate(),
           caHoc: { key: '1', maCa: 'CA03', batDau: "07:00", ketThuc: "10:00", trangThai: 'Đang hoạt động', ghiChu: 'Ngày nghỉ lễ' },
           phongHoc: {key: '1', maPhong: 'PH03', soLuong: 30, trangThai: 'Ngưng hoạt động', ghiChu: 'Không có lớp' },
-          giaoVien: { key: 'GV003', maNhanVien: 'NV003', tenNhanVien: 'Lê Văn C', gioiTinh: 'nam', ngaySinh: '1985-12-20', trangThai: 'Đang làm việc' },
+          giaoVien: { maNhanVien: 'NV003', tenNhanVien: 'Lê Văn C', gioiTinh: 'nam', ngaySinh: '1985-12-20', trangThai: 'Đang làm việc' },
           loai: 'Ngày nghỉ',
           trangThai: 'Đã lên lịch',
-          ghiChu: 'Nghỉ lễ Quốc khánh',
+          ghiChu: '',
         },
       ];
       break;

@@ -47,8 +47,7 @@ const createNhanVien = async (req, res) => {
 };
 
 const updateNhanVien = async (req, res) => {
-  const { maNhanVien } = req.params;
-  const { tenNhanVien, chucVu, ngayVaoLam, gioiTinh, ngaySinh, sdt, email, diaChi, trangThai, ghiChu } = req.body;
+  const { maNhanVien, tenNhanVien, chucVu, ngayVaoLam, gioiTinh, ngaySinh, sdt, email, diaChi, trangThai, ghiChu } = req.body;
 
   if (!tenNhanVien) {
     return res.status(400).json({ message: 'Tên nhân viên là bắt buộc.' });
@@ -70,7 +69,7 @@ const updateNhanVien = async (req, res) => {
         ngaySinh || null,
         sdt || null,
         email || null,
-        diaChi || null,
+        diaChi  || null,
         trangThai || 'Đang hoạt động',
         ghiChu || null,
         maNhanVien

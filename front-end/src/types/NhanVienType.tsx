@@ -1,5 +1,4 @@
 export interface NhanVienType {
-    key?: string;
     maNhanVien: string;        // Primary key, không NULL
     tenNhanVien: string;       // Không NULL
     img?: string;              // Có thể NULL
