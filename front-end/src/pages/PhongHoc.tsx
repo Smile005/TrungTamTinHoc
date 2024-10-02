@@ -1,36 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { PhongHocType } from '../types/PhongHocType';
 import ThemPhongHocModal from '../components/ThemPhongHocModal';
 import SuaPhongHocModal from '../components/SuaPhongHocModal'; // Import modal sửa phòng học
 import '../styles/TableCustom.css';
+import axios from 'axios';
 
 const { Search } = Input;
 
-// Sample Data
-const initialData: PhongHocType[] = [
-  { key: '1', maPhong: 'PH001', soLuong: 30, trangThai: 'Đang hoạt động', ghiChu: '' },
-  { key: '2', maPhong: 'PH002', soLuong: 25, trangThai: 'Ngưng hoạt động', ghiChu: 'Sử dụng buổi sáng' },
-  { key: '3', maPhong: 'PH003', soLuong: 20, trangThai: 'Đang hoạt động', ghiChu: '' },
-  { key: '4', maPhong: 'PH004', soLuong: 35, trangThai: 'Đang hoạt động', ghiChu: 'Sửa điều hòa' },
-  { key: '5', maPhong: 'PH005', soLuong: 40, trangThai: 'Đang hoạt động', ghiChu: '' },
-  { key: '6', maPhong: 'PH006', soLuong: 50, trangThai: 'Ngưng hoạt động', ghiChu: 'Sử dụng buổi chiều' },
-  { key: '7', maPhong: 'PH007', soLuong: 45, trangThai: 'Đang hoạt động', ghiChu: '' },
-  { key: '8', maPhong: 'PH008', soLuong: 60, trangThai: 'Đang hoạt động', ghiChu: '' },
-  { key: '9', maPhong: 'PH009', soLuong: 55, trangThai: 'Ngưng hoạt động', ghiChu: '' },
-  { key: '10', maPhong: 'PH010', soLuong: 20, trangThai: 'Đang hoạt động', ghiChu: '' },
-];
-
 const PhongHoc: React.FC = () => {
   const [searchText, setSearchText] = useState(''); 
-  const [filteredData, setFilteredData] = useState<PhongHocType[]>(initialData); 
+  const [filteredData, setFilteredData] = useState<PhongHocType[]>([]); // Dữ liệu phòng học từ API
   const [isModalVisible, setIsModalVisible] = useState(false); 
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<PhongHocType | null>(null); 
+  const [selectedRecord, setSelectedRecord] = useState<PhongHocType | null>(null);
+  const [data, setData] = useState<PhongHocType[]>([]); // Dữ liệu phòng học từ API
+  const [loading, setLoading] = useState<boolean>(false); // Trạng thái loading khi fetch dữ liệu
+
+  useEffect(() => {
+    const fetchPhongHoc = async () => {
+        setLoading(true); // Bật trạng thái loading khi fetch dữ liệu
+        try {
+            const response = await axios.get('http://localhost:8081/api/phonghoc', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`, // Lấy token từ localStorage
+                },
+            });
+            setData(response.data); // Lưu dữ liệu phòng học vào state
+            setFilteredData(response.data); // Đặt dữ liệu vào filteredData để có thể tìm kiếm
+        } catch (error) {
+            console.error('Lỗi khi lấy danh sách phòng học:', error);
+        } finally {
+            setLoading(false); // Tắt trạng thái loading
+        }
+    };
+
+    fetchPhongHoc();
+  }, []);
 
   const onSearch = (value: string) => {
-    const filtered = initialData.filter((item) =>
+    const filtered = data.filter((item) =>
       item.maPhong.toLowerCase().includes(value.toLowerCase()) ||
       item.soLuong?.toString().includes(value) ||
       item.trangThai?.toLowerCase().includes(value.toLowerCase())
@@ -43,7 +53,6 @@ const PhongHoc: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  // Hide modal thêm
   const handleCancel = () => {
     setIsModalVisible(false);
   };
@@ -91,7 +100,16 @@ const PhongHoc: React.FC = () => {
       dataIndex: 'trangThai',
       key: 'trangThai',
       render: (trangThai: string): JSX.Element => {
-        let color = trangThai === 'Đang hoạt động' ? 'geekblue' : 'green';
+        let color = '';
+                if (trangThai === 'Đang Hoạt Động') {
+                    color = 'geekblue';
+                } else if (trangThai === 'Ngưng Hoạt Động') 
+                    color = 'green';
+                return (
+                    <Tag color={color} key={trangThai}>
+                        {trangThai.toUpperCase()}
+                    </Tag>
+                );
         return <Tag color={color}>{trangThai.toUpperCase()}</Tag>;
       },
     },
@@ -143,6 +161,7 @@ const PhongHoc: React.FC = () => {
         columns={columns}
         dataSource={filteredData}
         pagination={{ pageSize: 5 }}
+        loading={loading} // Hiển thị trạng thái loading khi đang fetch dữ liệu
         rowKey="key"
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
       />
