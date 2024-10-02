@@ -52,7 +52,7 @@ const Login: React.FC = () => {
           padding: '10px'
         }}>
         <img
-          style={{ width: '50px', height: '50px', marginTop: '5px', borderRadius: '15px' }}
+          style={{ width: '50px', height: '50px', marginTop: '5px', borderRadius: '15px' , marginLeft: '30px'}}
           src="https://res.cloudinary.com/dhyt592i7/image/upload/v1727774226/u5hvgxq11k3swhd7ca43.png"
           alt="Logo"
         />
@@ -85,7 +85,7 @@ const Login: React.FC = () => {
         </div>
         <div className="login-right">
           <img
-            src="https://res.cloudinary.com/dhyt592i7/image/upload/v1727710516/lyqhfgmnasdhwkhheqpx.png"
+            src="https://res.cloudinary.com/dhyt592i7/image/upload/v1727878177/lt560sdyxlhgj8gvy5da.png"
             alt="Login Illustration"
             className="login-illustration"
           />

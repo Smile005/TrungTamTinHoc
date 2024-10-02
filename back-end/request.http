@@ -53,7 +53,7 @@ Content-Type: application/json
 
 ### 6. Lấy danh sách học viên
 GET http://localhost:8081/api/hocvien/ds-hocvien
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzg3ODI0MiwiZXhwIjoxNzI3ODgxODQyfQ.mSjx43Xh87vyzsXfoZNDf05vxjutfDIUQLx1iJKJAlo
 
 ### 7. Thêm học viên
 POST http://localhost:8081/api/hocvien/them-hocvien
@@ -73,7 +73,7 @@ Content-Type: application/json
 
 ### 8. Lấy danh sách phòng học
 GET http://localhost:8081/api/phonghoc
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzg4MDUzNywiZXhwIjoxNzI3ODg0MTM3fQ.HkUaLiCXam435HAm9eTY8klFQhv4kR923V7d3B7Poig
 
 ### 9. Thêm phòng học
 POST http://localhost:8081/api/phonghoc
@@ -89,7 +89,7 @@ Content-Type: application/json
 
 ### 10. Lấy danh sách ca học
 GET http://localhost:8081/api/cahoc
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzg3OTg2NiwiZXhwIjoxNzI3ODgzNDY2fQ.ICDITe1uSXZ_dCpsh41PZiIcjGriMg5tjf-GnBSsJ48
 
 ### 11. Thêm ca học
 POST http://localhost:8081/api/cahoc
