@@ -3,7 +3,7 @@ import { Table, Button, Dropdown, Menu, Layout, Tag, TableColumnsType, Input } f
 import { MoreOutlined, EditOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons';
 import { HocVienType } from '../types/HocVienType';
 import ThemHocVienModal from '../components/ThemHocVienModal';
-import HocVienModal01 from '../components/HocVienModal01';
+import SuaHocVienModal from '../components/SuaHocVienModal';
 import '../styles/TableCustom.css';
 import ImportExcelModal from '../components/ImportExcelModal';
 import axios from 'axios';
@@ -11,10 +11,10 @@ import axios from 'axios';
 const { Search } = Input;
 
 const HocVien: React.FC = () => {
-    const [isThemHocVienModalVisible, setIsThemHocVienModalVisible] = useState(false); 
-    const [isImportModalVisible, setIsImportModalVisible] = useState(false); 
-    const [isEditModalVisible, setIsEditModalVisible] = useState(false); 
-    const [modalType, setModalType] = useState<'hocvien' | 'nhanvien'>('hocvien'); 
+    const [isThemHocVienModalVisible, setIsThemHocVienModalVisible] = useState(false);
+    const [isImportModalVisible, setIsImportModalVisible] = useState(false);
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+    const [modalType, setModalType] = useState<'hocvien' | 'nhanvien'>('hocvien');
     const [selectedRecord, setSelectedRecord] = useState<HocVienType | null>(null);
     const [data, setData] = useState<HocVienType[]>([]); // Dữ liệu học viên từ API
     const [loading, setLoading] = useState<boolean>(false); // Trạng thái loading khi fetch dữ liệu
@@ -95,9 +95,9 @@ const HocVien: React.FC = () => {
             ],
             onFilter: (value, record) => {
                 if (value === 'Undefined') {
-                    return record.gioiTinh === undefined; 
+                    return record.gioiTinh === undefined;
                 }
-                if (record.gioiTinh === undefined) return false; 
+                if (record.gioiTinh === undefined) return false;
                 return record.gioiTinh.indexOf(value as string) === 0;
             },
             render: (gioiTinh: string | undefined): JSX.Element => {
@@ -200,7 +200,7 @@ const HocVien: React.FC = () => {
                     <Button className='custom-button' onClick={showHocVienModal}>Thêm</Button>
                     <Button className='custom-button' onClick={() => showImportModal('hocvien')}>
                         Nhập Excel
-                    </Button> 
+                    </Button>
                 </div>
             </div>
             <Table
@@ -224,12 +224,13 @@ const HocVien: React.FC = () => {
                 modalType={modalType}
             />
 
-            <HocVienModal01
+            <SuaHocVienModal
                 visible={isEditModalVisible}
                 onCancel={handleCancel}
                 onOk={handleOk}
-                initialValues={selectedRecord || {}}
+                initialValues={selectedRecord || {} as HocVienType}
             />
+
         </Layout>
     );
 };

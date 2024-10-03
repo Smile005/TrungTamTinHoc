@@ -128,6 +128,12 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
           <Input />
         </Form.Item>
         <Form.Item
+          name="diaChi"
+          label="Địa Chỉ"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
           name="tinhTrang"
           label="Tình Trạng"
           rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
