@@ -1,10 +1,12 @@
 import React from 'react';
-import { Modal, Form, Input, InputNumber, Select } from 'antd';
+import { Modal, Form, Input, InputNumber, Select, message } from 'antd';
+import axios from 'axios';
+import { MonHocType } from '../types/MonHocType';
 
 interface ThemMonHocModalProps {
     visible: boolean;
     onCancel: () => void;
-    onSubmit: (values: any) => void;
+    onSubmit: (values: MonHocType) => void;
 }
 
 const ThemMonHocModal: React.FC<ThemMonHocModalProps> = ({ visible, onCancel, onSubmit }) => {
@@ -14,8 +16,33 @@ const ThemMonHocModal: React.FC<ThemMonHocModalProps> = ({ visible, onCancel, on
         form
             .validateFields()
             .then((values) => {
-                onSubmit(values); // Gửi dữ liệu về component cha khi submit
-                form.resetFields(); // Reset form sau khi submit
+                const formattedValues: MonHocType = {
+                    key: values.maMonHoc, // Mã môn học dùng làm key
+                    maMonHoc: values.maMonHoc,
+                    tenMonHoc: values.tenMonHoc,
+                    soBuoiHoc: values.soBuoiHoc || null, // Số buổi học có thể null
+                    hocPhi: values.hocPhi || null, // Học phí có thể null
+                    moTa: values.moTa || null, // Mô tả có thể null
+                    trangThai: values.trangThai, // Trạng thái môn học
+                    ghiChu: values.ghiChu || undefined, // Ghi chú có thể null
+                };
+
+                // Gửi yêu cầu thêm môn học qua API
+                axios
+                    .post('http://localhost:8081/api/monhoc/them-monhoc', formattedValues, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`,
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                    .then(() => {
+                        message.success('Thêm môn học thành công');
+                        onSubmit(formattedValues); // Callback để cập nhật danh sách môn học
+                        form.resetFields(); // Reset form sau khi thêm thành công
+                    })
+                    .catch((error) => {
+                        message.error('Lỗi khi thêm môn học: ' + error.message);
+                    });
             })
             .catch((info) => {
                 console.log('Validate Failed:', info);
@@ -65,24 +92,23 @@ const ThemMonHocModal: React.FC<ThemMonHocModalProps> = ({ visible, onCancel, on
                     name="moTa"
                     label="Mô Tả"
                 >
-                    <Input />
+                    <Input.TextArea />
                 </Form.Item>
                 <Form.Item
                     name="trangThai"
-                    label="Tình Trạng"
-                    rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
+                    label="Trạng Thái"
+                    rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
                 >
                     <Select>
-                        <Select.Option value="Full time">ĐANG HOẠT ĐỘNG</Select.Option>
-                        <Select.Option value="Part time">NGƯNG HOẠT ĐỘNG</Select.Option>
-
+                        <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
+                        <Select.Option value="Tạm Ngưng">Tạm Ngưng</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
                     name="ghiChu"
                     label="Ghi Chú"
                 >
-                    <Input />
+                    <Input.TextArea />
                 </Form.Item>
             </Form>
         </Modal>

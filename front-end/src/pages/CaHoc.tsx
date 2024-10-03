@@ -95,13 +95,6 @@ const CaHoc: React.FC = () => {
             key: 'ketThuc',
         },
         {
-            title: 'Số giờ',
-            key: 'soGio',
-            render: (_: any, record: CaHocType) => (
-                <span>{soGio(record.batDau, record.ketThuc)} giờ</span>
-            ),
-        },
-        {
             title: 'Trạng thái',
             dataIndex: 'trangThai',
             key: 'trangThai',
