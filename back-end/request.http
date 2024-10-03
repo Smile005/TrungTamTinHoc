@@ -1,196 +1,288 @@
-### 1. Đăng ký tài khoản
+# Đăng ký tài khoản
 POST http://localhost:8081/api/auth/register
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV240001",
-  "matKhau": "123",
-  "phanQuyen": 1
+  "maNhanVien": "NV001",
+  "matKhau": "123456",
+  "phanQuyen": 2
 }
 
-### 2. Đăng nhập
+###
+
+# Đăng nhập
 POST http://localhost:8081/api/auth/login
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV240001",
-  "matKhau": "123"
+  "maNhanVien": "NV001",
+  "matKhau": "123456"
 }
 
-### 3. Đổi mật khẩu
+###
+
+# Đổi mật khẩu
 POST http://localhost:8081/api/auth/change-password
-Authorization: Bearer 
+Authorization: Bearer <JWT_TOKEN>
 Content-Type: application/json
 
 {
   "maNhanVien": "NV001",
-  "oldPassword": "password123",
-  "newPassword": "newpassword123"
+  "oldPassword": "123456",
+  "newPassword": "654321"
 }
 
-### 4. Lấy danh sách nhân viên
-GET http://localhost:8081/api/nhanvien/ds-nhanvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzk2OTgwNCwiZXhwIjoxNzI3OTczNDA0fQ.C04yBNTuVmlijGUvPynio0o9YLV3KWkMWr-1003kYBg
-Nzc4ODgwNiwiZXhwIjoxNzI3NzkyNDA2fQ.8FXmqLCq76gzceawAM5NCuzqZzI0N4HbXX3tKZHohjs
+###
 
-### Thêm nhân viên. Trong đó nhanViens chứa thông tin của các nhan viên cần thêm
+# Đổi quyền tài khoản
+POST http://localhost:8081/api/auth/change-role
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV001",
+  "phanQuyen": 1
+}
+
+###
+
+# Lấy danh sách ca học
+GET http://localhost:8081/api/cahoc
+Authorization: Bearer <JWT_TOKEN>
+
+###
+
+# Thêm ca học
+POST http://localhost:8081/api/cahoc/them-cahoc
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "batDau": "2024-10-05T08:00:00",
+  "ketThuc": "2024-10-05T10:00:00",
+  "ghiChu": "Ca sáng"
+}
+
+###
+
+# Cập nhật ca học
+POST http://localhost:8081/api/cahoc/sua-cahoc
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "maCa": "CA001",
+  "batDau": "2024-10-06T08:00:00",
+  "ketThuc": "2024-10-06T10:00:00",
+  "ghiChu": "Ca sáng sửa"
+}
+
+###
+
+# Lấy danh sách hóa đơn
+GET http://localhost:8081/api/hoadon/ds-hoadon
+Authorization: Bearer <JWT_TOKEN>
+
+###
+
+# Thêm hóa đơn
+POST http://localhost:8081/api/hoadon/them-hoadon
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV001",
+  "maHocVien": "HV001",
+  "ngayTaoHoaDon": "2024-10-05T08:00:00",
+  "trangThai": "Đã thanh toán",
+  "ghiChu": "Hóa đơn học phí"
+}
+
+###
+
+# Lấy danh sách học viên
+GET http://localhost:8081/api/hocvien/ds-hocvien
+Authorization: Bearer <JWT_TOKEN>
+
+###
+
+# Thêm học viên
+POST http://localhost:8081/api/hocvien/them-hocvien
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "hocViens": [
+    {
+      "tenHocVien": "Nguyen Van A",
+      "ngaySinh": "2000-01-01",
+      "gioiTinh": "Nam",
+      "sdt": "0901234567",
+      "email": "nguyenvana@example.com"
+    }
+  ]
+}
+
+###
+
+# Cập nhật học viên
+POST http://localhost:8081/api/hocvien/sua-hocvien
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "maHocVien": "HV001",
+  "tenHocVien": "Nguyen Van B",
+  "ngaySinh": "2000-01-01",
+  "gioiTinh": "Nam",
+  "sdt": "0909876543",
+  "email": "nguyenvanb@example.com"
+}
+
+###
+
+# Lấy danh sách lớp học
+GET http://localhost:8081/api/lophoc/ds-lophoc
+Authorization: Bearer <JWT_TOKEN>
+
+###
+
+# Thêm lớp học
+POST http://localhost:8081/api/lophoc/them-lophoc
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "tenLop": "Lop Tieng Anh 1",
+  "maMonHoc": "MH001",
+  "ngayBatDau": "2024-10-10",
+  "soLuong": 30,
+  "ghiChu": "Lớp nâng cao"
+}
+
+###
+
+# Cập nhật lớp học
+POST http://localhost:8081/api/lophoc/sua-lophoc
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "maLop": "LOP001",
+  "tenLop": "Lop Tieng Anh 2",
+  "maMonHoc": "MH002",
+  "ngayBatDau": "2024-11-01",
+  "soLuong": 25,
+  "ghiChu": "Lớp trung cấp"
+}
+
+###
+
+# Lấy danh sách môn học
+GET http://localhost:8081/api/monhoc/ds-monhoc
+Authorization: Bearer <JWT_TOKEN>
+
+###
+
+# Thêm môn học
+POST http://localhost:8081/api/monhoc/them-monhoc
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "tenMonHoc": "Toán học",
+  "soBuoiHoc": 20,
+  "hocPhi": 500000,
+  "moTa": "Môn toán căn bản"
+}
+
+###
+
+# Cập nhật môn học
+PUT http://localhost:8081/api/monhoc/sua-monhoc
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "maMonHoc": "MH001",
+  "tenMonHoc": "Vật lý",
+  "soBuoiHoc": 30,
+  "hocPhi": 600000,
+  "moTa": "Môn vật lý nâng cao"
+}
+
+###
+
+# Lấy danh sách nhân viên
+GET http://localhost:8081/api/nhanvien/ds-nhanvien
+Authorization: Bearer <JWT_TOKEN>
+
+###
+
+# Thêm nhân viên
 POST http://localhost:8081/api/nhanvien/them-nhanvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzk3NTI0NSwiZXhwIjoxNzI3OTc4ODQ1fQ.EUlXGWHfHT1hn59Y0XgVIEaHWgMomyem5i5Y5Z23Bwo
+Authorization: Bearer <JWT_TOKEN>
 Content-Type: application/json
 
 {
   "nhanViens": [
     {
-      "tenNhanVien": "Nguyen Van B",
-      "chucVu": "Kỹ sư",
-      "ngayVaoLam": "2024-02-10",
-      "gioiTinh": "Nam",
-      "ngaySinh": "1990-01-15",
-      "sdt": "0912345678",
-      "email": "nguyenvanb@example.com",
-      "diaChi": "456 Phố Chính, Hà Nội",
-      "trangThai": "Đang hoạt động",
-      "ghiChu": "Nhân viên chính thức"
-    },
-    {
-      "tenNhanVien": "Le Thi C",
-      "chucVu": "Nhân viên kế toán",
-      "ngayVaoLam": "2024-03-01",
+      "tenNhanVien": "Le Thi B",
+      "chucVu": "Giảng viên",
+      "ngayVaoLam": "2024-01-01",
       "gioiTinh": "Nữ",
-      "ngaySinh": "1991-08-20",
-      "sdt": "0901234567",
-      "email": "lethic@example.com",
-      "diaChi": "789 Phố Nhỏ, Hà Nội",
-      "trangThai": "Đang hoạt động",
-      "ghiChu": "Nhân viên mới"
+      "sdt": "0909876543",
+      "email": "lethib@example.com"
     }
   ]
 }
 
-### 6. Lấy danh sách học viên
-GET http://localhost:8081/api/hocvien/ds-hocvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzg3ODI0MiwiZXhwIjoxNzI3ODgxODQyfQ.mSjx43Xh87vyzsXfoZNDf05vxjutfDIUQLx1iJKJAlo
+###
 
-### 7. Thêm học viên
-POST http://localhost:8081/api/hocvien/them-hocvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzk3NDYxNiwiZXhwIjoxNzI3OTc4MjE2fQ.mPNa8U8VgDI-IRNJh-hmztja0ej_xST5j-O2KMe-mZg
-Content-Type: application/json
-
-{
-  "maHocVien": "HV0015",
-  "tenHocVien": "Nguyen Van U",
-  "ngayVaoHoc": "2023-10-01",
-  "ngaySinh": "2000-05-15",
-  "gioiTinh": "Nam",
-  "sdt": "0909123456",
-  "email": "nguyenvanb@gmail.com",
-  "tinhTrang":"Chưa Đăng Ký",
-  "diaChi": "Hanoi"
-}
-
-### 8. Lấy danh sách phòng học
-GET http://localhost:8081/api/phonghoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzg4MDUzNywiZXhwIjoxNzI3ODg0MTM3fQ.HkUaLiCXam435HAm9eTY8klFQhv4kR923V7d3B7Poig
-
-### 9. Thêm phòng học
-POST http://localhost:8081/api/phonghoc/them-phonghoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzk2ODMxMSwiZXhwIjoxNzI3OTcxOTExfQ.akTSdB4E63-avkzmNZoJAehrWKehAVlrUBBrD-VqY7U
-Content-Type: application/json
-{
-  "maPhong": "PH051",
-  "soLuong": 30,
-  "trangThai": "Tạm Ngưng",
-  "ghiChu": "Phòng máy lạnh"
-}
-
-### 10. Lấy danh sách ca học
-GET http://localhost:8081/api/cahoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzg3OTg2NiwiZXhwIjoxNzI3ODgzNDY2fQ.ICDITe1uSXZ_dCpsh41PZiIcjGriMg5tjf-GnBSsJ48
-
-### 11. Thêm ca học
-POST http://localhost:8081/api/cahoc/them-cahoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzk2ODA0MSwiZXhwIjoxNzI3OTcxNjQxfQ.Wcc4f0-2wD5btgpPq4pElRa1by5LYmXEqi9jZf1AUIc
-Content-Type: application/json
-
-{
-  "maCa": "CA015",
-  "batDau": "08:00:00",
-  "ketThuc": "10:00:00",
-  "trangThai": "Đang hoạt động",
-  "ghiChu": "Ca sáng"
-}
-
-### 12. Lấy danh sách môn học
-GET http://localhost:8081/api/monhoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzg4MDUzNywiZXhwIjoxNzI3ODg0MTM3fQ.HkUaLiCXam435HAm9eTY8klFQhv4kR923V7d3B7Poig
-
-
-### 13. Thêm môn học
-POST http://localhost:8081/api/monhoc/them-monhoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzk2ODMxMSwiZXhwIjoxNzI3OTcxOTExfQ.akTSdB4E63-avkzmNZoJAehrWKehAVlrUBBrD-VqY7U
-Content-Type: application/json
-
-{
-  "maMonHoc": "MH0015",
-  "tenMonHoc": "Lập trình Node.js",
-  "soBuoiHoc": 10,
-  "hocPhi": 5000000,
-  "moTa": "Khóa học lập trình Node.js cơ bản đến nâng cao",
-  "ghiChu": ""
-}
-
-### 14. Lấy danh sách lớp học
-GET http://localhost:8081/api/lophoc
-Authorization: Bearer 
-
-### 15. Thêm lớp học
-POST http://localhost:8081/api/lophoc
-Authorization: Bearer 
-Content-Type: application/json
-
-{
-  "maLop": "LH001",
-  "tenLop": "Lớp lập trình Node.js",
-  "maMonHoc": "MH001",
-  "ngayBatDau": "2023-10-05",
-  "soLuong": 20,
-  "trangThai": "Đang hoạt động",
-  "ghiChu": "Lớp học dành cho người mới bắt đầu"
-}
-
-### 16. Lấy danh sách hóa đơn
-GET http://localhost:8081/api/hoadon
-Authorization: Bearer 
-
-### 17. Tạo hóa đơn
-POST http://localhost:8081/api/hoadon
-Authorization: Bearer 
-Content-Type: application/json
-
-{
-  "maHoaDon": "HD001",
-  "maNhanVien": "NV001",
-  "maHocVien": "HV001",
-  "ngayTaoHoaDon": "2023-10-01",
-  "trangThai": "Đang hoạt động",
-  "ghiChu": ""
-}
-
-### 18. Sửa NV
+# Cập nhật nhân viên
 POST http://localhost:8081/api/nhanvien/sua-nhanvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzc5NDM2OSwiZXhwIjoxNzI3Nzk3OTY5fQ.2Awa0zEDWmey6kqHgzPIyF2LkZuw-XeMAs0qCjdVUrI
+Authorization: Bearer <JWT_TOKEN>
 Content-Type: application/json
 
 {
   "maNhanVien": "NV001",
-  "tenNhanVien": "Nguyen Van v",
+  "tenNhanVien": "Le Van C",
   "chucVu": "Trưởng phòng",
-  "ngayVaoLam": "2022-01-15",
+  "ngayVaoLam": "2023-12-01",
   "gioiTinh": "Nam",
-  "ngaySinh": "1990-05-25",
-  "sdt": "0123456789",
-  "email": "nguyenvana@example.com",
-  "diaChi": "123 Đường ABC, Quận 1, TP.HCM",
+  "sdt": "0906543210",
+  "email": "levanc@example.com"
+}
+
+###
+
+# Lấy danh sách phòng học
+GET http://localhost:8081/api/phonghoc/ds-phong
+Authorization: Bearer <JWT_TOKEN>
+
+###
+
+# Thêm phòng học
+POST http://localhost:8081/api/phonghoc/them-phong
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "soLuong": 50,
   "trangThai": "Đang hoạt động",
-  "ghiChu": "Ghi chú thêm về nhân viên."
+  "ghiChu": "Phòng lớn"
+}
+
+###
+
+# Cập nhật phòng học
+POST http://localhost:8081/api/phonghoc/sua-phong
+Authorization: Bearer <JWT_TOKEN>
+Content-Type: application/json
+
+{
+  "maPhong": "PH001",
+  "soLuong": 60,
+  "trangThai": "Đang bảo trì",
+  "ghiChu": "Phòng lớn sửa chữa"
 }

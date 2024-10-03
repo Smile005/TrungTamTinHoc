@@ -80,7 +80,6 @@ const createHocVien = async (req, res) => {
 
 const updateHocVien = async (req, res) => {
   const { maHocVien, tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, tinhTrang, ghiChu } = req.body;
-  const { maHocVien, tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, tinhTrang, ghiChu } = req.body;
 
   if (!maHocVien || !tenHocVien) {
     return res.status(400).json({ message: 'Mã học viên và tên học viên là bắt buộc.' });
