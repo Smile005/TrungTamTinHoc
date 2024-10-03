@@ -4,7 +4,7 @@ const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.get('/', authMiddleware(2), getMonHoc); 
+router.get('/ds-monhoc', authMiddleware(2), getMonHoc); 
 router.post('/them-monhoc', authMiddleware(2), createMonHoc); 
 router.put('/sua-monhoc', authMiddleware(2), updateMonHoc); 
 

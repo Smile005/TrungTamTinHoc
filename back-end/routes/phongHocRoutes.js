@@ -1,10 +1,11 @@
 const express = require('express');
-const { getPhongHoc, createPhongHoc } = require('../controllers/phongHocController');
+const { getPhongHoc, createPhongHoc, updatePhongHoc } = require('../controllers/phongHocController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.get('/', authMiddleware(1), getPhongHoc);
-router.post('/', authMiddleware(1), createPhongHoc);
+router.get('/ds-phong', authMiddleware(2), getPhongHoc);
+router.post('/them-phong', authMiddleware(2), createPhongHoc);
+router.post('/sua-phong', authMiddleware(2), updatePhongHoc);
 
 module.exports = router;

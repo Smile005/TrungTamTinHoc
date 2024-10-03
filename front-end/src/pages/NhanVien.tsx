@@ -5,7 +5,11 @@ import ThemNhanVienModal from '../components/ThemNhanVienModal';
 import SuaNhanVienModal from '../components/SuaNhanVienModal';
 import '../styles/TableCustom.css';
 import { NhanVienType } from '../types/NhanVienType';
+<<<<<<< HEAD
+import axios from 'axios'; // Import axios để gọi API
+=======
 import axios from 'axios'; 
+>>>>>>> 1bc33259545fc55878a6c5ca11a8d8864836c6b4
 
 const { Search } = Input;
 
@@ -13,6 +17,15 @@ const NhanVien: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isThemModalVisible, setIsThemModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<NhanVienType | null>(null);
+<<<<<<< HEAD
+  const [data, setData] = useState<NhanVienType[]>([]); // State lưu trữ dữ liệu từ API
+  const [loading, setLoading] = useState<boolean>(false); // State để hiển thị trạng thái loading
+
+  // Gọi API khi component được mount
+  useEffect(() => {
+    const fetchNhanVien = async () => {
+      setLoading(true); // Bật trạng thái loading
+=======
   const [data, setData] = useState<NhanVienType[]>([]); 
   const [filteredData, setFilteredData] = useState<NhanVienType[]>([]); // Dữ liệu đã lọc
   const [loading, setLoading] = useState<boolean>(false); 
@@ -20,6 +33,7 @@ const NhanVien: React.FC = () => {
   useEffect(() => {
     const fetchNhanVien = async () => {
       setLoading(true); 
+>>>>>>> 1bc33259545fc55878a6c5ca11a8d8864836c6b4
       try {
         const apiPort = process.env.REACT_APP_API_PORT || 8081;
         const response = await axios.get(`http://localhost:${apiPort}/api/nhanvien`, {
@@ -27,18 +41,28 @@ const NhanVien: React.FC = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         });
+<<<<<<< HEAD
+        setData(response.data); // Lưu dữ liệu từ API vào state
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách nhân viên:', error);
+      } finally {
+        setLoading(false); // Tắt trạng thái loading sau khi hoàn thành
+=======
         setData(response.data); 
         setFilteredData(response.data); // Lưu dữ liệu đã lấy vào filteredData để hiển thị ban đầu
       } catch (error) {
         console.error('Lỗi khi lấy danh sách nhân viên:', error);
       } finally {
         setLoading(false); 
+>>>>>>> 1bc33259545fc55878a6c5ca11a8d8864836c6b4
       }
     };
 
     fetchNhanVien();
   }, []);
 
+<<<<<<< HEAD
+=======
   // Hàm tìm kiếm
   const onSearch = (value: string) => {
     const filtered = data.filter((item) =>
@@ -50,6 +74,7 @@ const NhanVien: React.FC = () => {
     setFilteredData(filtered); // Cập nhật dữ liệu đã lọc
   };
 
+>>>>>>> 1bc33259545fc55878a6c5ca11a8d8864836c6b4
   const handleMenuClick = (e: any, record: NhanVienType) => {
     if (e.key === 'edit') {
       setSelectedRecord(record);
@@ -118,6 +143,12 @@ const NhanVien: React.FC = () => {
       onFilter: (value, record) => record.trangThai?.indexOf(value as string) === 0,
       render: (trangThai: string): JSX.Element => {
         let color = '';
+<<<<<<< HEAD
+        if (trangThai === 'Thực tập sinh') color = 'green';
+        else if (trangThai === 'Full time') color = 'geekblue';
+        else if (trangThai === 'Part time') color = 'volcano';
+        return <Tag color={color}>{trangThai.toUpperCase()}</Tag>;
+=======
                 if (trangThai === 'Full time') {
                     color = 'geekblue';
                 } else if (trangThai === 'Part time') {
@@ -130,6 +161,7 @@ const NhanVien: React.FC = () => {
                         {trangThai.toUpperCase()}
                     </Tag>
                 );
+>>>>>>> 1bc33259545fc55878a6c5ca11a8d8864836c6b4
       },
     },
     {
@@ -155,12 +187,16 @@ const NhanVien: React.FC = () => {
     <Layout>
       <h1 className='page-name'>QUẢN LÝ NHÂN VIÊN</h1>
       <div className="button-container">
+<<<<<<< HEAD
+        <Search className="custom-search" placeholder="Nhập tên nhân viên" onSearch={(value) => console.log(value)} enterButton />
+=======
         <Search
           className="custom-search"
           placeholder="Nhập tên nhân viên"
           onSearch={onSearch} // Áp dụng hàm tìm kiếm
           enterButton
         />
+>>>>>>> 1bc33259545fc55878a6c5ca11a8d8864836c6b4
         <div className="button-container">
           <Button className='custom-button'>Hoàn tác</Button>
           <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>
@@ -172,7 +208,11 @@ const NhanVien: React.FC = () => {
       <Table
         className="custom-table"
         columns={columns}
+<<<<<<< HEAD
+        dataSource={data}
+=======
         dataSource={filteredData} // Hiển thị dữ liệu đã lọc
+>>>>>>> 1bc33259545fc55878a6c5ca11a8d8864836c6b4
         loading={loading} 
         pagination={{ pageSize: 5 }}
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}

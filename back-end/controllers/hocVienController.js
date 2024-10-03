@@ -9,46 +9,80 @@ const getHocVien = async (req, res) => {
   }
 };
 
-const createHocVien = async (req, res) => {
-  const { maHocVien, tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, tinhTrang, ghiChu } = req.body;
+const createMaHV = async (connection) => {
+  try {
+    const query = `SELECT COUNT(maHocVien) AS soLuong FROM HocVien;`;
+    const [result] = await connection.query(query);
+    const soLuong = result[0].soLuong || 0;
+    const nextMaHocVien = `HV${(soLuong + 1).toString().padStart(5, '0')}`;
+    return nextMaHocVien;
+  } catch (error) {
+    throw new Error('Không thể tạo mã học viên');
+  }
+};
 
-  if (!maHocVien || !tenHocVien) {
-    return res.status(400).json({ message: 'Mã học viên và tên học viên là bắt buộc.' });
+const createHocVien = async (req, res) => {
+  const connection = await pool.getConnection();
+  const { hocViens } = req.body;
+
+  if (!hocViens || hocViens.length === 0) {
+    return res.status(400).json({ message: 'Không thể xác định dữ liệu học viên.' });
   }
 
   try {
-    const [existingHocVien] = await pool.query('SELECT * FROM HocVien WHERE maHocVien = ?', [maHocVien]);
-    if (existingHocVien.length > 0) {
-      return res.status(400).json({ message: 'Học viên đã tồn tại.' });
+    await connection.beginTransaction();
+    const isMultiple = Array.isArray(hocViens);
+    const addedHocViens = [];
+    const hocVienList = isMultiple ? hocViens : [hocViens];
+
+    for (let hocVien of hocVienList) {
+      const { tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, tinhTrang, ghiChu } = hocVien;
+
+      if (!tenHocVien) {
+        console.log('Học viên bị bỏ qua do thiếu tên:', hocVien);
+        continue; 
+      }
+
+      const maHocVien = await createMaHV(connection);
+
+      await connection.query(
+        'INSERT INTO HocVien (maHocVien, tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, tinhTrang, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [
+          maHocVien,
+          tenHocVien,
+          ngayVaoHoc || new Date(),
+          ngaySinh || null,
+          gioiTinh || null,
+          sdt || null,
+          email || null,
+          diaChi || null,
+          tinhTrang || 'Đang hoạt động',
+          ghiChu || null
+        ]
+      );
+
+      addedHocViens.push(maHocVien);
     }
 
-    await pool.query(
-      'INSERT INTO HocVien (maHocVien, tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, tinhTrang, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [
-        maHocVien,
-        tenHocVien,
-        ngayVaoHoc || null,
-        ngaySinh || null,
-        gioiTinh || null,
-        sdt || null,
-        email || null,
-        diaChi || null,
-        tinhTrang || 'Đang Học', // Chỉnh lại mặc định 'Đang Học' thay vì 'Đang hoạt động'
-        ghiChu || null
-      ]
-    );
+    await connection.commit();
 
-    res.status(201).json({ message: 'Thêm học viên thành công.' });
+    res.status(201).json({
+      message: `${addedHocViens.length} học viên đã được thêm thành công.`,
+      ds_HocVien: addedHocViens
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Thêm học viên thất bại.', error });
+    await connection.rollback();
+    res.status(500).json({ message: 'Thêm học viên không thành công', error });
+  } finally {
+    connection.release();
   }
 };
 
 const updateHocVien = async (req, res) => {
   const { maHocVien, tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, tinhTrang, ghiChu } = req.body;
 
-  if ( !maHocVien || !tenHocVien) {
-    return res.status(400).json({ message: 'Mã và tên học viên là bắt buộc.' });
+  if (!maHocVien || !tenHocVien) {
+    return res.status(400).json({ message: 'Mã học viên và tên học viên là bắt buộc.' });
   }
 
   try {

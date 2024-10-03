@@ -10,47 +10,81 @@ const getNhanVien = async (req, res) => {
   }
 };
 
-const createNhanVien = async (req, res) => {
-  const { maNhanVien, tenNhanVien, chucVu, ngayVaoLam, gioiTinh, ngaySinh, sdt, email, diaChi, trangThai, ghiChu } = req.body;
+const createMaNV = async (connection) => {
+  try {
+    const query = `SELECT COUNT(maNhanVien) AS soLuong FROM NhanVien;`;
+    const [result] = await connection.query(query);
+    const soLuong = result[0].soLuong || 0;
+    const nextMaNhanVien = `NV${(soLuong + 1).toString().padStart(5, '0')}`;
+    return nextMaNhanVien;
+  } catch (error) {
+    throw new Error('Không thể tạo mã nhân viên');
+  }
+};
 
-  if (!maNhanVien || !tenNhanVien) {
-    return res.status(400).json({ message: 'Mã nhân viên và tên nhân viên là bắt buộc.' });
+const createNhanVien = async (req, res) => {
+  const connection = await pool.getConnection();
+  const { nhanViens } = req.body;
+
+  if (!nhanViens || nhanViens.length === 0) {
+    return res.status(400).json({ message: 'Không thể xác định dữ liệu nhân viên.' });
   }
 
   try {
-    const [existingNhanVien] = await pool.query('SELECT * FROM NhanVien WHERE maNhanVien = ?', [maNhanVien]);
-    if (existingNhanVien.length > 0) {
-      return res.status(400).json({ message: 'Nhân viên đã tồn tại.' });
+    await connection.beginTransaction();
+    const isMultiple = Array.isArray(nhanViens);
+    const addedNhanViens = [];
+    const nhanVienList = isMultiple ? nhanViens : [nhanViens];
+
+    for (let nhanVien of nhanVienList) {
+      const { tenNhanVien, chucVu, ngayVaoLam, gioiTinh, ngaySinh, sdt, email, diaChi, trangThai, ghiChu } = nhanVien;
+
+      if (!tenNhanVien) {
+        console.log('Nhân viên bị bỏ qua do thiếu tên:', nhanVien);
+        continue; 
+      }
+
+      const maNhanVien = await createMaNV(connection);
+
+      await connection.query(
+        'INSERT INTO NhanVien (maNhanVien, tenNhanVien, chucVu, ngayVaoLam, gioiTinh, ngaySinh, sdt, email, diaChi, trangThai, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [
+          maNhanVien,
+          tenNhanVien,
+          chucVu || null,
+          ngayVaoLam || new Date(),
+          gioiTinh || null,
+          ngaySinh || null,
+          sdt || null,
+          email || null,
+          diaChi || null,
+          trangThai || 'Đang hoạt động',
+          ghiChu || null
+        ]
+      );
+
+      addedNhanViens.push(maNhanVien);
     }
 
-    await pool.query(
-      'INSERT INTO NhanVien (maNhanVien, tenNhanVien, chucVu, ngayVaoLam, gioiTinh, ngaySinh, sdt, email, diaChi, trangThai, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [
-        maNhanVien,
-        tenNhanVien,
-        chucVu || null,
-        ngayVaoLam || null,
-        gioiTinh || null,
-        ngaySinh || null,
-        sdt || null,
-        email || null,
-        diaChi || null,
-        trangThai || 'Đang hoạt động',
-        ghiChu || null
-      ]
-    );
+    await connection.commit();
 
-    res.status(201).json({ message: 'Thêm nhân viên thành công.' });
+    res.status(201).json({
+      message: `${addedNhanViens.length} nhân viên đã được thêm thành công.`,
+      ds_NhanVien: addedNhanViens
+    });
   } catch (error) {
+    await connection.rollback();
     res.status(500).json({ message: 'Thêm nhân viên không thành công', error });
+  } finally {
+    connection.release();
   }
 };
 
 const updateNhanVien = async (req, res) => {
   const { maNhanVien, tenNhanVien, chucVu, ngayVaoLam, gioiTinh, ngaySinh, sdt, email, diaChi, trangThai, ghiChu } = req.body;
 
-  if (!tenNhanVien) {
-    return res.status(400).json({ message: 'Tên nhân viên là bắt buộc.' });
+  if (!maNhanVien || !tenNhanVien) {
+    return res.status(400).json({ message: 'Mã nhân viên và tên nhân viên là bắt buộc.' });
   }
 
   try {
@@ -102,15 +136,15 @@ const updateProfile = async (req, res) => {
       'UPDATE NhanVien SET tenNhanVien = ?, chucVu = ?, ngayVaoLam = ?, gioiTinh = ?, ngaySinh = ?, sdt = ?, email = ?, diaChi = ?, trangThai = ?, ghiChu = ? WHERE maNhanVien = ?',
       [
         tenNhanVien,
-        chucVu || null,
-        ngayVaoLam || null,
+        null,
+        null,
         gioiTinh || null,
         ngaySinh || null,
         sdt || null,
         email || null,
         diaChi || null,
-        trangThai || 'Đang hoạt động',
-        ghiChu || null,
+        'Đang hoạt động',
+        null,
         maNhanVien
       ]
     );
