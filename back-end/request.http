@@ -69,7 +69,7 @@ Content-Type: application/json
 
 ### 6. Lấy danh sách học viên
 GET http://localhost:8081/api/hocvien/ds-hocvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMTEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzc1MDg5MiwiZXhwIjoxNzI3NzU0NDkyfQ.IWi7SGUzOO7IbcK_2GgYy8jUsbYZRYzMc29Zw4b0WM0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzg3ODI0MiwiZXhwIjoxNzI3ODgxODQyfQ.mSjx43Xh87vyzsXfoZNDf05vxjutfDIUQLx1iJKJAlo
 
 ### 7. Thêm học viên
 POST http://localhost:8081/api/hocvien/them-hocvien
@@ -77,43 +77,43 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 Content-Type: application/json
 
 {
-  "maHocVien": "HV240001",
-  "tenHocVien": "Nguyen Van B",
+  "maHocVien": "HV0015",
+  "tenHocVien": "Nguyen Van U",
   "ngayVaoHoc": "2023-10-01",
   "ngaySinh": "2000-05-15",
   "gioiTinh": "Nam",
   "sdt": "0909123456",
   "email": "nguyenvanb@gmail.com",
+  "tinhTrang":"Chưa Đăng Ký",
   "diaChi": "Hanoi"
 }
 
 ### 8. Lấy danh sách phòng học
 GET http://localhost:8081/api/phonghoc
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzg4MDUzNywiZXhwIjoxNzI3ODg0MTM3fQ.HkUaLiCXam435HAm9eTY8klFQhv4kR923V7d3B7Poig
 
 ### 9. Thêm phòng học
-POST http://localhost:8081/api/phonghoc
-Authorization: Bearer 
+POST http://localhost:8081/api/phonghoc/them-phonghoc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzk2ODMxMSwiZXhwIjoxNzI3OTcxOTExfQ.akTSdB4E63-avkzmNZoJAehrWKehAVlrUBBrD-VqY7U
 Content-Type: application/json
-
 {
-  "maPhong": "PH001",
+  "maPhong": "PH051",
   "soLuong": 30,
-  "trangThai": "Đang hoạt động",
+  "trangThai": "Tạm Ngưng",
   "ghiChu": "Phòng máy lạnh"
 }
 
 ### 10. Lấy danh sách ca học
 GET http://localhost:8081/api/cahoc
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzg3OTg2NiwiZXhwIjoxNzI3ODgzNDY2fQ.ICDITe1uSXZ_dCpsh41PZiIcjGriMg5tjf-GnBSsJ48
 
 ### 11. Thêm ca học
-POST http://localhost:8081/api/cahoc
-Authorization: Bearer 
+POST http://localhost:8081/api/cahoc/them-cahoc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzk2ODA0MSwiZXhwIjoxNzI3OTcxNjQxfQ.Wcc4f0-2wD5btgpPq4pElRa1by5LYmXEqi9jZf1AUIc
 Content-Type: application/json
 
 {
-  "maCa": "CA001",
+  "maCa": "CA015",
   "batDau": "08:00:00",
   "ketThuc": "10:00:00",
   "trangThai": "Đang hoạt động",
@@ -122,15 +122,16 @@ Content-Type: application/json
 
 ### 12. Lấy danh sách môn học
 GET http://localhost:8081/api/monhoc
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzg4MDUzNywiZXhwIjoxNzI3ODg0MTM3fQ.HkUaLiCXam435HAm9eTY8klFQhv4kR923V7d3B7Poig
+
 
 ### 13. Thêm môn học
-POST http://localhost:8081/api/monhoc
-Authorization: Bearer 
+POST http://localhost:8081/api/monhoc/them-monhoc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzk2ODMxMSwiZXhwIjoxNzI3OTcxOTExfQ.akTSdB4E63-avkzmNZoJAehrWKehAVlrUBBrD-VqY7U
 Content-Type: application/json
 
 {
-  "maMonHoc": "MH001",
+  "maMonHoc": "MH0015",
   "tenMonHoc": "Lập trình Node.js",
   "soBuoiHoc": 10,
   "hocPhi": 5000000,
@@ -173,4 +174,23 @@ Content-Type: application/json
   "ngayTaoHoaDon": "2023-10-01",
   "trangThai": "Đang hoạt động",
   "ghiChu": ""
+}
+
+### 18. Sửa NV
+POST http://localhost:8081/api/nhanvien/sua-nhanvien
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzc5NDM2OSwiZXhwIjoxNzI3Nzk3OTY5fQ.2Awa0zEDWmey6kqHgzPIyF2LkZuw-XeMAs0qCjdVUrI
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV001",
+  "tenNhanVien": "Nguyen Van v",
+  "chucVu": "Trưởng phòng",
+  "ngayVaoLam": "2022-01-15",
+  "gioiTinh": "Nam",
+  "ngaySinh": "1990-05-25",
+  "sdt": "0123456789",
+  "email": "nguyenvana@example.com",
+  "diaChi": "123 Đường ABC, Quận 1, TP.HCM",
+  "trangThai": "Đang hoạt động",
+  "ghiChu": "Ghi chú thêm về nhân viên."
 }

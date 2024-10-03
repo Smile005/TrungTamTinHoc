@@ -1,15 +1,9 @@
-.demo-logo {
-  background-color: gray;
-  height: 40px;
-  width: 200px;
-}
-
 .custom-header {
   display: flex;
   align-items: center;
   height: '80px';
   justify-content: space-between;
-  background-color: rgb(35, 30, 31);
+  background-color: rgb(145, 71, 86);
 }
 
 .custom-menu {
@@ -20,7 +14,7 @@
 }
 
 .custom-trigger {
-  background-color: rgb(35, 30, 31);
+  background-color: #1b7cc2;
   padding: 15px;
   display: flex;
   justify-content: center;

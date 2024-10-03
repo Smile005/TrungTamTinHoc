@@ -103,7 +103,7 @@ const updateNhanVien = async (req, res) => {
         ngaySinh || null,
         sdt || null,
         email || null,
-        diaChi || null,
+        diaChi  || null,
         trangThai || 'Đang hoạt động',
         ghiChu || null,
         maNhanVien
