@@ -26,12 +26,18 @@ const authSlice = createSlice({
     login(state, action: PayloadAction<{ token: string; userInfo: UserInfo }>) {
       state.isAuthenticated = true;
       state.token = action.payload.token;
-      state.userInfo = action.payload.userInfo; // Lưu thông tin người dùng vào state
+      state.userInfo = action.payload.userInfo;
+
+      // Lưu token vào localStorage
+      localStorage.setItem('token', action.payload.token);
     },
     logout(state) {
       state.isAuthenticated = false;
       state.token = null;
-      state.userInfo = null; // Xóa thông tin người dùng khi đăng xuất
+      state.userInfo = null;
+
+      // Xóa token khỏi localStorage khi đăng xuất
+      localStorage.removeItem('token');
     },
   },
 });

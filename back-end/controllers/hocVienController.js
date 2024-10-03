@@ -27,13 +27,13 @@ const createHocVien = async (req, res) => {
       [
         maHocVien,
         tenHocVien,
-        ngayVaoHoc || null,      
+        ngayVaoHoc || null,
         ngaySinh || null,
         gioiTinh || null,
         sdt || null,
         email || null,
         diaChi || null,
-        tinhTrang || 'Đang hoạt động', 
+        tinhTrang || 'Đang Học', // Chỉnh lại mặc định 'Đang Học' thay vì 'Đang hoạt động'
         ghiChu || null
       ]
     );
@@ -45,11 +45,10 @@ const createHocVien = async (req, res) => {
 };
 
 const updateHocVien = async (req, res) => {
-  const { maHocVien } = req.params;
-  const { tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, tinhTrang, ghiChu } = req.body;
+  const { maHocVien, tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, tinhTrang, ghiChu } = req.body;
 
-  if (!tenHocVien) {
-    return res.status(400).json({ message: 'Tên học viên là bắt buộc.' });
+  if ( !maHocVien || !tenHocVien) {
+    return res.status(400).json({ message: 'Mã và tên học viên là bắt buộc.' });
   }
 
   try {

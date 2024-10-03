@@ -1,11 +1,11 @@
 export interface LopHocType {
-    key: string;
+    key?: string;
     maLopHoc: string;
     tenLopHoc: string;
     maMonHoc: string;
-    maGiangVien: string;
+    maNhanVien?: string;
     ngayBatDau: string; 
     soLuong: string;
     trangThai: string;
-    ghiChu: string;
+    ghiChu?: string;
   }

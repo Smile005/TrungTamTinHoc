@@ -5,6 +5,6 @@ export interface MonHocType {
   soBuoiHoc?: number;    // Số buổi học, có thể null
   hocPhi?: number;       // Học phí, có thể null
   moTa?: string;         // Mô tả, có thể null
-  trangThai?: string;    // Trạng thái, có thể null
+  trangThai?: "Đang hoạt động" | "Tạm Ngưng";   // Trạng thái, có thể null
   ghiChu?: string; 
 }

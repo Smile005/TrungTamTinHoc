@@ -98,11 +98,11 @@ const App: React.FC = () => {
     <Layout style={{ height: '100vh' }}>
       {!isLoginPage && (
         <>
-          <Header className="custom-header" style={{ background: '#4eb1f9', color: '#fff' }}>
+          <Header className="custom-header" style={{ background: '#1b7cc2', color: '#fff' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
                 <img
-                  style={{ width: '50px', height: '50px', marginTop: '5px', borderRadius: '15px' }}
+                  style={{ width: '50px', height: '50px', borderRadius: '15px' }}
                   src="https://res.cloudinary.com/dhyt592i7/image/upload/v1727773506/kc40wfwdvz41mccxks0w.png"
                   alt="Logo"
                 />

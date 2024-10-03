@@ -1,25 +1,43 @@
-import React, { useState } from 'react';
-import { Table, Button, Dropdown, Menu, Layout, Tag, TableColumnsType, Input, GetProps } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Dropdown, Menu, Layout, Tag, TableColumnsType, Input } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons';
 import { HocVienType } from '../types/HocVienType';
 import ThemHocVienModal from '../components/ThemHocVienModal';
-import HocVienModal01 from '../components/HocVienModal01';
+import SuaHocVienModal from '../components/SuaHocVienModal';
 import '../styles/TableCustom.css';
 import ImportExcelModal from '../components/ImportExcelModal';
-
-type SearchProps = GetProps<typeof Input.Search>;
+import axios from 'axios';
 
 const { Search } = Input;
 
-const onSearch: SearchProps['onSearch'] = (value, _e, info) => console.log(info?.source, value);
-
 const HocVien: React.FC = () => {
-    const [isThemHocVienModalVisible, setIsThemHocVienModalVisible] = useState(false); 
-    const [isImportModalVisible, setIsImportModalVisible] = useState(false); 
-    const [isEditModalVisible, setIsEditModalVisible] = useState(false); 
-    const [modalType, setModalType] = useState<'hocvien' | 'nhanvien'>('hocvien'); 
-
+    const [isThemHocVienModalVisible, setIsThemHocVienModalVisible] = useState(false);
+    const [isImportModalVisible, setIsImportModalVisible] = useState(false);
+    const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+    const [modalType, setModalType] = useState<'hocvien' | 'nhanvien'>('hocvien');
     const [selectedRecord, setSelectedRecord] = useState<HocVienType | null>(null);
+    const [data, setData] = useState<HocVienType[]>([]); // Dữ liệu học viên từ API
+    const [loading, setLoading] = useState<boolean>(false); // Trạng thái loading khi fetch dữ liệu
+
+    useEffect(() => {
+        const fetchHocVien = async () => {
+            setLoading(true); // Bật trạng thái loading khi fetch dữ liệu
+            try {
+                const response = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`, // Lấy token từ localStorage
+                    },
+                });
+                setData(response.data); // Lưu dữ liệu học viên vào state
+            } catch (error) {
+                console.error('Lỗi khi lấy danh sách học viên:', error);
+            } finally {
+                setLoading(false); // Tắt trạng thái loading
+            }
+        };
+
+        fetchHocVien();
+    }, []);
 
     const handleMenuClick = (e: any, record: HocVienType) => {
         if (e.key === 'edit') {
@@ -77,9 +95,9 @@ const HocVien: React.FC = () => {
             ],
             onFilter: (value, record) => {
                 if (value === 'Undefined') {
-                    return record.gioiTinh === undefined; 
+                    return record.gioiTinh === undefined;
                 }
-                if (record.gioiTinh === undefined) return false; 
+                if (record.gioiTinh === undefined) return false;
                 return record.gioiTinh.indexOf(value as string) === 0;
             },
             render: (gioiTinh: string | undefined): JSX.Element => {
@@ -127,11 +145,11 @@ const HocVien: React.FC = () => {
             onFilter: (value, record) => record.tinhTrang?.indexOf(value as string) === 0,
             render: (tinhTrang: string): JSX.Element => {
                 let color = '';
-                if (tinhTrang === 'Chưa đăng ký') {
-                    color = 'green';
-                } else if (tinhTrang === 'Đang học') {
+                if (tinhTrang === 'Đang Học') {
                     color = 'geekblue';
-                } else if (tinhTrang === 'Đã tốt nghiệp') {
+                } else if (tinhTrang === 'Đã Tốt Nghiệp') {
+                    color = 'green';
+                } else if (tinhTrang === 'Chưa Đăng Ký') {
                     color = 'volcano';
                 }
                 return (
@@ -174,7 +192,7 @@ const HocVien: React.FC = () => {
                 <Search
                     className="custom-search"
                     placeholder="Nhập tên học viên"
-                    onSearch={onSearch}
+                    onSearch={(value) => console.log(value)}
                     enterButton
                 />
                 <div className="button-container">
@@ -182,14 +200,15 @@ const HocVien: React.FC = () => {
                     <Button className='custom-button' onClick={showHocVienModal}>Thêm</Button>
                     <Button className='custom-button' onClick={() => showImportModal('hocvien')}>
                         Nhập Excel
-                    </Button> 
+                    </Button>
                 </div>
             </div>
             <Table
                 className="custom-table"
                 columns={columns}
-                dataSource={data}
+                dataSource={data} // Gán dữ liệu từ API
                 pagination={{ pageSize: 5 }}
+                loading={loading} // Hiển thị trạng thái loading khi đang fetch dữ liệu
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
 
@@ -205,213 +224,15 @@ const HocVien: React.FC = () => {
                 modalType={modalType}
             />
 
-            <HocVienModal01
+            <SuaHocVienModal
                 visible={isEditModalVisible}
                 onCancel={handleCancel}
                 onOk={handleOk}
-                initialValues={selectedRecord || {}}
+                initialValues={selectedRecord || {} as HocVienType}
             />
 
         </Layout>
     );
 };
+
 export default HocVien;
-
-// Dữ liệu mẫu cho bảng
-const data: HocVienType[] = [
-    {
-        key: '1',
-        maHocVien: 'HV240001',
-        tenHocVien: 'Hà Đức Anh',
-        gioiTinh: 'Nam',
-        ngaySinh: '29/02/2002',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '2',
-        maHocVien: 'HV240002',
-        tenHocVien: 'Nguyễn Thị Mai',
-        gioiTinh: 'Nữ',
-        ngaySinh: '12/04/2001',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '3',
-        maHocVien: 'HV240003',
-        tenHocVien: 'Lê Văn Thành',
-        gioiTinh: undefined,
-        ngaySinh: '15/09/2000',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '4',
-        maHocVien: 'HV240004',
-        tenHocVien: 'Phạm Thanh Hằng',
-        gioiTinh: 'Nữ',
-        ngaySinh: '22/11/1999',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '5',
-        maHocVien: 'HV240005',
-        tenHocVien: 'Đỗ Minh Quang',
-        gioiTinh: 'Nam',
-        ngaySinh: '07/03/2003',
-        tinhTrang: 'Đã tốt nghiệp',
-    },
-    {
-        key: '6',
-        maHocVien: 'HV240006',
-        tenHocVien: 'Ngô Thị Lan',
-        gioiTinh: 'Nữ',
-        ngaySinh: '13/05/2000',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '7',
-        maHocVien: 'HV240007',
-        tenHocVien: 'Vũ Văn Bình',
-        gioiTinh: 'Nam',
-        ngaySinh: '19/07/2001',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '8',
-        maHocVien: 'HV240008',
-        tenHocVien: 'Trần Thị Duyên',
-        gioiTinh: 'Nữ',
-        ngaySinh: '01/01/2002',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '9',
-        maHocVien: 'HV240009',
-        tenHocVien: 'Nguyễn Văn Phong',
-        gioiTinh: 'Nam',
-        ngaySinh: '15/08/1998',
-        tinhTrang: 'Chưa đăng ký',
-    },
-    {
-        key: '10',
-        maHocVien: 'HV240010',
-        tenHocVien: 'Lê Thị Hồng',
-        gioiTinh: 'Nữ',
-        ngaySinh: '05/09/2000',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '11',
-        maHocVien: 'HV240011',
-        tenHocVien: 'Phạm Văn Khánh',
-        gioiTinh: 'Nam',
-        ngaySinh: '23/12/2002',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '12',
-        maHocVien: 'HV240012',
-        tenHocVien: 'Nguyễn Văn Hưng',
-        gioiTinh: 'Nam',
-        ngaySinh: '30/03/2001',
-        tinhTrang: 'Đã tốt nghiệp',
-    },
-    {
-        key: '13',
-        maHocVien: 'HV240013',
-        tenHocVien: 'Nguyễn Thị Vân',
-        gioiTinh: 'Nữ',
-        ngaySinh: '09/06/2002',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '14',
-        maHocVien: 'HV240014',
-        tenHocVien: 'Trần Văn Quý',
-        gioiTinh: 'Nam',
-        ngaySinh: '19/11/1999',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '15',
-        maHocVien: 'HV240015',
-        tenHocVien: 'Hoàng Thị Ngọc',
-        gioiTinh: 'Nữ',
-        ngaySinh: '12/02/2003',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '16',
-        maHocVien: 'HV240016',
-        tenHocVien: 'Đặng Minh Tuấn',
-        gioiTinh: 'Nam',
-        ngaySinh: '05/05/2002',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '17',
-        maHocVien: 'HV240017',
-        tenHocVien: 'Bùi Thị Hồng Nhung',
-        gioiTinh: 'Nữ',
-        ngaySinh: '17/10/2001',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '18',
-        maHocVien: 'HV240018',
-        tenHocVien: 'Phạm Văn Hải',
-        gioiTinh: 'Nam',
-        ngaySinh: '22/04/2000',
-        tinhTrang: 'Đã tốt nghiệp',
-    },
-    {
-        key: '19',
-        maHocVien: 'HV240019',
-        tenHocVien: 'Lê Thị Tuyết',
-        gioiTinh: 'Nữ',
-        ngaySinh: '18/09/2003',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '20',
-        maHocVien: 'HV240020',
-        tenHocVien: 'Nguyễn Anh Đức',
-        gioiTinh: 'Nam',
-        ngaySinh: '03/07/2001',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '21',
-        maHocVien: 'HV240021',
-        tenHocVien: 'Phạm Thị Hoa',
-        gioiTinh: 'Nữ',
-        ngaySinh: '29/01/2002',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '22',
-        maHocVien: 'HV240022',
-        tenHocVien: 'Nguyễn Văn Bình',
-        gioiTinh: 'Nam',
-        ngaySinh: '15/03/2000',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '23',
-        maHocVien: 'HV240023',
-        tenHocVien: 'Ngô Thị Hương',
-        gioiTinh: 'Nữ',
-        ngaySinh: '08/05/2001',
-        tinhTrang: 'Đang học',
-    },
-    {
-        key: '24',
-        maHocVien: 'HV240024',
-        tenHocVien: 'Trần Văn Sơn',
-        gioiTinh: 'Nam',
-        ngaySinh: '12/10/1999',
-        tinhTrang: 'Đã tốt nghiệp',
-    },
-];
-
-
-

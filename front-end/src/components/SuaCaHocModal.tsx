@@ -1,13 +1,14 @@
 import React from 'react';
-import { Modal, Form, Input, TimePicker } from 'antd';
+import { Modal, Form, Input, TimePicker, message, Select } from 'antd';
+import axios from 'axios';
 import moment from 'moment';
 import { CaHocType } from '../types/CaHocType';
 
 interface SuaCaHocModalProps {
   visible: boolean;
   onCancel: () => void;
-  onSubmit: (values: any) => void;
-  initialValues?: CaHocType | null; 
+  onSubmit: (values: CaHocType) => void;
+  initialValues?: CaHocType | null;
 }
 
 const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
@@ -37,8 +38,22 @@ const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
           batDau: values.batDau ? values.batDau.format('HH:mm') : null,
           ketThuc: values.ketThuc ? values.ketThuc.format('HH:mm') : null,
         };
-        onSubmit(formattedValues);
-        form.resetFields(); 
+
+        axios
+          .post('http://localhost:8081/api/cahoc/sua-cahoc', formattedValues, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'application/json',
+            },
+          })
+          .then(() => {
+            message.success('Sửa ca học thành công');
+            onSubmit(formattedValues);
+            form.resetFields();
+          })
+          .catch((error) => {
+            message.error('Lỗi khi sửa ca học: ' + error.message);
+          });
       })
       .catch((info) => {
         console.log('Validation Failed:', info);
@@ -50,7 +65,7 @@ const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
       title="Sửa Ca Học"
       visible={visible}
       onCancel={() => {
-        form.resetFields(); 
+        form.resetFields();
         onCancel();
       }}
       onOk={handleOk}
@@ -61,7 +76,7 @@ const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
           label="Mã Ca Học"
           rules={[{ required: true, message: 'Vui lòng nhập mã ca!' }]}
         >
-          <Input />
+          <Input disabled />
         </Form.Item>
         <Form.Item
           name="batDau"
@@ -79,10 +94,13 @@ const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
         </Form.Item>
         <Form.Item
           name="trangThai"
-          label="Trạng Thái"
-          rules={[{ required: true, message: 'Vui lòng nhập trạng thái!' }]}
+          label="Tình Trạng"
+          rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
         >
-          <Input />
+          <Select>
+            <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
+            <Select.Option value="Ngưng hoạt động">Ngưng hoạt động</Select.Option>
+          </Select>
         </Form.Item>
         <Form.Item
           name="ghiChu"
