@@ -3,8 +3,8 @@ POST http://localhost:8081/api/auth/register
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV001",
-  "matKhau": "password123",
+  "maNhanVien": "NV240001",
+  "matKhau": "123",
   "phanQuyen": 1
 }
 
@@ -13,7 +13,7 @@ POST http://localhost:8081/api/auth/login
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV240011",
+  "maNhanVien": "NV240001",
   "matKhau": "123"
 }
 
@@ -29,26 +29,42 @@ Content-Type: application/json
 }
 
 ### 4. Lấy danh sách nhân viên
-GET http://localhost:8081/api/nhanvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMTEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzc1MDA3MCwiZXhwIjoxNzI3NzUzNjcwfQ.va-O27d6kXiEktVJL1Y_pDRD1OpTt7sE7tKy2ssgZ0w
+GET http://localhost:8081/api/nhanvien/ds-nhanvien
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzk2OTgwNCwiZXhwIjoxNzI3OTczNDA0fQ.C04yBNTuVmlijGUvPynio0o9YLV3KWkMWr-1003kYBg
+Nzc4ODgwNiwiZXhwIjoxNzI3NzkyNDA2fQ.8FXmqLCq76gzceawAM5NCuzqZzI0N4HbXX3tKZHohjs
 
-### 5. Thêm nhân viên
-POST http://localhost:8081/api/nhanvien
-Authorization: Bearer 
+### Thêm nhân viên. Trong đó nhanViens chứa thông tin của các nhan viên cần thêm
+POST http://localhost:8081/api/nhanvien/them-nhanvien
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzk3NTI0NSwiZXhwIjoxNzI3OTc4ODQ1fQ.EUlXGWHfHT1hn59Y0XgVIEaHWgMomyem5i5Y5Z23Bwo
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV002",
-  "tenNhanVien": "Nguyen Van A",
-  "chucVu": "Developer",
-  "ngayVaoLam": "2022-01-01",
-  "gioiTinh": "Nam",
-  "ngaySinh": "1990-01-01",
-  "sdt": "0909123456",
-  "email": "nguyenvana@gmail.com",
-  "diaChi": "Hanoi",
-  "trangThai": "Đang hoạt động",
-  "ghiChu": ""
+  "nhanViens": [
+    {
+      "tenNhanVien": "Nguyen Van B",
+      "chucVu": "Kỹ sư",
+      "ngayVaoLam": "2024-02-10",
+      "gioiTinh": "Nam",
+      "ngaySinh": "1990-01-15",
+      "sdt": "0912345678",
+      "email": "nguyenvanb@example.com",
+      "diaChi": "456 Phố Chính, Hà Nội",
+      "trangThai": "Đang hoạt động",
+      "ghiChu": "Nhân viên chính thức"
+    },
+    {
+      "tenNhanVien": "Le Thi C",
+      "chucVu": "Nhân viên kế toán",
+      "ngayVaoLam": "2024-03-01",
+      "gioiTinh": "Nữ",
+      "ngaySinh": "1991-08-20",
+      "sdt": "0901234567",
+      "email": "lethic@example.com",
+      "diaChi": "789 Phố Nhỏ, Hà Nội",
+      "trangThai": "Đang hoạt động",
+      "ghiChu": "Nhân viên mới"
+    }
+  ]
 }
 
 ### 6. Lấy danh sách học viên
@@ -57,7 +73,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 ### 7. Thêm học viên
 POST http://localhost:8081/api/hocvien/them-hocvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMTEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzc1MDg5MiwiZXhwIjoxNzI3NzU0NDkyfQ.IWi7SGUzOO7IbcK_2GgYy8jUsbYZRYzMc29Zw4b0WM0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYyNDAwMDEiLCJwaGFuUXV5ZW4iOjEsImlhdCI6MTcyNzk3NDYxNiwiZXhwIjoxNzI3OTc4MjE2fQ.mPNa8U8VgDI-IRNJh-hmztja0ej_xST5j-O2KMe-mZg
 Content-Type: application/json
 
 {
