@@ -27,13 +27,13 @@ const createHocVien = async (req, res) => {
       [
         maHocVien,
         tenHocVien,
-        ngayVaoHoc || null,      
+        ngayVaoHoc || null,
         ngaySinh || null,
         gioiTinh || null,
         sdt || null,
         email || null,
         diaChi || null,
-        tinhTrang || 'Đang hoạt động', 
+        tinhTrang || 'Đang Học', // Chỉnh lại mặc định 'Đang Học' thay vì 'Đang hoạt động'
         ghiChu || null
       ]
     );
@@ -68,7 +68,7 @@ const updateHocVien = async (req, res) => {
         sdt || null,
         email || null,
         diaChi || null,
-        tinhTrang || 'Đang hoạt động', 
+        tinhTrang || 'Đang Học',
         ghiChu || null,
         maHocVien
       ]

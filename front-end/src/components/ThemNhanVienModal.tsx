@@ -15,29 +15,27 @@ const ThemNhanVienModal: React.FC<ThemNhanVienModalProps> = ({ visible, onCancel
         form
             .validateFields()
             .then((values) => {
-                // Format dữ liệu theo đúng API yêu cầu
                 const formattedValues = {
                     maNhanVien: values.maNhanVien,
                     tenNhanVien: values.tenNhanVien,
                     gioiTinh: values.gioiTinh,
-                    ngaySinh: values.ngaySinh.format('YYYY-MM-DD'), // Format ngày sinh thành chuỗi yyyy-mm-dd
+                    ngaySinh: values.ngaySinh.format('YYYY-MM-DD'),
                     trangThai: values.trangThai
                 };
 
-                // Gọi API để thêm nhân viên
                 axios.post('http://localhost:8081/api/nhanvien/them-nhanvien', formattedValues, {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`, // Gửi token trong header
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
                     }
                 })
-                .then(() => {
-                    message.success('Thêm nhân viên thành công');
-                    onSubmit(formattedValues); // Gọi callback để cập nhật lại bảng dữ liệu
-                    form.resetFields(); // Reset lại form sau khi submit thành công
-                })
-                .catch((error) => {
-                    message.error('Lỗi khi thêm nhân viên: ' + error.message);
-                });
+                    .then(() => {
+                        message.success('Thêm nhân viên thành công');
+                        onSubmit(formattedValues);
+                        form.resetFields();
+                    })
+                    .catch((error) => {
+                        message.error('Lỗi khi thêm nhân viên: ' + error.message);
+                    });
             })
             .catch((info) => {
                 console.log('Validate Failed:', info);
@@ -49,8 +47,8 @@ const ThemNhanVienModal: React.FC<ThemNhanVienModalProps> = ({ visible, onCancel
             title="Thêm Nhân Viên"
             visible={visible}
             onCancel={() => {
-                form.resetFields(); 
-                onCancel(); 
+                form.resetFields();
+                onCancel();
             }}
             onOk={handleOk}
         >
@@ -86,14 +84,14 @@ const ThemNhanVienModal: React.FC<ThemNhanVienModalProps> = ({ visible, onCancel
                     <DatePicker format="DD/MM/YYYY" />
                 </Form.Item>
                 <Form.Item
-                    name="trangThai"
+                    name="tinhTrang"
                     label="Tình Trạng"
                     rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
                 >
                     <Select>
-                        <Select.Option value="Full time">Full time</Select.Option>
-                        <Select.Option value="Part time">Part time</Select.Option>
-                        <Select.Option value="Thực tập sinh">Thực tập sinh</Select.Option>
+                        <Select.Option value="Đang Học">Đang Học</Select.Option>
+                        <Select.Option value="Đã Tốt Nghiệp">Đã Tốt Nghiệp</Select.Option>
+                        <Select.Option value="Chưa Đăng Ký">Chưa Đăng Ký</Select.Option>
                     </Select>
                 </Form.Item>
             </Form>
