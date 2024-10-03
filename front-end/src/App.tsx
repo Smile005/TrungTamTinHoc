@@ -48,7 +48,6 @@ const App: React.FC = () => {
   const location = useLocation();
   const dispatch = useDispatch();
 
-
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const userInfo = useSelector((state: RootState): NhanVienType | null => ({
     maNhanVien: 'NV001',

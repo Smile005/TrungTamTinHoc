@@ -15,8 +15,8 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      const apiPort = process.env.REACT_APP_API_PORT;
-      const response = await fetch(`http://localhost:${apiPort}/auth/login`, {
+      const apiPort = process.env.REACT_APP_API_PORT || 8081;
+      const response = await fetch(`http://localhost:${apiPort}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
