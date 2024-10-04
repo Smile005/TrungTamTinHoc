@@ -58,7 +58,7 @@ const createNhanVien = async (req, res) => {
           sdt || null,
           email || null,
           diaChi || null,
-          trangThai || 'Đang hoạt động',
+          trangThai || 'Full time',
           ghiChu || null
         ]
       );
