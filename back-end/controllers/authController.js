@@ -13,9 +13,9 @@ const register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(matKhau, 10);
-    const role = phanQuyen || 3; // Default role = 3
+    const role = phanQuyen || 3; 
 
-    await pool.query('INSERT INTO TaiKhoan (maNhanVien, matKhau, phanQuyen, trangThai) VALUES (?, ?, ?, "Đang hoạt động")', 
+    await pool.query('INSERT INTO TaiKhoan (maNhanVien, matKhau, phanQuyen, trangThai) VALUES (?, ?, ?, "Đang hoạt động")',
       [maNhanVien, hashedPassword, role]);
 
     res.status(201).json({ message: 'Đăng ký thành công.' });

@@ -13,7 +13,11 @@ const Login: React.FC = () => {
   const onFinish = async (values: { username: string; password: string }) => {
     setLoading(true);
     try {
+<<<<<<< HEAD
+      const apiPort = process.env.REACT_APP_API_PORT || 8081;
+=======
       const apiPort = process.env.REACT_APP_API_PORT;
+>>>>>>> 1bc33259545fc55878a6c5ca11a8d8864836c6b4
       const response = await fetch(`http://localhost:${apiPort}/api/auth/login`, {
         method: 'POST',
         headers: {

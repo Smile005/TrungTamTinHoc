@@ -9,20 +9,38 @@ const getMonHoc = async (req, res) => {
   }
 };
 
-const createMonHoc = async (req, res) => {
-  const { maMonHoc, tenMonHoc, soBuoiHoc, hocPhi, moTa, ghiChu } = req.body;
+const createMaMH = async (connection) => {
+  try {
+    const query = `SELECT COUNT(maMonHoc) AS soLuong FROM MonHoc;`;
+    const [result] = await connection.query(query);
+    const soLuong = result[0].soLuong || 0;
+    const nextMaMonHoc = `MH${(soLuong + 1).toString().padStart(3, '0')}`;
+    return nextMaMonHoc;
+  } catch (error) {
+    throw new Error('Không thể tạo mã môn học');
+  }
+};
 
-  if (!maMonHoc || !tenMonHoc) {
-    return res.status(400).json({ message: 'Mã môn học và tên môn học là bắt buộc.' });
+const createMonHoc = async (req, res) => {
+  const connection = await pool.getConnection();
+  const { tenMonHoc, soBuoiHoc, hocPhi, moTa, ghiChu } = req.body;
+
+  if (!tenMonHoc) {
+    return res.status(400).json({ message: 'Tên môn học là bắt buộc.' });
   }
 
   try {
-    const [existingMonHoc] = await pool.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
+    await connection.beginTransaction();
+
+    const maMonHoc = await createMaMH(connection);
+    
+    await pool.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
+    const [existingMonHoc] = await connection.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
     if (existingMonHoc.length > 0) {
       return res.status(400).json({ message: 'Môn học đã tồn tại.' });
     }
 
-    await pool.query(
+    await connection.query(
       'INSERT INTO MonHoc (maMonHoc, tenMonHoc, soBuoiHoc, hocPhi, moTa, ghiChu) VALUES (?, ?, ?, ?, ?, ?)',
       [
         maMonHoc,
@@ -34,17 +52,21 @@ const createMonHoc = async (req, res) => {
       ]
     );
 
-    res.status(201).json({ message: 'Thêm môn học thành công.' });
+    await connection.commit();
+    res.status(201).json({ message: 'Thêm môn học thành công.', maMonHoc });
   } catch (error) {
+    await connection.rollback();
     res.status(500).json({ message: 'Lỗi server', error });
+  } finally {
+    connection.release();
   }
 };
 
 const updateMonHoc = async (req, res) => {
   const { maMonHoc, tenMonHoc, soBuoiHoc, hocPhi, moTa, ghiChu } = req.body;
 
-  if (!tenMonHoc) {
-    return res.status(400).json({ message: 'Tên môn học là bắt buộc.' });
+  if (!maMonHoc || !tenMonHoc) {
+    return res.status(400).json({ message: 'Mã môn học và tên môn học là bắt buộc.' });
   }
 
   try {

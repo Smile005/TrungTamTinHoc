@@ -1,10 +1,17 @@
 const express = require('express');
-const { getLopHoc, createLopHoc } = require('../controllers/lopHocController');
+const { getLopHoc, createLopHoc, updateLopHoc } = require('../controllers/lopHocController');
+const { getDS_Lop, xepLop, diemDanh, nhapDiem, chuyenLop } = require('../controllers/chiTietLopHocController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
 
-router.get('/', authMiddleware(1), getLopHoc);
-router.post('/', authMiddleware(1), createLopHoc);
+router.get('/ds-lophoc', authMiddleware(2), getLopHoc);
+router.post('/them-lophoc', authMiddleware(2), createLopHoc);
+router.post('/sua-lophoc', authMiddleware(2), updateLopHoc);
+router.get('/ds-hocvien', authMiddleware(2), getDS_Lop);
+router.post('/xepLop', authMiddleware(2), xepLop);
+router.post('/chuyenLop', authMiddleware(2), chuyenLop);
+router.post('/diemDanh', authMiddleware(2), diemDanh);
+router.post('/nhapDiem', authMiddleware(2), nhapDiem);
 
 module.exports = router;
