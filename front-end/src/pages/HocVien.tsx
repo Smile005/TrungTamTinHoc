@@ -115,9 +115,9 @@ const HocVien: React.FC = () => {
             },
         },
         {
-            title: 'Ngày sinh',
-            dataIndex: 'ngaySinh',
-            key: 'ngaySinh',
+            title: 'Ngày vào học',
+            dataIndex: 'ngayVaoHoc',
+            key: 'ngayVaoHoc',
             width: '6%',
         },
         {

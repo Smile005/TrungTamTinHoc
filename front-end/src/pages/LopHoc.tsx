@@ -1,46 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import axios from 'axios'; // Import axios để gọi API
+import axios from 'axios';
 import { LopHocType } from '../types/LopHocType';
-import moment from 'moment';
 import ThemLopHocModal from '../components/ThemLopHocModal';
 import SuaLopHocModal from '../components/SuaLopHocModal';
 import '../styles/TableCustom.css';
+import moment from 'moment';
 
 const { Search } = Input;
 
 const LopHoc: React.FC = () => {
-  const [searchText, setSearchText] = useState(''); 
-  const [filteredData, setFilteredData] = useState<LopHocType[]>([]); // Dữ liệu từ API
-  const [isModalVisible, setIsModalVisible] = useState(false); 
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false); 
+  const [searchText, setSearchText] = useState('');
+  const [filteredData, setFilteredData] = useState<LopHocType[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<LopHocType | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Trạng thái loading
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Gọi API để lấy danh sách lớp học
   useEffect(() => {
     const fetchLopHoc = async () => {
-      setLoading(true); // Hiển thị trạng thái loading
+      setLoading(true);
       try {
-        const response = await axios.get('http://localhost:8081/api/lophoc', {
+        const response = await axios.get('http://localhost:8081/api/lophoc/ds-lophoc', { // Sửa URL API
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`, // Thay token bằng token thực tế của bạn
+            Authorization: `Bearer ${localStorage.getItem('token')}`, // Sử dụng token từ localStorage
           },
         });
-        setFilteredData(response.data); // Lưu dữ liệu lớp học vào state
+        setFilteredData(response.data);
       } catch (error) {
         console.error('Lỗi khi lấy danh sách lớp học:', error);
         message.error('Lỗi khi lấy danh sách lớp học!');
       } finally {
-        setLoading(false); // Tắt trạng thái loading
+        setLoading(false);
       }
     };
 
     fetchLopHoc();
   }, []);
 
-  // Xử lý tìm kiếm
   const onSearch = (value: string) => {
     const filtered = filteredData.filter((item) =>
       item.maLopHoc.toLowerCase().includes(value.toLowerCase()) ||
@@ -54,8 +53,8 @@ const LopHoc: React.FC = () => {
 
   const handleMenuClick = (e: any, record: LopHocType) => {
     if (e.key === 'edit') {
-      setSelectedRecord(record); 
-      setIsEditModalVisible(true); 
+      setSelectedRecord(record);
+      setIsEditModalVisible(true);
     } else if (e.key === 'delete') {
       message.info(`Xóa lớp học: ${record.tenLopHoc}`);
     }
@@ -83,7 +82,7 @@ const LopHoc: React.FC = () => {
 
   const handleEditSubmit = (values: any) => {
     const updatedData = filteredData.map((item) =>
-      item.key === selectedRecord?.key ? { ...selectedRecord, ...values } : item
+      item.maLopHoc === selectedRecord?.maLopHoc ? { ...selectedRecord, ...values } : item
     );
     setFilteredData(updatedData);
     setIsEditModalVisible(false);
@@ -91,7 +90,7 @@ const LopHoc: React.FC = () => {
   };
 
   const handleUndo = () => {
-    setSearchText(''); // Xóa bộ lọc tìm kiếm
+    setSearchText('');
     message.info("Đã hoàn tác bộ lọc.");
   };
 
@@ -128,6 +127,7 @@ const LopHoc: React.FC = () => {
       title: 'Ngày Bắt Đầu',
       dataIndex: 'ngayBatDau',
       key: 'ngayBatDau',
+      render: (ngayBatDau: string) => moment(ngayBatDau).format("DD/MM/YYYY"),
       width: '15%',
     },
     {
@@ -141,16 +141,7 @@ const LopHoc: React.FC = () => {
       dataIndex: 'trangThai',
       key: 'trangThai',
       render: (trangThai: string): JSX.Element => {
-        let color = '';
-                if (trangThai === 'Đang Hoạt Động') {
-                    color = 'geekblue';
-                } else if (trangThai === 'Ngưng Hoạt Động') 
-                    color = 'green';
-                return (
-                    <Tag color={color} key={trangThai}>
-                        {trangThai.toUpperCase()}
-                    </Tag>
-                );
+        const color = trangThai === 'Đang Hoạt Động' ? 'geekblue' : 'green';
         return <Tag color={color}>{trangThai.toUpperCase()}</Tag>;
       },
       width: '8%',
@@ -196,9 +187,7 @@ const LopHoc: React.FC = () => {
         <div className="button-container">
           <Button className='custom-button' onClick={handleUndo}>Hoàn tác</Button>
           <Button className='custom-button' onClick={handleAddClass}>Thêm</Button>
-          <Button className='custom-button' onClick={handleImportExcel}>
-            Nhập Excel
-          </Button>
+          <Button className='custom-button' onClick={handleImportExcel}>Nhập Excel</Button>
         </div>
       </div>
       <Table
@@ -206,8 +195,8 @@ const LopHoc: React.FC = () => {
         columns={columns}
         dataSource={filteredData}
         pagination={{ pageSize: 5 }}
-        rowKey="key"
-        loading={loading} // Hiển thị trạng thái loading
+        rowKey="maLopHoc"
+        loading={loading}
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
       />
 

@@ -28,10 +28,6 @@ const authSlice = createSlice({
       state.token = action.payload.token;
       state.userInfo = action.payload.userInfo;
 
-<<<<<<< HEAD
-=======
-      // Lưu token vào localStorage
->>>>>>> 1bc33259545fc55878a6c5ca11a8d8864836c6b4
       localStorage.setItem('token', action.payload.token);
     },
     logout(state) {
@@ -46,9 +42,6 @@ const authSlice = createSlice({
 });
 
 export const { login, logout } = authSlice.actions;
-<<<<<<< HEAD
+
 export default authSlice.reducer;
 
-=======
-export default authSlice.reducer;
->>>>>>> 1bc33259545fc55878a6c5ca11a8d8864836c6b4
