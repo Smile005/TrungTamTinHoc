@@ -6,13 +6,13 @@ import { LopHocType } from '../types/LopHocType';
 interface ThemLopHocModalProps {
     visible: boolean;
     onCancel: () => void;
-    onSubmit: (values: LopHocType) => void;
+    onSubmit: (values: LopHocType[]) => void; // Có thể gửi nhiều lớp học cùng lúc
 }
 
 const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, onSubmit }) => {
     const [form] = Form.useForm();
-    const [maMonHocList, setMaMonHocList] = useState<string[]>([]); 
-    const [maNhanVienList, setMaNhanVienList] = useState<string[]>([]); 
+    const [maMonHocList, setMaMonHocList] = useState<string[]>([]);
+    const [maNhanVienList, setMaNhanVienList] = useState<string[]>([]);
 
     useEffect(() => {
         if (visible) {
@@ -23,8 +23,8 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
                     },
                 })
                 .then((response) => {
-                    const maMonHocData = response.data.map((monHoc: any) => monHoc.maMonHoc); 
-                    setMaMonHocList(maMonHocData); 
+                    const maMonHocData = response.data.map((monHoc: any) => monHoc.maMonHoc);
+                    setMaMonHocList(maMonHocData);
                 })
                 .catch((error) => {
                     message.error('Lỗi khi lấy danh sách mã môn học: ' + error.message);
@@ -38,8 +38,8 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
                 })
                 .then((response) => {
                     const giangVienData = response.data
-                        .filter((nhanVien: any) => nhanVien.chucVu === "Giảng Viên") 
-                        .map((nhanVien: any) => nhanVien.maNhanVien); 
+                        .filter((nhanVien: any) => nhanVien.chucVu === "Giảng Viên")
+                        .map((nhanVien: any) => nhanVien.maNhanVien);
                     setMaNhanVienList(giangVienData);
                 })
                 .catch((error) => {
@@ -55,23 +55,24 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
                 const formattedValues: Omit<LopHocType, 'key' | 'maLopHoc'> = {
                     tenLopHoc: values.tenLopHoc,
                     maMonHoc: values.maMonHoc,
-                    maNhanVien: values.maNhanVien, 
+                    maNhanVien: values.maNhanVien,
                     ngayBatDau: values.ngayBatDau ? values.ngayBatDau.format('YYYY-MM-DD') : null,
                     soLuong: values.soLuong,
                     trangThai: values.trangThai,
                     ghiChu: values.ghiChu || undefined,
                 };
 
+                // Gửi request thêm lớp học qua API
                 axios
-                    .post('http://localhost:8081/api/lophoc/them-lophoc', formattedValues, {
+                    .post('http://localhost:8081/api/lophoc/them-lophoc', { lopHocs: [formattedValues] }, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem('token')}`,
                             'Content-Type': 'application/json',
                         },
                     })
                     .then((response) => {
-                        message.success('Thêm lớp học thành công');
-                        onSubmit(response.data); 
+                        message.success(`${response.data.message}`);
+                        onSubmit(response.data.ds_LopHoc); // Trả về danh sách lớp học đã thêm
                         form.resetFields();
                         onCancel();
                     })
@@ -148,8 +149,8 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
                     rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
                 >
                     <Select>
-                        <Select.Option value="Đang hoạt động">ĐANG HOẠT ĐỘNG</Select.Option>
-                        <Select.Option value="Ngưng hoạt động">NGƯNG HOẠT ĐỘNG</Select.Option>
+                        <Select.Option value="Có thể đăng ký">Có thể đăng ký</Select.Option>
+                        <Select.Option value="Chưa mở đăng ký">Chưa mở đăng ký</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item name="ghiChu" label="Ghi Chú">

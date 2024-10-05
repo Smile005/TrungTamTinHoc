@@ -137,12 +137,12 @@ const MonHoc: React.FC = () => {
       key: 'trangThai',
       render: (trangThai: string): JSX.Element => {
         let color = '';
-        if (trangThai === 'Đang Hoạt Động') {
+        if (trangThai === 'Đang Giảng Dạy') {
           color = 'geekblue';
         } else if (trangThai === 'Tạm Ngưng') {
           color = 'green';
         }
-        return <Tag color={color}>{trangThai.toUpperCase()}</Tag>;
+        return <Tag color={color}>{trangThai}</Tag>;
       },
       width: '10%',
     },
@@ -185,7 +185,6 @@ const MonHoc: React.FC = () => {
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button' onClick={handleUndo}>Hoàn tác</Button>
           <Button className='custom-button' onClick={handleAddCourse}>Thêm</Button>
           <Button className='custom-button' onClick={handleImportExcel}>Nhập Excel</Button>
         </div>

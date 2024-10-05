@@ -62,12 +62,6 @@ const CaHoc: React.FC = () => {
         setIsThemCaModalVisible(false);
     };
 
-    const soGio = (batDau: string, ketThuc: string): number => {
-        const start = new Date(`1970-01-01T${batDau}:00`);
-        const end = new Date(`1970-01-01T${ketThuc}:00`);
-        const diffMs = end.getTime() - start.getTime();
-        return diffMs / (1000 * 60 * 60); 
-    };
 
     const onSearch = (value: string) => {
         setSearchText(value);
@@ -106,7 +100,7 @@ const CaHoc: React.FC = () => {
                     color = 'green';
                 return (
                     <Tag color={color} key={trangThai}>
-                        {trangThai.toUpperCase()}
+                        {trangThai}
                     </Tag>
                 );
             },
@@ -148,7 +142,6 @@ const CaHoc: React.FC = () => {
                     style={{ backgroundColor: '#fff' }} 
                 />
                 <div className="button-container">
-                    <Button className='custom-button'>Hoàn tác</Button>
                     <Button className='custom-button' onClick={() => setIsThemCaModalVisible(true)}>
                         Thêm
                     </Button>

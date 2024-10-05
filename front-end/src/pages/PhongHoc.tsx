@@ -111,7 +111,7 @@ const PhongHoc: React.FC = () => {
         
         return (
             <Tag color={color} key={trangThai}>
-                {trangThai.toUpperCase()}
+                {trangThai}
             </Tag>
         );
     },

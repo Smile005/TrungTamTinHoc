@@ -91,7 +91,7 @@ const ThemMonHocModal: React.FC<ThemMonHocModalProps> = ({ visible, onCancel, on
                     rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
                 >
                     <Select>
-                        <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
+                        <Select.Option value="Đang hoạt động">Đang Giảng Dạy</Select.Option>
                         <Select.Option value="Tạm Ngưng">Tạm Ngưng</Select.Option>
                     </Select>
                 </Form.Item>
