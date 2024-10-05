@@ -1,36 +1,67 @@
-// File: src/pages/TKGiangVien.tsx
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import axios from 'axios';
 
-// Register necessary chart.js components
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-// Mock data for the number of classes per teacher (replace this with an API call)
-const fetchTeacherData = async () => {
-    return [
-        { teacher: 'Nguyen Van A', classCount: 5 },
-        { teacher: 'Tran Thi B', classCount: 8 },
-        { teacher: 'Le Van C', classCount: 3 },
-        { teacher: 'Pham Thi D', classCount: 10 },
-    ];
-};
 
 const TKGiangVien: React.FC = () => {
     const [teacherData, setTeacherData] = useState<{ teacher: string; classCount: number }[]>([]);
 
     useEffect(() => {
-        fetchTeacherData().then(data => setTeacherData(data));
+        fetchTeacherData();
     }, []);
 
+    const fetchTeacherData = async () => {
+        try {
+            // Gọi API để lấy danh sách lớp học
+            const lopHocResponse = await axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            // Gọi API để lấy danh sách nhân viên
+            const nhanVienResponse = await axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+
+            const nhanVienMap = nhanVienResponse.data.reduce((acc: any, nhanVien: any) => {
+                acc[nhanVien.maNhanVien] = nhanVien.tenNhanVien; // Ánh xạ maNhanVien với tenNhanVien
+                return acc;
+            }, {});
+
+            const classData = lopHocResponse.data.reduce((acc: any, lopHoc: any) => {
+                const teacherId = lopHoc.maNhanVien;
+                const teacherName = nhanVienMap[teacherId] || 'Giảng viên không xác định'; // Lấy tên giảng viên
+                if (!acc[teacherName]) {
+                    acc[teacherName] = 0;
+                }
+                acc[teacherName] += 1; // Tăng số lớp học cho giảng viên
+                return acc;
+            }, {});
+
+            const formattedData = Object.keys(classData).map(teacher => ({
+                teacher, 
+                classCount: classData[teacher], 
+            }));
+
+            setTeacherData(formattedData);
+        } catch (error) {
+            console.error('Lỗi khi lấy dữ liệu:', error);
+        }
+    };
+
     const barColors = [
-        'rgba(153, 102, 255, 0.2)', // Light purple
-        'rgba(255, 159, 64, 0.2)', // Light orange
-        'rgba(255, 99, 132, 0.2)', // Light red
-        'rgba(54, 162, 235, 0.2)', // Light blue
-        'rgba(255, 206, 86, 0.2)', // Light yellow
-        'rgba(75, 192, 192, 0.2)', // Light cyan
-        'rgba(153, 102, 255, 0.2)'  // Light purple
+        'rgba(153, 102, 255, 0.2)', 
+        'rgba(255, 159, 64, 0.2)', 
+        'rgba(255, 99, 132, 0.2)', 
+        'rgba(54, 162, 235, 0.2)', 
+        'rgba(255, 206, 86, 0.2)', 
+        'rgba(75, 192, 192, 0.2)', 
+        'rgba(153, 102, 255, 0.2)'  
     ];
 
     const borderColors = [
