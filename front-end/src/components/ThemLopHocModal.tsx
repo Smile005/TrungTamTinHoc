@@ -11,10 +11,9 @@ interface ThemLopHocModalProps {
 
 const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, onSubmit }) => {
     const [form] = Form.useForm();
-    const [maMonHocList, setMaMonHocList] = useState<string[]>([]); // State lưu danh sách mã môn học
-    const [maNhanVienList, setMaNhanVienList] = useState<string[]>([]); // State lưu danh sách mã nhân viên của giảng viên
+    const [maMonHocList, setMaMonHocList] = useState<string[]>([]); 
+    const [maNhanVienList, setMaNhanVienList] = useState<string[]>([]); 
 
-    // Gọi API để lấy danh sách mã môn học từ DB khi modal được mở
     useEffect(() => {
         if (visible) {
             axios
@@ -31,7 +30,6 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
                     message.error('Lỗi khi lấy danh sách mã môn học: ' + error.message);
                 });
 
-            // Lấy danh sách mã nhân viên là giảng viên
             axios
                 .get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
                     headers: {
@@ -40,8 +38,8 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
                 })
                 .then((response) => {
                     const giangVienData = response.data
-                        .filter((nhanVien: any) => nhanVien.chucVu === "Giảng Viên") // Lọc những nhân viên có chức vụ là "Giảng Viên"
-                        .map((nhanVien: any) => nhanVien.maNhanVien); // Lấy chỉ `maNhanVien`
+                        .filter((nhanVien: any) => nhanVien.chucVu === "Giảng Viên") 
+                        .map((nhanVien: any) => nhanVien.maNhanVien); 
                     setMaNhanVienList(giangVienData);
                 })
                 .catch((error) => {
@@ -57,7 +55,7 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
                 const formattedValues: Omit<LopHocType, 'key' | 'maLopHoc'> = {
                     tenLopHoc: values.tenLopHoc,
                     maMonHoc: values.maMonHoc,
-                    maNhanVien: values.maNhanVien, // Đổi thành `maNhanVien`
+                    maNhanVien: values.maNhanVien, 
                     ngayBatDau: values.ngayBatDau ? values.ngayBatDau.format('YYYY-MM-DD') : null,
                     soLuong: values.soLuong,
                     trangThai: values.trangThai,
