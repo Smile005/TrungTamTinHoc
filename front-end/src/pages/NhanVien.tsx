@@ -125,7 +125,7 @@ const NhanVien: React.FC = () => {
       onFilter: (value, record) => record.trangThai?.indexOf(value as string) === 0,
       render: (trangThai: string): JSX.Element => {
         let color = trangThai === 'Full time' ? 'geekblue' : trangThai === 'Part time' ? 'green' : 'volcano';
-        return <Tag color={color}>{trangThai.toUpperCase()}</Tag>;
+        return <Tag color={color}>{trangThai}</Tag>;
       },
     },
     {

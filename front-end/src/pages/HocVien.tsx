@@ -154,7 +154,7 @@ const HocVien: React.FC = () => {
                 }
                 return (
                     <Tag color={color} key={tinhTrang}>
-                        {tinhTrang.toUpperCase()}
+                        {tinhTrang}
                     </Tag>
                 );
             },
@@ -196,7 +196,6 @@ const HocVien: React.FC = () => {
                     enterButton
                 />
                 <div className="button-container">
-                    <Button className='custom-button'>Hoàn tác</Button>
                     <Button className='custom-button' onClick={showHocVienModal}>Thêm</Button>
                     <Button className='custom-button' onClick={() => showImportModal('hocvien')}>
                         Nhập Excel

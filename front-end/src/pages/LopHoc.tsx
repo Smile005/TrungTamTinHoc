@@ -141,8 +141,8 @@ const LopHoc: React.FC = () => {
       dataIndex: 'trangThai',
       key: 'trangThai',
       render: (trangThai: string): JSX.Element => {
-        const color = trangThai === 'Đang Hoạt Động' ? 'geekblue' : 'green';
-        return <Tag color={color}>{trangThai.toUpperCase()}</Tag>;
+        const color = trangThai === 'Có thể đăng ký' ? 'geekblue' : 'green';
+        return <Tag color={color}>{trangThai}</Tag>;
       },
       width: '8%',
     },
@@ -185,7 +185,6 @@ const LopHoc: React.FC = () => {
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button' onClick={handleUndo}>Hoàn tác</Button>
           <Button className='custom-button' onClick={handleAddClass}>Thêm</Button>
           <Button className='custom-button' onClick={handleImportExcel}>Nhập Excel</Button>
         </div>

@@ -1,5 +1,6 @@
 const pool = require('../config/db');
 
+// Lấy danh sách lớp học
 const getLopHoc = async (req, res) => {
   try {
     const [results] = await pool.query('SELECT * FROM LopHoc');
@@ -9,72 +10,99 @@ const getLopHoc = async (req, res) => {
   }
 };
 
+// Hàm tạo mã lớp học tự động
 const createMaLop = async (connection) => {
   try {
-    const query = `SELECT COUNT(maLop) AS soLuong FROM LopHoc;`;
+    const query = `SELECT COUNT(maLopHoc) AS soLuong FROM LopHoc;`;
     const [result] = await connection.query(query);
     const soLuong = result[0].soLuong || 0;
-    const nextMaLop = `LOP${(soLuong + 1).toString().padStart(5, '0')}`;
+    const nextMaLop = `LOP${(soLuong + 1).toString().padStart(4, '0')}`;
     return nextMaLop;
   } catch (error) {
     throw new Error('Không thể tạo mã lớp học');
   }
 };
 
+// Thêm mới lớp học
 const createLopHoc = async (req, res) => {
   const connection = await pool.getConnection();
-  const { tenLop, maMonHoc, ngayBatDau, soLuong, ghiChu } = req.body;
+  const { lopHocs } = req.body;
 
-  // Kiểm tra tính hợp lệ cho các trường bắt buộc
-  if (!tenLop || !maMonHoc) {
-    return res.status(400).json({ message: 'Tên lớp và mã môn học là bắt buộc.' });
+  if (!lopHocs || lopHocs.length === 0) {
+    return res.status(400).json({ message: 'Không thể xác định dữ liệu lớp học.' });
   }
 
   try {
     await connection.beginTransaction();
+    const addedLopHocs = [];
 
-    // Tạo mã lớp học mới
-    const maLop = await createMaLop(connection);
+    for (let lopHoc of lopHocs) {
+      const { tenLopHoc, maMonHoc, maNhanVien, ngayBatDau, soLuong, trangThai, ghiChu } = lopHoc;
 
-    await pool.query(
-      'INSERT INTO LopHoc (maLop, tenLop, maMonHoc, ngayBatDau, soLuong, trangThai, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [maLop, tenLop, maMonHoc, ngayBatDau, soLuong, 'Chưa mở đăng ký', ghiChu]
-    );
+      if (!tenLopHoc || !maMonHoc) {
+        console.log('Lớp học bị bỏ qua do thiếu tên hoặc mã môn học:', lopHoc);
+        continue;
+      }
+
+      const maLopHoc = await createMaLop(connection);
+
+      await connection.query(
+        'INSERT INTO LopHoc (maLopHoc, tenLopHoc, maMonHoc, maNhanVien, ngayBatDau, soLuong, trangThai, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [
+          maLopHoc,
+          tenLopHoc,
+          maMonHoc,
+          maNhanVien,
+          ngayBatDau || null,
+          soLuong || null,
+          trangThai || 'Chưa mở đăng ký',
+          ghiChu || null
+        ]
+      );
+
+      addedLopHocs.push(maLopHoc);
+    }
 
     await connection.commit();
-    res.status(201).json({ message: 'Thêm lớp học thành công.', maLop });
+
+    res.status(201).json({
+      message: `${addedLopHocs.length} lớp học đã được thêm thành công.`,
+      ds_LopHoc: addedLopHocs
+    });
   } catch (error) {
     await connection.rollback();
-    res.status(500).json({ message: 'Lỗi server', error });
+    res.status(500).json({ message: 'Thêm lớp học không thành công', error });
   } finally {
     connection.release();
   }
 };
 
+// Cập nhật lớp học
 const updateLopHoc = async (req, res) => {
-  const { maLop, tenLop, maMonHoc, ngayBatDau, soLuong, trangThai, ghiChu } = req.body;
+  const { maLopHoc, tenLopHoc, maMonHoc, maNhanVien, ngayBatDau, soLuong, trangThai, ghiChu } = req.body;
 
   // Kiểm tra tính hợp lệ cho các trường bắt buộc
-  if (!maLop || !tenLop || !maMonHoc) {
+  if (!maLopHoc || !tenLopHoc || !maMonHoc) {
     return res.status(400).json({ message: 'Mã lớp, tên lớp và mã môn học là bắt buộc.' });
   }
 
   try {
-    const [existingLopHoc] = await pool.query('SELECT * FROM LopHoc WHERE maLop = ?', [maLop]);
+    const [existingLopHoc] = await pool.query('SELECT * FROM LopHoc WHERE maLopHoc = ?', [maLopHoc]);
     if (existingLopHoc.length === 0) {
       return res.status(404).json({ message: 'Lớp học không tồn tại.' });
     }
 
     await pool.query(
-      'UPDATE LopHoc SET tenLop = ?, maMonHoc = ?, ngayBatDau = ?, soLuong = ?, trangThai = ?, ghiChu = ? WHERE maLop = ?',
+      'UPDATE LopHoc SET tenLopHoc = ?, maMonHoc = ?, maNhanVien = ?, ngayBatDau = ?, soLuong = ?, trangThai = ?, ghiChu = ? WHERE maLopHoc = ?',
       [
-        tenLop,
+        tenLopHoc,
         maMonHoc,
+        maNhanVien,
         ngayBatDau || null,
         soLuong || null,
-        trangThai || 'Có thể đăng ký',
+        trangThai || 'Chưa mở đăng ký',
         ghiChu || null,
-        maLop
+        maLopHoc
       ]
     );
 
