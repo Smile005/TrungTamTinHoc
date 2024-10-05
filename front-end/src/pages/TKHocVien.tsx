@@ -7,15 +7,16 @@ import moment from 'moment';
 
 const { Option } = Select;
 
-// Register the necessary chart.js components
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const TKHocVien: React.FC = () => {
     const [studentData, setStudentData] = useState<{ month: string; students: number }[]>([]);
-    const [year, setYear] = useState<number>(new Date().getFullYear()); // Năm hiện tại
+    const [year, setYear] = useState<number>(new Date().getFullYear()); 
+    const [availableYears, setAvailableYears] = useState<number[]>([]);
 
     useEffect(() => {
-        fetchStudentData(year);
+        fetchStudentData(year); 
+        fetchAvailableYears(); 
     }, [year]);
 
     const fetchStudentData = async (selectedYear: number) => {
@@ -27,14 +28,13 @@ const TKHocVien: React.FC = () => {
             });
 
             const data = response.data
-                .filter((student: any) => moment(student.ngayVaoHoc).year() === selectedYear) // Lọc theo năm
+                .filter((student: any) => moment(student.ngayVaoHoc).year() === selectedYear) 
                 .reduce((acc: any, student: any) => {
-                    const month = moment(student.ngayVaoHoc).format('MMMM'); // Lấy tháng
-                    acc[month] = (acc[month] || 0) + 1; // Tăng số lượng học viên cho tháng đó
+                    const month = moment(student.ngayVaoHoc).format('MMMM'); 
+                    acc[month] = (acc[month] || 0) + 1; 
                     return acc;
                 }, {});
 
-            // Chuyển dữ liệu thành mảng
             const chartData = Object.keys(data).map((month) => ({
                 month,
                 students: data[month]
@@ -42,7 +42,26 @@ const TKHocVien: React.FC = () => {
 
             setStudentData(chartData);
         } catch (error) {
+            message.error('Lỗi khi lấy dữ liệu học viên');
+        }
+    };
 
+    const fetchAvailableYears = async () => {
+        try {
+            const response = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            const years: number[] = response.data
+                .map((student: any) => moment(student.ngayVaoHoc).year()) 
+                .filter((year: number) => !isNaN(year)); 
+
+            const uniqueYears = Array.from(new Set(years)).sort((a, b) => b - a); 
+            setAvailableYears(uniqueYears); 
+        } catch (error) {
+            message.error('Lỗi khi lấy danh sách năm');
         }
     };
 
@@ -50,14 +69,13 @@ const TKHocVien: React.FC = () => {
         setYear(value);
     };
 
-    // Danh sách màu sắc cho các tháng
     const barColors = [
         'rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)',
         'rgba(255, 206, 86, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)',
         'rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)',
         'rgba(255, 206, 86, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'
     ];
-    
+
     const borderColors = [
         'rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)',
         'rgba(255, 206, 86, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)',
@@ -103,9 +121,9 @@ const TKHocVien: React.FC = () => {
                 style={{ width: 120, marginBottom: 20 }}
                 onChange={handleYearChange}
             >
-                {[...Array(5)].map((_, index) => (
-                    <Option key={index} value={new Date().getFullYear() - index}>
-                        {new Date().getFullYear() - index}
+                {availableYears.map((year) => (
+                    <Option key={year} value={year}>
+                        {year}
                     </Option>
                 ))}
             </Select>
