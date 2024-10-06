@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
+import { Bar, Line, PolarArea } from 'react-chartjs-2';
 import { Select, message } from 'antd';
-import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart, CategoryScale, LinearScale, BarElement, LineElement, RadialLinearScale, Title, Tooltip, Legend } from 'chart.js';
 import axios from 'axios';
 import moment from 'moment';
 
 const { Option } = Select;
 
-Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+Chart.register(CategoryScale, LinearScale, BarElement, LineElement, RadialLinearScale, Title, Tooltip, Legend);
 
 const TKHocVien: React.FC = () => {
     const [studentData, setStudentData] = useState<{ month: string; students: number }[]>([]);
     const [year, setYear] = useState<number>(new Date().getFullYear()); 
     const [availableYears, setAvailableYears] = useState<number[]>([]);
+    const [chartType, setChartType] = useState<string>('bar'); 
 
     useEffect(() => {
         fetchStudentData(year); 
@@ -69,6 +70,10 @@ const TKHocVien: React.FC = () => {
         setYear(value);
     };
 
+    const handleChartTypeChange = (value: string) => {
+        setChartType(value);
+    };
+
     const barColors = [
         'rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)',
         'rgba(255, 206, 86, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)',
@@ -113,6 +118,23 @@ const TKHocVien: React.FC = () => {
         },
     };
 
+    const renderChart = () => {
+        switch (chartType) {
+            case 'bar':
+                return <Bar data={chartData} options={chartOptions} />;
+            case 'line':
+                return <Line data={chartData} options={chartOptions} />;
+            case 'polar':
+                return (
+                    <div style={{ width: '500px', height: '500px', marginLeft: '280px' }}>  
+                        <PolarArea data={chartData} options={chartOptions} />
+                    </div>
+                );
+            default:
+                return <Bar data={chartData} options={chartOptions} />;
+        }
+    };
+
     return (
         <div style={{ width: '80%', margin: '0 auto' }}>
             <h1 className='page-name'>Thống Kê Học Viên</h1>
@@ -127,7 +149,17 @@ const TKHocVien: React.FC = () => {
                     </Option>
                 ))}
             </Select>
-            <Bar data={chartData} options={chartOptions} />
+            <Select
+                defaultValue="bar"
+                style={{ width: 120, marginLeft: 20, marginBottom: 20 }}
+                onChange={handleChartTypeChange}
+            >
+                <Option value="bar">Bar Chart</Option>
+                <Option value="line">Line Chart</Option>
+                <Option value="polar">Polar Chart</Option>
+            </Select>
+
+            {renderChart()}
         </div>
     );
 };

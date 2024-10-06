@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Doughnut } from 'react-chartjs-2';
-import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Doughnut, Pie, PolarArea, Bar } from 'react-chartjs-2';
+import { Chart, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, RadialLinearScale } from 'chart.js';
 import { Select, message } from 'antd';
 import axios from 'axios';
 
-Chart.register(ArcElement, Tooltip, Legend);
-
 const { Option } = Select;
+
+Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, RadialLinearScale);
 
 const TKCoSo: React.FC = () => {
     const [data, setData] = useState<{ status: string; count: number }[]>([]);
     const [selectedTable, setSelectedTable] = useState<string>('lopHoc'); 
+    const [chartType, setChartType] = useState<string>('doughnut'); // State to manage chart type
+
     useEffect(() => {
         fetchData(selectedTable);
     }, [selectedTable]);
@@ -68,7 +70,7 @@ const TKCoSo: React.FC = () => {
         }
     };
 
-    const createDoughnutChartData = (data: { status: string; count: number }[]) => ({
+    const createChartData = (data: { status: string; count: number }[]) => ({
         labels: data.map((item) => item.status),
         datasets: [
             {
@@ -82,7 +84,7 @@ const TKCoSo: React.FC = () => {
                 borderColor: [
                     'rgba(75, 192, 192, 1)', 
                     'rgba(255, 159, 64, 1)', 
-                    'rgba(153, 102, 255, 1)' // Màu mới
+                    'rgba(153, 102, 255, 1)' 
                 ], 
                 borderWidth: 1,
             },
@@ -102,6 +104,33 @@ const TKCoSo: React.FC = () => {
         },
     };
 
+    const handleChartTypeChange = (value: string) => {
+        setChartType(value);
+    };
+
+    const renderChart = () => {
+        const chartData = createChartData(data);
+
+        const chartStyle = chartType === 'bar' ? { height: '550px', marginLeft: '-220px' } : { height: '500px' };
+
+        switch (chartType) {
+            case 'doughnut':
+                return <Doughnut data={chartData} options={chartOptions} />;
+            case 'pie':
+                return <Pie data={chartData} options={chartOptions} />;
+            case 'polar':
+                return <PolarArea data={chartData} options={chartOptions} />;
+            case 'bar':
+                return (
+                    <div style={{ width: '900px', ...chartStyle }}>
+                        <Bar data={chartData} options={chartOptions} />
+                    </div>
+                );
+            default:
+                return <Doughnut data={chartData} options={chartOptions} />;
+        }
+    };
+
     return (
         <div style={{ width: '50%', margin: '0 auto' }}>
             <h1 className='page-name'>Thống Kê Trạng Thái</h1>
@@ -119,8 +148,19 @@ const TKCoSo: React.FC = () => {
                 <Option value="nhanVien">Nhân Viên</Option>
             </Select>
 
-            <div style={{ width: '500px', height: '500px', marginLeft: 'auto', marginRight: 'auto' }}>
-                <Doughnut data={createDoughnutChartData(data)} options={chartOptions} />
+            <Select
+                defaultValue="doughnut"
+                style={{ width: 200, marginBottom: 20 , marginLeft: "240px"}}
+                onChange={handleChartTypeChange}
+            >
+                <Option value="doughnut">Doughnut Chart</Option>
+                <Option value="pie">Pie Chart</Option>
+                <Option value="polar">Polar Chart</Option>
+                <Option value="bar">Bar Chart</Option>
+            </Select>
+
+            <div style={{ width: '500px', marginLeft: 'auto', marginRight: 'auto' }}>
+                {renderChart()}
             </div>
         </div>
     );
