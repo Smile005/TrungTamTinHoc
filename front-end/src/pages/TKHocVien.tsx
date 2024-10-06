@@ -125,7 +125,11 @@ const TKHocVien: React.FC = () => {
             case 'line':
                 return <Line data={chartData} options={chartOptions} />;
             case 'polar':
-                return <PolarArea data={chartData} options={chartOptions} />;
+                return (
+                    <div style={{ width: '500px', height: '500px', marginLeft: '280px' }}>  
+                        <PolarArea data={chartData} options={chartOptions} />
+                    </div>
+                );
             default:
                 return <Bar data={chartData} options={chartOptions} />;
         }
