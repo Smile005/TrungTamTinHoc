@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Bar, Line, PolarArea } from 'react-chartjs-2';
 import { Select, message } from 'antd';
-import { Chart, CategoryScale, LinearScale, BarElement, LineElement, RadialLinearScale, Title, Tooltip, Legend } from 'chart.js';
+import { Chart, CategoryScale, LinearScale, BarElement, LineElement, PointElement, RadialLinearScale, Title, Tooltip, Legend } from 'chart.js';
 import axios from 'axios';
 import moment from 'moment';
 
 const { Option } = Select;
 
-Chart.register(CategoryScale, LinearScale, BarElement, LineElement, RadialLinearScale, Title, Tooltip, Legend);
+Chart.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, RadialLinearScale, Title, Tooltip, Legend);
 
 const TKHocVien: React.FC = () => {
     const [studentData, setStudentData] = useState<{ month: string; students: number }[]>([]);
@@ -125,11 +125,7 @@ const TKHocVien: React.FC = () => {
             case 'line':
                 return <Line data={chartData} options={chartOptions} />;
             case 'polar':
-                return (
-                    <div style={{ width: '500px', height: '500px', marginLeft: '280px' }}>  
-                        <PolarArea data={chartData} options={chartOptions} />
-                    </div>
-                );
+                return <PolarArea data={chartData} options={chartOptions} />;
             default:
                 return <Bar data={chartData} options={chartOptions} />;
         }

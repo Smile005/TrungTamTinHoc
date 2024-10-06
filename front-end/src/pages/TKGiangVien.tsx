@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Bar, Line, PolarArea } from 'react-chartjs-2';
 import { Select } from 'antd';
-import { Chart, CategoryScale, LinearScale, BarElement, LineElement, RadialLinearScale, Title, Tooltip, Legend } from 'chart.js';
+import { Chart, CategoryScale, LinearScale, BarElement,PointElement, LineElement, RadialLinearScale, Title, Tooltip, Legend } from 'chart.js';
 import axios from 'axios';
 
 const { Option } = Select;
 
-Chart.register(CategoryScale, LinearScale, BarElement, LineElement, RadialLinearScale, Title, Tooltip, Legend);
+Chart.register(CategoryScale, LinearScale, BarElement, LineElement,PointElement, RadialLinearScale, Title, Tooltip, Legend);
 
 const TKGiangVien: React.FC = () => {
     const [teacherData, setTeacherData] = useState<{ teacher: string; classCount: number }[]>([]);
