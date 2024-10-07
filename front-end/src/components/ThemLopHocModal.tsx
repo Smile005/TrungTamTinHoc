@@ -6,13 +6,13 @@ import { LopHocType } from '../types/LopHocType';
 interface ThemLopHocModalProps {
     visible: boolean;
     onCancel: () => void;
-    onSubmit: (values: LopHocType[]) => void; // Có thể gửi nhiều lớp học cùng lúc
+    onSubmit: (values: LopHocType[]) => void;
 }
 
 const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, onSubmit }) => {
     const [form] = Form.useForm();
-    const [maMonHocList, setMaMonHocList] = useState<string[]>([]);
-    const [maNhanVienList, setMaNhanVienList] = useState<string[]>([]);
+    const [monHocList, setMonHocList] = useState<{ maMonHoc: string, tenMonHoc: string }[]>([]);
+    const [nhanVienList, setNhanVienList] = useState<{ maNhanVien: string, tenNhanVien: string }[]>([]);
 
     useEffect(() => {
         if (visible) {
@@ -23,11 +23,10 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
                     },
                 })
                 .then((response) => {
-                    const maMonHocData = response.data.map((monHoc: any) => monHoc.maMonHoc);
-                    setMaMonHocList(maMonHocData);
+                    setMonHocList(response.data);
                 })
                 .catch((error) => {
-                    message.error('Lỗi khi lấy danh sách mã môn học: ' + error.message);
+                    message.error('Lỗi khi lấy danh sách môn học: ' + error.message);
                 });
 
             axios
@@ -37,10 +36,8 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
                     },
                 })
                 .then((response) => {
-                    const giangVienData = response.data
-                        .filter((nhanVien: any) => nhanVien.chucVu === "Giảng Viên")
-                        .map((nhanVien: any) => nhanVien.maNhanVien);
-                    setMaNhanVienList(giangVienData);
+                    const giangVienData = response.data.filter((nhanVien: any) => nhanVien.chucVu === 'Giảng Viên');
+                    setNhanVienList(giangVienData);
                 })
                 .catch((error) => {
                     message.error('Lỗi khi lấy danh sách giảng viên: ' + error.message);
@@ -54,15 +51,14 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
             .then((values) => {
                 const formattedValues: Omit<LopHocType, 'key' | 'maLopHoc'> = {
                     tenLopHoc: values.tenLopHoc,
-                    maMonHoc: values.maMonHoc,
-                    maNhanVien: values.maNhanVien,
+                    maMonHoc: values.maMonHoc, // Dùng maMonHoc để gửi dữ liệu
+                    maNhanVien: values.maNhanVien, // Dùng maNhanVien để gửi dữ liệu
                     ngayBatDau: values.ngayBatDau ? values.ngayBatDau.format('YYYY-MM-DD') : null,
                     soLuong: values.soLuong,
                     trangThai: values.trangThai,
                     ghiChu: values.ghiChu || undefined,
                 };
 
-                // Gửi request thêm lớp học qua API
                 axios
                     .post('http://localhost:8081/api/lophoc/them-lophoc', { lopHocs: [formattedValues] }, {
                         headers: {
@@ -72,7 +68,7 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
                     })
                     .then((response) => {
                         message.success(`${response.data.message}`);
-                        onSubmit(response.data.ds_LopHoc); // Trả về danh sách lớp học đã thêm
+                        onSubmit(response.data.ds_LopHoc);
                         form.resetFields();
                         onCancel();
                     })
@@ -105,26 +101,26 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
                 </Form.Item>
                 <Form.Item
                     name="maMonHoc"
-                    label="Mã Môn Học"
-                    rules={[{ required: true, message: 'Vui lòng chọn mã môn học!' }]}
+                    label="Môn Học"
+                    rules={[{ required: true, message: 'Vui lòng chọn môn học!' }]}
                 >
-                    <Select placeholder="Chọn Mã Môn Học">
-                        {maMonHocList.map((maMonHoc) => (
-                            <Select.Option key={maMonHoc} value={maMonHoc}>
-                                {maMonHoc}
+                    <Select placeholder="Chọn Môn Học">
+                        {monHocList.map((monHoc) => (
+                            <Select.Option key={monHoc.maMonHoc} value={monHoc.maMonHoc}>
+                                {monHoc.tenMonHoc}
                             </Select.Option>
                         ))}
                     </Select>
                 </Form.Item>
                 <Form.Item
                     name="maNhanVien"
-                    label="Mã Giảng Viên"
-                    rules={[{ required: true, message: 'Vui lòng chọn mã giảng viên!' }]}
+                    label="Giảng Viên"
+                    rules={[{ required: true, message: 'Vui lòng chọn giảng viên!' }]}
                 >
-                    <Select placeholder="Chọn Mã Giảng Viên">
-                        {maNhanVienList.map((maNhanVien) => (
-                            <Select.Option key={maNhanVien} value={maNhanVien}>
-                                {maNhanVien}
+                    <Select placeholder="Chọn Giảng Viên">
+                        {nhanVienList.map((nhanVien) => (
+                            <Select.Option key={nhanVien.maNhanVien} value={nhanVien.maNhanVien}>
+                                {nhanVien.tenNhanVien}
                             </Select.Option>
                         ))}
                     </Select>

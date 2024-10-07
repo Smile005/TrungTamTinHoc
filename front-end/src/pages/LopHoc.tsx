@@ -17,27 +17,64 @@ const LopHoc: React.FC = () => {
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<LopHocType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [monHocMap, setMonHocMap] = useState<{ [key: string]: string }>({});
+  const [nhanVienMap, setNhanVienMap] = useState<{ [key: string]: string }>({});
 
-  // Gọi API để lấy danh sách lớp học
+  // Gọi API để lấy danh sách lớp học, môn học và giảng viên
   useEffect(() => {
-    const fetchLopHoc = async () => {
+    const fetchLopHocData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost:8081/api/lophoc/ds-lophoc', { // Sửa URL API
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`, // Sử dụng token từ localStorage
-          },
-        });
-        setFilteredData(response.data);
+        const [lopHocResponse, nhanVienResponse, monHocResponse] = await Promise.all([
+          axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }),
+          axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }),
+          axios.get('http://localhost:8081/api/monhoc/ds-monhoc', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }),
+        ]);
+
+        // Tạo map cho mã môn học và tên môn học
+        const monHocMap = monHocResponse.data.reduce((acc: any, monHoc: any) => {
+          acc[monHoc.maMonHoc] = monHoc.tenMonHoc;
+          return acc;
+        }, {});
+
+        // Tạo map cho mã nhân viên và tên nhân viên
+        const nhanVienMap = nhanVienResponse.data.reduce((acc: any, nhanVien: any) => {
+          acc[nhanVien.maNhanVien] = nhanVien.tenNhanVien;
+          return acc;
+        }, {});
+
+        setMonHocMap(monHocMap);
+        setNhanVienMap(nhanVienMap);
+
+        const formattedLopHoc = lopHocResponse.data.map((lopHoc: LopHocType) => ({
+          ...lopHoc,
+          tenMonHoc: lopHoc.maMonHoc ? monHocMap[lopHoc.maMonHoc] : 'Không xác định', 
+          tenNhanVien: lopHoc.maNhanVien ? nhanVienMap[lopHoc.maNhanVien] : 'Không xác định', 
+      }));
+      
+
+        setFilteredData(formattedLopHoc);
       } catch (error) {
-        console.error('Lỗi khi lấy danh sách lớp học:', error);
-        message.error('Lỗi khi lấy danh sách lớp học!');
+        console.error('Lỗi khi lấy dữ liệu:', error);
+        message.error('Lỗi khi lấy dữ liệu!');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchLopHoc();
+    fetchLopHocData();
   }, []);
 
   const onSearch = (value: string) => {
@@ -112,15 +149,15 @@ const LopHoc: React.FC = () => {
       width: '12%',
     },
     {
-      title: 'Mã Môn Học',
-      dataIndex: 'maMonHoc',
-      key: 'maMonHoc',
+      title: 'Môn Học',
+      dataIndex: 'tenMonHoc',
+      key: 'tenMonHoc',
       width: '12%',
     },
     {
-      title: 'Mã Giảng Viên',
-      dataIndex: 'maNhanVien',
-      key: 'maNhanVien',
+      title: 'Giảng Viên',
+      dataIndex: 'tenNhanVien',
+      key: 'tenNhanVien',
       width: '12%',
     },
     {

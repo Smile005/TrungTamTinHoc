@@ -7,6 +7,7 @@ import SuaHocVienModal from '../components/SuaHocVienModal';
 import '../styles/TableCustom.css';
 import ImportExcelModal from '../components/ImportExcelModal';
 import axios from 'axios';
+import moment from 'moment';
 
 const { Search } = Input;
 
@@ -87,7 +88,7 @@ const HocVien: React.FC = () => {
             title: 'Giới tính',
             dataIndex: 'gioiTinh',
             key: 'gioiTinh',
-            width: '6%',
+            width: '8%',
             filters: [
                 { text: 'Nam', value: 'Nam' },
                 { text: 'Nữ', value: 'Nữ' },
@@ -118,8 +119,11 @@ const HocVien: React.FC = () => {
             title: 'Ngày vào học',
             dataIndex: 'ngayVaoHoc',
             key: 'ngayVaoHoc',
-            width: '6%',
-        },
+            width: '10%',
+            render: (ngayVaoHoc: string) => {
+              return ngayVaoHoc ? moment(ngayVaoHoc).format('DD/MM/YYYY') : 'Chưa có ngày';
+            }
+          },
         {
             title: 'Số điện thoại',
             dataIndex: 'sdt',
