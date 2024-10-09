@@ -15,35 +15,34 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
     const [nhanVienList, setNhanVienList] = useState<{ maNhanVien: string, tenNhanVien: string }[]>([]);
 
     useEffect(() => {
-        if (visible) {
-            axios
-                .get('http://localhost:8081/api/monhoc/ds-monhoc', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                })
-                .then((response) => {
-                    setMonHocList(response.data);
-                })
-                .catch((error) => {
-                    message.error('Lỗi khi lấy danh sách môn học: ' + error.message);
-                });
+        axios
+            .get('http://localhost:8081/api/monhoc/ds-monhoc', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            })
+            .then((response) => {
+                setMonHocList(response.data);
+            })
+            .catch((error) => {
+                message.error('Lỗi khi lấy danh sách môn học: ' + error.message);
+            });
 
-            axios
-                .get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    },
-                })
-                .then((response) => {
-                    const giangVienData = response.data.filter((nhanVien: any) => nhanVien.chucVu === 'Giảng Viên');
-                    setNhanVienList(giangVienData);
-                })
-                .catch((error) => {
-                    message.error('Lỗi khi lấy danh sách giảng viên: ' + error.message);
-                });
-        }
-    }, [visible]);
+        axios
+            .get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            })
+            .then((response) => {
+                const giangVienData = response.data.filter((nhanVien: any) => nhanVien.chucVu === 'Giảng Viên');
+                setNhanVienList(giangVienData);
+            })
+            .catch((error) => {
+                message.error('Lỗi khi lấy danh sách giảng viên: ' + error.message);
+            });
+    }
+    );
 
     const handleOk = () => {
         form
