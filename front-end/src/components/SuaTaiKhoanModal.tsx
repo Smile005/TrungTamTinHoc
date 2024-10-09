@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, Select } from 'antd';
+import { Modal, Form, Input, Select, message } from 'antd';
+import axios from 'axios';  
 import { TaiKhoanType } from '../types/TaiKhoanType';
 
 interface SuaTaiKhoanModalProps {
@@ -28,9 +29,27 @@ const SuaTaiKhoanModal: React.FC<SuaTaiKhoanModalProps> = ({
   const handleOk = () => {
     form
       .validateFields()
-      .then((values) => {
-        onSubmit(values);
-        form.resetFields(); 
+      .then(async (values) => {
+        try {
+          const token = localStorage.getItem('token'); 
+          const response = await axios.post(
+            'http://localhost:8081/api/auth/change-role', 
+            {
+              maNhanVien: values.maNhanVien, 
+              phanQuyen: values.phanQuyen,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`, 
+              },
+            }
+          );
+          message.success('Đã đổi quyền tài khoản thành công!');  
+          onSubmit(values); 
+          form.resetFields(); 
+        } catch (error) {
+          message.error('Có lỗi xảy ra khi đổi quyền tài khoản!');  
+        }
       })
       .catch((info) => {
         console.log('Validate Failed:', info);
@@ -63,17 +82,6 @@ const SuaTaiKhoanModal: React.FC<SuaTaiKhoanModalProps> = ({
           <Select>
             <Select.Option value={1}>Quản trị viên</Select.Option>
             <Select.Option value={2}>Nhân viên</Select.Option>
-            <Select.Option value={3}>Người dùng</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          name="trangThai"
-          label="Trạng Thái"
-          rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
-        >
-          <Select>
-            <Select.Option value="Hoạt động">Hoạt động</Select.Option>
-            <Select.Option value="Đã khóa">Đã khóa</Select.Option>
           </Select>
         </Form.Item>
       </Form>

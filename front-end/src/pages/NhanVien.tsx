@@ -104,7 +104,7 @@ const NhanVien: React.FC = () => {
       onFilter: (value, record) => record.gioiTinh?.indexOf(value as string) === 0,
       render: (gioiTinh: string): JSX.Element => {
         let color = gioiTinh === 'Nam' ? 'geekblue' : 'volcano';
-        return <Tag color={color}>{gioiTinh.toUpperCase()}</Tag>;
+        return <Tag color={color}>{gioiTinh}</Tag>;
       },
     },
     {
