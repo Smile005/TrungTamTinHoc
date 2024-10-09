@@ -78,4 +78,28 @@ const changeRole = async (req, res) => {
   }
 };
 
-module.exports = { register, login, changePassword, changeRole };
+const getTaiKhoan = async (req, res) => {
+  try {
+    const [results] = await pool.query(`
+      SELECT 
+        tk.maNhanVien,
+        nv.tenNhanVien,
+        nv.gioiTinh,
+        DATE_FORMAT(nv.ngaySinh, '%d/%m/%Y') AS ngaySinh,
+        tk.phanQuyen,
+        tk.trangThai
+      FROM 
+        NhanVien nv
+      JOIN 
+        TaiKhoan tk ON nv.maNhanVien = tk.maNhanVien
+    `);
+
+    res.json(results);
+  } catch (error) {
+    res.status(500).json({ message: 'Không thể lấy thông tin tài khoản', error });
+  }
+};
+
+
+
+module.exports = { register, login, changePassword, changeRole, getTaiKhoan };

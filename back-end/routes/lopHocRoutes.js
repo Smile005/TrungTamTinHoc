@@ -1,6 +1,6 @@
 const express = require('express');
 const { getLopHoc, createLopHoc, updateLopHoc } = require('../controllers/lopHocController');
-const { getDS_Lop, xepLop, diemDanh, nhapDiem, chuyenLop } = require('../controllers/chiTietLopHocController');
+const { getDS_Lop, xepLop, diemDanh, nhapDiem, chuyenLop } = require('../controllers/dsLopHocController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
