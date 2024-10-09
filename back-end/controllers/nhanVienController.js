@@ -3,7 +3,23 @@ const jwt = require('jsonwebtoken');
 
 const getNhanVien = async (req, res) => {
   try {
-    const [results] = await pool.query('SELECT * FROM NhanVien');
+    const [results] = await pool.query(`
+      SELECT 
+        maNhanVien,
+        tenNhanVien,
+        img,
+        chucVu,
+        DATE_FORMAT(ngayVaoLam, '%d/%m/%Y') AS ngayVaoLam, -- Định dạng ngày vào làm
+        gioiTinh,
+        DATE_FORMAT(ngaySinh, '%d/%m/%Y') AS ngaySinh,     -- Định dạng ngày sinh
+        sdt,
+        email,
+        diaChi,
+        trangThai,
+        ghiChu
+      FROM NhanVien
+    `);
+    
     res.json(results);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });

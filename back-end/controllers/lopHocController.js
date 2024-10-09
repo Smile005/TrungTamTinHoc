@@ -1,6 +1,5 @@
 const pool = require('../config/db');
 
-// Lấy danh sách lớp học
 const getLopHoc = async (req, res) => {
   try {
     const [results] = await pool.query('SELECT * FROM LopHoc');
@@ -10,7 +9,6 @@ const getLopHoc = async (req, res) => {
   }
 };
 
-// Hàm tạo mã lớp học tự động
 const createMaLop = async (connection) => {
   try {
     const query = `SELECT COUNT(maLopHoc) AS soLuong FROM LopHoc;`;
