@@ -23,7 +23,7 @@ const createMaMH = async (connection) => {
 
 const createMonHoc = async (req, res) => {
   const connection = await pool.getConnection();
-  const { tenMonHoc, soBuoiHoc, hocPhi, moTa, ghiChu } = req.body;
+  const { tenMonHoc, soBuoiHoc, hocPhi, moTa, trangThai, ghiChu } = req.body;
 
   if (!tenMonHoc) {
     return res.status(400).json({ message: 'Tên môn học là bắt buộc.' });
@@ -33,7 +33,7 @@ const createMonHoc = async (req, res) => {
     await connection.beginTransaction();
 
     const maMonHoc = await createMaMH(connection);
-    
+
     await pool.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
     const [existingMonHoc] = await connection.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
     if (existingMonHoc.length > 0) {
@@ -41,13 +41,14 @@ const createMonHoc = async (req, res) => {
     }
 
     await connection.query(
-      'INSERT INTO MonHoc (maMonHoc, tenMonHoc, soBuoiHoc, hocPhi, moTa, ghiChu) VALUES (?, ?, ?, ?, ?, ?)',
+      'INSERT INTO MonHoc (maMonHoc, tenMonHoc, soBuoiHoc, hocPhi, moTa, trangThai, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [
         maMonHoc,
         tenMonHoc,
-        soBuoiHoc || null, 
+        soBuoiHoc || null,
         hocPhi || null,
         moTa || null,
+        trangThai || "Đang Giảng Dạy",
         ghiChu || null
       ]
     );
@@ -63,7 +64,7 @@ const createMonHoc = async (req, res) => {
 };
 
 const updateMonHoc = async (req, res) => {
-  const { maMonHoc, tenMonHoc, soBuoiHoc, hocPhi, moTa, ghiChu } = req.body;
+  const { maMonHoc, tenMonHoc, soBuoiHoc, hocPhi, moTa, trangThai, ghiChu } = req.body;
 
   if (!maMonHoc || !tenMonHoc) {
     return res.status(400).json({ message: 'Mã môn học và tên môn học là bắt buộc.' });
@@ -76,13 +77,14 @@ const updateMonHoc = async (req, res) => {
     }
 
     await pool.query(
-      'UPDATE MonHoc SET tenMonHoc = ?, soBuoiHoc = ?, hocPhi = ?, moTa = ?, ghiChu = ? WHERE maMonHoc = ?',
+      'UPDATE MonHoc SET tenMonHoc = ?, soBuoiHoc = ?, hocPhi = ?, moTa = ?, trangThai = ?, ghiChu = ? WHERE maMonHoc = ?',
       [
         tenMonHoc,
-        soBuoiHoc || null, 
-        hocPhi || null,
-        moTa || null,
-        ghiChu || null,
+        soBuoiHoc,
+        hocPhi,
+        moTa,
+        trangThai,
+        ghiChu,
         maMonHoc
       ]
     );
