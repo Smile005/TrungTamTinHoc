@@ -1,38 +1,55 @@
-import React, { useState } from 'react';
-import { Table, Button, Dropdown, Menu, Layout, Tag, Input } from 'antd';
-import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
+import { MoreOutlined, EditOutlined, DeleteOutlined, FileDoneOutlined } from '@ant-design/icons';
 import SuaTaiKhoanModal from '../components/SuaTaiKhoanModal';
+import ThemTaiKhoanModal from '../components/ThemTaiKhoanModal'; // Import modal thêm tài khoản
+import DoiMatKhauModal from '../components/DoiMatKhauModal'; // Import modal đổi mật khẩu
 import { TaiKhoanType } from '../types/TaiKhoanType';
+import axios from 'axios';
 import '../styles/TableCustom.css';
 
 const { Search } = Input;
 
-const initialData: TaiKhoanType[] = [
-  { maNhanVien: 'NV001', phanQuyen: 1, trangThai: 'Hoạt động' },
-  { maNhanVien: 'NV002', phanQuyen: 2, trangThai: 'Đã khóa' },
-  { maNhanVien: 'NV003', phanQuyen: 3, trangThai: 'Hoạt động' },
-  { maNhanVien: 'NV004', phanQuyen: 1, trangThai: 'Đã khóa' },
-  { maNhanVien: 'NV005', phanQuyen: 2, trangThai: 'Hoạt động' },
-  { maNhanVien: 'NV006', phanQuyen: 1, trangThai: 'Hoạt động' },
-  { maNhanVien: 'NV007', phanQuyen: 3, trangThai: 'Đã khóa' },
-  { maNhanVien: 'NV008', phanQuyen: 2, trangThai: 'Hoạt động' },
-  { maNhanVien: 'NV009', phanQuyen: 1, trangThai: 'Đã khóa' },
-  { maNhanVien: 'NV010', phanQuyen: 2, trangThai: 'Hoạt động' },
-];
-
 const TaiKhoan: React.FC = () => {
   const [searchText, setSearchText] = useState('');
-  const [filteredData, setFilteredData] = useState<TaiKhoanType[]>(initialData);
+  const [filteredData, setFilteredData] = useState<TaiKhoanType[]>([]);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isThemModalVisible, setIsThemModalVisible] = useState(false); // Trạng thái cho modal thêm
+  const [isDoiMatKhauModalVisible, setIsDoiMatKhauModalVisible] = useState(false); // Trạng thái cho modal đổi mật khẩu
   const [selectedRecord, setSelectedRecord] = useState<TaiKhoanType | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // Handle search input
+  useEffect(() => {
+    const fetchTaiKhoan = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:8081/api/auth/ds-taikhoan', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setFilteredData(response.data);
+      } catch (error) {
+        console.error('Lỗi khi lấy danh sách tài khoản:', error);
+        message.error('Lỗi khi lấy danh sách tài khoản!');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTaiKhoan();
+  }, []);
+
   const onSearch = (value: string) => {
-    const filtered = initialData.filter((item) =>
-      item.maNhanVien.toLowerCase().includes(value.toLowerCase()) ||
-      item.phanQuyen.toString().includes(value) ||
-      item.trangThai.toLowerCase().includes(value.toLowerCase())
-    );
+    const filtered = filteredData.filter((item) => {
+      const phanQuyenText = item.phanQuyen === 1 ? 'Quản trị viên' : item.phanQuyen === 2 ? 'Người dùng' : 'Khác';
+      return (
+        item.maNhanVien.toLowerCase().includes(value.toLowerCase()) ||
+        phanQuyenText.toLowerCase().includes(value.toLowerCase()) ||
+        item.trangThai.toLowerCase().includes(value.toLowerCase())
+      );
+    });
     setFilteredData(filtered);
     setSearchText(value);
   };
@@ -41,6 +58,9 @@ const TaiKhoan: React.FC = () => {
     if (e.key === 'edit') {
       setSelectedRecord(record);
       setIsEditModalVisible(true);
+    } else if (e.key === 'changepw') {
+      setSelectedRecord(record);
+      setIsDoiMatKhauModalVisible(true);
     }
   };
 
@@ -54,7 +74,17 @@ const TaiKhoan: React.FC = () => {
     setIsEditModalVisible(false);
   };
 
-  // Define table columns
+  const handleThemSubmit = (values: any) => {
+    console.log('Thêm tài khoản mới:', values);
+    setIsThemModalVisible(false);
+  };
+
+  const handleDoiMatKhauCancel = () => {
+    setIsDoiMatKhauModalVisible(false);
+    setSelectedRecord(null);
+  };
+
+  // Định nghĩa cột cho bảng
   const columns = [
     {
       title: 'Mã Nhân Viên',
@@ -63,18 +93,28 @@ const TaiKhoan: React.FC = () => {
       width: '20%',
     },
     {
+      title: 'Tên Nhân Viên',
+      dataIndex: 'tenNhanVien',
+      key: 'tenNhanVien',
+      width: '20%',
+    },
+    {
       title: 'Phân Quyền',
       dataIndex: 'phanQuyen',
       key: 'phanQuyen',
       width: '20%',
+      render: (phanQuyen: number): JSX.Element => {
+        let role = phanQuyen === 1 ? 'Quản trị viên' : phanQuyen === 2 ? 'Người dùng' : 'Khác';
+        return <span>{role}</span>;
+      },
     },
     {
       title: 'Trạng Thái',
       dataIndex: 'trangThai',
       key: 'trangThai',
       render: (trangThai: string): JSX.Element => {
-        let color = trangThai === 'Hoạt động' ? 'geekblue' : 'volcano';
-        return <Tag color={color}>{trangThai.toUpperCase()}</Tag>;
+        let color = trangThai === 'Đang hoạt động' ? 'geekblue' : 'volcano';
+        return <Tag color={color}>{trangThai}</Tag>;
       },
     },
     {
@@ -84,7 +124,8 @@ const TaiKhoan: React.FC = () => {
       render: (_: any, record: TaiKhoanType) => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>
-            <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
+            <Menu.Item key="changepw" icon={<FileDoneOutlined />}>Đổi Mật Khẩu</Menu.Item>
+            <Menu.Item key="edit" icon={<EditOutlined />}>Sửa</Menu.Item>
             <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
           </Menu>
         );
@@ -103,17 +144,15 @@ const TaiKhoan: React.FC = () => {
       <div className="button-container">
         <Search
           className="custom-search"
-          placeholder="Tìm kiếm Mã Nhân Viên"
+          placeholder="Tìm kiếm Mã Nhân Viên, Phân Quyền, Trạng Thái"
           onSearch={onSearch}
           enterButton
           value={searchText}
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button'>Thêm</Button>
-          <Button className='custom-button' >
-            Nhập Excel
-          </Button>
+          <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>Thêm</Button>
+          <Button className='custom-button'>Nhập Excel</Button>
         </div>
       </div>
 
@@ -122,7 +161,8 @@ const TaiKhoan: React.FC = () => {
         columns={columns}
         dataSource={filteredData}
         pagination={{ pageSize: 5 }}
-        rowKey="key"
+        rowKey="maNhanVien"
+        loading={loading}
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
       />
 
@@ -130,7 +170,19 @@ const TaiKhoan: React.FC = () => {
         visible={isEditModalVisible}
         onCancel={handleEditCancel}
         onSubmit={handleEditSubmit}
-        initialValues={selectedRecord} // Passing the selected record for editing
+        initialValues={selectedRecord}
+      />
+
+      <ThemTaiKhoanModal
+        visible={isThemModalVisible}
+        onCancel={() => setIsThemModalVisible(false)}
+        onSubmit={handleThemSubmit}
+      />
+
+      <DoiMatKhauModal
+        visible={isDoiMatKhauModalVisible}
+        onCancel={handleDoiMatKhauCancel}
+        maNhanVien={selectedRecord?.maNhanVien || ''} // Pass mã nhân viên
       />
     </Layout>
   );

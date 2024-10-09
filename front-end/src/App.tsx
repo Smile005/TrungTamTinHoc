@@ -3,7 +3,7 @@ import { Route, Routes, Navigate, useLocation, Link } from 'react-router-dom';
 import { Layout, Menu, Dropdown, Button, message, theme } from 'antd';
 import {
   ScheduleOutlined,
-  BuildOutlined,
+  FundOutlined,
   SettingOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -193,7 +193,7 @@ const App: React.FC = () => {
                     <Link to="/nhapdiem">Nhập điểm</Link>
                   </Menu.Item>
                 </SubMenu>
-                <SubMenu key="group05" icon={<BuildOutlined />} title="Thống kê">
+                <SubMenu key="group05" icon={<FundOutlined />} title="Thống kê">
                   <Menu.Item key="13">
                     <Link to="/tk_hocvien">Thống kê học viên</Link>
                   </Menu.Item>

@@ -17,16 +17,16 @@ const HocVien: React.FC = () => {
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [modalType, setModalType] = useState<'hocvien' | 'nhanvien'>('hocvien');
     const [selectedRecord, setSelectedRecord] = useState<HocVienType | null>(null);
-    const [data, setData] = useState<HocVienType[]>([]); // Dữ liệu học viên từ API
-    const [loading, setLoading] = useState<boolean>(false); // Trạng thái loading khi fetch dữ liệu
+    const [data, setData] = useState<HocVienType[]>([]); 
+    const [loading, setLoading] = useState<boolean>(false); 
 
     useEffect(() => {
         const fetchHocVien = async () => {
-            setLoading(true); // Bật trạng thái loading khi fetch dữ liệu
+            setLoading(true); 
             try {
                 const response = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`, // Lấy token từ localStorage
+                        Authorization: `Bearer ${localStorage.getItem('token')}`, 
                     },
                 });
                 setData(response.data); // Lưu dữ liệu học viên vào state

@@ -1,33 +1,45 @@
 import React from 'react';
-import { Modal, Button } from 'antd';
-import { NhanVienType } from '../types/NhanVienType';
+import { Modal, Descriptions, Button } from 'antd';
+import { NhanVienType } from '../types/NhanVienType';  // Import kiểu dữ liệu NhanVienType
 
 interface UserInfoModalProps {
   visible: boolean;
   onCancel: () => void;
-  userInfo: NhanVienType | null; 
+  userInfo: NhanVienType | null;
   onLogout: () => void;
 }
 
 const UserInfoModal: React.FC<UserInfoModalProps> = ({ visible, onCancel, userInfo }) => {
   return (
     <Modal
-      title="Thông tin người dùng"
+      title="Thông Tin Người Dùng"
       visible={visible}
       onCancel={onCancel}
       footer={[
-
+        <Button key="close" onClick={onCancel}>
+          Đóng
+        </Button>,
       ]}
     >
-      <p><strong>Mã nhân viên:</strong> {userInfo?.maNhanVien}</p>
-      <p><strong>Tên:</strong> {userInfo?.tenNhanVien}</p>
-      <p><strong>Email:</strong> {userInfo?.email}</p>
-      <p><strong>Email:</strong> {userInfo?.sdt}</p>
-      <p><strong>Ngày Sinh:</strong> {userInfo?.ngaySinh}</p>
-      <p><strong>Địa Chỉ:</strong> {userInfo?.diaChi}</p>
-      <p><strong>Giới Tính :</strong> {userInfo?.gioiTinh}</p>
-      <p><strong>Địa Chỉ:</strong> {userInfo?.diaChi}</p>
-  
+      {userInfo ? (
+        <Descriptions bordered column={1}>
+          <Descriptions.Item label="Mã Nhân Viên">{userInfo.maNhanVien}</Descriptions.Item>
+          <Descriptions.Item label="Tên Nhân Viên">{userInfo.tenNhanVien}</Descriptions.Item>
+          <Descriptions.Item label="Chức Vụ">{userInfo.chucVu}</Descriptions.Item>
+          <Descriptions.Item label="Ngày Vào Làm">
+            {userInfo.ngayVaoLam ? new Date(userInfo.ngayVaoLam).toLocaleDateString() : 'Không xác định'}
+          </Descriptions.Item>
+          <Descriptions.Item label="Giới Tính">{userInfo.gioiTinh}</Descriptions.Item>
+          <Descriptions.Item label="Ngày Sinh">
+            {userInfo.ngaySinh ? new Date(userInfo.ngaySinh).toLocaleDateString() : 'Không xác định'}
+          </Descriptions.Item>
+          <Descriptions.Item label="Số Điện Thoại">{userInfo.sdt}</Descriptions.Item>
+          <Descriptions.Item label="Email">{userInfo.email}</Descriptions.Item>
+          <Descriptions.Item label="Địa Chỉ">{userInfo.diaChi}</Descriptions.Item>
+        </Descriptions>
+      ) : (
+        <p>Không có thông tin người dùng</p>
+      )}
     </Modal>
   );
 };
