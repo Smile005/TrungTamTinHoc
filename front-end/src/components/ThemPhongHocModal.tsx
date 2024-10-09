@@ -69,8 +69,8 @@ const ThemPhongHocModal: React.FC<ThemPhongHocModalProps> = ({ visible, onCancel
                     rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
                 >
                     <Select>
-                        <Select.Option value="Đang hoạt động">ĐANG HOẠT ĐỘNG</Select.Option>
-                        <Select.Option value="Ngưng hoạt động">NGƯNG HOẠT ĐỘNG</Select.Option>
+                        <Select.Option value="Đang hoạt động">Đang Hoạt Động</Select.Option>
+                        <Select.Option value="Ngưng hoạt động">Ngưng Hoạt Động</Select.Option>
                     </Select>
                 </Form.Item>
                 <Form.Item
