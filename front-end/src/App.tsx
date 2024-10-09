@@ -25,7 +25,7 @@ import PhongHoc from './pages/PhongHoc';
 import CaHoc from './pages/CaHoc';
 import TaiKhoan from './pages/TaiKhoan';
 import TKHocVien from './pages/TKHocVien';
-import TKLopHoc from './pages/TKLopHoc';
+import TKCoSo from './pages/TKCoSo';
 import TKGiangVien from './pages/TKGiangVien';
 import Login from './pages/Login';
 import UserInfoModal from './components/UserInforModal';
@@ -201,7 +201,7 @@ const App: React.FC = () => {
                     <Link to="/tk_giangvien">Thống kê giảng viên</Link>
                   </Menu.Item>
                   <Menu.Item key="15">
-                    <Link to="/tk_lophoc">Thống kê lớp học</Link>
+                    <Link to="/tk_coso">Thống kê trạng thái</Link>
                   </Menu.Item>
                 </SubMenu>
                 <Menu.Item key="99" icon={<SettingOutlined />}>
@@ -233,7 +233,7 @@ const App: React.FC = () => {
                   <Route path="/lichhoc" element={isAuthenticated ? <LichHoc /> : <Navigate to="/login" />} />
                   <Route path="/tk_hocvien" element={isAuthenticated ? <TKHocVien /> : <Navigate to="/login" />} />
                   <Route path="/tk_giangvien" element={isAuthenticated ? <TKGiangVien /> : <Navigate to="/login" />} />
-                  <Route path="/tk_lophoc" element={isAuthenticated ? <TKLopHoc /> : <Navigate to="/login" />} />
+                  <Route path="/tk_coso" element={isAuthenticated ? <TKCoSo /> : <Navigate to="/login" />} />
                   <Route path="/testing" element={isAuthenticated ? <HocVienTable /> : <Navigate to="/login" />} />
                 </Routes>
               </Content>

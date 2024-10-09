@@ -7,6 +7,7 @@ import SuaHocVienModal from '../components/SuaHocVienModal';
 import '../styles/TableCustom.css';
 import ImportExcelModal from '../components/ImportExcelModal';
 import axios from 'axios';
+import moment from 'moment';
 
 const { Search } = Input;
 
@@ -87,7 +88,7 @@ const HocVien: React.FC = () => {
             title: 'Giới tính',
             dataIndex: 'gioiTinh',
             key: 'gioiTinh',
-            width: '6%',
+            width: '8%',
             filters: [
                 { text: 'Nam', value: 'Nam' },
                 { text: 'Nữ', value: 'Nữ' },
@@ -115,11 +116,14 @@ const HocVien: React.FC = () => {
             },
         },
         {
-            title: 'Ngày sinh',
-            dataIndex: 'ngaySinh',
-            key: 'ngaySinh',
-            width: '6%',
-        },
+            title: 'Ngày vào học',
+            dataIndex: 'ngayVaoHoc',
+            key: 'ngayVaoHoc',
+            width: '10%',
+            render: (ngayVaoHoc: string) => {
+              return ngayVaoHoc ? moment(ngayVaoHoc).format('DD/MM/YYYY') : 'Chưa có ngày';
+            }
+          },
         {
             title: 'Số điện thoại',
             dataIndex: 'sdt',
@@ -154,7 +158,7 @@ const HocVien: React.FC = () => {
                 }
                 return (
                     <Tag color={color} key={tinhTrang}>
-                        {tinhTrang.toUpperCase()}
+                        {tinhTrang}
                     </Tag>
                 );
             },
@@ -196,7 +200,6 @@ const HocVien: React.FC = () => {
                     enterButton
                 />
                 <div className="button-container">
-                    <Button className='custom-button'>Hoàn tác</Button>
                     <Button className='custom-button' onClick={showHocVienModal}>Thêm</Button>
                     <Button className='custom-button' onClick={() => showImportModal('hocvien')}>
                         Nhập Excel

@@ -17,16 +17,15 @@ const ThemCaHocModal: React.FC<ThemCaHocModalProps> = ({ visible, onCancel, onSu
         form
             .validateFields()
             .then((values) => {
-                const formattedValues: CaHocType = {
-                    key: values.maCa, // Mã ca học dùng làm key
-                    maCa: values.maCa,
-                    batDau: values.batDau ? values.batDau.format('HH:mm') : null, // Định dạng giờ bắt đầu
-                    ketThuc: values.ketThuc ? values.ketThuc.format('HH:mm') : null, // Định dạng giờ kết thúc
+                // Chuẩn bị dữ liệu để gửi lên API
+                const formattedValues: Omit<CaHocType, 'maCa' | 'key'> = {
+                    batDau: values.batDau ? values.batDau.format('HH:mm') : null,
+                    ketThuc: values.ketThuc ? values.ketThuc.format('HH:mm') : null,
                     trangThai: values.trangThai,
-                    ghiChu: values.ghiChu || undefined, // Ghi chú có thể null
+                    ghiChu: values.ghiChu || null,
                 };
 
-                // Gửi yêu cầu thêm ca học qua API
+                // Gọi API thêm ca học
                 axios
                     .post('http://localhost:8081/api/cahoc/them-cahoc', formattedValues, {
                         headers: {
@@ -36,8 +35,8 @@ const ThemCaHocModal: React.FC<ThemCaHocModalProps> = ({ visible, onCancel, onSu
                     })
                     .then(() => {
                         message.success('Thêm ca học thành công');
-                        onSubmit(formattedValues); // Callback để cập nhật danh sách ca học
-                        form.resetFields(); // Reset form sau khi thêm thành công
+                        onSubmit(formattedValues as CaHocType); // Callback cập nhật danh sách ca học
+                        form.resetFields(); // Reset form sau khi thành công
                     })
                     .catch((error) => {
                         message.error('Lỗi khi thêm ca học: ' + error.message);
@@ -59,13 +58,6 @@ const ThemCaHocModal: React.FC<ThemCaHocModalProps> = ({ visible, onCancel, onSu
             onOk={handleOk}
         >
             <Form form={form} layout="vertical">
-                <Form.Item
-                    name="maCa"
-                    label="Mã Ca"
-                    rules={[{ required: true, message: 'Vui lòng nhập mã ca!' }]}
-                >
-                    <Input />
-                </Form.Item>
                 <Form.Item
                     name="batDau"
                     label="Giờ Bắt Đầu"

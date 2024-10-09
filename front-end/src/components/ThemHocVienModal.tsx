@@ -12,14 +12,14 @@ interface ThemHocVienModalProps {
 
 const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, onSubmit }) => {
   const [form] = Form.useForm();
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (visible) {
-      form.resetFields(); // Reset form fields when modal is shown
+      form.resetFields();
       form.setFieldsValue({
         gioiTinh: 'Nam',
-        ngaySinh: moment(), // Default to today's date
+        ngaySinh: moment(),
+        ngayVaoHoc: moment(),
       });
     }
   }, [visible, form]);
@@ -28,35 +28,30 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
     form
       .validateFields()
       .then((values) => {
-        // Format the data to match HocVienType interface
-        const formattedValues: HocVienType = {
-          key: values.maHocVien, // Assuming maHocVien is unique and used as the key
-          maHocVien: values.maHocVien,
+        const formattedValues = {
           tenHocVien: values.tenHocVien,
-          img: imageUrl || undefined, // Use the uploaded image URL or undefined
-          ngaySinh: values.ngaySinh ? values.ngaySinh.format('YYYY-MM-DD') : undefined, // Format date to string
+          img: values.img || null,
+          ngayVaoHoc: values.ngayVaoHoc ? values.ngayVaoHoc.format('YYYY-MM-DD') : null,
+          ngaySinh: values.ngaySinh ? values.ngaySinh.format('YYYY-MM-DD') : null,
           gioiTinh: values.gioiTinh,
-          sdt: values.sdt || undefined,
-          email: values.email || undefined,
-          diaChi: values.diaChi || undefined,
+          sdt: values.sdt || null,
+          email: values.email || null,
+          diaChi: values.diaChi || null,
           tinhTrang: values.tinhTrang,
-          ghiChu: values.ghiChu || undefined,
+          ghiChu: values.ghiChu || null,
         };
 
-        // Call the API to add the student
-        axios
-          .post('http://localhost:8081/api/hocvien/them-hocvien', formattedValues, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-              'Content-Type': 'application/json',
-            },
-          })
+        // Gọi API để thêm học viên
+        axios.post('http://localhost:8081/api/hocvien/them-hocvien', { hocViens: [formattedValues] }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
           .then(() => {
             message.success('Thêm học viên thành công');
-            onSubmit(formattedValues); // Callback to refresh the list of students
-            form.resetFields(); // Reset the form fields after successful submission
-            setImageUrl(null); // Reset the uploaded image
-            onCancel(); // Close the modal
+            onSubmit(formattedValues as HocVienType);
+            form.resetFields();
+            onCancel();
           })
           .catch((error) => {
             message.error('Lỗi khi thêm học viên: ' + error.message);
@@ -72,8 +67,8 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
       title="Thêm Học Viên"
       visible={visible}
       onCancel={() => {
-        form.resetFields(); // Reset fields on cancel
-        onCancel(); // Close modal
+        form.resetFields();
+        onCancel();
       }}
       footer={[
         <Button key="cancel" onClick={onCancel}>
@@ -86,13 +81,6 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
     >
       <Form form={form} layout="vertical">
         <Form.Item
-          name="maHocVien"
-          label="Mã Học Viên"
-          rules={[{ required: true, message: 'Vui lòng nhập mã học viên!' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
           name="tenHocVien"
           label="Tên Học Viên"
           rules={[{ required: true, message: 'Vui lòng nhập tên học viên!' }]}
@@ -100,11 +88,23 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
           <Input />
         </Form.Item>
         <Form.Item
+          name="img"
+          label="URL Ảnh"
+        >
+          <Input placeholder="URL hình ảnh" />
+        </Form.Item>
+        <Form.Item
+          name="ngayVaoHoc"
+          label="Ngày Vào Học"
+        >
+          <DatePicker format="YYYY-MM-DD" />
+        </Form.Item>
+        <Form.Item
           name="ngaySinh"
           label="Ngày Sinh"
           rules={[{ required: true, message: 'Vui lòng nhập ngày sinh!' }]}
         >
-          <DatePicker format="DD/MM/YYYY" />
+          <DatePicker format="YYYY-MM-DD" />
         </Form.Item>
         <Form.Item
           name="gioiTinh"

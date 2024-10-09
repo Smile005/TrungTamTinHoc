@@ -1,46 +1,82 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import axios from 'axios'; // Import axios để gọi API
+import axios from 'axios';
 import { LopHocType } from '../types/LopHocType';
-import moment from 'moment';
 import ThemLopHocModal from '../components/ThemLopHocModal';
 import SuaLopHocModal from '../components/SuaLopHocModal';
 import '../styles/TableCustom.css';
+import moment from 'moment';
 
 const { Search } = Input;
 
 const LopHoc: React.FC = () => {
-  const [searchText, setSearchText] = useState(''); 
-  const [filteredData, setFilteredData] = useState<LopHocType[]>([]); // Dữ liệu từ API
-  const [isModalVisible, setIsModalVisible] = useState(false); 
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false); 
+  const [searchText, setSearchText] = useState('');
+  const [filteredData, setFilteredData] = useState<LopHocType[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<LopHocType | null>(null);
-  const [loading, setLoading] = useState<boolean>(false); // Trạng thái loading
+  const [loading, setLoading] = useState<boolean>(false);
+  const [monHocMap, setMonHocMap] = useState<{ [key: string]: string }>({});
+  const [nhanVienMap, setNhanVienMap] = useState<{ [key: string]: string }>({});
 
-  // Gọi API để lấy danh sách lớp học
+  // Gọi API để lấy danh sách lớp học, môn học và giảng viên
   useEffect(() => {
-    const fetchLopHoc = async () => {
-      setLoading(true); // Hiển thị trạng thái loading
+    const fetchLopHocData = async () => {
+      setLoading(true);
       try {
-        const response = await axios.get('http://localhost:8081/api/lophoc', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`, // Thay token bằng token thực tế của bạn
-          },
-        });
-        setFilteredData(response.data); // Lưu dữ liệu lớp học vào state
+        const [lopHocResponse, nhanVienResponse, monHocResponse] = await Promise.all([
+          axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }),
+          axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }),
+          axios.get('http://localhost:8081/api/monhoc/ds-monhoc', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }),
+        ]);
+
+        // Tạo map cho mã môn học và tên môn học
+        const monHocMap = monHocResponse.data.reduce((acc: any, monHoc: any) => {
+          acc[monHoc.maMonHoc] = monHoc.tenMonHoc;
+          return acc;
+        }, {});
+
+        // Tạo map cho mã nhân viên và tên nhân viên
+        const nhanVienMap = nhanVienResponse.data.reduce((acc: any, nhanVien: any) => {
+          acc[nhanVien.maNhanVien] = nhanVien.tenNhanVien;
+          return acc;
+        }, {});
+
+        setMonHocMap(monHocMap);
+        setNhanVienMap(nhanVienMap);
+
+        const formattedLopHoc = lopHocResponse.data.map((lopHoc: LopHocType) => ({
+          ...lopHoc,
+          tenMonHoc: lopHoc.maMonHoc ? monHocMap[lopHoc.maMonHoc] : 'Không xác định', 
+          tenNhanVien: lopHoc.maNhanVien ? nhanVienMap[lopHoc.maNhanVien] : 'Không xác định', 
+      }));
+      
+
+        setFilteredData(formattedLopHoc);
       } catch (error) {
-        console.error('Lỗi khi lấy danh sách lớp học:', error);
-        message.error('Lỗi khi lấy danh sách lớp học!');
+        console.error('Lỗi khi lấy dữ liệu:', error);
+        message.error('Lỗi khi lấy dữ liệu!');
       } finally {
-        setLoading(false); // Tắt trạng thái loading
+        setLoading(false);
       }
     };
 
-    fetchLopHoc();
+    fetchLopHocData();
   }, []);
 
-  // Xử lý tìm kiếm
   const onSearch = (value: string) => {
     const filtered = filteredData.filter((item) =>
       item.maLopHoc.toLowerCase().includes(value.toLowerCase()) ||
@@ -54,8 +90,8 @@ const LopHoc: React.FC = () => {
 
   const handleMenuClick = (e: any, record: LopHocType) => {
     if (e.key === 'edit') {
-      setSelectedRecord(record); 
-      setIsEditModalVisible(true); 
+      setSelectedRecord(record);
+      setIsEditModalVisible(true);
     } else if (e.key === 'delete') {
       message.info(`Xóa lớp học: ${record.tenLopHoc}`);
     }
@@ -83,7 +119,7 @@ const LopHoc: React.FC = () => {
 
   const handleEditSubmit = (values: any) => {
     const updatedData = filteredData.map((item) =>
-      item.key === selectedRecord?.key ? { ...selectedRecord, ...values } : item
+      item.maLopHoc === selectedRecord?.maLopHoc ? { ...selectedRecord, ...values } : item
     );
     setFilteredData(updatedData);
     setIsEditModalVisible(false);
@@ -91,7 +127,7 @@ const LopHoc: React.FC = () => {
   };
 
   const handleUndo = () => {
-    setSearchText(''); // Xóa bộ lọc tìm kiếm
+    setSearchText('');
     message.info("Đã hoàn tác bộ lọc.");
   };
 
@@ -113,21 +149,22 @@ const LopHoc: React.FC = () => {
       width: '12%',
     },
     {
-      title: 'Mã Môn Học',
-      dataIndex: 'maMonHoc',
-      key: 'maMonHoc',
+      title: 'Môn Học',
+      dataIndex: 'tenMonHoc',
+      key: 'tenMonHoc',
       width: '12%',
     },
     {
-      title: 'Mã Giảng Viên',
-      dataIndex: 'maNhanVien',
-      key: 'maNhanVien',
+      title: 'Giảng Viên',
+      dataIndex: 'tenNhanVien',
+      key: 'tenNhanVien',
       width: '12%',
     },
     {
       title: 'Ngày Bắt Đầu',
       dataIndex: 'ngayBatDau',
       key: 'ngayBatDau',
+      render: (ngayBatDau: string) => moment(ngayBatDau).format("DD/MM/YYYY"),
       width: '15%',
     },
     {
@@ -141,17 +178,8 @@ const LopHoc: React.FC = () => {
       dataIndex: 'trangThai',
       key: 'trangThai',
       render: (trangThai: string): JSX.Element => {
-        let color = '';
-                if (trangThai === 'Đang Hoạt Động') {
-                    color = 'geekblue';
-                } else if (trangThai === 'Ngưng Hoạt Động') 
-                    color = 'green';
-                return (
-                    <Tag color={color} key={trangThai}>
-                        {trangThai.toUpperCase()}
-                    </Tag>
-                );
-        return <Tag color={color}>{trangThai.toUpperCase()}</Tag>;
+        const color = trangThai === 'Có thể đăng ký' ? 'geekblue' : 'green';
+        return <Tag color={color}>{trangThai}</Tag>;
       },
       width: '8%',
     },
@@ -194,11 +222,8 @@ const LopHoc: React.FC = () => {
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button' onClick={handleUndo}>Hoàn tác</Button>
           <Button className='custom-button' onClick={handleAddClass}>Thêm</Button>
-          <Button className='custom-button' onClick={handleImportExcel}>
-            Nhập Excel
-          </Button>
+          <Button className='custom-button' onClick={handleImportExcel}>Nhập Excel</Button>
         </div>
       </div>
       <Table
@@ -206,8 +231,8 @@ const LopHoc: React.FC = () => {
         columns={columns}
         dataSource={filteredData}
         pagination={{ pageSize: 5 }}
-        rowKey="key"
-        loading={loading} // Hiển thị trạng thái loading
+        rowKey="maLopHoc"
+        loading={loading}
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
       />
 

@@ -101,7 +101,7 @@ const updateHocVien = async (req, res) => {
         sdt || null,
         email || null,
         diaChi || null,
-        tinhTrang || 'Đang hoạt động', 
+        tinhTrang || 'Đang Học', 
         ghiChu || null,
         maHocVien
       ]

@@ -110,7 +110,6 @@ const TaiKhoan: React.FC = () => {
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button'>Hoàn tác</Button>
           <Button className='custom-button'>Thêm</Button>
           <Button className='custom-button' >
             Nhập Excel

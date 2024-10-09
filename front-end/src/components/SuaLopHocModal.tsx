@@ -1,26 +1,56 @@
-import React, { useEffect } from 'react';
-import { Modal, Form, Input, InputNumber, Select, DatePicker } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Modal, Form, Input, InputNumber, Select, DatePicker, message } from 'antd';
+import axios from 'axios';
 import moment from 'moment';
 import { LopHocType } from '../types/LopHocType';
 
 interface SuaLopHocModalProps {
   visible: boolean;
   onCancel: () => void;
-  onSubmit: (values: any) => void;
+  onSubmit: (values: LopHocType) => void;
   initialValues: LopHocType | null; 
 }
 
 const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSubmit, initialValues }) => {
   const [form] = Form.useForm();
+  const [monHocList, setMonHocList] = useState<{ maMonHoc: string, tenMonHoc: string }[]>([]);
+  const [nhanVienList, setNhanVienList] = useState<{ maNhanVien: string, tenNhanVien: string }[]>([]);
 
   useEffect(() => {
+    if (visible) {
+      // Fetch danh sách môn học
+      axios
+        .get('http://localhost:8081/api/monhoc/ds-monhoc', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        .then((response) => {
+          setMonHocList(response.data); // Lưu cả mã và tên môn học
+        })
+        .catch((error) => {
+          message.error('Lỗi khi lấy danh sách môn học: ' + error.message);
+        });
+
+      // Fetch danh sách giảng viên
+      axios
+        .get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+        .then((response) => {
+          const giangVienData = response.data.filter((nhanVien: any) => nhanVien.chucVu === 'Giảng Viên');
+          setNhanVienList(giangVienData); // Lưu cả mã và tên giảng viên
+        })
+        .catch((error) => {
+          message.error('Lỗi khi lấy danh sách giảng viên: ' + error.message);
+        });
+    }
+
     if (initialValues) {
       form.setFieldsValue({
         ...initialValues,
-        ngayBatDau: initialValues.ngayBatDau ? moment(initialValues.ngayBatDau, 'DD/MM/YYYY') : null, 
+        ngayBatDau: initialValues.ngayBatDau ? moment(initialValues.ngayBatDau, 'YYYY-MM-DD') : null,
       });
     }
-  }, [initialValues, form]);
+  }, [visible, initialValues, form]);
 
   const handleOk = () => {
     form
@@ -28,10 +58,30 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
       .then((values) => {
         const formattedValues = {
           ...values,
-          ngayBatDau: values.ngayBatDau ? values.ngayBatDau.format('DD/MM/YYYY') : null, 
+          ngayBatDau: values.ngayBatDau ? values.ngayBatDau.format('YYYY-MM-DD') : null,
         };
-        onSubmit(formattedValues); 
-        form.resetFields(); 
+
+        // Gửi request cập nhật lớp học qua API
+        axios
+          .post(
+            'http://localhost:8081/api/lophoc/sua-lophoc',
+            formattedValues,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+          .then((response) => {
+            message.success('Cập nhật lớp học thành công.');
+            onSubmit(formattedValues); 
+            form.resetFields(); 
+            onCancel(); 
+          })
+          .catch((error) => {
+            message.error('Lỗi khi cập nhật lớp học: ' + error.message);
+          });
       })
       .catch((info) => {
         console.log('Validate Failed:', info);
@@ -43,10 +93,10 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
       title="Sửa Lớp Học"
       visible={visible}
       onCancel={() => {
-        form.resetFields(); // Reset form khi modal bị hủy
-        onCancel(); // Gọi hàm onCancel từ component cha
+        form.resetFields(); 
+        onCancel(); 
       }}
-      onOk={handleOk}
+      onOk={handleOk} 
     >
       <Form form={form} layout="vertical">
         <Form.Item
@@ -54,7 +104,7 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
           label="Mã Lớp Học"
           rules={[{ required: true, message: 'Vui lòng nhập mã lớp học!' }]}
         >
-          <Input disabled /> {/* Không cho phép thay đổi mã lớp học */}
+          <Input disabled /> 
         </Form.Item>
         <Form.Item
           name="tenLopHoc"
@@ -65,17 +115,29 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
         </Form.Item>
         <Form.Item
           name="maMonHoc"
-          label="Mã Môn Học"
-          rules={[{ required: true, message: 'Vui lòng nhập mã môn học!' }]}
+          label="Môn Học"
+          rules={[{ required: true, message: 'Vui lòng chọn môn học!' }]}
         >
-          <Input />
+          <Select placeholder="Chọn Môn Học">
+            {monHocList.map((monHoc) => (
+              <Select.Option key={monHoc.maMonHoc} value={monHoc.maMonHoc}>
+                {monHoc.tenMonHoc} 
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item
-          name="maGiangVien"
-          label="Mã Giảng Viên"
-          rules={[{ required: true, message: 'Vui lòng nhập mã giảng viên!' }]}
+          name="maNhanVien"
+          label="Giảng Viên"
+          rules={[{ required: true, message: 'Vui lòng chọn giảng viên!' }]}
         >
-          <Input />
+          <Select placeholder="Chọn Giảng Viên">
+            {nhanVienList.map((nhanVien) => (
+              <Select.Option key={nhanVien.maNhanVien} value={nhanVien.maNhanVien}>
+                {nhanVien.tenNhanVien} 
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item
           name="ngayBatDau"
@@ -97,9 +159,8 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
           rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
         >
           <Select>
-            <Select.Option value="Còn trống">Còn trống</Select.Option>
-            <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
-            <Select.Option value="Tạm ngưng">Tạm ngưng</Select.Option>
+            <Select.Option value="Có thể đăng ký">Có thể đăng ký</Select.Option>
+            <Select.Option value="Chưa mở đăng ký">Chưa mở đăng ký</Select.Option>
           </Select>
         </Form.Item>
         <Form.Item name="ghiChu" label="Ghi Chú">

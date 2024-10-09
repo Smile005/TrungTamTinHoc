@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Form, Input, TimePicker, message, Select } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
@@ -19,7 +19,8 @@ const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
 }) => {
   const [form] = Form.useForm();
 
-  React.useEffect(() => {
+  // Thiết lập giá trị ban đầu khi modal mở
+  useEffect(() => {
     if (initialValues) {
       form.setFieldsValue({
         ...initialValues,
@@ -34,9 +35,11 @@ const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
       .validateFields()
       .then((values) => {
         const formattedValues = {
-          ...values,
+          ...initialValues, // Giữ lại `maCa` từ initialValues
           batDau: values.batDau ? values.batDau.format('HH:mm') : null,
           ketThuc: values.ketThuc ? values.ketThuc.format('HH:mm') : null,
+          trangThai: values.trangThai,
+          ghiChu: values.ghiChu || null,
         };
 
         axios
@@ -48,7 +51,7 @@ const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
           })
           .then(() => {
             message.success('Sửa ca học thành công');
-            onSubmit(formattedValues);
+            onSubmit(formattedValues as CaHocType); // Callback để cập nhật dữ liệu
             form.resetFields();
           })
           .catch((error) => {
@@ -76,7 +79,7 @@ const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
           label="Mã Ca Học"
           rules={[{ required: true, message: 'Vui lòng nhập mã ca!' }]}
         >
-          <Input disabled />
+          <Input disabled /> 
         </Form.Item>
         <Form.Item
           name="batDau"

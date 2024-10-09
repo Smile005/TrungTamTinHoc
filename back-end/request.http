@@ -3,9 +3,9 @@ POST http://localhost:8081/api/auth/register
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV001",
-  "matKhau": "123456",
-  "phanQuyen": 2
+  "maNhanVien": "NV0001",
+  "matKhau": "123",
+  "phanQuyen": 1
 }
 
 ###
@@ -15,8 +15,8 @@ POST http://localhost:8081/api/auth/login
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV001",
-  "matKhau": "123456"
+  "maNhanVien": "NV0001",
+  "matKhau": "123"
 }
 
 ###
@@ -143,36 +143,43 @@ Content-Type: application/json
 
 # Lấy danh sách lớp học
 GET http://localhost:8081/api/lophoc/ds-lophoc
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjgxMjAwMDYsImV4cCI6MTcyODEyMzYwNn0.sWdhoh0TN_iEphyYWMbZJx6J1liprIn4tVEhuLaabKg
 
 ###
 
 # Thêm lớp học
 POST http://localhost:8081/api/lophoc/them-lophoc
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjgxMjAwMDYsImV4cCI6MTcyODEyMzYwNn0.sWdhoh0TN_iEphyYWMbZJx6J1liprIn4tVEhuLaabKg
 Content-Type: application/json
 
 {
-  "tenLop": "Lop Tieng Anh 1",
-  "maMonHoc": "MH001",
-  "ngayBatDau": "2024-10-10",
-  "soLuong": 30,
-  "ghiChu": "Lớp nâng cao"
+  "lopHocs": [
+    {
+      "tenLopHoc": "Lop Toan 2",
+      "maMonHoc": "MH0001",
+      "maNhanVien": "NV0001",
+      "ngayBatDau": "2024-10-10",
+      "soLuong": 30,
+      "ghiChu": "Lớp học toán"
+    }
+  ]
 }
 
 ###
 
 # Cập nhật lớp học
 POST http://localhost:8081/api/lophoc/sua-lophoc
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjgxMjAwMDYsImV4cCI6MTcyODEyMzYwNn0.sWdhoh0TN_iEphyYWMbZJx6J1liprIn4tVEhuLaabKg
 Content-Type: application/json
 
 {
-  "maLop": "LOP001",
-  "tenLop": "Lop Tieng Anh 2",
-  "maMonHoc": "MH002",
+  "maLopHoc": "LH0002",
+  "tenLopHoc": "Lop Tieng Anh 2",
+  "maMonHoc": "MH0001",
+  "maNhanVien": "NV0001",
   "ngayBatDau": "2024-11-01",
   "soLuong": 25,
+  "trangThai": "Đã mở đăng ký",
   "ghiChu": "Lớp trung cấp"
 }
 
@@ -215,7 +222,7 @@ Content-Type: application/json
 
 # Lấy danh sách nhân viên
 GET http://localhost:8081/api/nhanvien/ds-nhanvien
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDEiLCJwaGFuUXV5ZW4iOjIsImlhdCI6MTcyODExNTQzOSwiZXhwIjoxNzI4MTE5MDM5fQ.qWchX9AorJuzU2PhmG6aWGPpNo9dJCFWL6-6M66NbfE
 
 ###
 

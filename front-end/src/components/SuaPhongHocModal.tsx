@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, InputNumber, Select } from 'antd';
+import { Modal, Form, Input, InputNumber, Select, message } from 'antd';
+import axios from 'axios';
 import { PhongHocType } from '../types/PhongHocType';
 
 interface SuaPhongHocModalProps {
   visible: boolean;
   onCancel: () => void;
-  onSubmit: (values: any) => void;
+  onSubmit: (values: PhongHocType) => void;
   initialValues?: PhongHocType | null; 
 }
 
@@ -22,8 +23,27 @@ const SuaPhongHocModal: React.FC<SuaPhongHocModalProps> = ({ visible, onCancel, 
     form
       .validateFields()
       .then((values) => {
-        onSubmit(values); 
-        form.resetFields(); 
+        const formattedValues = {
+          ...values,
+          maPhong: initialValues?.maPhong, // Sử dụng `maPhong` từ `initialValues`
+        };
+
+        // Gửi yêu cầu cập nhật phòng học qua API
+        axios
+          .post('http://localhost:8081/api/phonghoc/sua-phong', formattedValues, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+              'Content-Type': 'application/json',
+            },
+          })
+          .then(() => {
+            message.success('Cập nhật phòng học thành công');
+            onSubmit(formattedValues as PhongHocType); // Cập nhật danh sách phòng học sau khi thành công
+            form.resetFields(); // Xóa các trường form sau khi xử lý xong
+          })
+          .catch((error) => {
+            message.error('Lỗi khi cập nhật phòng học: ' + error.message);
+          });
       })
       .catch((info) => {
         console.log('Validate Failed:', info);
@@ -63,6 +83,7 @@ const SuaPhongHocModal: React.FC<SuaPhongHocModalProps> = ({ visible, onCancel, 
           <Select>
             <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
             <Select.Option value="Ngưng hoạt động">Ngưng hoạt động</Select.Option>
+            <Select.Option value="Đang bảo trì">Đang bảo trì</Select.Option>
           </Select>
         </Form.Item>
         <Form.Item name="ghiChu" label="Ghi Chú">

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, Form, Input, DatePicker, Select, Radio, message } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
@@ -14,12 +14,13 @@ interface SuaHocVienModalProps {
 const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, onOk, initialValues }) => {
     const [form] = Form.useForm();
 
-    // Khi modal mở, thiết lập giá trị ban đầu cho form
-    React.useEffect(() => {
+    // Thiết lập giá trị ban đầu cho form khi modal mở
+    useEffect(() => {
         if (visible) {
             form.setFieldsValue({
                 ...initialValues,
                 ngaySinh: initialValues.ngaySinh ? moment(initialValues.ngaySinh, 'YYYY-MM-DD') : null,
+                ngayVaoHoc: initialValues.ngayVaoHoc ? moment(initialValues.ngayVaoHoc, 'YYYY-MM-DD') : null,
             });
         }
     }, [visible, initialValues, form]);
@@ -29,10 +30,20 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
             .validateFields()
             .then((values) => {
                 const formattedValues: HocVienType = {
-                    ...values,
-                    ngaySinh: values.ngaySinh ? values.ngaySinh.format('YYYY-MM-DD') : null, // Định dạng ngày sinh
+                    ...initialValues,
+                    tenHocVien: values.tenHocVien,
+                    img: values.img || null,
+                    ngayVaoHoc: values.ngayVaoHoc ? values.ngayVaoHoc.format('YYYY-MM-DD') : null,
+                    ngaySinh: values.ngaySinh ? values.ngaySinh.format('YYYY-MM-DD') : null,
+                    gioiTinh: values.gioiTinh,
+                    sdt: values.sdt || null,
+                    email: values.email || null,
+                    diaChi: values.diaChi || null,
+                    tinhTrang: values.tinhTrang,
+                    ghiChu: values.ghiChu || null,
                 };
 
+                // Gọi API để cập nhật thông tin học viên
                 axios
                     .post('http://localhost:8081/api/hocvien/sua-hocvien', formattedValues, {
                         headers: {
@@ -42,8 +53,8 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     })
                     .then(() => {
                         message.success('Cập nhật học viên thành công');
-                        onOk(formattedValues); 
-                        form.resetFields(); 
+                        onOk(formattedValues); // Gọi lại hàm onOk để cập nhật dữ liệu
+                        form.resetFields();
                     })
                     .catch((error) => {
                         message.error('Lỗi khi cập nhật học viên: ' + error.message);
@@ -60,15 +71,14 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
             visible={visible}
             onOk={handleOk}
             onCancel={() => {
-                form.resetFields(); 
-                onCancel(); 
+                form.resetFields();
+                onCancel();
             }}
         >
             <Form form={form} layout="vertical">
                 <Form.Item
                     label="Mã học viên"
                     name="maHocVien"
-                    rules={[{ required: true, message: 'Vui lòng nhập mã học viên!' }]}
                 >
                     <Input disabled /> 
                 </Form.Item>
@@ -78,6 +88,18 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     rules={[{ required: true, message: 'Vui lòng nhập họ và tên!' }]}
                 >
                     <Input />
+                </Form.Item>
+                <Form.Item
+                    label="URL Ảnh"
+                    name="img"
+                >
+                    <Input placeholder="URL hình ảnh" />
+                </Form.Item>
+                <Form.Item
+                    label="Ngày Vào Học"
+                    name="ngayVaoHoc"
+                >
+                    <DatePicker format="YYYY-MM-DD" />
                 </Form.Item>
                 <Form.Item
                     label="Giới tính"
@@ -92,7 +114,7 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     label="Ngày sinh"
                     name="ngaySinh"
                 >
-                    <DatePicker format="DD/MM/YYYY" />
+                    <DatePicker format="YYYY-MM-DD" />
                 </Form.Item>
                 <Form.Item
                     label="Số điện thoại"
@@ -115,7 +137,7 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                 <Form.Item
                     label="Tình trạng"
                     name="tinhTrang"
-                    rules={[{ required: true, message: 'Vui lòng nhập tình trạng!' }]}
+                    rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
                 >
                     <Select>
                         <Select.Option value="Đang Học">Đang Học</Select.Option>

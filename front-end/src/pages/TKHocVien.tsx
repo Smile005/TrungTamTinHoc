@@ -1,68 +1,93 @@
 import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
-import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar, Line, PolarArea } from 'react-chartjs-2';
+import { Select, message } from 'antd';
+import { Chart, CategoryScale, LinearScale, BarElement, LineElement, PointElement, RadialLinearScale, Title, Tooltip, Legend } from 'chart.js';
+import axios from 'axios';
+import moment from 'moment';
 
-// Register the necessary chart.js components
-Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+const { Option } = Select;
 
-// Mock data for student registrations (can be replaced with API call)
-const fetchStudentData = async () => {
-    return [
-        { month: 'January', students: 30 },
-        { month: 'February', students: 25 },
-        { month: 'March', students: 45 },
-        { month: 'April', students: 60 },
-        { month: 'May', students: 35 },
-        { month: 'June', students: 40 },
-        { month: 'July', students: 50 },
-        { month: 'August', students: 55 },
-        { month: 'September', students: 30 },
-        { month: 'October', students: 70 },
-        { month: 'November', students: 65 },
-        { month: 'December', students: 75 },
-    ];
-};
+Chart.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, RadialLinearScale, Title, Tooltip, Legend);
 
 const TKHocVien: React.FC = () => {
     const [studentData, setStudentData] = useState<{ month: string; students: number }[]>([]);
+    const [year, setYear] = useState<number>(new Date().getFullYear()); 
+    const [availableYears, setAvailableYears] = useState<number[]>([]);
+    const [chartType, setChartType] = useState<string>('bar'); 
 
     useEffect(() => {
-        // Fetch or load student registration data
-        fetchStudentData().then(data => setStudentData(data));
-    }, []);
+        fetchStudentData(year); 
+        fetchAvailableYears(); 
+    }, [year]);
 
-    // Define an array of colors for each bar
+    const fetchStudentData = async (selectedYear: number) => {
+        try {
+            const response = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            const data = response.data
+                .filter((student: any) => moment(student.ngayVaoHoc).year() === selectedYear) 
+                .reduce((acc: any, student: any) => {
+                    const month = moment(student.ngayVaoHoc).format('MMMM'); 
+                    acc[month] = (acc[month] || 0) + 1; 
+                    return acc;
+                }, {});
+
+            const chartData = Object.keys(data).map((month) => ({
+                month,
+                students: data[month]
+            }));
+
+            setStudentData(chartData);
+        } catch (error) {
+            message.error('Lỗi khi lấy dữ liệu học viên');
+        }
+    };
+
+    const fetchAvailableYears = async () => {
+        try {
+            const response = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            const years: number[] = response.data
+                .map((student: any) => moment(student.ngayVaoHoc).year()) 
+                .filter((year: number) => !isNaN(year)); 
+
+            const uniqueYears = Array.from(new Set(years)).sort((a, b) => b - a); 
+            setAvailableYears(uniqueYears); 
+        } catch (error) {
+            message.error('Lỗi khi lấy danh sách năm');
+        }
+    };
+
+    const handleYearChange = (value: number) => {
+        setYear(value);
+    };
+
+    const handleChartTypeChange = (value: string) => {
+        setChartType(value);
+    };
+
     const barColors = [
-        'rgba(75, 192, 192, 0.2)', // Light cyan
-        'rgba(255, 99, 132, 0.2)', // Light red
-        'rgba(54, 162, 235, 0.2)', // Light blue
-        'rgba(255, 206, 86, 0.2)', // Light yellow
-        'rgba(75, 192, 192, 0.2)', // Light cyan
-        'rgba(153, 102, 255, 0.2)', // Light purple
-        'rgba(255, 159, 64, 0.2)', // Light orange
-        'rgba(255, 99, 132, 0.2)', // Light red
-        'rgba(54, 162, 235, 0.2)', // Light blue
-        'rgba(255, 206, 86, 0.2)', // Light yellow
-        'rgba(75, 192, 192, 0.2)', // Light cyan
-        'rgba(153, 102, 255, 0.2)'  // Light purple
+        'rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)',
+        'rgba(75, 192, 192, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 159, 64, 0.2)'
     ];
 
     const borderColors = [
-        'rgba(75, 192, 192, 1)', // Cyan
-        'rgba(255, 99, 132, 1)', // Red
-        'rgba(54, 162, 235, 1)', // Blue
-        'rgba(255, 206, 86, 1)', // Yellow
-        'rgba(75, 192, 192, 1)', // Cyan
-        'rgba(153, 102, 255, 1)', // Purple
-        'rgba(255, 159, 64, 1)', // Orange
-        'rgba(255, 99, 132, 1)', // Red
-        'rgba(54, 162, 235, 1)', // Blue
-        'rgba(255, 206, 86, 1)', // Yellow
-        'rgba(75, 192, 192, 1)', // Cyan
-        'rgba(153, 102, 255, 1)'  // Purple
+        'rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)',
+        'rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'
     ];
 
-    // Prepare data for the bar chart
     const chartData = {
         labels: studentData.map((data) => data.month),
         datasets: [
@@ -79,28 +104,62 @@ const TKHocVien: React.FC = () => {
     const chartOptions = {
         responsive: true,
         plugins: {
-            legend: {
-                position: 'top' as const,
-            },
+            legend: { position: 'top' as const },
             title: {
                 display: true,
-                text: 'Thống kê số lượng học viên nhập học mỗi tháng',
+                text: `Thống kê số lượng học viên nhập học năm ${year}`,
             },
         },
         scales: {
             y: {
                 beginAtZero: true,
-                ticks: {
-                    stepSize: 10,
-                },
+                ticks: { stepSize: 10 },
             },
         },
+    };
+
+    const renderChart = () => {
+        switch (chartType) {
+            case 'bar':
+                return <Bar data={chartData} options={chartOptions} />;
+            case 'line':
+                return <Line data={chartData} options={chartOptions} />;
+            case 'polar':
+                return (
+                    <div style={{ width: '500px', height: '500px', marginLeft: '280px' }}>  
+                        <PolarArea data={chartData} options={chartOptions} />
+                    </div>
+                );
+            default:
+                return <Bar data={chartData} options={chartOptions} />;
+        }
     };
 
     return (
         <div style={{ width: '80%', margin: '0 auto' }}>
             <h1 className='page-name'>Thống Kê Học Viên</h1>
-            <Bar data={chartData} options={chartOptions} />
+            <Select 
+                defaultValue={year} 
+                style={{ width: 120, marginBottom: 20 }}
+                onChange={handleYearChange}
+            >
+                {availableYears.map((year) => (
+                    <Option key={year} value={year}>
+                        {year}
+                    </Option>
+                ))}
+            </Select>
+            <Select
+                defaultValue="bar"
+                style={{ width: 120, marginLeft: 20, marginBottom: 20 }}
+                onChange={handleChartTypeChange}
+            >
+                <Option value="bar">Bar Chart</Option>
+                <Option value="line">Line Chart</Option>
+                <Option value="polar">Polar Chart</Option>
+            </Select>
+
+            {renderChart()}
         </div>
     );
 };
