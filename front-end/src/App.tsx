@@ -28,6 +28,7 @@ import TKHocVien from './pages/TKHocVien';
 import TKCoSo from './pages/TKCoSo';
 import TKGiangVien from './pages/TKGiangVien';
 import Login from './pages/Login';
+import TimKiem from './pages/TimKiem';
 import UserInfoModal from './components/UserInforModal';
 import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
@@ -81,6 +82,7 @@ const App: React.FC = () => {
     if (location.pathname.startsWith('/tk_hocvien')) return '13';
     if (location.pathname.startsWith('/tk_giangvien')) return '14';
     if (location.pathname.startsWith('/tk_lophoc')) return '15';
+    if (location.pathname.startsWith('/timkiem')) return '16';
     return '0';
   };
 
@@ -168,6 +170,9 @@ const App: React.FC = () => {
                   <Menu.Item key="6">
                     <Link to="/monhoc">Môn học</Link>
                   </Menu.Item>
+                  <Menu.Item key="16">
+                    <Link to="/timkiem">Tìm Kiếm</Link>
+                  </Menu.Item>
                 </SubMenu>
                 <SubMenu key="group02" icon={<ScheduleOutlined />} title="Lập kế hoạch">
                   <Menu.Item key="7">
@@ -235,6 +240,7 @@ const App: React.FC = () => {
                   <Route path="/tk_giangvien" element={isAuthenticated ? <TKGiangVien /> : <Navigate to="/login" />} />
                   <Route path="/tk_coso" element={isAuthenticated ? <TKCoSo /> : <Navigate to="/login" />} />
                   <Route path="/testing" element={isAuthenticated ? <HocVienTable /> : <Navigate to="/login" />} />
+                  <Route path="/timkiem" element={isAuthenticated ? <TimKiem /> : <Navigate to="/login" />} />
                 </Routes>
               </Content>
             </Layout>
