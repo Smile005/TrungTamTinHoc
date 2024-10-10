@@ -322,9 +322,7 @@ const renderLichHocForm = () => {
                   <InputNumber min={1} style={{ width: '100%' }} placeholder="Số buổi" />
               </Form.Item>
               <Form.Item>
-                  <Button type="primary" icon={<PlusOutlined />} htmlType="submit">
-                      Thêm Thời Khóa Biểu
-                  </Button>
+                  <Button type="primary" icon={<PlusOutlined />} htmlType="submit" />
               </Form.Item>
           </Form>
   );
