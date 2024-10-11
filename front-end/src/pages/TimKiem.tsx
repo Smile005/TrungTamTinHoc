@@ -74,6 +74,15 @@ const taiKhoanColumns = [
 ];
 
 const TimKiem: React.FC = () => {
+  const [searchText, setSearchText] = useState(''); // Lưu trạng thái tìm kiếm
+  const [caHocData, setCaHocData] = useState<CaHocType[]>([]);
+  const [hocVienData, setHocVienData] = useState<HocVienType[]>([]);
+  const [lopHocData, setLopHocData] = useState<LopHocType[]>([]);
+  const [monHocData, setMonHocData] = useState<MonHocType[]>([]);
+  const [nhanVienData, setNhanVienData] = useState<NhanVienType[]>([]);
+  const [phongHocData, setPhongHocData] = useState<PhongHocType[]>([]);
+  const [taiKhoanData, setTaiKhoanData] = useState<TaiKhoanType[]>([]);
+
   const [filteredCaHoc, setFilteredCaHoc] = useState<CaHocType[]>([]);
   const [filteredHocVien, setFilteredHocVien] = useState<HocVienType[]>([]);
   const [filteredLopHoc, setFilteredLopHoc] = useState<LopHocType[]>([]);
@@ -108,6 +117,15 @@ const TimKiem: React.FC = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
+        setCaHocData(cahocResponse.data);
+        setHocVienData(hocvienResponse.data);
+        setLopHocData(lophocResponse.data);
+        setMonHocData(monhocResponse.data);
+        setNhanVienData(nhanvienResponse.data);
+        setPhongHocData(phonghocResponse.data);
+        setTaiKhoanData(taikhoanResponse.data);
+
+        // Khởi tạo dữ liệu ban đầu cho các bảng lọc
         setFilteredCaHoc(cahocResponse.data);
         setFilteredHocVien(hocvienResponse.data);
         setFilteredLopHoc(lophocResponse.data);
@@ -123,11 +141,12 @@ const TimKiem: React.FC = () => {
     fetchData();
   }, []);
 
-  const onSearch = (value: string) => {
-    const lowerValue = value.toLowerCase();
+  useEffect(() => {
+    // Khi searchText thay đổi, cập nhật lại danh sách lọc
+    const lowerValue = searchText.toLowerCase();
 
-    setFilteredCaHoc((prev) =>
-      prev.filter(
+    setFilteredCaHoc(
+      caHocData.filter(
         (item) =>
           item.maCa.toLowerCase().includes(lowerValue) ||
           item.trangThai?.toLowerCase().includes(lowerValue) ||
@@ -135,8 +154,8 @@ const TimKiem: React.FC = () => {
       )
     );
 
-    setFilteredHocVien((prev) =>
-      prev.filter(
+    setFilteredHocVien(
+      hocVienData.filter(
         (item) =>
           item.maHocVien.toLowerCase().includes(lowerValue) ||
           item.tenHocVien.toLowerCase().includes(lowerValue) ||
@@ -145,8 +164,8 @@ const TimKiem: React.FC = () => {
       )
     );
 
-    setFilteredLopHoc((prev) =>
-      prev.filter(
+    setFilteredLopHoc(
+      lopHocData.filter(
         (item) =>
           item.maLopHoc.toLowerCase().includes(lowerValue) ||
           item.tenLopHoc.toLowerCase().includes(lowerValue) ||
@@ -154,8 +173,8 @@ const TimKiem: React.FC = () => {
       )
     );
 
-    setFilteredMonHoc((prev) =>
-      prev.filter(
+    setFilteredMonHoc(
+      monHocData.filter(
         (item) =>
           item.maMonHoc.toLowerCase().includes(lowerValue) ||
           item.tenMonHoc.toLowerCase().includes(lowerValue) ||
@@ -163,8 +182,8 @@ const TimKiem: React.FC = () => {
       )
     );
 
-    setFilteredNhanVien((prev) =>
-      prev.filter(
+    setFilteredNhanVien(
+      nhanVienData.filter(
         (item) =>
           item.maNhanVien.toLowerCase().includes(lowerValue) ||
           item.tenNhanVien.toLowerCase().includes(lowerValue) ||
@@ -172,21 +191,25 @@ const TimKiem: React.FC = () => {
       )
     );
 
-    setFilteredPhongHoc((prev) =>
-      prev.filter(
+    setFilteredPhongHoc(
+      phongHocData.filter(
         (item) =>
           item.maPhong.toLowerCase().includes(lowerValue) ||
           item.trangThai?.toLowerCase().includes(lowerValue)
       )
     );
 
-    setFilteredTaiKhoan((prev) =>
-      prev.filter(
+    setFilteredTaiKhoan(
+      taiKhoanData.filter(
         (item) =>
           item.maNhanVien.toLowerCase().includes(lowerValue) ||
           item.trangThai.toLowerCase().includes(lowerValue)
       )
     );
+  }, [searchText, caHocData, hocVienData, lopHocData, monHocData, nhanVienData, phongHocData, taiKhoanData]);
+
+  const handleSearch = (value: string) => {
+    setSearchText(value);
   };
 
   return (
@@ -194,7 +217,7 @@ const TimKiem: React.FC = () => {
       <h1 className="page-name">Tìm Kiếm Dữ Liệu</h1>
       <Input.Search
         placeholder="Nhập từ khóa tìm kiếm"
-        onSearch={onSearch}
+        onSearch={handleSearch}
         enterButton
         style={{ marginBottom: 20 }}
       />
