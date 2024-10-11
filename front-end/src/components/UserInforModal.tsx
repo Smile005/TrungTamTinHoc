@@ -1,44 +1,60 @@
-import React from 'react';
-import { Modal, Descriptions, Button } from 'antd';
-import { NhanVienType } from '../types/NhanVienType';  // Import kiểu dữ liệu NhanVienType
+import React, { useEffect, useState } from 'react';
+import { Modal, Descriptions, Spin, message } from 'antd';
+import axios from 'axios';
+import { NhanVienType } from '../types/NhanVienType';
 
 interface UserInfoModalProps {
   visible: boolean;
   onCancel: () => void;
-  userInfo: NhanVienType | null;
-  onLogout: () => void;
+  userInfo: NhanVienType | null; 
+  onLogout: () => void; 
 }
 
-const UserInfoModal: React.FC<UserInfoModalProps> = ({ visible, onCancel, userInfo }) => {
+const UserInfoModal: React.FC<UserInfoModalProps> = ({ visible, onCancel, userInfo, onLogout }) => {
+  const [nhanVien, setNhanVien] = useState<NhanVienType | null>(null); 
+  const [loading, setLoading] = useState<boolean>(false); 
+
+  useEffect(() => {
+    const fetchTaiKhoan = async () => {
+      if (userInfo && userInfo.maNhanVien) {
+        setLoading(true); 
+        try {
+          const response = await axios.get('http://localhost:8081/api/auth/ds-taikhoan', {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`, 
+            },
+          });
+          const danhSachTaiKhoan: NhanVienType[] = response.data; 
+          const nhanVienData = danhSachTaiKhoan.find(tk => tk.maNhanVien === userInfo.maNhanVien); 
+          setNhanVien(nhanVienData || null); 
+        } catch (error) {
+          // message.error('Lỗi khi lấy thông tin tài khoản'); 
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchTaiKhoan(); 
+  }, [userInfo]);
+
   return (
-    <Modal
-      title="Thông Tin Người Dùng"
-      visible={visible}
-      onCancel={onCancel}
-      footer={[
-        <Button key="close" onClick={onCancel}>
-          Đóng
-        </Button>,
-      ]}
-    >
-      {userInfo ? (
-        <Descriptions bordered column={1}>
-          <Descriptions.Item label="Mã Nhân Viên">{userInfo.maNhanVien}</Descriptions.Item>
-          <Descriptions.Item label="Tên Nhân Viên">{userInfo.tenNhanVien}</Descriptions.Item>
-          <Descriptions.Item label="Chức Vụ">{userInfo.chucVu}</Descriptions.Item>
-          <Descriptions.Item label="Ngày Vào Làm">
-            {userInfo.ngayVaoLam ? new Date(userInfo.ngayVaoLam).toLocaleDateString() : 'Không xác định'}
-          </Descriptions.Item>
-          <Descriptions.Item label="Giới Tính">{userInfo.gioiTinh}</Descriptions.Item>
-          <Descriptions.Item label="Ngày Sinh">
-            {userInfo.ngaySinh ? new Date(userInfo.ngaySinh).toLocaleDateString() : 'Không xác định'}
-          </Descriptions.Item>
-          <Descriptions.Item label="Số Điện Thoại">{userInfo.sdt}</Descriptions.Item>
-          <Descriptions.Item label="Email">{userInfo.email}</Descriptions.Item>
-          <Descriptions.Item label="Địa Chỉ">{userInfo.diaChi}</Descriptions.Item>
+    <Modal visible={visible} onCancel={onCancel} footer={null} title="Thông Tin Người Dùng">
+      {loading ? (
+        <Spin size="large" />
+      ) : nhanVien ? (
+        <Descriptions bordered>
+          <Descriptions.Item label="Mã Nhân Viên">{nhanVien.maNhanVien}</Descriptions.Item>
+          <Descriptions.Item label="Tên Nhân Viên">{nhanVien.tenNhanVien}</Descriptions.Item>
+          <Descriptions.Item label="Giới Tính">{nhanVien.gioiTinh}</Descriptions.Item>
+          <Descriptions.Item label="Ngày Sinh">{nhanVien.ngaySinh}</Descriptions.Item>
+          <Descriptions.Item label="Số Điện Thoại">{nhanVien.sdt}</Descriptions.Item>
+          <Descriptions.Item label="Email">{nhanVien.email}</Descriptions.Item>
+          <Descriptions.Item label="Địa Chỉ">{nhanVien.diaChi}</Descriptions.Item>
+          <Descriptions.Item label="Trạng Thái">{nhanVien.trangThai}</Descriptions.Item>
         </Descriptions>
       ) : (
-        <p>Không có thông tin người dùng</p>
+        <p>Không có thông tin người dùng</p> 
       )}
     </Modal>
   );

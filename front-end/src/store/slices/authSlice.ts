@@ -1,10 +1,10 @@
-// src/store/slices/authSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserInfo {
-  maNhanVien: string;
-  name: string;
-  email: string;
+  maNhanVien: string;  // Mã nhân viên
+  tenNhanVien: string; // Tên nhân viên
+  email: string;       // Email của nhân viên
+  // Thêm các trường khác nếu cần
 }
 
 interface AuthState {
@@ -28,6 +28,7 @@ const authSlice = createSlice({
       state.token = action.payload.token;
       state.userInfo = action.payload.userInfo;
 
+      // Lưu token vào localStorage
       localStorage.setItem('token', action.payload.token);
     },
     logout(state) {
@@ -44,4 +45,3 @@ const authSlice = createSlice({
 export const { login, logout } = authSlice.actions;
 
 export default authSlice.reducer;
-

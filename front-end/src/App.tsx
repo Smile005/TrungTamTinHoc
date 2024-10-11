@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Route, Routes, Navigate, useLocation, Link } from 'react-router-dom'; 
-import { Layout, Menu, Dropdown, Button, message, theme } from 'antd';
+import { Route, Routes, Navigate, useLocation, Link, useNavigate } from 'react-router-dom'; 
+import { Layout, Menu, Button, message, theme } from 'antd';
 import {
   ScheduleOutlined,
   FundOutlined,
@@ -47,6 +47,7 @@ const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [isUserInfoModalVisible, setIsUserInfoModalVisible] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate(); 
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -64,7 +65,6 @@ const App: React.FC = () => {
   }));
 
   const isLoginPage = location.pathname === '/login';
-
 
   const getSelectedKey = () => {
     if (location.pathname === '/') return '0';
@@ -113,7 +113,6 @@ const App: React.FC = () => {
               </div>
 
               {isAuthenticated && userInfo && (
-
                 <div className='user-info-container'>
                   <Button type="link" className='user-info' onClick={handleUserInfo}>
                     <p className='user-icon'><UserOutlined /></p>
@@ -121,7 +120,6 @@ const App: React.FC = () => {
                   </Button>
                   <Button type="link" className='logout-btn' onClick={handleLogout} icon={<LogoutOutlined />} />
                 </div>
-
               )}
             </div>
           </Header>
@@ -143,11 +141,7 @@ const App: React.FC = () => {
                 </div>
               }
             >
-              <Menu
-                className="custom-menu"
-                mode="inline"
-                selectedKeys={[getSelectedKey()]}
-              >
+              <Menu className="custom-menu" mode="inline" selectedKeys={[getSelectedKey()]}>
                 <Menu.Item key="0" icon={<AppstoreOutlined />}>
                   <Link to="/">Trang chủ</Link>
                 </Menu.Item>
@@ -247,7 +241,6 @@ const App: React.FC = () => {
           </Layout>
         </>
       )}
-
 
       {isLoginPage && (
         <Content style={{ padding: 24 }}>
