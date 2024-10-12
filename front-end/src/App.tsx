@@ -254,7 +254,6 @@ const App: React.FC = () => {
       <UserInfoModal
         visible={isUserInfoModalVisible}
         onCancel={() => setIsUserInfoModalVisible(false)}
-        userInfo={userInfo}
         onLogout={handleLogout}
       />
     </Layout>
