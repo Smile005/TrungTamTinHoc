@@ -3,7 +3,7 @@ POST http://localhost:8081/api/auth/register
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV0001",
+  "maNhanVien": "NV0003",
   "matKhau": "123",
   "phanQuyen": 1
 }
@@ -23,7 +23,7 @@ Content-Type: application/json
 
 # Đổi mật khẩu
 POST http://localhost:8081/api/auth/change-password
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjg2MjI0MjYsImV4cCI6MTcyODYyNjAyNn0.6w7UGUDk17jQc2Jz9plu71kGj_eqSd4fB_2sS2rYgbg
 Content-Type: application/json
 
 {
@@ -299,3 +299,13 @@ Content-Type: application/json
 # Lấy danh sách tài khoản
 GET http://localhost:8081/api/auth/ds-taikhoan
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjg0NzEwNzIsImV4cCI6MTcyODQ3NDY3Mn0.M2_mlM4f99_gtaRNVpStuEFSHfsqsht0rNb9x4XH6WI
+
+### Cập nhập trạng thái tài khoản
+POST http://localhost:8081/api/auth/update-trangthai
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjg2MjI3MDksImV4cCI6MTcyODYyNjMwOX0.YShtWj1inojPxtAPmorLj-T0LfpjE4tE_gyzaNynGtQ
+Content-Type: application/json
+
+{
+    "maNhanVien": "NV0002",
+    "trangThai": "Đã khóa"
+}

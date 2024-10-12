@@ -1,10 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface UserInfo {
-  maNhanVien: string;  // Mã nhân viên
-  tenNhanVien: string; // Tên nhân viên
-  email: string;       // Email của nhân viên
-  // Thêm các trường khác nếu cần
+  maNhanVien: string;
+  name: string;
+  email: string;
 }
 
 interface AuthState {
@@ -43,5 +42,4 @@ const authSlice = createSlice({
 });
 
 export const { login, logout } = authSlice.actions;
-
 export default authSlice.reducer;

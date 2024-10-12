@@ -1,10 +1,9 @@
-// src/store/store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice'; // Import reducer từ slice
 
 const store = configureStore({
   reducer: {
-    auth: authReducer, // Chỉ định reducer
+    auth: authReducer, // Thêm auth reducer
   },
 });
 

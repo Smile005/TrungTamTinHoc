@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Descriptions, Spin, message } from 'antd';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store'; // Adjust the import path as needed
 import { NhanVienType } from '../types/NhanVienType';
 
 interface UserInfoModalProps {
   visible: boolean;
   onCancel: () => void;
-  userInfo: NhanVienType | null; 
   onLogout: () => void; 
 }
 
-const UserInfoModal: React.FC<UserInfoModalProps> = ({ visible, onCancel, userInfo, onLogout }) => {
+const UserInfoModal: React.FC<UserInfoModalProps> = ({ visible, onCancel, onLogout }) => {
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo); // Get userInfo from Redux state
   const [nhanVien, setNhanVien] = useState<NhanVienType | null>(null); 
   const [loading, setLoading] = useState<boolean>(false); 
 
@@ -24,11 +26,12 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({ visible, onCancel, userIn
               Authorization: `Bearer ${localStorage.getItem('token')}`, 
             },
           });
+          
           const danhSachTaiKhoan: NhanVienType[] = response.data; 
           const nhanVienData = danhSachTaiKhoan.find(tk => tk.maNhanVien === userInfo.maNhanVien); 
           setNhanVien(nhanVienData || null); 
         } catch (error) {
-          // message.error('Lỗi khi lấy thông tin tài khoản'); 
+          message.error('Lỗi khi lấy thông tin tài khoản'); 
         } finally {
           setLoading(false);
         }
@@ -39,7 +42,12 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({ visible, onCancel, userIn
   }, [userInfo]);
 
   return (
-    <Modal visible={visible} onCancel={onCancel} footer={null} title="Thông Tin Người Dùng">
+    <Modal 
+      visible={visible} 
+      onCancel={onCancel} 
+      footer={null} 
+      title="Thông Tin Người Dùng"
+    >
       {loading ? (
         <Spin size="large" />
       ) : nhanVien ? (
