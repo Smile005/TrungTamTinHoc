@@ -32,7 +32,9 @@ const SuaTaiKhoanModal: React.FC<SuaTaiKhoanModalProps> = ({
       .then(async (values) => {
         try {
           const token = localStorage.getItem('token'); 
-          const response = await axios.post(
+          
+          // Gọi API để cập nhật quyền
+          await axios.post(
             'http://localhost:8081/api/auth/change-role', 
             {
               maNhanVien: values.maNhanVien, 
@@ -44,11 +46,27 @@ const SuaTaiKhoanModal: React.FC<SuaTaiKhoanModalProps> = ({
               },
             }
           );
-          message.success('Đã đổi quyền tài khoản thành công!');  
+
+          // Gọi API để cập nhật trạng thái
+          await axios.post(
+            'http://localhost:8081/api/auth/update-trangthai',
+            {
+              maNhanVien: values.maNhanVien,
+              trangThai: values.trangThai,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          message.success('Đã đổi cập nhật tài khoản thành công!');  
           onSubmit(values); 
           form.resetFields(); 
         } catch (error) {
-          message.error('Có lỗi xảy ra khi đổi quyền tài khoản!');  
+          message.error('Có lỗi xảy ra khi cập nhật trạng thái tài khoản!');  
         }
       })
       .catch((info) => {
@@ -82,6 +100,16 @@ const SuaTaiKhoanModal: React.FC<SuaTaiKhoanModalProps> = ({
           <Select>
             <Select.Option value={1}>Quản trị viên</Select.Option>
             <Select.Option value={2}>Nhân viên</Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Trạng Thái"
+          name="trangThai"
+          rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+        >
+          <Select placeholder="Chọn trạng thái">
+            <Select.Option value="Hoạt động">Đang hoạt động</Select.Option>
+            <Select.Option value="Đã khóa">Đã khóa</Select.Option>
           </Select>
         </Form.Item>
       </Form>

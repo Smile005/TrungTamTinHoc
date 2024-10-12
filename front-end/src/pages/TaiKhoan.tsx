@@ -126,7 +126,7 @@ const TaiKhoan: React.FC = () => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>
             <Menu.Item key="changepw" icon={<FileDoneOutlined />}>Đổi Mật Khẩu</Menu.Item>
-            <Menu.Item key="edit" icon={<EditOutlined />}>Sửa</Menu.Item>
+            <Menu.Item key="edit" icon={<EditOutlined />}>Sửa Quyền và Trạng Thái</Menu.Item>
             <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
           </Menu>
         );

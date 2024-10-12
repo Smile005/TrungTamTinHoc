@@ -94,7 +94,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({ visible, onCancel, onLogo
       { key: 'Mã Nhân Viên', value: nhanVien.maNhanVien },
       { key: 'Tên Nhân Viên', value: <Form.Item style={{ height: '10px' }} name="tenNhanVien" rules={[{ required: true, message: 'Vui lòng nhập tên nhân viên!' }]}><Input /></Form.Item> },
       { key: 'Giới Tính', value: <Form.Item style={{ height: '10px' }} name="gioiTinh"><Input /></Form.Item> },
-      { key: 'Ngày Sinh', value: <Form.Item style={{ height: '10px' }} name="ngaySinh" rules={[{ required: true, message: 'Vui lòng chọn ngày sinh!' }]}><DatePicker style={{ height: '100%' }} format="DD/MM/YYYY" /></Form.Item> }, // Set style here
+      { key: 'Ngày Sinh', value: <Form.Item style={{ height: '10px' }} name="ngaySinh" rules={[{ required: true, message: 'Vui lòng chọn ngày sinh!' }]}><DatePicker style={{width: '100%' }} /></Form.Item> }, // Set style here
       { key: 'Số Điện Thoại', value: <Form.Item style={{ height: '10px' }} name="sdt"><Input /></Form.Item> },
       { key: 'Email', value: <Form.Item style={{ height: '10px' }} name="email" rules={[{ type: 'email', message: 'Email không hợp lệ!' }]}><Input /></Form.Item> },
       { key: 'Địa Chỉ', value: <Form.Item style={{ height: '10px' }} name="diaChi"><Input /></Form.Item> },
