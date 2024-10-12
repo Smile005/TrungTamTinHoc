@@ -111,7 +111,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <Layout style={{ height: '100vh' }}>
+    <Layout style={{ height: '104vh' }}>
       {!isLoginPage && (
         <>
           <Header className="custom-header" style={{ background: '#1b7cc2', color: '#fff' }}>

@@ -74,7 +74,7 @@ const taiKhoanColumns = [
 ];
 
 const TimKiem: React.FC = () => {
-  const [searchText, setSearchText] = useState(''); // Lưu trạng thái tìm kiếm
+  const [searchText, setSearchText] = useState(''); 
   const [caHocData, setCaHocData] = useState<CaHocType[]>([]);
   const [hocVienData, setHocVienData] = useState<HocVienType[]>([]);
   const [lopHocData, setLopHocData] = useState<LopHocType[]>([]);
@@ -125,7 +125,6 @@ const TimKiem: React.FC = () => {
         setPhongHocData(phonghocResponse.data);
         setTaiKhoanData(taikhoanResponse.data);
 
-        // Khởi tạo dữ liệu ban đầu cho các bảng lọc
         setFilteredCaHoc(cahocResponse.data);
         setFilteredHocVien(hocvienResponse.data);
         setFilteredLopHoc(lophocResponse.data);
@@ -142,7 +141,6 @@ const TimKiem: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Khi searchText thay đổi, cập nhật lại danh sách lọc
     const lowerValue = searchText.toLowerCase();
 
     setFilteredCaHoc(
@@ -223,25 +221,60 @@ const TimKiem: React.FC = () => {
       />
       <Tabs defaultActiveKey="1">
         <Tabs.TabPane tab="Ca Học" key="1">
-          <Table columns={caHocColumns} dataSource={filteredCaHoc} rowKey="maCa" />
+          <Table 
+            columns={caHocColumns} 
+            dataSource={filteredCaHoc} 
+            rowKey="maCa" 
+            pagination={{ pageSize: 7 }} 
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Học Viên" key="2">
-          <Table columns={hocVienColumns} dataSource={filteredHocVien} rowKey="maHocVien" />
+          <Table 
+            columns={hocVienColumns} 
+            dataSource={filteredHocVien} 
+            rowKey="maHocVien" 
+            pagination={{ pageSize: 7 }}
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Lớp Học" key="3">
-          <Table columns={lopHocColumns} dataSource={filteredLopHoc} rowKey="maLopHoc" />
+          <Table 
+            columns={lopHocColumns} 
+            dataSource={filteredLopHoc} 
+            rowKey="maLopHoc" 
+            pagination={{ pageSize: 7 }} 
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Môn Học" key="4">
-          <Table columns={monHocColumns} dataSource={filteredMonHoc} rowKey="maMonHoc" />
+          <Table 
+            columns={monHocColumns} 
+            dataSource={filteredMonHoc} 
+            rowKey="maMonHoc" 
+            pagination={{ pageSize: 7 }} 
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Nhân Viên" key="5">
-          <Table columns={nhanVienColumns} dataSource={filteredNhanVien} rowKey="maNhanVien" />
+          <Table 
+            columns={nhanVienColumns} 
+            dataSource={filteredNhanVien} 
+            rowKey="maNhanVien" 
+            pagination={{ pageSize: 7 }}
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Phòng Học" key="6">
-          <Table columns={phongHocColumns} dataSource={filteredPhongHoc} rowKey="maPhong" />
+          <Table 
+            columns={phongHocColumns} 
+            dataSource={filteredPhongHoc} 
+            rowKey="maPhong" 
+            pagination={{ pageSize: 7 }} 
+          />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Tài Khoản" key="7">
-          <Table columns={taiKhoanColumns} dataSource={filteredTaiKhoan} rowKey="maNhanVien" />
+          <Table 
+            columns={taiKhoanColumns} 
+            dataSource={filteredTaiKhoan} 
+            rowKey="maNhanVien" 
+            pagination={{ pageSize: 7 }} 
+          />
         </Tabs.TabPane>
       </Tabs>
     </div>
