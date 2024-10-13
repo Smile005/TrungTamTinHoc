@@ -11,7 +11,7 @@ Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarEleme
 const TKCoSo: React.FC = () => {
     const [data, setData] = useState<{ status: string; count: number }[]>([]);
     const [selectedTable, setSelectedTable] = useState<string>('lopHoc'); 
-    const [chartType, setChartType] = useState<string>('doughnut'); // State to manage chart type
+    const [chartType, setChartType] = useState<string>('doughnut');
 
     useEffect(() => {
         fetchData(selectedTable);
@@ -38,6 +38,9 @@ const TKCoSo: React.FC = () => {
             case 'nhanVien':
                 apiUrl = 'http://localhost:8081/api/nhanvien/ds-nhanvien';
                 break;
+            case 'taiKhoan': // Thêm trường hợp cho tài khoản
+                apiUrl = 'http://localhost:8081/api/auth/ds-taikhoan';
+                break;
             default:
                 break;
         }
@@ -51,11 +54,11 @@ const TKCoSo: React.FC = () => {
 
             const data = response.data.reduce(
                 (acc: any, item: any) => {
-                    const status = item.trangThai || item.tinhTrang; 
+                    const status = item.trangThai || item.tinhTrang || item.phanQuyen; // Cập nhật trạng thái cho tài khoản
                     acc[status] = (acc[status] || 0) + 1;
                     return acc;
                 },
-                { "ĐANG HOẠT ĐỘNG": 0, "NGƯNG HOẠT ĐỘNG": 0 }
+                { "ĐANG HOẠT ĐỘNG": 0, "NGƯNG HOẠT ĐỘNG": 0, "Quản trị viên": 0, "Nhân viên": 0 } // Thêm trạng thái cho tài khoản
             );
 
             const formattedData = Object.keys(data).map(status => ({
@@ -79,12 +82,16 @@ const TKCoSo: React.FC = () => {
                 backgroundColor: [
                     'rgba(75, 192, 192, 0.6)', 
                     'rgba(255, 159, 64, 0.6)', 
-                    'rgba(153, 102, 255, 0.6)' 
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(255, 99, 132, 0.6)', // Thêm màu cho tài khoản
+                    'rgba(54, 162, 235, 0.6)' // Thêm màu cho tài khoản
                 ],
                 borderColor: [
                     'rgba(75, 192, 192, 1)', 
                     'rgba(255, 159, 64, 1)', 
-                    'rgba(153, 102, 255, 1)' 
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 99, 132, 1)', // Thêm màu cho tài khoản
+                    'rgba(54, 162, 235, 1)' // Thêm màu cho tài khoản
                 ], 
                 borderWidth: 1,
             },
@@ -141,11 +148,12 @@ const TKCoSo: React.FC = () => {
                 onChange={setSelectedTable}
             >
                 <Option value="lopHoc">Lớp Học</Option>
+                <Option value="taiKhoan">Tài Khoản</Option> 
+                <Option value="nhanVien">Nhân Viên</Option>
                 <Option value="hocVien">Học Viên</Option>
                 <Option value="phongHoc">Phòng Học</Option>
                 <Option value="caHoc">Ca Học</Option>
                 <Option value="monHoc">Môn Học</Option>
-                <Option value="nhanVien">Nhân Viên</Option>
             </Select>
 
             <Select
