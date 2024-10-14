@@ -11,26 +11,24 @@ interface SuaNhanVienModalProps {
     initialValues: NhanVienType | null;
 }
 
-
 const SuaNhanVienModal: React.FC<SuaNhanVienModalProps> = ({ visible, onCancel, onOk, initialValues }) => {
     const [form] = Form.useForm();
 
-    // Điền dữ liệu ban đầu vào form khi modal mở
     useEffect(() => {
-        if (initialValues) {
+        if (visible && initialValues) {
             form.setFieldsValue({
                 ...initialValues,
-                ngaySinh: initialValues.ngaySinh ? moment(initialValues.ngaySinh, 'YYYY-MM-DD') : null,
-                ngayVaoLam: initialValues.ngayVaoLam ? moment(initialValues.ngayVaoLam, 'YYYY-MM-DD') : null,
+                // Chuyển đổi định dạng ngày và thêm 1 ngày nếu cần
+                ngaySinh: initialValues.ngaySinh ? moment(initialValues.ngaySinh, 'YYYY-MM-DD').add(1, 'days') : null,
+                ngayVaoLam: initialValues.ngayVaoLam ? moment(initialValues.ngayVaoLam, 'YYYY-MM-DD').add(1, 'days') : null,
             });
         }
-    }, [initialValues, form]);
+    }, [visible, initialValues, form]);
 
     const handleOk = () => {
         form
             .validateFields()
             .then((values) => {
-                // Tạo formattedValues và loại bỏ maNhanVien
                 const formattedValues: Omit<NhanVienType, 'maNhanVien'> = {
                     ...initialValues,
                     tenNhanVien: values.tenNhanVien,
@@ -46,7 +44,6 @@ const SuaNhanVienModal: React.FC<SuaNhanVienModalProps> = ({ visible, onCancel, 
                     ghiChu: values.ghiChu || null,
                 };
 
-                // Gọi API để cập nhật nhân viên
                 axios.post('http://localhost:8081/api/nhanvien/sua-nhanvien', formattedValues, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -54,7 +51,7 @@ const SuaNhanVienModal: React.FC<SuaNhanVienModalProps> = ({ visible, onCancel, 
                 })
                     .then(() => {
                         message.success('Sửa thông tin nhân viên thành công');
-                        onOk(formattedValues as NhanVienType); // Gọi lại hàm onOk để cập nhật dữ liệu
+                        onOk(formattedValues as NhanVienType); 
                         form.resetFields();
                     })
                     .catch((error) => {
