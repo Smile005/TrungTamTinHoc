@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, DatePicker, Select, Radio, message } from 'antd';
+import { Modal, Form, Input, DatePicker, Select, Radio, Button, message } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import { HocVienType } from '../types/HocVienType';
@@ -20,7 +20,7 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
             form.setFieldsValue({
                 ...initialValues,
                 ngaySinh: initialValues.ngaySinh ? moment(initialValues.ngaySinh, 'YYYY-MM-DD') : null,
-                ngayVaoHoc: initialValues.ngayVaoHoc ? moment(initialValues.ngayVaoHoc, 'YYYY-MM-DD') : null,
+                ngayVaoHoc: initialValues.ngayVaoHoc ? moment(initialValues.ngayVaoHoc, 'YYYY-MM-DD').add(1, 'days') : null, // Thêm 1 ngày vào ngày vào học
             });
         }
     }, [visible, initialValues, form]);
@@ -80,7 +80,7 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     label="Mã học viên"
                     name="maHocVien"
                 >
-                    <Input disabled /> 
+                    <Input disabled />
                 </Form.Item>
                 <Form.Item
                     label="Họ và tên"
@@ -99,7 +99,7 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     label="Ngày Vào Học"
                     name="ngayVaoHoc"
                 >
-                    <DatePicker format="YYYY-MM-DD" />
+                    <DatePicker format="DD/MM/YYYY" />
                 </Form.Item>
                 <Form.Item
                     label="Giới tính"
@@ -114,7 +114,7 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     label="Ngày sinh"
                     name="ngaySinh"
                 >
-                    <DatePicker format="YYYY-MM-DD" />
+                    <DatePicker format="DD/MM/YYYY" />
                 </Form.Item>
                 <Form.Item
                     label="Số điện thoại"
