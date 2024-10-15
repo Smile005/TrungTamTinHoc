@@ -79,13 +79,13 @@ const updateMonHoc = async (req, res) => {
     await pool.query(
       'UPDATE MonHoc SET tenMonHoc = ?, soBuoiHoc = ?, hocPhi = ?, moTa = ?, trangThai = ?, ghiChu = ? WHERE maMonHoc = ?',
       [
-        maMonHoc,
         tenMonHoc,
         soBuoiHoc || null,
         hocPhi || null,
         moTa || null,
         trangThai || "Đang Giảng Dạy",
-        ghiChu || null
+        ghiChu || null,
+        maMonHoc
       ]
     );
 

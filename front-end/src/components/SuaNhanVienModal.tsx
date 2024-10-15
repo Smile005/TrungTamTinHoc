@@ -18,7 +18,6 @@ const SuaNhanVienModal: React.FC<SuaNhanVienModalProps> = ({ visible, onCancel, 
         if (visible && initialValues) {
             form.setFieldsValue({
                 ...initialValues,
-                // Chuyển đổi định dạng ngày và thêm 1 ngày nếu cần
                 ngaySinh: initialValues.ngaySinh ? moment(initialValues.ngaySinh, 'YYYY-MM-DD').add(1, 'days') : null,
                 ngayVaoLam: initialValues.ngayVaoLam ? moment(initialValues.ngayVaoLam, 'YYYY-MM-DD').add(1, 'days') : null,
             });

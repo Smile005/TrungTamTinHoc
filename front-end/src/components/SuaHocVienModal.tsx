@@ -14,13 +14,12 @@ interface SuaHocVienModalProps {
 const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, onOk, initialValues }) => {
     const [form] = Form.useForm();
 
-    // Thiết lập giá trị ban đầu cho form khi modal mở
     useEffect(() => {
         if (visible) {
             form.setFieldsValue({
                 ...initialValues,
                 ngaySinh: initialValues.ngaySinh ? moment(initialValues.ngaySinh, 'YYYY-MM-DD') : null,
-                ngayVaoHoc: initialValues.ngayVaoHoc ? moment(initialValues.ngayVaoHoc, 'YYYY-MM-DD').add(1, 'days') : null, // Thêm 1 ngày vào ngày vào học
+                ngayVaoHoc: initialValues.ngayVaoHoc ? moment(initialValues.ngayVaoHoc, 'YYYY-MM-DD').add(1, 'days') : null, 
             });
         }
     }, [visible, initialValues, form]);
@@ -42,8 +41,6 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     tinhTrang: values.tinhTrang,
                     ghiChu: values.ghiChu || null,
                 };
-
-                // Gọi API để cập nhật thông tin học viên
                 axios
                     .post('http://localhost:8081/api/hocvien/sua-hocvien', formattedValues, {
                         headers: {
@@ -53,7 +50,7 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     })
                     .then(() => {
                         message.success('Cập nhật học viên thành công');
-                        onOk(formattedValues); // Gọi lại hàm onOk để cập nhật dữ liệu
+                        onOk(formattedValues); 
                         form.resetFields();
                     })
                     .catch((error) => {
