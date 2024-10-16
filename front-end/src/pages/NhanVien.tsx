@@ -6,7 +6,6 @@ import SuaNhanVienModal from '../components/SuaNhanVienModal';
 import '../styles/TableCustom.css';
 import { NhanVienType } from '../types/NhanVienType';
 import axios from 'axios';
-import moment from 'moment';
 
 const { Search } = Input;
 
@@ -29,7 +28,7 @@ const NhanVien: React.FC = () => {
           }
         });
         setData(response.data); 
-        setFilteredData(response.data); // Lưu dữ liệu đã lấy vào filteredData để hiển thị ban đầu
+        setFilteredData(response.data); 
       } catch (error) {
         console.error('Lỗi khi lấy danh sách nhân viên:', error);
       } finally {
@@ -40,7 +39,6 @@ const NhanVien: React.FC = () => {
     fetchNhanVien();
   }, []);
 
-  // Hàm tìm kiếm
   const onSearch = (value: string) => {
     const filtered = data.filter((item) =>
       item.tenNhanVien?.toLowerCase().includes(value.toLowerCase()) ||
@@ -111,7 +109,6 @@ const NhanVien: React.FC = () => {
       title: 'Ngày vào làm',
       dataIndex: 'ngayVaoLam',
       key: 'ngayVaoLam',
-      render: (ngayVaoLam: string) => moment(ngayVaoLam).format('DD/MM/YYYY'),
     },
     {
       title: 'Trạng Thái',

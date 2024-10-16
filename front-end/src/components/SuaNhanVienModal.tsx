@@ -18,8 +18,8 @@ const SuaNhanVienModal: React.FC<SuaNhanVienModalProps> = ({ visible, onCancel, 
         if (visible && initialValues) {
             form.setFieldsValue({
                 ...initialValues,
-                ngaySinh: initialValues.ngaySinh ? moment(initialValues.ngaySinh, 'YYYY-MM-DD').add(1, 'days') : null,
-                ngayVaoLam: initialValues.ngayVaoLam ? moment(initialValues.ngayVaoLam, 'YYYY-MM-DD').add(1, 'days') : null,
+                ngaySinh: initialValues.ngaySinh ? moment(initialValues.ngaySinh, 'YYYY-MM-DD'): null,
+                ngayVaoLam: initialValues.ngayVaoLam ? moment(initialValues.ngayVaoLam, 'YYYY-MM-DD'): null,
             });
         }
     }, [visible, initialValues, form]);
