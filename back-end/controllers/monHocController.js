@@ -14,7 +14,7 @@ const createMaMH = async (connection) => {
     const query = `SELECT COUNT(maMonHoc) AS soLuong FROM MonHoc;`;
     const [result] = await connection.query(query);
     const soLuong = result[0].soLuong || 0;
-    const nextMaMonHoc = `MH${(soLuong + 1).toString().padStart(3, '0')}`;
+    const nextMaMonHoc = `MH${(soLuong + 1).toString().padStart(4, '0')}`;
     return nextMaMonHoc;
   } catch (error) {
     throw new Error('Không thể tạo mã môn học');

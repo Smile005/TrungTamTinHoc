@@ -5,7 +5,6 @@ Content-Type: application/json
 {
   "maNhanVien": "NV0003",
   "matKhau": "123",
-  "phanQuyen": 1
 }
 
 ###
@@ -15,7 +14,7 @@ POST http://localhost:8081/api/auth/login
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV0001",
+  "maNhanVien": "NV0002",
   "matKhau": "123"
 }
 
@@ -211,7 +210,7 @@ Authorization: Bearer <JWT_TOKEN>
 Content-Type: application/json
 
 {
-  "maMonHoc": "MH001",
+  "maMonHoc": "MH001 abc",
   "tenMonHoc": "Vật lý",
   "soBuoiHoc": 30,
   "hocPhi": 600000,
@@ -309,3 +308,22 @@ Content-Type: application/json
     "maNhanVien": "NV0002",
     "trangThai": "Đã khóa"
 }
+
+### Khóa tài khoản
+POST http://localhost:8081/api/auth/khoa-taikhoan
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjkxNTE0NzksImV4cCI6MTcyOTE1NTA3OX0.gAyY8ZmYwtVOpstHGDUVE7_N07ur4C8gY1ctebEV0hY
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV0002"
+}
+
+### Mở khóa tài khoản
+POST http://localhost:8081/api/auth/moKhoa-taiKhoan
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjkxNTE0NzksImV4cCI6MTcyOTE1NTA3OX0.gAyY8ZmYwtVOpstHGDUVE7_N07ur4C8gY1ctebEV0hY
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV0002"
+}
+
