@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, Form, Input, InputNumber, Select, DatePicker, message, Row, Col, Steps, theme } from 'antd';
-import axios from 'axios';
 import { PlusOutlined } from '@ant-design/icons';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
+
+const dateFormat = 'DD/MM/YYYY';
 
 const AddLopHoc: React.FC = () => {
   const { token } = theme.useToken();
   const [formLopHoc] = Form.useForm();
+  const [formLichHoc] = Form.useForm();
   const [monHocList, setMonHocList] = useState<{ maMonHoc: string, tenMonHoc: string }[]>([]);
   const [nhanVienList, setNhanVienList] = useState<{ maNhanVien: string, tenNhanVien: string }[]>([]);
   const [caHocList, setCaHocList] = useState<{ maCaHoc: string, batDau: string, ketThuc: string }[]>([]);
@@ -17,11 +24,11 @@ const AddLopHoc: React.FC = () => {
   const steps = [
     {
       title: 'Tạo Lớp Học',
-      content: renderHocVienForm(formLopHoc, monHocList, nhanVienList),
+      content: renderLopHocForm(formLopHoc, monHocList, nhanVienList),
     },
     {
       title: 'Thêm Lịch Học',
-      content: renderLichHocForm(),
+      content: renderLichHocForm(formLichHoc, nhanVienList, caHocList, phongHocList),
       description: 'Có thể bỏ qua',
     },
     {
@@ -125,6 +132,7 @@ const AddLopHoc: React.FC = () => {
         visible={isModalVisible}
         onCancel={handleCancel}
         footer={null}
+        style={{ width: '1000px', height: '1000px' }}
       >
         <Steps current={current} items={steps.map(item => ({ key: item.title, title: item.title }))} />
         <div style={contentStyle}>{steps[current].content}</div>
@@ -159,7 +167,7 @@ const AddLopHoc: React.FC = () => {
 
 export default AddLopHoc;
 
-const renderHocVienForm = (
+const renderLopHocForm = (
   form: any,
   monHocList: { maMonHoc: string, tenMonHoc: string }[],
   nhanVienList: { maNhanVien: string, tenNhanVien: string }[]
@@ -198,7 +206,11 @@ const renderHocVienForm = (
           label="Ngày Bắt Đầu"
           rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu!' }]}
         >
-          <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
+          <DatePicker
+            style={{ width: '100%' }}
+            defaultValue={dayjs()}
+            format={dateFormat}
+          />
         </Form.Item>
       </Col>
       <Col span={12}>
@@ -228,102 +240,133 @@ const renderHocVienForm = (
   </Form>
 );
 
-const renderLichHocForm = () => {
+const renderLichHocForm = (
+  form: any,
+  nhanVienList: { maNhanVien: string, tenNhanVien: string }[],
+  caHocList: { maCaHoc: string; batDau: string; ketThuc: string }[],
+  phongHocList: { maPhong: string; soLuong: number }[]
+) => {
   return (
-          <Form layout="vertical">
-              <Row gutter={16}>
-                  <Col span={12}>
-                      <Form.Item
-                          name="thu"
-                          label="Thứ"
-                          rules={[{ required: true, message: 'Vui lòng chọn thứ!' }]}
-                      >
-                          <Select placeholder="Chọn thứ">
-                              <Select.Option value="Hai">Thứ Hai</Select.Option>
-                              <Select.Option value="Ba">Thứ Ba</Select.Option>
-                              <Select.Option value="Tu">Thứ Tư</Select.Option>
-                              <Select.Option value="Nam">Thứ Năm</Select.Option>
-                              <Select.Option value="Sau">Thứ Sáu</Select.Option>
-                              <Select.Option value="Bay">Thứ Bảy</Select.Option>
-                              <Select.Option value="CN">Chủ Nhật</Select.Option>
-                          </Select>
-                      </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                      <Form.Item
-                          name="caHoc"
-                          label="Ca Học"
-                          rules={[{ required: true, message: 'Vui lòng chọn ca học!' }]}
-                      >
-                          <Select placeholder="Chọn ca học">
-                              {/* Populate with caHocList if available */}
-                              <Select.Option value="Sang">Sáng</Select.Option>
-                              <Select.Option value="Chieu">Chiều</Select.Option>
-                              <Select.Option value="Toi">Tối</Select.Option>
-                          </Select>
-                      </Form.Item>
-                  </Col>
-              </Row>
-              <Row gutter={16}>
-                  <Col span={12}>
-                      <Form.Item
-                          name="phongHoc"
-                          label="Phòng Học"
-                          rules={[{ required: true, message: 'Vui lòng chọn phòng học!' }]}
-                      >
-                          <Select placeholder="Chọn phòng học">
-                              {/* Populate with phongHocList if available */}
-                              <Select.Option value="Phong101">Phòng 101</Select.Option>
-                              <Select.Option value="Phong102">Phòng 102</Select.Option>
-                              <Select.Option value="Phong103">Phòng 103</Select.Option>
-                          </Select>
-                      </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                      <Form.Item
-                          name="giangVien"
-                          label="Giáo Viên"
-                          rules={[{ required: true, message: 'Vui lòng chọn giáo viên!' }]}
-                      >
-                          <Select placeholder="Chọn giáo viên">
-                              {/* Populate with nhanVienList if available */}
-                              <Select.Option value="GV001">Giáo viên 001</Select.Option>
-                              <Select.Option value="GV002">Giáo viên 002</Select.Option>
-                              <Select.Option value="GV003">Giáo viên 003</Select.Option>
-                          </Select>
-                      </Form.Item>
-                  </Col>
-              </Row>
-              <Row gutter={16}>
-                  <Col span={12}>
-                      <Form.Item
-                          name="ngayBatDau"
-                          label="Ngày Bắt Đầu"
-                          rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu!' }]}
-                      >
-                          <DatePicker style={{ width: '100%' }} />
-                      </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                      <Form.Item
-                          name="ngayKetThuc"
-                          label="Ngày Kết Thúc"
-                          rules={[{ required: true, message: 'Vui lòng chọn ngày kết thúc!' }]}
-                      >
-                          <DatePicker style={{ width: '100%' }} />
-                      </Form.Item>
-                  </Col>
-              </Row>
-              <Form.Item
-                  name="soBuoi"
-                  label="Số Buổi"
-                  rules={[{ required: true, message: 'Vui lòng nhập số buổi học!' }]}
-              >
-                  <InputNumber min={1} style={{ width: '100%' }} placeholder="Số buổi" />
-              </Form.Item>
-              <Form.Item>
-                  <Button type="primary" icon={<PlusOutlined />} htmlType="submit" />
-              </Form.Item>
-          </Form>
+    <Form form={form} layout="vertical">
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            name="thu"
+            label="Thứ"
+            rules={[{ required: true, message: 'Vui lòng chọn thứ!' }]}
+          >
+            <Select placeholder="Chọn thứ">
+              <Select.Option value="T2">Thứ Hai</Select.Option>
+              <Select.Option value="T3">Thứ Ba</Select.Option>
+              <Select.Option value="T4">Thứ Tư</Select.Option>
+              <Select.Option value="T5">Thứ Năm</Select.Option>
+              <Select.Option value="T6">Thứ Sáu</Select.Option>
+              <Select.Option value="T7">Thứ Bảy</Select.Option>
+              <Select.Option value="CN">Chủ Nhật</Select.Option>
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="caHoc"
+            label="Ca Học"
+            rules={[{ required: true, message: 'Vui lòng chọn ca học!' }]}
+          >
+            <Select placeholder="Chọn ca học">
+              {caHocList.length > 0 ? (
+                caHocList.map((caHoc) => (
+                  <Select.Option key={caHoc.maCaHoc} value={caHoc.maCaHoc}>
+                    {caHoc.maCaHoc} - {dayjs(caHoc.batDau, 'HH:mm:ss').format('HH:mm')} đến {dayjs(caHoc.ketThuc, 'HH:mm:ss').format('HH:mm')}
+                  </Select.Option>
+                ))
+              ) : (
+                <Select.Option disabled>Không có dữ liệu ca học</Select.Option>
+              )}
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            name="phongHoc"
+            label="Phòng Học"
+            rules={[{ required: true, message: 'Vui lòng chọn phòng học!' }]}
+          >
+            <Select placeholder="Chọn phòng học">
+              {phongHocList.length > 0 ? (
+                phongHocList.map((phongHoc) => (
+                  <Select.Option key={phongHoc.maPhong} value={phongHoc.maPhong}>
+                    Phòng {phongHoc.maPhong} (Số lượng: {phongHoc.soLuong})
+                  </Select.Option>
+                ))
+              ) : (
+                <Select.Option disabled>Không có dữ liệu phòng học</Select.Option>
+              )}
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="maNhanVien"
+            label="Giảng viên"
+            rules={[{ required: true, message: 'Vui lòng chọn giảng viên!' }]}
+          >
+            <Select placeholder="Chọn giảng viên">
+              {nhanVienList.length > 0 ? (
+                nhanVienList.map((nhanVien) => (
+                  <Select.Option key={nhanVien.maNhanVien} value={nhanVien.maNhanVien}>
+                    {nhanVien.maNhanVien} - {nhanVien.tenNhanVien}
+                  </Select.Option>
+                ))
+              ) : (
+                <Select.Option disabled>Không có dữ liệu giảng viên</Select.Option>
+              )}
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            name="ngayBatDau"
+            label="Ngày Bắt Đầu"
+            rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu!' }]}
+          >
+            <DatePicker style={{ width: '100%' }} defaultValue={dayjs()} format={dateFormat} />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="ngayKetThuc"
+            label="Ngày Kết Thúc"
+            rules={[{ required: true, message: 'Vui lòng chọn ngày kết thúc!' }]}
+          >
+            <DatePicker style={{ width: '100%' }} defaultValue={dayjs().add(3, 'month')} format={dateFormat} />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            name="soBuoi"
+            label="Số Buổi"
+            rules={[{ required: true, message: 'Vui lòng nhập số buổi học!' }]}
+          >
+            <InputNumber min={1} style={{ width: '100%' }} placeholder="Số buổi" />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Form.Item>
+        <Button type="primary" icon={<PlusOutlined />} htmlType="submit">
+          Thêm Lịch Học
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
+

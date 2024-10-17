@@ -14,7 +14,7 @@ const createMaMH = async (connection) => {
     const query = `SELECT COUNT(maMonHoc) AS soLuong FROM MonHoc;`;
     const [result] = await connection.query(query);
     const soLuong = result[0].soLuong || 0;
-    const nextMaMonHoc = `MH${(soLuong + 1).toString().padStart(3, '0')}`;
+    const nextMaMonHoc = `MH${(soLuong + 1).toString().padStart(4, '0')}`;
     return nextMaMonHoc;
   } catch (error) {
     throw new Error('Không thể tạo mã môn học');
@@ -79,13 +79,13 @@ const updateMonHoc = async (req, res) => {
     await pool.query(
       'UPDATE MonHoc SET tenMonHoc = ?, soBuoiHoc = ?, hocPhi = ?, moTa = ?, trangThai = ?, ghiChu = ? WHERE maMonHoc = ?',
       [
-        maMonHoc,
         tenMonHoc,
         soBuoiHoc || null,
         hocPhi || null,
         moTa || null,
         trangThai || "Đang Giảng Dạy",
-        ghiChu || null
+        ghiChu || null,
+        maMonHoc
       ]
     );
 
