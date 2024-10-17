@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, DatePicker, Select, Radio, message } from 'antd';
+import { Modal, Form, Input, DatePicker, Select, Radio, Button, message } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import { HocVienType } from '../types/HocVienType';
@@ -14,13 +14,12 @@ interface SuaHocVienModalProps {
 const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, onOk, initialValues }) => {
     const [form] = Form.useForm();
 
-    // Thiết lập giá trị ban đầu cho form khi modal mở
     useEffect(() => {
         if (visible) {
             form.setFieldsValue({
                 ...initialValues,
                 ngaySinh: initialValues.ngaySinh ? moment(initialValues.ngaySinh, 'YYYY-MM-DD') : null,
-                ngayVaoHoc: initialValues.ngayVaoHoc ? moment(initialValues.ngayVaoHoc, 'YYYY-MM-DD') : null,
+                ngayVaoHoc: initialValues.ngayVaoHoc ? moment(initialValues.ngayVaoHoc, 'YYYY-MM-DD').add(1, 'days') : null, 
             });
         }
     }, [visible, initialValues, form]);
@@ -42,8 +41,6 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     tinhTrang: values.tinhTrang,
                     ghiChu: values.ghiChu || null,
                 };
-
-                // Gọi API để cập nhật thông tin học viên
                 axios
                     .post('http://localhost:8081/api/hocvien/sua-hocvien', formattedValues, {
                         headers: {
@@ -53,7 +50,7 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     })
                     .then(() => {
                         message.success('Cập nhật học viên thành công');
-                        onOk(formattedValues); // Gọi lại hàm onOk để cập nhật dữ liệu
+                        onOk(formattedValues); 
                         form.resetFields();
                     })
                     .catch((error) => {
@@ -80,7 +77,7 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     label="Mã học viên"
                     name="maHocVien"
                 >
-                    <Input disabled /> 
+                    <Input disabled />
                 </Form.Item>
                 <Form.Item
                     label="Họ và tên"
@@ -99,7 +96,7 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     label="Ngày Vào Học"
                     name="ngayVaoHoc"
                 >
-                    <DatePicker format="YYYY-MM-DD" />
+                    <DatePicker format="DD/MM/YYYY" />
                 </Form.Item>
                 <Form.Item
                     label="Giới tính"
@@ -114,7 +111,7 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
                     label="Ngày sinh"
                     name="ngaySinh"
                 >
-                    <DatePicker format="YYYY-MM-DD" />
+                    <DatePicker format="DD/MM/YYYY" />
                 </Form.Item>
                 <Form.Item
                     label="Số điện thoại"

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Route, Routes, Navigate, useLocation, Link } from 'react-router-dom'; 
-import { Layout, Menu, Dropdown, Button, message, theme } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Route, Routes, Navigate, useLocation, Link, useNavigate } from 'react-router-dom';
+import { Layout, Menu, Button, message, theme } from 'antd';
 import {
   ScheduleOutlined,
   FundOutlined,
@@ -28,11 +28,13 @@ import TKHocVien from './pages/TKHocVien';
 import TKCoSo from './pages/TKCoSo';
 import TKGiangVien from './pages/TKGiangVien';
 import Login from './pages/Login';
+import TimKiem from './pages/TimKiem';
 import UserInfoModal from './components/UserInforModal';
 import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
 import { logout } from './store/slices/authSlice';
+import axios from 'axios';
 import './App.css';
 
 const { SubMenu } = Menu;
@@ -45,25 +47,34 @@ const App: React.FC = () => {
 
   const [collapsed, setCollapsed] = useState(false);
   const [isUserInfoModalVisible, setIsUserInfoModalVisible] = useState(false);
+  const [userList, setUserList] = useState<NhanVienType[]>([]);
   const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-  const userInfo = useSelector((state: RootState): NhanVienType | null => ({
-    maNhanVien: 'NV001',
-    tenNhanVien: 'Nguyen Van A',
-    gioiTinh: 'Nam',
-    ngaySinh: '15/12/1990',
-    sdt: '0987654321',
-    email: 'nva@example.com',
-    diaChi: '123 Đường ABC, Quận XYZ, TP HCM',
-    trangThai: 'Full time',
-    chucVu: 'Developer',
-    ngayVaoLam: '01/01/2020'
-  }));
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo); // Lấy thông tin người dùng từ Redux
+
+  useEffect(() => {
+    const fetchUserList = async () => {
+      try {
+        const response = await axios.get('http://localhost:8081/api/auth/ds-taikhoan', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        setUserList(response.data);
+      } catch (error) {
+        message.error('Lỗi khi lấy danh sách tài khoản');
+      }
+    };
+
+    if (isAuthenticated) {
+      fetchUserList();
+    }
+  }, [isAuthenticated]);
 
   const isLoginPage = location.pathname === '/login';
-
 
   const getSelectedKey = () => {
     if (location.pathname === '/') return '0';
@@ -81,6 +92,7 @@ const App: React.FC = () => {
     if (location.pathname.startsWith('/tk_hocvien')) return '13';
     if (location.pathname.startsWith('/tk_giangvien')) return '14';
     if (location.pathname.startsWith('/tk_lophoc')) return '15';
+    if (location.pathname.startsWith('/timkiem')) return '16';
     return '0';
   };
 
@@ -93,8 +105,13 @@ const App: React.FC = () => {
     setIsUserInfoModalVisible(true);
   };
 
+  const getTenNhanVien = (maNhanVien: string) => {
+    const user = userList.find(user => user.maNhanVien === maNhanVien);
+    return user ? user.tenNhanVien : '';
+  };
+
   return (
-    <Layout style={{ height: '100vh' }}>
+    <Layout style={{ height: '104vh' }}>
       {!isLoginPage && (
         <>
           <Header className="custom-header" style={{ background: '#1b7cc2', color: '#fff' }}>
@@ -111,15 +128,13 @@ const App: React.FC = () => {
               </div>
 
               {isAuthenticated && userInfo && (
-
                 <div className='user-info-container'>
                   <Button type="link" className='user-info' onClick={handleUserInfo}>
                     <p className='user-icon'><UserOutlined /></p>
-                    <p className='user-name'>{userInfo.tenNhanVien}</p>
+                    <p className='user-name'>{getTenNhanVien(userInfo.maNhanVien)}</p>
                   </Button>
                   <Button type="link" className='logout-btn' onClick={handleLogout} icon={<LogoutOutlined />} />
                 </div>
-
               )}
             </div>
           </Header>
@@ -141,11 +156,7 @@ const App: React.FC = () => {
                 </div>
               }
             >
-              <Menu
-                className="custom-menu"
-                mode="inline"
-                selectedKeys={[getSelectedKey()]}
-              >
+              <Menu className="custom-menu" mode="inline" selectedKeys={[getSelectedKey()]}>
                 <Menu.Item key="0" icon={<AppstoreOutlined />}>
                   <Link to="/">Trang chủ</Link>
                 </Menu.Item>
@@ -167,6 +178,9 @@ const App: React.FC = () => {
                   </Menu.Item>
                   <Menu.Item key="6">
                     <Link to="/monhoc">Môn học</Link>
+                  </Menu.Item>
+                  <Menu.Item key="16">
+                    <Link to="/timkiem">Tìm Kiếm</Link>
                   </Menu.Item>
                 </SubMenu>
                 <SubMenu key="group02" icon={<ScheduleOutlined />} title="Lập kế hoạch">
@@ -235,13 +249,13 @@ const App: React.FC = () => {
                   <Route path="/tk_giangvien" element={isAuthenticated ? <TKGiangVien /> : <Navigate to="/login" />} />
                   <Route path="/tk_coso" element={isAuthenticated ? <TKCoSo /> : <Navigate to="/login" />} />
                   <Route path="/testing" element={isAuthenticated ? <HocVienTable /> : <Navigate to="/login" />} />
+                  <Route path="/timkiem" element={isAuthenticated ? <TimKiem /> : <Navigate to="/login" />} />
                 </Routes>
               </Content>
             </Layout>
           </Layout>
         </>
       )}
-
 
       {isLoginPage && (
         <Content style={{ padding: 24 }}>
@@ -255,9 +269,9 @@ const App: React.FC = () => {
       <UserInfoModal
         visible={isUserInfoModalVisible}
         onCancel={() => setIsUserInfoModalVisible(false)}
-        userInfo={userInfo}
-        onLogout={handleLogout}
+        onLogout={handleLogout} 
       />
+
     </Layout>
   );
 };

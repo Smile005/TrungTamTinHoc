@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined, FileDoneOutlined } from '@ant-design/icons';
 import SuaTaiKhoanModal from '../components/SuaTaiKhoanModal';
-import ThemTaiKhoanModal from '../components/ThemTaiKhoanModal'; // Import modal thêm tài khoản
-import DoiMatKhauModal from '../components/DoiMatKhauModal'; // Import modal đổi mật khẩu
+import ThemTaiKhoanModal from '../components/ThemTaiKhoanModal'; 
+import DoiMatKhauModal from '../components/DoiMatKhauModal'; 
 import { TaiKhoanType } from '../types/TaiKhoanType';
 import axios from 'axios';
 import '../styles/TableCustom.css';
@@ -13,9 +13,10 @@ const { Search } = Input;
 const TaiKhoan: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState<TaiKhoanType[]>([]);
+  const [data, setData] = useState<TaiKhoanType[]>([]); 
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [isThemModalVisible, setIsThemModalVisible] = useState(false); // Trạng thái cho modal thêm
-  const [isDoiMatKhauModalVisible, setIsDoiMatKhauModalVisible] = useState(false); // Trạng thái cho modal đổi mật khẩu
+  const [isThemModalVisible, setIsThemModalVisible] = useState(false); 
+  const [isDoiMatKhauModalVisible, setIsDoiMatKhauModalVisible] = useState(false); 
   const [selectedRecord, setSelectedRecord] = useState<TaiKhoanType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -29,7 +30,8 @@ const TaiKhoan: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setFilteredData(response.data);
+        setData(response.data); 
+        setFilteredData(response.data); 
       } catch (error) {
         console.error('Lỗi khi lấy danh sách tài khoản:', error);
         message.error('Lỗi khi lấy danh sách tài khoản!');
@@ -42,7 +44,7 @@ const TaiKhoan: React.FC = () => {
   }, []);
 
   const onSearch = (value: string) => {
-    const filtered = filteredData.filter((item) => {
+    const filtered = data.filter((item) => {
       const phanQuyenText = item.phanQuyen === 1 ? 'Quản trị viên' : item.phanQuyen === 2 ? 'Người dùng' : 'Khác';
       return (
         item.maNhanVien.toLowerCase().includes(value.toLowerCase()) ||
@@ -50,8 +52,8 @@ const TaiKhoan: React.FC = () => {
         item.trangThai.toLowerCase().includes(value.toLowerCase())
       );
     });
-    setFilteredData(filtered);
-    setSearchText(value);
+    setFilteredData(filtered); 
+    setSearchText(value); // Lưu từ khóa tìm kiếm
   };
 
   const handleMenuClick = (e: any, record: TaiKhoanType) => {
@@ -84,7 +86,6 @@ const TaiKhoan: React.FC = () => {
     setSelectedRecord(null);
   };
 
-  // Định nghĩa cột cho bảng
   const columns = [
     {
       title: 'Mã Nhân Viên',
@@ -104,7 +105,7 @@ const TaiKhoan: React.FC = () => {
       key: 'phanQuyen',
       width: '20%',
       render: (phanQuyen: number): JSX.Element => {
-        let role = phanQuyen === 1 ? 'Quản trị viên' : phanQuyen === 2 ? 'Người dùng' : 'Khác';
+        let role = phanQuyen === 1 ? 'Quản trị viên' : phanQuyen === 2 ? 'Nhân viên' : 'Khác';
         return <span>{role}</span>;
       },
     },
@@ -125,7 +126,7 @@ const TaiKhoan: React.FC = () => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>
             <Menu.Item key="changepw" icon={<FileDoneOutlined />}>Đổi Mật Khẩu</Menu.Item>
-            <Menu.Item key="edit" icon={<EditOutlined />}>Sửa</Menu.Item>
+            <Menu.Item key="edit" icon={<EditOutlined />}>Sửa Quyền và Trạng Thái</Menu.Item>
             <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
           </Menu>
         );
@@ -145,10 +146,10 @@ const TaiKhoan: React.FC = () => {
         <Search
           className="custom-search"
           placeholder="Tìm kiếm Mã Nhân Viên, Phân Quyền, Trạng Thái"
-          onSearch={onSearch}
+          onSearch={onSearch} 
           enterButton
           value={searchText}
-          onChange={(e) => onSearch(e.target.value)}
+          onChange={(e) => onSearch(e.target.value)} 
         />
         <div className="button-container">
           <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>Thêm</Button>
@@ -159,7 +160,7 @@ const TaiKhoan: React.FC = () => {
       <Table
         className="custom-table"
         columns={columns}
-        dataSource={filteredData}
+        dataSource={filteredData} 
         pagination={{ pageSize: 5 }}
         rowKey="maNhanVien"
         loading={loading}
@@ -182,7 +183,7 @@ const TaiKhoan: React.FC = () => {
       <DoiMatKhauModal
         visible={isDoiMatKhauModalVisible}
         onCancel={handleDoiMatKhauCancel}
-        maNhanVien={selectedRecord?.maNhanVien || ''} // Pass mã nhân viên
+        maNhanVien={selectedRecord?.maNhanVien || ''} 
       />
     </Layout>
   );

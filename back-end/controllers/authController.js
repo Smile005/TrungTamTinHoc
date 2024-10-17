@@ -28,6 +28,7 @@ const login = async (req, res) => {
 
   try {
     const [user] = await pool.query('SELECT * FROM TaiKhoan WHERE maNhanVien = ?', [maNhanVien]);
+
     if (user.length === 0) return res.status(400).json({ message: 'Tài khoản không tồn tại.' });
 
     if (user[0].trangThai !== "Đang hoạt động") {
@@ -35,7 +36,7 @@ const login = async (req, res) => {
     }
 
     const validPassword = await bcrypt.compare(matKhau, user[0].matKhau);
-    if (!validPassword) return res.status(400).json({ message: 'Sai mật khẩu.' });
+    if (!validPassword) return res.status(400).json({ message: 'Mật khẩu không đúng' });
 
     const token = jwt.sign({ maNhanVien: user[0].maNhanVien, phanQuyen: user[0].phanQuyen }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
@@ -43,6 +44,7 @@ const login = async (req, res) => {
 
     res.json({ token, nhanVien: nhanVien[0] });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Lỗi server', error });
   }
 };

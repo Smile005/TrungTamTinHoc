@@ -197,6 +197,7 @@ const LopHoc: React.FC = () => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>
             <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
+            <Menu.Item key="delete" icon={<DeleteOutlined />}>Danh sách lớp</Menu.Item>
             <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
           </Menu>
         );

@@ -28,8 +28,18 @@ const Login: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         const token = data.token;
-        const userInfo = data.userInfo;
+        const nhanVien = data.nhanVien;
+
+        // Tạo userInfo object từ dữ liệu trả về
+        const userInfo = {
+          maNhanVien: nhanVien.maNhanVien,
+          name: nhanVien.tenNhanVien,
+          email: nhanVien.email,
+        };
+
+        // Dispatch action login với token và userInfo
         dispatch(login({ token, userInfo }));
+
         message.success('Đăng nhập thành công!');
         navigate('/');
       } else {
@@ -52,11 +62,11 @@ const Login: React.FC = () => {
           padding: '10px'
         }}>
         <img
-          style={{ width: '50px', height: '50px', marginTop: '5px', borderRadius: '15px' , marginLeft: '30px'}}
+          style={{ width: '50px', height: '50px', marginTop: '5px', borderRadius: '15px', marginLeft: '30px' }}
           src="https://res.cloudinary.com/dhyt592i7/image/upload/v1727774226/u5hvgxq11k3swhd7ca43.png"
           alt="Logo"
         />
-          <h1 style={{ color: '#3a99d8', marginLeft: '15px' }}>Trung Tâm Prometheus</h1>
+        <h1 style={{ color: '#3a99d8', marginLeft: '15px' }}>Trung Tâm Prometheus</h1>
       </div>
 
       {/* Phần chính của trang login */}
@@ -68,13 +78,13 @@ const Login: React.FC = () => {
             <Form.Item
               name="username"
               rules={[{ required: true, message: 'Vui lòng nhập tài khoản!' }]}>
-              <Input placeholder="tài khoản" />
+              <Input placeholder="Tài khoản" />
             </Form.Item>
             <Form.Item
               name="password"
               className="input-pw"
-              rules={[{ required: true, message: 'Vui lòng nhập password!' }]}>
-              <Input.Password placeholder="password" />
+              rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}>
+              <Input.Password placeholder="Mật khẩu" />
             </Form.Item>
             <Form.Item>
               <Button type="primary" htmlType="submit" className="login-submit-btn" loading={loading}>

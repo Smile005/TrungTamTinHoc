@@ -8,6 +8,7 @@ const changePassword = async (req, res) => {
 
     try {
         const [user] = await pool.query('SELECT * FROM TaiKhoan WHERE maNhanVien = ?', [maNhanVien]);
+
         if (user.length === 0) return res.status(400).json({ message: 'Người dùng không tồn tại.' });
 
         const validPassword = await bcrypt.compare(oldPassword, user[0].matKhau);
@@ -27,6 +28,7 @@ const changeRole = async (req, res) => {
 
     try {
         const [user] = await pool.query('SELECT * FROM TaiKhoan WHERE maNhanVien = ?', [maNhanVien]);
+
         if (user.length === 0) return res.status(400).json({ message: 'Người dùng không tồn tại.' });
 
         await pool.query('UPDATE TaiKhoan SET phanQuyen = ? WHERE maNhanVien = ?', [phanQuyen, maNhanVien]);
@@ -56,6 +58,23 @@ const getTaiKhoan = async (req, res) => {
         res.json(results);
     } catch (error) {
         res.status(500).json({ message: 'Không thể lấy thông tin tài khoản', error });
+    }
+};
+
+const changeStatus = async (req, res) => {
+    const { maNhanVien, trangThai } = req.body;
+
+    try {
+        const [user] = await pool.query('SELECT * FROM TaiKhoan WHERE maNhanVien = ?', [maNhanVien]);
+        if (user.length === 0) {
+            return res.status(400).json({ message: 'Người dùng không tồn tại.' });
+        }
+
+        await pool.query('UPDATE TaiKhoan SET trangThai = ? WHERE maNhanVien = ?', [trangThai, maNhanVien]);
+
+        res.json({ message: `Trạng thái của tài khoản: ${maNhanVien} đã đổi thành: ${trangThai}` });
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi server', error });
     }
 };
 
@@ -91,4 +110,4 @@ const moKhoaTaiKhoan = async (req, res) => {
     }
 }
 
-module.exports = { changePassword, changeRole, getTaiKhoan, khoaTaiKhoan, moKhoaTaiKhoan };
+module.exports = { changePassword, changeRole, getTaiKhoan, changeStatus , khoaTaiKhoan, moKhoaTaiKhoan };

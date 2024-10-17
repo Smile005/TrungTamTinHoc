@@ -18,6 +18,7 @@ const HocVien: React.FC = () => {
     const [modalType, setModalType] = useState<'hocvien' | 'nhanvien'>('hocvien');
     const [selectedRecord, setSelectedRecord] = useState<HocVienType | null>(null);
     const [data, setData] = useState<HocVienType[]>([]); 
+    const [filteredData, setFilteredData] = useState<HocVienType[]>([]); 
     const [loading, setLoading] = useState<boolean>(false); 
 
     useEffect(() => {
@@ -29,11 +30,12 @@ const HocVien: React.FC = () => {
                         Authorization: `Bearer ${localStorage.getItem('token')}`, 
                     },
                 });
-                setData(response.data); // Lưu dữ liệu học viên vào state
+                setData(response.data); 
+                setFilteredData(response.data); 
             } catch (error) {
                 console.error('Lỗi khi lấy danh sách học viên:', error);
             } finally {
-                setLoading(false); // Tắt trạng thái loading
+                setLoading(false); 
             }
         };
 
@@ -70,6 +72,17 @@ const HocVien: React.FC = () => {
     const handleOk = (values: any) => {
         console.log('Cập nhật thông tin học viên:', values);
         setIsEditModalVisible(false);
+    };
+
+    const onSearch = (value: string) => {
+        const filtered = data.filter((item) =>
+            item.tenHocVien?.toLowerCase().includes(value.toLowerCase()) ||
+            item.maHocVien?.toLowerCase().includes(value.toLowerCase()) ||
+            item.email?.toLowerCase().includes(value.toLowerCase()) ||
+            item.sdt?.toLowerCase().includes(value.toLowerCase()) ||
+            item.tinhTrang?.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredData(filtered); 
     };
 
     const columns: TableColumnsType<HocVienType> = [
@@ -195,8 +208,8 @@ const HocVien: React.FC = () => {
             <div className="button-container">
                 <Search
                     className="custom-search"
-                    placeholder="Nhập tên học viên"
-                    onSearch={(value) => console.log(value)}
+                    placeholder="Nhập tên học viên, mã học viên, email hoặc số điện thoại"
+                    onSearch={onSearch} 
                     enterButton
                 />
                 <div className="button-container">
@@ -209,9 +222,9 @@ const HocVien: React.FC = () => {
             <Table
                 className="custom-table"
                 columns={columns}
-                dataSource={data} // Gán dữ liệu từ API
+                dataSource={filteredData}
                 pagination={{ pageSize: 5 }}
-                loading={loading} // Hiển thị trạng thái loading khi đang fetch dữ liệu
+                loading={loading} 
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
 
@@ -233,7 +246,6 @@ const HocVien: React.FC = () => {
                 onOk={handleOk}
                 initialValues={selectedRecord || {} as HocVienType}
             />
-
         </Layout>
     );
 };
