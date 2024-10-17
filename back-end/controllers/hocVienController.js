@@ -113,4 +113,20 @@ const updateHocVien = async (req, res) => {
   }
 };
 
-module.exports = { getHocVien, createHocVien, updateHocVien };
+const xoaHocVien = async (req, res) => {
+  const { maHocVien } = req.body;
+  const trangThai = "Đã khóa";
+
+  try {
+      const [user] = await pool.query('SELECT * FROM HocVien WHERE maHocVien = ?', [maHocVien]);
+      if (user.length === 0) return res.status(400).json({ message: 'Học viên không tồn tại.' });
+
+      await pool.query('UPDATE HocVien SET trangThai = ? WHERE maHocVien = ?', [trangThai, maHocVien]);
+
+      res.json({ message: `Học viên ${maHocVien} đã bị khóa` });
+  } catch (error) {
+      res.status(500).json({ message: 'Khóa học viên không thành công', error });
+  }
+}
+
+module.exports = { getHocVien, createHocVien, updateHocVien, xoaHocVien };
