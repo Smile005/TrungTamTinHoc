@@ -1,5 +1,5 @@
 # TrungTamTinHoc
-To run font-end: 
+To run back-end: 
 - npm install
 - npm start
 
