@@ -327,3 +327,11 @@ Content-Type: application/json
   "maNhanVien": "NV0002"
 }
 
+#Lấy ds học viên theo lớp
+Get http://localhost:8081/api/lophoc/ds-hocvien
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAyIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjkxNzQzNzcsImV4cCI6MTcyOTE3Nzk3N30.ATgQ-pqSaC6Dn-C1v8-l5QXYot1n6oKRrPwS7OfbjGI
+Content-Type: application/json
+
+{
+  "maLopHoc": "LH0001"
+}
