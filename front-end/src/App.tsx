@@ -30,6 +30,7 @@ import TKGiangVien from './pages/TKGiangVien';
 import Login from './pages/Login';
 import TimKiem from './pages/TimKiem';
 import UserInfoModal from './components/UserInforModal';
+import DsHocVienLopHoc from './pages/DsHocVienLopHoc';
 import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
@@ -53,7 +54,7 @@ const App: React.FC = () => {
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-  const userInfo = useSelector((state: RootState) => state.auth.userInfo); // Lấy thông tin người dùng từ Redux
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo); 
 
   useEffect(() => {
     const fetchUserList = async () => {
@@ -75,26 +76,6 @@ const App: React.FC = () => {
   }, [isAuthenticated]);
 
   const isLoginPage = location.pathname === '/login';
-
-  const getSelectedKey = () => {
-    if (location.pathname === '/') return '0';
-    if (location.pathname.startsWith('/taikhoan')) return '1';
-    if (location.pathname.startsWith('/nhanvien')) return '2';
-    if (location.pathname.startsWith('/hocvien')) return '3';
-    if (location.pathname.startsWith('/cahoc')) return '4';
-    if (location.pathname.startsWith('/phonghoc')) return '5';
-    if (location.pathname.startsWith('/monhoc')) return '6';
-    if (location.pathname.startsWith('/lophoc')) return '7';
-    if (location.pathname.startsWith('/lichhoc')) return '8';
-    if (location.pathname.startsWith('/dangky')) return '9';
-    if (location.pathname.startsWith('/ds_thi')) return '11';
-    if (location.pathname.startsWith('/nhapdiem')) return '12';
-    if (location.pathname.startsWith('/tk_hocvien')) return '13';
-    if (location.pathname.startsWith('/tk_giangvien')) return '14';
-    if (location.pathname.startsWith('/tk_lophoc')) return '15';
-    if (location.pathname.startsWith('/timkiem')) return '16';
-    return '0';
-  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -156,7 +137,7 @@ const App: React.FC = () => {
                 </div>
               }
             >
-              <Menu className="custom-menu" mode="inline" selectedKeys={[getSelectedKey()]}>
+              <Menu className="custom-menu" mode="inline">
                 <Menu.Item key="0" icon={<AppstoreOutlined />}>
                   <Link to="/">Trang chủ</Link>
                 </Menu.Item>
@@ -250,6 +231,7 @@ const App: React.FC = () => {
                   <Route path="/tk_coso" element={isAuthenticated ? <TKCoSo /> : <Navigate to="/login" />} />
                   <Route path="/testing" element={isAuthenticated ? <HocVienTable /> : <Navigate to="/login" />} />
                   <Route path="/timkiem" element={isAuthenticated ? <TimKiem /> : <Navigate to="/login" />} />
+                  <Route path="/ds-hoc-vien-lop/:maLopHoc" element={isAuthenticated ? <DsHocVienLopHoc /> : <Navigate to="/login" />} />
                 </Routes>
               </Content>
             </Layout>
