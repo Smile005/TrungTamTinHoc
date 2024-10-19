@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Layout, Tag, message, Button,  } from 'antd';
-import { useParams } from 'react-router-dom';
+import { Table, Layout, Tag, message, Button, Input } from 'antd';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { HocVienType } from '../types/HocVienType';
 import { DsLopHocType } from '../types/DsHocVienLopHocType';
-import { DeleteOutlined  } from '@ant-design/icons';
+import { DeleteOutlined, LeftCircleOutlined } from '@ant-design/icons';
 import '../styles/TableCustom.css';
+
+const { Search } = Input;
 
 const DsHocVienLopHoc: React.FC = () => {
   const { maLopHoc } = useParams<{ maLopHoc: string }>();
+  const navigate = useNavigate();
   const [hocVienList, setHocVienList] = useState<DsLopHocType[]>([]);
   const [tenLopHoc, setTenLopHoc] = useState<string>('');
   const [hocVienData, setHocVienData] = useState<HocVienType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,7 +72,19 @@ const DsHocVienLopHoc: React.FC = () => {
       };
   };
 
-  const filteredHocVienList = hocVienList.filter(hocVien => hocVien.maLopHoc === maLopHoc);
+  const filteredHocVienList = hocVienList
+    .filter(hocVien => hocVien.maLopHoc === maLopHoc)
+    .filter(hocVien => {
+      const hocVienInfo = getHocVienInfo(hocVien.maHocVien);
+      return (
+        hocVien.maHocVien.toLowerCase().includes(searchText.toLowerCase()) ||
+        hocVienInfo.tenHocVien.toLowerCase().includes(searchText.toLowerCase())
+      );
+    });
+
+  const handleSearch = (value: string) => {
+    setSearchText(value);
+  };
 
   const columns = [
     {
@@ -104,21 +120,39 @@ const DsHocVienLopHoc: React.FC = () => {
         </span>
       ),
     },
-
   ];
 
   return (
     <Layout>
-      <h1 className="page-name">DANH SÁCH HỌC VIÊN CỦA LỚP: {tenLopHoc} ({maLopHoc})</h1>
+      <div className="button-container1" >
+        <Button icon={<LeftCircleOutlined />} onClick={() => navigate(-1)} className='custom-button' style={{ marginBottom: '10px' }}>
+          Quay lại
+        </Button>
+      </div>
+      <h1 className="page-name1" >DANH SÁCH HỌC VIÊN CỦA LỚP: {tenLopHoc} ({maLopHoc})</h1>
+      <div className='ds-layout'>
+        <div className="button-container">
+          <Search
+            className="custom-search"
+            placeholder="Tìm kiếm Mã Lớp Học, Tên Lớp Học"
+            onSearch={handleSearch}
+            enterButton
+          />
+          <div className="button-container">
+            <Button className='custom-button'>Thêm</Button>
+            <Button className='custom-button'>Nhập Excel</Button>
+          </div>
+        </div>
 
-      <Table
-        columns={columns}
-        dataSource={filteredHocVienList}
-        loading={loading}
-        pagination={{ pageSize: 5 }}
-        rowKey="maHocVien"
-        style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
-      />
+        <Table
+          columns={columns}
+          dataSource={filteredHocVienList}
+          loading={loading}
+          pagination={{ pageSize: 5 }}
+          rowKey="maHocVien"
+          style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
+        />
+      </div>
     </Layout>
   );
 };
