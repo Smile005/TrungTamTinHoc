@@ -212,6 +212,7 @@ const LopHoc: React.FC = () => {
         />
         <div className="button-container">
           <Button className='custom-button' onClick={handleAddClass}>Thêm</Button>
+          <Button className='custom-button' >Nhập Excel</Button>
         </div>
       </div>
       <Table

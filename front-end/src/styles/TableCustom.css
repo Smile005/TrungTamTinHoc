@@ -4,7 +4,12 @@
   align-items: center;
   height: 100px;
 }
-
+.button-container1 {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  height: 100px;
+}
 .custom-search {
   width: 350px;
 }
@@ -160,4 +165,14 @@ body, html {
 .page-name {
   display: flex; 
   justify-content: center;
+}
+.page-name1 {
+  display: flex; 
+  justify-content: center;
+  position: relative;
+  bottom: 50px;
+}
+.ds-layout{
+  position: relative;
+  bottom: 50px;
 }
