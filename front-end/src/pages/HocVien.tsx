@@ -15,30 +15,29 @@ const HocVien: React.FC = () => {
     const [isThemHocVienModalVisible, setIsThemHocVienModalVisible] = useState(false);
     const [isImportModalVisible, setIsImportModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const [modalType, setModalType] = useState<'hocvien' | 'nhanvien'>('hocvien');
     const [selectedRecord, setSelectedRecord] = useState<HocVienType | null>(null);
     const [data, setData] = useState<HocVienType[]>([]); 
     const [filteredData, setFilteredData] = useState<HocVienType[]>([]); 
     const [loading, setLoading] = useState<boolean>(false); 
 
-    useEffect(() => {
-        const fetchHocVien = async () => {
-            setLoading(true); 
-            try {
-                const response = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`, 
-                    },
-                });
-                setData(response.data); 
-                setFilteredData(response.data); 
-            } catch (error) {
-                console.error('Lỗi khi lấy danh sách học viên:', error);
-            } finally {
-                setLoading(false); 
-            }
-        };
+    const fetchHocVien = async () => {
+        setLoading(true); 
+        try {
+            const response = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`, 
+                },
+            });
+            setData(response.data); 
+            setFilteredData(response.data); 
+        } catch (error) {
+            console.error('Lỗi khi lấy danh sách học viên:', error);
+        } finally {
+            setLoading(false); 
+        }
+    };
 
+    useEffect(() => {
         fetchHocVien();
     }, []);
 
@@ -49,29 +48,28 @@ const HocVien: React.FC = () => {
         }
     };
 
-    const showImportModal = (type: 'hocvien' | 'nhanvien') => {
-        setModalType(type);
-        setIsImportModalVisible(true);
-    };
-
     const showHocVienModal = () => {
         setIsThemHocVienModalVisible(true);
     };
 
+    const showImportModal = (type: 'hocvien' | 'nhanvien') => {
+        setIsImportModalVisible(true);
+    };
+
     const handleThemHocVien = (hocVien: HocVienType) => {
-        console.log('Học viên mới:', hocVien);
-        handleCancel();
+        fetchHocVien();
+        setIsThemHocVienModalVisible(false); 
+    };
+
+    const handleSuaHocVien = (hocVien: HocVienType) => {
+        fetchHocVien();
+        setIsEditModalVisible(false); 
     };
 
     const handleCancel = () => {
         setIsThemHocVienModalVisible(false);
+        setIsEditModalVisible(false);
         setIsImportModalVisible(false);
-        setIsEditModalVisible(false);
-    };
-
-    const handleOk = (values: any) => {
-        console.log('Cập nhật thông tin học viên:', values);
-        setIsEditModalVisible(false);
     };
 
     const onSearch = (value: string) => {
@@ -115,12 +113,7 @@ const HocVien: React.FC = () => {
                 return record.gioiTinh.indexOf(value as string) === 0;
             },
             render: (gioiTinh: string | undefined): JSX.Element => {
-                let color = '';
-                if (gioiTinh === 'Nam') {
-                    color = 'geekblue';
-                } else if (gioiTinh === 'Nữ') {
-                    color = 'volcano';
-                }
+                let color = gioiTinh === 'Nam' ? 'geekblue' : 'volcano';
                 return (
                     <Tag color={color} key={gioiTinh}>
                         {gioiTinh ? gioiTinh : 'Undefined'}
@@ -234,17 +227,17 @@ const HocVien: React.FC = () => {
                 onSubmit={handleThemHocVien}
             />
 
-            <ImportExcelModal
-                visible={isImportModalVisible}
-                onCancel={handleCancel}
-                modalType={modalType}
-            />
-
             <SuaHocVienModal
                 visible={isEditModalVisible}
                 onCancel={handleCancel}
-                onOk={handleOk}
+                onOk={handleSuaHocVien}
                 initialValues={selectedRecord || {} as HocVienType}
+            />
+
+            <ImportExcelModal
+                visible={isImportModalVisible}
+                onCancel={handleCancel}
+                modalType="hocvien"
             />
         </Layout>
     );

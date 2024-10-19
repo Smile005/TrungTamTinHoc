@@ -83,7 +83,6 @@ const SuaPhongHocModal: React.FC<SuaPhongHocModalProps> = ({ visible, onCancel, 
           <Select>
             <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
             <Select.Option value="Ngưng hoạt động">Ngưng hoạt động</Select.Option>
-            <Select.Option value="Đang bảo trì">Đang bảo trì</Select.Option>
           </Select>
         </Form.Item>
         <Form.Item name="ghiChu" label="Ghi Chú">
