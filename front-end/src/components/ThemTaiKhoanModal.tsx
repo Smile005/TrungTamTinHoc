@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Input, Select, Button, message } from 'antd';
 import axios from 'axios';
 import { NhanVienType } from '../types/NhanVienType'; 
+import { TaiKhoanType } from '../types/TaiKhoanType';
 
 interface ThemTaiKhoanModalProps {
   visible: boolean;
   onCancel: () => void;
-  onSubmit: (values: any) => void; // Không cần sửa phần này, nhưng sẽ gọi API đăng ký tài khoản
+  onSubmit: (values: any) => void;
+  taiKhoanData: TaiKhoanType[];  // Nhận danh sách tài khoản
 }
 
-const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel, onSubmit }) => {
+const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel, onSubmit, taiKhoanData }) => {
   const [form] = Form.useForm();
-  const [nhanVienList, setNhanVienList] = useState<NhanVienType[]>([]); 
+  const [nhanVienList, setNhanVienList] = useState<NhanVienType[]>([]);
 
   useEffect(() => {
     const fetchNhanVien = async () => {
@@ -34,6 +36,11 @@ const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel
     }
   }, [visible]);
 
+  // Lọc danh sách nhân viên để chỉ hiển thị những nhân viên chưa có tài khoản
+  const filteredNhanVienList = nhanVienList.filter((nv) =>
+    !taiKhoanData.some((tk) => tk.maNhanVien === nv.maNhanVien)
+  );
+
   const validatePassword = (_: any, value: string) => {
     if (!value || form.getFieldValue('matKhau') === value) {
       return Promise.resolve();
@@ -45,7 +52,6 @@ const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel
     form
       .validateFields()
       .then(async (values) => {
-        // Gửi yêu cầu POST để đăng ký tài khoản mới
         try {
           const token = localStorage.getItem('token');
           await axios.post(
@@ -64,7 +70,7 @@ const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel
             }
           );
           message.success('Thêm tài khoản thành công!');
-          onSubmit(values); // Đăng ký thành công, đóng modal
+          onSubmit(values); 
           form.resetFields();
         } catch (error) {
           console.error('Lỗi khi thêm tài khoản:', error);
@@ -97,7 +103,7 @@ const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel
           rules={[{ required: true, message: 'Vui lòng chọn mã nhân viên!' }]}
         >
           <Select placeholder="Chọn mã nhân viên">
-            {nhanVienList.map((nv) => (
+            {filteredNhanVienList.map((nv) => (
               <Select.Option key={nv.maNhanVien} value={nv.maNhanVien}>
                 {nv.maNhanVien} - {nv.tenNhanVien}
               </Select.Option>
