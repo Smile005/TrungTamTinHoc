@@ -327,3 +327,20 @@ Content-Type: application/json
   "maNhanVien": "NV0002"
 }
 
+### Khóa môn học
+POST http://localhost:8081/api/monhoc/xoa-monHoc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjkxNTE0NzksImV4cCI6MTcyOTE1NTA3OX0.gAyY8ZmYwtVOpstHGDUVE7_N07ur4C8gY1ctebEV0hY
+Content-Type: application/json
+
+{
+  "maMonHoc": "MH0002"
+}
+
+### Lấy ds học viên theo lớp
+Get http://localhost:8081/api/lophoc/ds-hocvien
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAyIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjkxNzQzNzcsImV4cCI6MTcyOTE3Nzk3N30.ATgQ-pqSaC6Dn-C1v8-l5QXYot1n6oKRrPwS7OfbjGI
+Content-Type: application/json
+
+{
+  "maLopHoc": "LH0001"
+}
