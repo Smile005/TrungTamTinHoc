@@ -19,7 +19,7 @@ const getNhanVien = async (req, res) => {
         ghiChu
       FROM NhanVien
     `);
-    
+
     res.json(results);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });
@@ -31,7 +31,7 @@ const createMaNV = async (connection) => {
     const query = `SELECT COUNT(maNhanVien) AS soLuong FROM NhanVien;`;
     const [result] = await connection.query(query);
     const soLuong = result[0].soLuong || 0;
-    const nextMaNhanVien = `NV${(soLuong + 1).toString().padStart(5, '0')}`;
+    const nextMaNhanVien = `NV${(soLuong + 1).toString().padStart(4, '0')}`;
     return nextMaNhanVien;
   } catch (error) {
     throw new Error('Không thể tạo mã nhân viên');
@@ -57,7 +57,7 @@ const createNhanVien = async (req, res) => {
 
       if (!tenNhanVien) {
         console.log('Nhân viên bị bỏ qua do thiếu tên:', nhanVien);
-        continue; 
+        continue;
       }
 
       const maNhanVien = await createMaNV(connection);
@@ -119,7 +119,7 @@ const updateNhanVien = async (req, res) => {
         ngaySinh || null,
         sdt || null,
         email || null,
-        diaChi  || null,
+        diaChi || null,
         trangThai || 'Đang hoạt động',
         ghiChu || null,
         maNhanVien
@@ -171,4 +171,21 @@ const updateProfile = async (req, res) => {
   }
 };
 
-module.exports = { getNhanVien, createNhanVien, updateNhanVien, updateProfile };
+const xoaNhanVien = async (req, res) => {
+  const { maNhanVien } = req.body;
+
+  try {
+    const [nhanVien] = await pool.query('SELECT * FROM NhanVien WHERE maNhanVien = ?', [maNhanVien]);
+    if (nhanVien.length === 0) return res.status(400).json({ message: 'Nhân viên không tồn tại.' });
+
+    await pool.query('DELETE FROM TaiKhoan WHERE maNhanVien = ?', [maNhanVien]);
+    
+    await pool.query('DELETE FROM NhanVien WHERE maNhanVien = ?', [maNhanVien]);
+
+    res.json({ message: `Nhân viên ${maNhanVien} đã bị xóa` });
+  } catch (error) {
+    res.status(500).json({ message: 'Xóa nhân viên không thành công', error });
+  }
+}
+
+module.exports = { getNhanVien, createNhanVien, updateNhanVien, updateProfile, xoaNhanVien };
