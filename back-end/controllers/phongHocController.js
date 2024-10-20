@@ -75,18 +75,17 @@ const updatePhongHoc = async (req, res) => {
 };
 
 const xoaPhongHoc = async (req, res) => {
-  const { maPhongHoc } = req.body;
-  const trangThai = "Ngưng Hoạt Động";
+  const { maPhong } = req.body;
 
   try {
-    const [phongHoc] = await pool.query('SELECT * FROM PhongHoc WHERE maPhong = ?', [maPhongHoc]);
+    const [phongHoc] = await pool.query('SELECT * FROM PhongHoc WHERE maPhong = ?', [maPhong]);
     if (phongHoc.length === 0) return res.status(400).json({ message: 'Phòng học không tồn tại.' });
 
-    await pool.query('UPDATE PhongHoc SET trangThai = ? WHERE maPhong = ?', [trangThai, maPhongHoc]);
+    await pool.query('DELETE FROM PhongHoc WHERE maPhong = ?', [maPhong]);
 
-    res.json({ message: `Phòng học ${maPhongHoc} đã bị khóa` });
+    res.json({ message: `Phòng học ${maPhong} đã bị xóa` });
   } catch (error) {
-    res.status(500).json({ message: 'Khóa phòng học không thành công', error });
+    res.status(500).json({ message: 'Xóa phòng học không thành công', error });
   }
 }
 
