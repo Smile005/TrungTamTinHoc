@@ -5,6 +5,9 @@ import ThemNhanVienModal from '../components/ThemNhanVienModal';
 import SuaNhanVienModal from '../components/SuaNhanVienModal';
 import '../styles/TableCustom.css';
 import { NhanVienType } from '../types/NhanVienType';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../store/store';
+import { fetchNhanVienData } from '../store/slices/nhanVienSlice';
 import axios from 'axios';
 
 const { Search } = Input;
@@ -14,30 +17,14 @@ const NhanVien: React.FC = () => {
   const [isThemModalVisible, setIsThemModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<NhanVienType | null>(null);
 
-  const [data, setData] = useState<NhanVienType[]>([]); 
-  const [filteredData, setFilteredData] = useState<NhanVienType[]>([]); // Dữ liệu đã lọc
-  const [loading, setLoading] = useState<boolean>(false); 
+  const dispatch: AppDispatch = useDispatch();
+  const { data, loading } = useSelector((state: RootState) => state.nhanvien);
+
+  const [filteredData, setFilteredData] = useState<NhanVienType[]>([]);
 
   useEffect(() => {
-    const fetchNhanVien = async () => {
-      setLoading(true); 
-      try {
-        const response = await axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        setData(response.data); 
-        setFilteredData(response.data); 
-      } catch (error) {
-        console.error('Lỗi khi lấy danh sách nhân viên:', error);
-      } finally {
-        setLoading(false); 
-      }
-    };
-
-    fetchNhanVien();
-  }, []);
+    dispatch(fetchNhanVienData()); 
+  }, [dispatch]);
 
   const onSearch = (value: string) => {
     const filtered = data.filter((item) =>
@@ -46,7 +33,7 @@ const NhanVien: React.FC = () => {
       item.gioiTinh?.toLowerCase().includes(value.toLowerCase()) ||
       item.trangThai?.toLowerCase().includes(value.toLowerCase())
     );
-    setFilteredData(filtered); 
+    setFilteredData(filtered);
   };
 
   const handleMenuClick = (e: any, record: NhanVienType) => {
@@ -65,14 +52,17 @@ const NhanVien: React.FC = () => {
     setIsThemModalVisible(false);
   };
 
-  const handleOk = (values: any) => {
+  const handleOk = async (values: NhanVienType) => {
     console.log('Cập nhật thông tin nhân viên:', values);
     setIsModalVisible(false);
+
+    // Sau khi sửa thành công, cập nhật lại danh sách nhân viên
+    dispatch(fetchNhanVienData());
   };
 
-  const handleAddOk = (values: any) => {
-    console.log('Thêm nhân viên mới:', values);
+  const handleAddOk = () => {
     setIsThemModalVisible(false);
+    dispatch(fetchNhanVienData()); 
   };
 
   const columns: TableColumnsType<NhanVienType> = [
@@ -162,7 +152,7 @@ const NhanVien: React.FC = () => {
       <Table
         className="custom-table"
         columns={columns}
-        dataSource={filteredData} // Hiển thị dữ liệu đã lọc
+        dataSource={filteredData.length ? filteredData : data} 
         loading={loading} 
         pagination={{ pageSize: 5 }}
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
@@ -172,12 +162,11 @@ const NhanVien: React.FC = () => {
         onCancel={handleCancel}
         onOk={handleOk}
         initialValues={selectedRecord}
-    />
-
+      />
       <ThemNhanVienModal
         visible={isThemModalVisible}
         onCancel={handleAddCancel}
-        onSubmit={handleAddOk}
+        onSubmit={handleAddOk} 
       />
     </Layout>
   );

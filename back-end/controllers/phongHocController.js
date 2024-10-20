@@ -27,7 +27,7 @@ const createPhongHoc = async (req, res) => {
 
   try {
     await connection.beginTransaction();
-    
+
     const maPhong = await createMaPhong(connection);
 
     await pool.query(
@@ -62,7 +62,7 @@ const updatePhongHoc = async (req, res) => {
       'UPDATE PhongHoc SET soLuong = ?, trangThai = ?, ghiChu = ? WHERE maPhong = ?',
       [
         soLuong || null,
-        trangThai || 'Đang hoạt động', 
+        trangThai || 'Đang hoạt động',
         ghiChu || null,
         maPhong
       ]
@@ -74,4 +74,20 @@ const updatePhongHoc = async (req, res) => {
   }
 };
 
-module.exports = { getPhongHoc, createPhongHoc, updatePhongHoc };
+const xoaPhongHoc = async (req, res) => {
+  const { maPhongHoc } = req.body;
+  const trangThai = "Ngưng Hoạt Động";
+
+  try {
+    const [phongHoc] = await pool.query('SELECT * FROM PhongHoc WHERE maPhong = ?', [maPhongHoc]);
+    if (phongHoc.length === 0) return res.status(400).json({ message: 'Phòng học không tồn tại.' });
+
+    await pool.query('UPDATE PhongHoc SET trangThai = ? WHERE maPhong = ?', [trangThai, maPhongHoc]);
+
+    res.json({ message: `Phòng học ${maPhongHoc} đã bị khóa` });
+  } catch (error) {
+    res.status(500).json({ message: 'Khóa phòng học không thành công', error });
+  }
+}
+
+module.exports = { getPhongHoc, createPhongHoc, updatePhongHoc, xoaPhongHoc };

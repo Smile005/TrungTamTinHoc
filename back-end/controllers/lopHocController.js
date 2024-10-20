@@ -110,4 +110,20 @@ const updateLopHoc = async (req, res) => {
   }
 };
 
-module.exports = { getLopHoc, createLopHoc, updateLopHoc };
+const xoaLopHoc = async (req,res)=>{
+  const { maLopHoc } = req.body;
+  const trangThai = "Đã khóa";
+
+  try {
+    const [lopHoc] = await pool.query('SELECT * FROM LopHoc WHERE maLopHoc = ?', [maLopHoc]);
+    if (lopHoc.length === 0) return res.status(400).json({ message: 'Lớp học không tồn tại.' });
+
+    await pool.query('UPDATE LopHoc SET trangThai = ? WHERE maLopHoc = ?', [trangThai, maLopHoc]);
+
+    res.json({ message: `Lớp học ${maLopHoc} đã bị khóa` });
+  } catch (error) {
+    res.status(500).json({ message: 'Khóa lớp học không thành công', error });
+  }
+}
+
+module.exports = { getLopHoc, createLopHoc, updateLopHoc, xoaLopHoc};

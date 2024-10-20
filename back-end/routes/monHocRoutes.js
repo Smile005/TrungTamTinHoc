@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/ds-monhoc', authMiddleware(2), getMonHoc); 
 router.post('/them-monhoc', authMiddleware(2), createMonHoc); 
-router.put('/sua-monhoc', authMiddleware(2), updateMonHoc);
-router.post('/xoa-monHoc', authMiddleware(2), xoaMonHoc); 
+router.put('/sua-monhoc', authMiddleware(2), updateMonHoc); 
+router.post('/xoa-monhoc', authMiddleware(2), xoaMonHoc); 
 
 module.exports = router;

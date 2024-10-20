@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
-import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { MoreOutlined, EditOutlined, DeleteOutlined, OrderedListOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { LopHocType } from '../types/LopHocType';
 import ThemLopHocModal from '../components/ThemLopHocModal';
 import SuaLopHocModal from '../components/SuaLopHocModal';
+import { useNavigate } from 'react-router-dom'; 
 import '../styles/TableCustom.css';
 import moment from 'moment';
 
@@ -19,8 +20,8 @@ const LopHoc: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [monHocMap, setMonHocMap] = useState<{ [key: string]: string }>({});
   const [nhanVienMap, setNhanVienMap] = useState<{ [key: string]: string }>({});
+  const navigate = useNavigate(); // Use for navigation
 
-  // Gọi API để lấy danh sách lớp học, môn học và giảng viên
   useEffect(() => {
     const fetchLopHocData = async () => {
       setLoading(true);
@@ -43,13 +44,11 @@ const LopHoc: React.FC = () => {
           }),
         ]);
 
-        // Tạo map cho mã môn học và tên môn học
         const monHocMap = monHocResponse.data.reduce((acc: any, monHoc: any) => {
           acc[monHoc.maMonHoc] = monHoc.tenMonHoc;
           return acc;
         }, {});
 
-        // Tạo map cho mã nhân viên và tên nhân viên
         const nhanVienMap = nhanVienResponse.data.reduce((acc: any, nhanVien: any) => {
           acc[nhanVien.maNhanVien] = nhanVien.tenNhanVien;
           return acc;
@@ -60,15 +59,13 @@ const LopHoc: React.FC = () => {
 
         const formattedLopHoc = lopHocResponse.data.map((lopHoc: LopHocType) => ({
           ...lopHoc,
-          tenMonHoc: lopHoc.maMonHoc ? monHocMap[lopHoc.maMonHoc] : 'Không xác định', 
-          tenNhanVien: lopHoc.maNhanVien ? nhanVienMap[lopHoc.maNhanVien] : 'Không xác định', 
-      }));
-      
+          tenMonHoc: lopHoc.maMonHoc ? monHocMap[lopHoc.maMonHoc] : 'Không xác định',
+          tenNhanVien: lopHoc.maNhanVien ? nhanVienMap[lopHoc.maNhanVien] : 'Không xác định',
+        }));
 
         setFilteredData(formattedLopHoc);
       } catch (error) {
-        console.error('Lỗi khi lấy dữ liệu:', error);
-        message.error('Lỗi khi lấy dữ liệu!');
+        message.error('Lỗi khi lấy dữ liệu');
       } finally {
         setLoading(false);
       }
@@ -92,8 +89,8 @@ const LopHoc: React.FC = () => {
     if (e.key === 'edit') {
       setSelectedRecord(record);
       setIsEditModalVisible(true);
-    } else if (e.key === 'delete') {
-      message.info(`Xóa lớp học: ${record.tenLopHoc}`);
+    } else if (e.key === 'danhSachLop') {
+      navigate(`/ds-hoc-vien-lop/${record.maLopHoc}`); 
     }
   };
 
@@ -124,15 +121,6 @@ const LopHoc: React.FC = () => {
     setFilteredData(updatedData);
     setIsEditModalVisible(false);
     message.success('Sửa lớp học thành công!');
-  };
-
-  const handleUndo = () => {
-    setSearchText('');
-    message.info("Đã hoàn tác bộ lọc.");
-  };
-
-  const handleImportExcel = () => {
-    message.info("Chức năng nhập từ Excel!");
   };
 
   const columns = [
@@ -197,7 +185,7 @@ const LopHoc: React.FC = () => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>
             <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
-            <Menu.Item key="delete" icon={<DeleteOutlined />}>Danh sách lớp</Menu.Item>
+            <Menu.Item key="danhSachLop" icon={<OrderedListOutlined />}>Danh sách lớp</Menu.Item>
             <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
           </Menu>
         );
@@ -224,7 +212,7 @@ const LopHoc: React.FC = () => {
         />
         <div className="button-container">
           <Button className='custom-button' onClick={handleAddClass}>Thêm</Button>
-          <Button className='custom-button' onClick={handleImportExcel}>Nhập Excel</Button>
+          <Button className='custom-button' >Nhập Excel</Button>
         </div>
       </div>
       <Table

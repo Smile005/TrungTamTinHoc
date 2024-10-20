@@ -19,7 +19,7 @@ const getNhanVien = async (req, res) => {
         ghiChu
       FROM NhanVien
     `);
-    
+
     res.json(results);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });
@@ -57,7 +57,7 @@ const createNhanVien = async (req, res) => {
 
       if (!tenNhanVien) {
         console.log('Nhân viên bị bỏ qua do thiếu tên:', nhanVien);
-        continue; 
+        continue;
       }
 
       const maNhanVien = await createMaNV(connection);
@@ -119,7 +119,7 @@ const updateNhanVien = async (req, res) => {
         ngaySinh || null,
         sdt || null,
         email || null,
-        diaChi  || null,
+        diaChi || null,
         trangThai || 'Đang hoạt động',
         ghiChu || null,
         maNhanVien
@@ -171,4 +171,20 @@ const updateProfile = async (req, res) => {
   }
 };
 
-module.exports = { getNhanVien, createNhanVien, updateNhanVien, updateProfile };
+const xoaNhanVien = async (req, res) => {
+  const { maNhanVien } = req.body;
+  const trangThai = "Đã khóa";
+
+  try {
+    const [nhanVien] = await pool.query('SELECT * FROM NhanVien WHERE maNhanVien = ?', [maNhanVien]);
+    if (nhanVien.length === 0) return res.status(400).json({ message: 'Nhân viên không tồn tại.' });
+
+    await pool.query('UPDATE NhanVien SET trangThai = ? WHERE maNhanVien = ?', [trangThai, maNhanVien]);
+
+    res.json({ message: `Nhân viên ${maNhanVien} đã bị khóa` });
+  } catch (error) {
+    res.status(500).json({ message: 'Khóa nhân viên không thành công', error });
+  }
+}
+
+module.exports = { getNhanVien, createNhanVien, updateNhanVien, updateProfile, xoaNhanVien };

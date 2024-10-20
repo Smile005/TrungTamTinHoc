@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 interface UserInfo {
   maNhanVien: string;
@@ -10,13 +10,29 @@ interface AuthState {
   isAuthenticated: boolean;
   token: string | null;
   userInfo: UserInfo | null;
+  data: any[];  
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: AuthState = {
   isAuthenticated: false,
   token: null,
   userInfo: null,
+  data: [],  
+  loading: false,
+  error: null,
 };
+
+export const fetchData = createAsyncThunk('auth/fetchData', async (_, { rejectWithValue }) => {
+  try {
+    const response = await fetch('/api/data');  
+    const data = await response.json();
+    return data;
+  } catch (error: any) {
+    return rejectWithValue((error as Error).message);
+  }
+});
 
 const authSlice = createSlice({
   name: 'auth',
@@ -27,7 +43,6 @@ const authSlice = createSlice({
       state.token = action.payload.token;
       state.userInfo = action.payload.userInfo;
 
-      // Lưu token vào localStorage
       localStorage.setItem('token', action.payload.token);
     },
     logout(state) {
@@ -35,9 +50,23 @@ const authSlice = createSlice({
       state.token = null;
       state.userInfo = null;
 
-      // Xóa token khỏi localStorage khi đăng xuất
       localStorage.removeItem('token');
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload; 
+      })
+      .addCase(fetchData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
   },
 });
 

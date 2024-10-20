@@ -34,7 +34,6 @@ const TaiKhoan: React.FC = () => {
         setFilteredData(response.data); 
       } catch (error) {
         console.error('Lỗi khi lấy danh sách tài khoản:', error);
-        message.error('Lỗi khi lấy danh sách tài khoản!');
       } finally {
         setLoading(false);
       }
