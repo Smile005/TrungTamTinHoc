@@ -97,33 +97,17 @@ const updateMonHoc = async (req, res) => {
 
 const xoaMonHoc = async (req, res) => {
   const { maMonHoc } = req.body;
-  const trangThai = "Đã khóa";
 
   try {
-<<<<<<< HEAD
       const [monHoc] = await pool.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
-      if (monHoc.length === 0) return res.status(400).json({ message: 'Môn học không tồn tại.' });
+      if (monHoc.length === 0) return res.status(400).json({ message: 'Không tìm thấy môn học' });
 
-      await pool.query('UPDATE MonHoc SET trangThai = ? WHERE maMonHoc = ?', [trangThai, maMonHoc]);
-
-      res.json({ message: `Môn học ${maMonHoc} đã bị khóa` });
+      await pool.query('DELETE FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
+      
+      res.json({ message: `Môn học ${maMonHoc} đã bị xóa` });
   } catch (error) {
-      res.status(500).json({ message: 'Khóa môn học không thành công', error });
+      res.status(500).json({ message: 'Xóa môn học không thành công', error });
   }
 }
 
 module.exports = { getMonHoc, createMonHoc, updateMonHoc, xoaMonHoc};
-=======
-    const [monHoc] = await pool.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
-    if (monHoc.length === 0) return res.status(400).json({ message: 'Môn học không tồn tại.' });
-
-    await pool.query('UPDATE MonHoc SET trangThai = ? WHERE maMonHoc = ?', [trangThai, maMonHoc]);
-
-    res.json({ message: `Môn học ${maMonHoc} đã bị khóa` });
-  } catch (error) {
-    res.status(500).json({ message: 'Khóa môn học không thành công', error });
-  }
-}
-
-module.exports = { getMonHoc, createMonHoc, updateMonHoc, xoaMonHoc };
->>>>>>> main

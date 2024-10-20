@@ -8,8 +8,6 @@ const getDS_Lop = async (req, res) => {
             SELECT 
                 hv.maHocVien,
                 hv.tenHocVien,
-                dl.diemCuoiKy,
-                dl.trangThai,
                 dl.ghiChu
             FROM 
                 DsLopHoc dl
