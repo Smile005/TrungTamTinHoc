@@ -1,31 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, Form, Input, InputNumber, Select, DatePicker, message, Row, Col, Steps, theme } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
-interface AddLopHocProps {
-    isModalVisible: boolean;
-    setIsModalVisible: (visible: boolean) => void;
+dayjs.extend(customParseFormat);
+const dateFormat = 'DD/MM/YYYY';
+
+interface AddLopHocModalProps {
+    visible: boolean;
+    onCancel: () => void;
 }
 
-const AddLopHoc: React.FC<AddLopHocProps> = ({ isModalVisible, setIsModalVisible }) => {
+const AddLopHoc: React.FC<AddLopHocModalProps> = ({ visible, onCancel }) => {
     const { token } = theme.useToken();
     const [formLopHoc] = Form.useForm();
+    const [formLichHoc] = Form.useForm();
     const [monHocList, setMonHocList] = useState<{ maMonHoc: string, tenMonHoc: string }[]>([]);
     const [nhanVienList, setNhanVienList] = useState<{ maNhanVien: string, tenNhanVien: string }[]>([]);
-    const [caHocList, setCaHocList] = useState<{ maCaHoc: string, batDau: string, ketThuc: string }[]>([]);
+    const [caHocList, setCaHocList] = useState<{ maCa: string, batDau: string, ketThuc: string }[]>([]);
     const [phongHocList, setPhongHocList] = useState<{ maPhong: string, soLuong: number }[]>([]);
 
     const [current, setCurrent] = useState(0);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const steps = [
         {
             title: 'Tạo Lớp Học',
-            content: renderHocVienForm(formLopHoc, monHocList, nhanVienList),
+            content: renderLopHocForm(formLopHoc, monHocList, nhanVienList),
         },
         {
             title: 'Thêm Lịch Học',
-            content: renderLichHocForm(formLopHoc, caHocList, phongHocList, monHocList, nhanVienList),
+            content: renderLichHocForm(formLichHoc, nhanVienList, caHocList, phongHocList),
             description: 'Có thể bỏ qua',
         },
         {
@@ -120,45 +127,48 @@ const AddLopHoc: React.FC<AddLopHocProps> = ({ isModalVisible, setIsModalVisible
     };
 
     return (
-        <Modal
-            title="Quá Trình Tạo Lớp Học"
-            visible={isModalVisible}
-            onCancel={handleCancel}
-            footer={null}
-        >
-            <Steps current={current} items={steps.map(item => ({ key: item.title, title: item.title }))} />
-            <div style={contentStyle}>{steps[current].content}</div>
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 24 }}>
-                <div>
-                    {current < steps.length - 1 && (
-                        <Button type="primary" onClick={next}>
-                            Next
+        <>
+            <Modal
+                title="Quá Trình Tạo Lớp Học"
+                visible={isModalVisible}
+                onCancel={handleCancel}
+                footer={null}
+                style={{ width: '1000px', height: '1000px' }}
+            >
+                <Steps current={current} items={steps.map(item => ({ key: item.title, title: item.title }))} />
+                <div style={contentStyle}>{steps[current].content}</div>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', marginTop: 24 }}>
+                    <div>
+                        {current < steps.length - 1 && (
+                            <Button type="primary" onClick={next}>
+                                Next
+                            </Button>
+                        )}
+                        {current === steps.length - 1 && (
+                            <Button type="primary" onClick={handleOk}>
+                                Done
+                            </Button>
+                        )}
+                        {current > 0 && (
+                            <Button style={{ margin: '0 8px' }} onClick={prev}>
+                                Previous
+                            </Button>
+                        )}
+                    </div>
+                    <div>
+                        <Button type="primary" onClick={() => setCurrent(0)}>
+                            Reset
                         </Button>
-                    )}
-                    {current === steps.length - 1 && (
-                        <Button type="primary" onClick={handleOk}>
-                            Done
-                        </Button>
-                    )}
-                    {current > 0 && (
-                        <Button style={{ margin: '0 8px' }} onClick={prev}>
-                            Previous
-                        </Button>
-                    )}
+                    </div>
                 </div>
-                <div>
-                    <Button type="primary" onClick={() => setCurrent(0)}>
-                        Reset
-                    </Button>
-                </div>
-            </div>
-        </Modal>
+            </Modal>
+        </>
     );
 };
 
 export default AddLopHoc;
 
-const renderHocVienForm = (
+const renderLopHocForm = (
     form: any,
     monHocList: { maMonHoc: string, tenMonHoc: string }[],
     nhanVienList: { maNhanVien: string, tenNhanVien: string }[]
@@ -197,7 +207,11 @@ const renderHocVienForm = (
                     label="Ngày Bắt Đầu"
                     rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu!' }]}
                 >
-                    <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
+                    <DatePicker
+                        style={{ width: '100%' }}
+                        defaultValue={dayjs()}
+                        format={dateFormat}
+                    />
                 </Form.Item>
             </Col>
             <Col span={12}>
@@ -228,42 +242,136 @@ const renderHocVienForm = (
 );
 
 const renderLichHocForm = (
-    formLopHoc: any,
-    caHocList: { maCaHoc: string, batDau: string, ketThuc: string }[],
-    phongHocList: { maPhong: string, soLuong: number }[],
-    monHocList: { maMonHoc: string, tenMonHoc: string }[],
-    nhanVienList: { maNhanVien: string, tenNhanVien: string }[]
+    form: any,
+    nhanVienList: { maNhanVien: string, tenNhanVien: string }[],
+    caHocList: { maCa: string; batDau: string; ketThuc: string }[],
+    phongHocList: { maPhong: string; soLuong: number }[]
 ) => {
-    const maMonHoc = formLopHoc.getFieldValue('maMonHoc');
-    const selectedMonHoc = monHocList.find((mh) => mh.maMonHoc === maMonHoc);
-    const tenMonHoc = selectedMonHoc ? selectedMonHoc.tenMonHoc : 'Chưa chọn môn học';
-
-    const maNhanVien = formLopHoc.getFieldValue('maNhanVien');
-    const selectedNhanVien = nhanVienList.find((nv) => nv.maNhanVien === maNhanVien);
-    const tenNhanVien = selectedNhanVien ? selectedNhanVien.tenNhanVien : 'Chưa chọn môn học';
-
-    const soBuoi = formLopHoc.getFieldValue('soLuong');
-    const ngayBatDau = formLopHoc.getFieldValue('ngayBatDau')
-
     return (
-        <div>
-            <div >
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <p>Tên môn học: {maMonHoc ? `${tenMonHoc}` : 'Chưa chọn môn học'}</p>
-                    <p>Tên giảng viên: {maNhanVien ? `${tenNhanVien}` : 'Chưa chọn giảng viên'}</p>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <p>Số buổi học thực tế: 0</p>
-                    <p>Tổng số buổi học: {soBuoi || 'Chưa nhập số buổi'}</p>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <p>Ngày bắt đầu: {ngayBatDau ? moment(ngayBatDau).format('DD/MM/YYYY') : 'Chưa chọn ngày bắt đầu'}</p>
-                    <p>Tổng số buổi học: {soBuoi || 'Chưa nhập số buổi'}</p>
-                </div>
-            </div>
-            <div>
+        <Form form={form} layout="vertical">
+            <Row gutter={16}>
+                <Col span={12}>
+                    <Form.Item
+                        name="thu"
+                        label="Thứ"
+                        rules={[{ required: true, message: 'Vui lòng chọn thứ!' }]}
+                    >
+                        <Select placeholder="Chọn thứ">
+                            <Select.Option value="T2">Thứ Hai</Select.Option>
+                            <Select.Option value="T3">Thứ Ba</Select.Option>
+                            <Select.Option value="T4">Thứ Tư</Select.Option>
+                            <Select.Option value="T5">Thứ Năm</Select.Option>
+                            <Select.Option value="T6">Thứ Sáu</Select.Option>
+                            <Select.Option value="T7">Thứ Bảy</Select.Option>
+                            <Select.Option value="CN">Chủ Nhật</Select.Option>
+                        </Select>
+                    </Form.Item>
+                </Col>
+                <Col span={12}>
+                    <Form.Item
+                        name="caHoc"
+                        label="Ca Học"
+                        rules={[{ required: true, message: 'Vui lòng chọn ca học!' }]}
+                    >
+                        <Select placeholder="Chọn ca học">
+                            {caHocList.length > 0 ? (
+                                caHocList.map((caHoc) => (
+                                    <Select.Option key={caHoc.maCa} value={caHoc.maCa}>
+                                        {caHoc.maCa} - {dayjs(caHoc.batDau, 'HH:mm:ss').format('HH:mm')} đến {dayjs(caHoc.ketThuc, 'HH:mm:ss').format('HH:mm')}
+                                    </Select.Option>
+                                ))
+                            ) : (
+                                <Select.Option disabled>Không có dữ liệu ca học</Select.Option>
+                            )}
+                        </Select>
+                    </Form.Item>
+                </Col>
+            </Row>
 
-            </div>
-        </div>
+            <Row gutter={16}>
+                <Col span={12}>
+                    <Form.Item
+                        name="phongHoc"
+                        label="Phòng Học"
+                        rules={[{ required: true, message: 'Vui lòng chọn phòng học!' }]}
+                    >
+                        <Select placeholder="Chọn phòng học">
+                            {phongHocList.length > 0 ? (
+                                phongHocList.map((phongHoc) => (
+                                    <Select.Option key={phongHoc.maPhong} value={phongHoc.maPhong}>
+                                        {phongHoc.maPhong} - Số lượng chỗ: {phongHoc.soLuong}
+                                    </Select.Option>
+                                ))
+                            ) : (
+                                <Select.Option disabled>Không có dữ liệu phòng học</Select.Option>
+                            )}
+                        </Select>
+                    </Form.Item>
+                </Col>
+                <Col span={12}>
+                    <Form.Item
+                        name="maNhanVien"
+                        label="Giảng viên"
+                        rules={[{ required: true, message: 'Vui lòng chọn giảng viên!' }]}
+                    >
+                        <Select placeholder="Chọn giảng viên">
+                            {nhanVienList.length > 0 ? (
+                                nhanVienList.map((nhanVien) => (
+                                    <Select.Option key={nhanVien.maNhanVien} value={nhanVien.maNhanVien}>
+                                        {nhanVien.maNhanVien} - {nhanVien.tenNhanVien}
+                                    </Select.Option>
+                                ))
+                            ) : (
+                                <Select.Option disabled>Không có dữ liệu giảng viên</Select.Option>
+                            )}
+                        </Select>
+                    </Form.Item>
+                </Col>
+            </Row>
+
+            <Row gutter={16}>
+                <Col span={12}>
+                    <Form.Item
+                        name="ngayBatDau"
+                        label="Ngày Bắt Đầu"
+                        rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu!' }]}
+                    >
+                        <DatePicker style={{ width: '100%' }} defaultValue={dayjs()} format={dateFormat} />
+                    </Form.Item>
+                </Col>
+                <Col span={12}>
+                    <Form.Item
+                        name="ngayKetThuc"
+                        label="Ngày Kết Thúc"
+                    >
+                        <DatePicker style={{ width: '100%' }} defaultValue={dayjs().add(3, 'month')} format={dateFormat} />
+                    </Form.Item>
+                </Col>
+            </Row>
+
+            <Row gutter={16}>
+                <Col span={12}>
+                    <Form.Item
+                        name="soBuoi"
+                        label="Số Buổi"
+                        rules={[{ required: true, message: 'Vui lòng nhập số buổi học!' }]}
+                    >
+                        <InputNumber
+                            min={1}
+                            defaultValue={30}
+                            style={{ width: '100%' }}
+                            placeholder="Số buổi"
+                        />
+                    </Form.Item>
+                </Col>
+            </Row>
+
+            <Form.Item>
+                <Button type="primary" icon={<PlusOutlined />} htmlType="submit">
+                    Thêm Lịch Học
+                </Button>
+            </Form.Item>
+        </Form>
     );
 };
+
