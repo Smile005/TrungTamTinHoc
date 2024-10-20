@@ -31,7 +31,7 @@ const createCaHoc = async (req, res) => {
 
   try {
     await connection.beginTransaction();
-    
+
     const maCa = await createMaCa(connection);
 
     // Nếu không có thời gian kết thúc, đặt nó là 2 tiếng sau thời gian bắt đầu
@@ -91,4 +91,36 @@ const updateCaHoc = async (req, res) => {
   }
 };
 
-module.exports = { getCaHoc, createCaHoc, updateCaHoc };
+const xoaCaHoc = async (req, res) => {
+  const { maCa } = req.body;
+  const trangThai = "Ngưng Hoạt Động";
+
+  try {
+    const [caHoc] = await pool.query('SELECT * FROM CaHoc WHERE maCa = ?', [maCa]);
+    if (caHoc.length === 0) return res.status(400).json({ message: 'Ca học không tồn tại.' });
+
+    await pool.query('UPDATE CaHoc SET trangThai = ? WHERE maCa = ?', [trangThai, maCa]);
+
+    res.json({ message: `Ca học ${maCa} đã bị khóa` });
+  } catch (error) {
+    res.status(500).json({ message: 'Khóa ca học không thành công', error });
+  }
+}
+
+const moKhoaCaHoc = async (req, res) => {
+  const { maCa } = req.body;
+  const trangThai = "Đang hoạt động";
+
+  try {
+    const [caHoc] = await pool.query('SELECT * FROM CaHoc WHERE maCa = ?', [maCa]);
+    if (caHoc.length === 0) return res.status(400).json({ message: 'Ca học không tồn tại.' });
+
+    await pool.query('UPDATE CaHoc SET trangThai = ? WHERE maCa = ?', [trangThai, maCa]);
+
+    res.json({ message: `Ca học ${maCa} đã mở khóa` });
+  } catch (error) {
+    res.status(500).json({ message: 'Mở khóa ca học không thành công', error });
+  }
+}
+
+module.exports = { getCaHoc, createCaHoc, updateCaHoc, xoaCaHoc, moKhoaCaHoc };
