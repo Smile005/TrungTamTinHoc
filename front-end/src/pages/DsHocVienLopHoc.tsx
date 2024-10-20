@@ -151,6 +151,13 @@ const DsHocVienLopHoc: React.FC = () => {
           pagination={{ pageSize: 5 }}
           rowKey="maHocVien"
           style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
+          components={{
+            header: {
+              cell: (props: any) => (
+                <th {...props} style={{ backgroundColor: '#f0f0f0' }} />
+              ),
+            },
+          }}
         />
       </div>
     </Layout>
