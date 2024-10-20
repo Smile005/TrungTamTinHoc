@@ -3,8 +3,8 @@ POST http://localhost:8081/api/auth/register
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV0003",
-  "matKhau": "123",
+  "maNhanVien": "NV00004",
+  "matKhau": "123"
 }
 
 ###
@@ -14,7 +14,7 @@ POST http://localhost:8081/api/auth/login
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV0002",
+  "maNhanVien": "NV0001",
   "matKhau": "123"
 }
 
@@ -47,7 +47,7 @@ Content-Type: application/json
 
 # Lấy danh sách ca học
 GET http://localhost:8081/api/cahoc
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjozLCJpYXQiOjE3MjkzMzE1MDQsImV4cCI6MTcyOTMzNTEwNH0.yrHsaH8Ahgl9uIDWn1rcZMCUY1L6txB5uuYKKdxfCOA
 
 ###
 
@@ -107,13 +107,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 # Thêm học viên
 POST http://localhost:8081/api/hocvien/them-hocvien
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDE2MDMsImV4cCI6MTcyOTQwNTIwM30.CkDMVsqqGUFbHqhNEnSYkcL9prmd9XmJuCFnvMhMT24
 Content-Type: application/json
 
 {
   "hocViens": [
     {
-      "tenHocVien": "Nguyen Van A",
+      "tenHocVien": "Nguyen Van B",
       "ngaySinh": "2000-01-01",
       "gioiTinh": "Nam",
       "sdt": "0901234567",
@@ -142,7 +142,7 @@ Content-Type: application/json
 
 # Lấy danh sách lớp học
 GET http://localhost:8081/api/lophoc/ds-lophoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjgxMjAwMDYsImV4cCI6MTcyODEyMzYwNn0.sWdhoh0TN_iEphyYWMbZJx6J1liprIn4tVEhuLaabKg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MTEwOTgsImV4cCI6MTcyOTQxNDY5OH0.HsIg7_Z9Wrh0KmyPOts_suJYFMC285Lgu_Pe7LnrZs8
 
 ###
 
@@ -227,7 +227,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 # Thêm nhân viên
 POST http://localhost:8081/api/nhanvien/them-nhanvien
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDE2MDMsImV4cCI6MTcyOTQwNTIwM30.CkDMVsqqGUFbHqhNEnSYkcL9prmd9XmJuCFnvMhMT24
 Content-Type: application/json
 
 {
@@ -327,9 +327,69 @@ Content-Type: application/json
   "maNhanVien": "NV0002"
 }
 
-#Lấy ds học viên theo lớp
+### Lấy ds học viên theo lớp
 Get http://localhost:8081/api/lophoc/ds-hocvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAyIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjkxNzQzNzcsImV4cCI6MTcyOTE3Nzk3N30.ATgQ-pqSaC6Dn-C1v8-l5QXYot1n6oKRrPwS7OfbjGI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MjY1NzUsImV4cCI6MTcyOTQzMDE3NX0.y1M_eHm6B206f09deBmfqkrMDHWHHMuxI5WgL_-5z7w
+Content-Type: application/json
+
+### Lấy ds học viên trong lớp theo mã lớp
+Get http://localhost:8081/api/lophoc/ds-hocvien02
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MjY1NzUsImV4cCI6MTcyOTQzMDE3NX0.y1M_eHm6B206f09deBmfqkrMDHWHHMuxI5WgL_-5z7w
+Content-Type: application/json
+
+{
+  "maLopHoc": "LH0001"
+}
+
+### Xóa phòng học
+POST http://localhost:8081/api/phonghoc/xoa-phong
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDA0NzIsImV4cCI6MTcyOTQwNDA3Mn0.-UMrs3ia0DnKQcv4MmGOOuJFl9q_kBl8ea4qiOLpMzs
+Content-Type: application/json
+
+{
+  "maPhong": "P0004"
+}
+
+### Xóa ca học
+POST http://localhost:8081/api/cahoc/xoa-cahoc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDA0NzIsImV4cCI6MTcyOTQwNDA3Mn0.-UMrs3ia0DnKQcv4MmGOOuJFl9q_kBl8ea4qiOLpMzs
+Content-Type: application/json
+
+{
+  "maCa": "Ca0005"
+}
+
+### Xóa môn học
+POST http://localhost:8081/api/monhoc/xoa-monhoc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDA0NzIsImV4cCI6MTcyOTQwNDA3Mn0.-UMrs3ia0DnKQcv4MmGOOuJFl9q_kBl8ea4qiOLpMzs
+Content-Type: application/json
+
+{
+  "maMonHoc": "MH0005"
+}
+
+
+### Xóa nhân viên. Xóa nhân viên sẽ Xóa luôn tài khoản
+POST http://localhost:8081/api/nhanvien/xoa-nhanvien
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDA0NzIsImV4cCI6MTcyOTQwNDA3Mn0.-UMrs3ia0DnKQcv4MmGOOuJFl9q_kBl8ea4qiOLpMzs
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV00004"
+}
+
+### Xóa học viên
+POST http://localhost:8081/api/hocvien/xoa-hocvien
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDA0NzIsImV4cCI6MTcyOTQwNDA3Mn0.-UMrs3ia0DnKQcv4MmGOOuJFl9q_kBl8ea4qiOLpMzs
+Content-Type: application/json
+
+{
+  "maHocVien": "HV0005"
+}
+
+### Xóa lớp học
+POST http://localhost:8081/api/lophoc/xoa-lophoc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDA0NzIsImV4cCI6MTcyOTQwNDA3Mn0.-UMrs3ia0DnKQcv4MmGOOuJFl9q_kBl8ea4qiOLpMzs
 Content-Type: application/json
 
 {

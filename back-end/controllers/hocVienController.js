@@ -115,18 +115,23 @@ const updateHocVien = async (req, res) => {
 
 const xoaHocVien = async (req, res) => {
   const { maHocVien } = req.body;
-  const trangThai = "Đã khóa";
 
   try {
+      // Kiểm tra xem học viên có tồn tại không
       const [user] = await pool.query('SELECT * FROM HocVien WHERE maHocVien = ?', [maHocVien]);
       if (user.length === 0) return res.status(400).json({ message: 'Học viên không tồn tại.' });
 
-      await pool.query('UPDATE HocVien SET trangThai = ? WHERE maHocVien = ?', [trangThai, maHocVien]);
+      // Xóa tất cả các bản ghi trong bảng DsLopHoc liên quan đến học viên này
+      await pool.query('DELETE FROM DsLopHoc WHERE maHocVien = ?', [maHocVien]);
 
-      res.json({ message: `Học viên ${maHocVien} đã bị khóa` });
+      // Xóa học viên
+      await pool.query('DELETE FROM HocVien WHERE maHocVien = ?', [maHocVien]);
+      
+      res.json({ message: `Học viên ${maHocVien} đã bị xóa cùng với các lớp học liên quan.` });
   } catch (error) {
-      res.status(500).json({ message: 'Khóa học viên không thành công', error });
+      res.status(500).json({ message: 'Xóa học viên không thành công', error });
   }
 }
+
 
 module.exports = { getHocVien, createHocVien, updateHocVien, xoaHocVien };

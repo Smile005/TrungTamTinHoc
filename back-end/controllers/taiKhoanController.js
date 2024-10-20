@@ -110,4 +110,19 @@ const moKhoaTaiKhoan = async (req, res) => {
     }
 }
 
-module.exports = { changePassword, changeRole, getTaiKhoan, changeStatus , khoaTaiKhoan, moKhoaTaiKhoan };
+const xoaTaiKhoan = async (req, res) => {
+    const { maNhanVien } = req.body;
+
+    try {
+        const [nhanVien] = await pool.query('SELECT * FROM TaiKhoan WHERE maNhanVien = ?', [maNhanVien]);
+        if (nhanVien.length === 0) return res.status(400).json({ message: 'Nhân viên không tồn tại.' });
+
+        await pool.query('DELETE FROM TaiKhoan WHERE maNhanVien = ?', [maNhanVien]);
+
+        res.json({ message: `Tài khoản ${maNhanVien} đã bị xóa` });
+    } catch (error) {
+        res.status(500).json({ message: 'Xóa tài khoản không thành công', error });
+    }
+}
+
+module.exports = { changePassword, changeRole, getTaiKhoan, changeStatus, khoaTaiKhoan, moKhoaTaiKhoan, xoaTaiKhoan };
