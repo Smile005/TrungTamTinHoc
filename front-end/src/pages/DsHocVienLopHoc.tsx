@@ -129,7 +129,7 @@ const DsHocVienLopHoc: React.FC = () => {
           Quay lại
         </Button>
       </div>
-      {/* back */}
+      {/* back 11h*/}
       <h1 className="page-name1" >DANH SÁCH HỌC VIÊN CỦA LỚP: {tenLopHoc} ({maLopHoc})</h1> back
       <div className='ds-layout'>
         <div className="button-container">
