@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Dropdown, Menu, Layout, Tag, Input } from 'antd';
+import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { PhongHocType } from '../types/PhongHocType';
 import ThemPhongHocModal from '../components/ThemPhongHocModal';
@@ -59,8 +59,12 @@ const PhongHoc: React.FC = () => {
 
   const handleOk = (values: any) => {
     console.log('Thêm Phòng Học:', values);
-    const newData = [...filteredData, { key: String(filteredData.length + 1), ...values }];
-    setFilteredData(newData);
+
+    // Cập nhật cả data và filteredData khi thêm phòng học mới
+    const newData = [...data, { key: String(data.length + 1), ...values }];
+    setData(newData); // Cập nhật trạng thái gốc (data)
+    setFilteredData(newData); // Cập nhật filteredData
+
     setIsModalVisible(false);
   };
 
@@ -68,6 +72,8 @@ const PhongHoc: React.FC = () => {
     if (e.key === 'edit') {
       setSelectedRecord(record); 
       setIsEditModalVisible(true); 
+    } else if (e.key === 'delete') {
+      deletePhongHoc(record.maPhong); 
     }
   };
 
@@ -80,6 +86,25 @@ const PhongHoc: React.FC = () => {
     const updatedData = filteredData.map((item) => (item.maPhong === values.maPhong ? values : item));
     setFilteredData(updatedData);
     setIsEditModalVisible(false);
+  };
+
+  const deletePhongHoc = async (maPhong: string) => {
+    try {
+      await axios.post(`http://localhost:8081/api/phonghoc/xoa-phong`, 
+        { maPhong }, 
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const newData = filteredData.filter((item) => item.maPhong !== maPhong);
+      setFilteredData(newData);
+      message.success('Xóa phòng học thành công');
+    } catch (error) {
+      console.error('Lỗi khi xóa phòng học:', error);
+    }
   };
 
   const columns = [
@@ -101,11 +126,11 @@ const PhongHoc: React.FC = () => {
       key: 'trangThai',
       render: (trangThai: string): JSX.Element => {
         let color = '';
-        const normalizedTrangThai = trangThai.toLowerCase();
+        const normalizedTrangThai = trangThai;
         
-        if (normalizedTrangThai === 'đang hoạt động') {
+        if (normalizedTrangThai === 'Đang hoạt động') {
             color = 'geekblue';
-        } else if (normalizedTrangThai === 'ngưng hoạt động') {
+        } else if (normalizedTrangThai === 'Ngưng hoạt động') {
             color = 'green';
         }
         

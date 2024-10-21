@@ -25,7 +25,6 @@ const ThemMonHocModal: React.FC<ThemMonHocModalProps> = ({ visible, onCancel, on
                     ghiChu: values.ghiChu || undefined,
                 };
 
-                // Gửi yêu cầu thêm môn học qua API
                 axios
                     .post('http://localhost:8081/api/monhoc/them-monhoc', formattedValues, {
                         headers: {
@@ -91,7 +90,7 @@ const ThemMonHocModal: React.FC<ThemMonHocModalProps> = ({ visible, onCancel, on
                     rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
                 >
                     <Select>
-                        <Select.Option value="Đang hoạt động">Đang Giảng Dạy</Select.Option>
+                        <Select.Option value="Đang Giảng Dạy">Đang Giảng Dạy</Select.Option>
                         <Select.Option value="Tạm Ngưng">Tạm Ngưng</Select.Option>
                     </Select>
                 </Form.Item>

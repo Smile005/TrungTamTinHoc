@@ -20,7 +20,7 @@ const LopHoc: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [monHocMap, setMonHocMap] = useState<{ [key: string]: string }>({});
   const [nhanVienMap, setNhanVienMap] = useState<{ [key: string]: string }>({});
-  const navigate = useNavigate(); // Use for navigation
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchLopHocData = async () => {
@@ -91,6 +91,8 @@ const LopHoc: React.FC = () => {
       setIsEditModalVisible(true);
     } else if (e.key === 'danhSachLop') {
       navigate(`/ds-hoc-vien-lop/${record.maLopHoc}`); 
+    } else if (e.key === 'delete') {
+      deleteLopHoc(record.maLopHoc);
     }
   };
 
@@ -121,6 +123,30 @@ const LopHoc: React.FC = () => {
     setFilteredData(updatedData);
     setIsEditModalVisible(false);
     message.success('Sửa lớp học thành công!');
+  };
+
+  const deleteLopHoc = async (maLopHoc: string | undefined) => {
+    if (!maLopHoc) {
+      message.error('Không thể xóa: Mã lớp học không hợp lệ.');
+      return;
+    }
+
+    try {
+      await axios.post('http://localhost:8081/api/lophoc/xoa-lophoc', 
+        { maLopHoc }, 
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      message.success('Xóa lớp học thành công');
+      setFilteredData(filteredData.filter(item => item.maLopHoc !== maLopHoc)); // Cập nhật lại danh sách
+    } catch (error) {
+      console.error('Lỗi khi xóa lớp học:', error);
+      message.error('Lỗi khi xóa lớp học');
+    }
   };
 
   const columns = [

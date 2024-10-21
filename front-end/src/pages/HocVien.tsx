@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Dropdown, Menu, Layout, Tag, TableColumnsType, Input } from 'antd';
+import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons';
 import { HocVienType } from '../types/HocVienType';
 import ThemHocVienModal from '../components/ThemHocVienModal';
@@ -8,6 +8,7 @@ import '../styles/TableCustom.css';
 import ImportExcelModal from '../components/ImportExcelModal';
 import axios from 'axios';
 import moment from 'moment';
+import { Key } from 'antd/es/table/interface'; // Import Key từ Ant Design
 
 const { Search } = Input;
 
@@ -45,6 +46,8 @@ const HocVien: React.FC = () => {
         if (e.key === 'edit') {
             setSelectedRecord(record);
             setIsEditModalVisible(true);
+        } else if (e.key === 'delete') {
+            deleteHocVien(record.maHocVien); // Gọi hàm xóa học viên
         }
     };
 
@@ -83,7 +86,32 @@ const HocVien: React.FC = () => {
         setFilteredData(filtered); 
     };
 
-    const columns: TableColumnsType<HocVienType> = [
+    // Hàm xóa học viên
+    const deleteHocVien = async (maHocVien: string | undefined) => {
+        if (!maHocVien) {
+            message.error('Không thể xóa: Mã học viên không hợp lệ.');
+            return;
+        }
+
+        try {
+            await axios.post('http://localhost:8081/api/hocvien/xoa-hocvien', 
+                { maHocVien }, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            message.success('Xóa học viên thành công');
+            fetchHocVien(); // Tải lại danh sách sau khi xóa
+        } catch (error) {
+            console.error('Lỗi khi xóa học viên:', error);
+            message.error('Lỗi khi xóa học viên');
+        }
+    };
+
+    const columns = [
         {
             title: 'Mã học viên',
             dataIndex: 'maHocVien',
@@ -105,7 +133,8 @@ const HocVien: React.FC = () => {
                 { text: 'Nữ', value: 'Nữ' },
                 { text: 'Undefined', value: 'Undefined' },
             ],
-            onFilter: (value, record) => {
+            // Định nghĩa kiểu cho `value` và `record`
+            onFilter: (value: Key | boolean, record: HocVienType) => {
                 if (value === 'Undefined') {
                     return record.gioiTinh === undefined;
                 }
@@ -129,7 +158,7 @@ const HocVien: React.FC = () => {
             render: (ngayVaoHoc: string) => {
               return ngayVaoHoc ? moment(ngayVaoHoc).format('DD/MM/YYYY') : 'Chưa có ngày';
             }
-          },
+        },
         {
             title: 'Số điện thoại',
             dataIndex: 'sdt',
@@ -152,7 +181,8 @@ const HocVien: React.FC = () => {
                 { text: 'Đang học', value: 'Đang học' },
                 { text: 'Đã tốt nghiệp', value: 'Đã tốt nghiệp' },
             ],
-            onFilter: (value, record) => record.tinhTrang?.indexOf(value as string) === 0,
+            // Sửa kiểu dữ liệu `value` thành `Key | boolean`
+            onFilter: (value: Key | boolean, record: HocVienType) => record.tinhTrang?.indexOf(value as string) === 0,
             render: (tinhTrang: string): JSX.Element => {
                 let color = '';
                 if (tinhTrang === 'Đang Học') {
