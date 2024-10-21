@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Dropdown, Menu, Layout, Tag, Input } from 'antd';
+import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import ThemCaHocModal from '../components/ThemCaHocModal'; 
 import SuaCaHocModal from '../components/SuaCaHocModal'; 
@@ -14,23 +14,23 @@ const CaHoc: React.FC = () => {
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [isThemCaModalVisible, setIsThemCaModalVisible] = useState(false); 
     const [selectedRecord, setSelectedRecord] = useState<CaHocType | null>(null);
-    const [data, setData] = useState<CaHocType[]>([]); // Dữ liệu ca học từ API
-    const [loading, setLoading] = useState<boolean>(false); // Trạng thái loading khi fetch dữ liệu
+    const [data, setData] = useState<CaHocType[]>([]); 
+    const [loading, setLoading] = useState<boolean>(false); 
 
     useEffect(() => {
         const fetchCaHoc = async () => {
-            setLoading(true); // Bật trạng thái loading khi fetch dữ liệu
+            setLoading(true); 
             try {
                 const response = await axios.get('http://localhost:8081/api/cahoc', {
                     headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`, // Lấy token từ localStorage
+                        Authorization: `Bearer ${localStorage.getItem('token')}`, 
                     },
                 });
-                setData(response.data); // Lưu dữ liệu ca học vào state
+                setData(response.data); 
             } catch (error) {
                 console.error('Lỗi khi lấy danh sách ca học:', error);
             } finally {
-                setLoading(false); // Tắt trạng thái loading
+                setLoading(false); 
             }
         };
 
@@ -41,6 +41,8 @@ const CaHoc: React.FC = () => {
         if (e.key === 'edit') {
             setSelectedRecord(record);
             setIsEditModalVisible(true);
+        } else if (e.key === 'delete') {
+            deleteCaHoc(record.maCa); 
         }
     };
 
@@ -62,6 +64,30 @@ const CaHoc: React.FC = () => {
         setIsThemCaModalVisible(false);
     };
 
+    const deleteCaHoc = async (maCa: string | undefined) => {
+        if (!maCa) {
+            message.error('Không thể xóa ca học: Mã ca học không hợp lệ.');
+            return;
+        }
+
+        try {
+            await axios.post('http://localhost:8081/api/cahoc/xoa-cahoc', 
+                { maCa }, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            const newData = data.filter((item) => item.maCa !== maCa);
+            setData(newData);
+            message.success('Xóa ca học thành công');
+        } catch (error) {
+            console.error('Lỗi khi xóa ca học:', error);
+            message.error('Lỗi khi xóa ca học');
+        }
+    };
 
     const onSearch = (value: string) => {
         setSearchText(value);
@@ -153,9 +179,9 @@ const CaHoc: React.FC = () => {
             <Table
                 className="custom-table"
                 columns={columns}
-                dataSource={filteredData.length ? filteredData : data} // Gán dữ liệu từ API
+                dataSource={filteredData.length ? filteredData : data} 
                 pagination={{ pageSize: 5 }}
-                loading={loading} // Hiển thị trạng thái loading khi đang fetch dữ liệu
+                loading={loading} 
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
 
