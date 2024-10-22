@@ -103,7 +103,7 @@ const SuaMonHocModal: React.FC<SuaMonHocModalProps> = ({ visible, onCancel, onSu
           rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
         >
           <Select>
-            <Select.Option value="Đang hoạt động">Đang Giảng Dạy</Select.Option>
+            <Select.Option value="Đang Giảng Dạy">Đang Giảng Dạy</Select.Option>
             <Select.Option value="Tạm ngưng">Tạm ngưng</Select.Option>
           </Select>
         </Form.Item>

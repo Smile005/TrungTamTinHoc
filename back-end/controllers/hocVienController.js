@@ -11,10 +11,20 @@ const getHocVien = async (req, res) => {
 
 const createMaHV = async (connection) => {
   try {
-    const query = `SELECT COUNT(maHocVien) AS soLuong FROM HocVien;`;
+    const query = `SELECT maHocVien FROM HocVien ORDER BY maHocVien DESC LIMIT 1;`;
     const [result] = await connection.query(query);
-    const soLuong = result[0].soLuong || 0;
-    const nextMaHocVien = `HV${(soLuong + 1).toString().padStart(5, '0')}`;
+
+    let nextMaHocVien;
+
+    if (result.length > 0) {
+      const lastMaHocVien = result[0].maHocVien.toUpperCase(); // Chuyển về chữ hoa
+      const numericPart = parseInt(lastMaHocVien.slice(2)); // Lấy phần số
+      const newNumericPart = numericPart + 1;
+      nextMaHocVien = `HV${newNumericPart.toString().padStart(5, '0')}`; // Tạo mã mới với định dạng HVxxxxx
+    } else {
+      nextMaHocVien = 'HV00001'; // Nếu chưa có mã
+    }
+
     return nextMaHocVien;
   } catch (error) {
     throw new Error('Không thể tạo mã học viên');

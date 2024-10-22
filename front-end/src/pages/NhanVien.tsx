@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Dropdown, Menu, Layout, Tag, Input, TableColumnsType } from 'antd';
+import { Table, Button, Dropdown, Menu, Layout, Tag, Input, TableColumnsType, message } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import ThemNhanVienModal from '../components/ThemNhanVienModal';
 import SuaNhanVienModal from '../components/SuaNhanVienModal';
@@ -40,6 +40,8 @@ const NhanVien: React.FC = () => {
     if (e.key === 'edit') {
       setSelectedRecord(record);
       setIsModalVisible(true);
+    } else if (e.key === 'delete') {
+      deleteNhanVien(record.maNhanVien); 
     }
   };
 
@@ -56,13 +58,37 @@ const NhanVien: React.FC = () => {
     console.log('Cập nhật thông tin nhân viên:', values);
     setIsModalVisible(false);
 
-    // Sau khi sửa thành công, cập nhật lại danh sách nhân viên
     dispatch(fetchNhanVienData());
   };
 
   const handleAddOk = () => {
     setIsThemModalVisible(false);
     dispatch(fetchNhanVienData()); 
+  };
+
+  // Hàm xóa nhân viên
+  const deleteNhanVien = async (maNhanVien: string | undefined) => {
+    if (!maNhanVien) {
+      message.error('Không thể xóa: Mã nhân viên không hợp lệ.');
+      return;
+    }
+
+    try {
+      await axios.post('http://localhost:8081/api/nhanvien/xoa-nhanvien', 
+        { maNhanVien }, 
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      message.success('Xóa nhân viên thành công');
+      dispatch(fetchNhanVienData()); 
+    } catch (error) {
+      console.error('Lỗi khi xóa nhân viên:', error);
+      message.error('Lỗi khi xóa nhân viên');
+    }
   };
 
   const columns: TableColumnsType<NhanVienType> = [

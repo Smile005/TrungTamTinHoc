@@ -28,10 +28,20 @@ const getNhanVien = async (req, res) => {
 
 const createMaNV = async (connection) => {
   try {
-    const query = `SELECT COUNT(maNhanVien) AS soLuong FROM NhanVien;`;
+    const query = `SELECT maNhanVien FROM NhanVien ORDER BY maNhanVien DESC LIMIT 1;`;
     const [result] = await connection.query(query);
-    const soLuong = result[0].soLuong || 0;
-    const nextMaNhanVien = `NV${(soLuong + 1).toString().padStart(4, '0')}`;
+
+    let nextMaNhanVien;
+
+    if (result.length > 0) {
+      const lastMaNhanVien = result[0].maNhanVien.toUpperCase();
+      const numericPart = parseInt(lastMaNhanVien.slice(2));
+      const newNumericPart = numericPart + 1;
+      nextMaNhanVien = `NV${newNumericPart.toString().padStart(4, '0')}`;
+    } else {
+      nextMaNhanVien = 'NV0001';
+    }
+
     return nextMaNhanVien;
   } catch (error) {
     throw new Error('Không thể tạo mã nhân viên');

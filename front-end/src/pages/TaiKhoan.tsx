@@ -5,45 +5,29 @@ import SuaTaiKhoanModal from '../components/SuaTaiKhoanModal';
 import ThemTaiKhoanModal from '../components/ThemTaiKhoanModal'; 
 import DoiMatKhauModal from '../components/DoiMatKhauModal'; 
 import { TaiKhoanType } from '../types/TaiKhoanType';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, AppDispatch } from '../store/store';
+import { fetchTaiKhoanData } from '../store/slices/taiKhoanSlice';
 import axios from 'axios';
-import '../styles/TableCustom.css';
 
 const { Search } = Input;
 
 const TaiKhoan: React.FC = () => {
   const [searchText, setSearchText] = useState('');
-  const [filteredData, setFilteredData] = useState<TaiKhoanType[]>([]);
-  const [data, setData] = useState<TaiKhoanType[]>([]); 
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isThemModalVisible, setIsThemModalVisible] = useState(false); 
   const [isDoiMatKhauModalVisible, setIsDoiMatKhauModalVisible] = useState(false); 
   const [selectedRecord, setSelectedRecord] = useState<TaiKhoanType | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const dispatch: AppDispatch = useDispatch();
+  const { data, loading, error } = useSelector((state: RootState) => state.taikhoan);
 
   useEffect(() => {
-    const fetchTaiKhoan = async () => {
-      setLoading(true);
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:8081/api/auth/ds-taikhoan', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setData(response.data); 
-        setFilteredData(response.data); 
-      } catch (error) {
-        console.error('Lỗi khi lấy danh sách tài khoản:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTaiKhoan();
-  }, []);
+    dispatch(fetchTaiKhoanData());
+  }, [dispatch]);
 
   const onSearch = (value: string) => {
-    const filtered = data.filter((item) => {
+    const filtered = data.filter((item: TaiKhoanType) => {
       const phanQuyenText = item.phanQuyen === 1 ? 'Quản trị viên' : item.phanQuyen === 2 ? 'Người dùng' : 'Khác';
       return (
         item.maNhanVien.toLowerCase().includes(value.toLowerCase()) ||
@@ -51,8 +35,7 @@ const TaiKhoan: React.FC = () => {
         item.trangThai.toLowerCase().includes(value.toLowerCase())
       );
     });
-    setFilteredData(filtered); 
-    setSearchText(value); // Lưu từ khóa tìm kiếm
+    return filtered;
   };
 
   const handleMenuClick = (e: any, record: TaiKhoanType) => {
@@ -62,6 +45,22 @@ const TaiKhoan: React.FC = () => {
     } else if (e.key === 'changepw') {
       setSelectedRecord(record);
       setIsDoiMatKhauModalVisible(true);
+    } else if (e.key === 'delete') {
+      handleDelete(record.maNhanVien);
+    }
+  };
+
+  const handleDelete = async (maNhanVien: string) => {
+    try {
+      await axios.delete(`http://localhost:8081/api/auth/xoa-taikhoan/${maNhanVien}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      message.success('Xóa tài khoản thành công!');
+      dispatch(fetchTaiKhoanData()); // Reload dữ liệu sau khi xóa
+    } catch (error) {
+      message.error('Xóa tài khoản thất bại!');
     }
   };
 
@@ -70,14 +69,14 @@ const TaiKhoan: React.FC = () => {
     setSelectedRecord(null);
   };
 
-  const handleEditSubmit = (values: any) => {
-    console.log('Updated Tai Khoan:', values);
-    setIsEditModalVisible(false);
+  const handleThemSubmit = (values: any) => {
+    setIsThemModalVisible(false);
+    dispatch(fetchTaiKhoanData()); // Reload lại dữ liệu sau khi thêm 
   };
 
-  const handleThemSubmit = (values: any) => {
-    console.log('Thêm tài khoản mới:', values);
-    setIsThemModalVisible(false);
+  const handleEditSubmit = (values: any) => {
+    setIsEditModalVisible(false);
+    dispatch(fetchTaiKhoanData()); // Reload lại dữ liệu sau khi sửa
   };
 
   const handleDoiMatKhauCancel = () => {
@@ -148,7 +147,7 @@ const TaiKhoan: React.FC = () => {
           onSearch={onSearch} 
           enterButton
           value={searchText}
-          onChange={(e) => onSearch(e.target.value)} 
+          onChange={(e) => setSearchText(e.target.value)} 
         />
         <div className="button-container">
           <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>Thêm</Button>
@@ -159,7 +158,7 @@ const TaiKhoan: React.FC = () => {
       <Table
         className="custom-table"
         columns={columns}
-        dataSource={filteredData} 
+        dataSource={onSearch(searchText)}
         pagination={{ pageSize: 5 }}
         rowKey="maNhanVien"
         loading={loading}
@@ -177,6 +176,7 @@ const TaiKhoan: React.FC = () => {
         visible={isThemModalVisible}
         onCancel={() => setIsThemModalVisible(false)}
         onSubmit={handleThemSubmit}
+        taiKhoanData={data} 
       />
 
       <DoiMatKhauModal

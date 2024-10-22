@@ -11,17 +11,26 @@ const getLopHoc = async (req, res) => {
 
 const createMaLop = async (connection) => {
   try {
-    const query = `SELECT COUNT(maLopHoc) AS soLuong FROM LopHoc;`;
+    const query = `SELECT maLopHoc FROM LopHoc ORDER BY maLopHoc DESC LIMIT 1;`;
     const [result] = await connection.query(query);
-    const soLuong = result[0].soLuong || 0;
-    const nextMaLop = `LOP${(soLuong + 1).toString().padStart(4, '0')}`;
+
+    let nextMaLop;
+
+    if (result.length > 0) {
+      const lastMaLop = result[0].maLopHoc.toUpperCase();
+      const numericPart = parseInt(lastMaLop.slice(3));
+      const newNumericPart = numericPart + 1;
+      nextMaLop = `LOP${newNumericPart.toString().padStart(4, '0')}`;
+    } else {
+      nextMaLop = 'LOP0001';
+    }
+
     return nextMaLop;
   } catch (error) {
     throw new Error('Không thể tạo mã lớp học');
   }
 };
 
-// Thêm mới lớp học
 const createLopHoc = async (req, res) => {
   const connection = await pool.getConnection();
   const { lopHocs } = req.body;

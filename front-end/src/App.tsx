@@ -31,6 +31,7 @@ import Login from './pages/Login';
 import TimKiem from './pages/TimKiem';
 import UserInfoModal from './components/UserInforModal';
 import DsHocVienLopHoc from './pages/DsHocVienLopHoc';
+import DsLop from './pages/DsLop'; // Đường dẫn đến file DsLop.tsx
 import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
@@ -177,7 +178,7 @@ const App: React.FC = () => {
                     <Link to="/dangky">Đăng ký</Link>
                   </Menu.Item>
                   <Menu.Item key="10">
-                    <Link to="/ds_lop">Danh sách lớp</Link>
+                    <Link to="/ds_lop">Danh sách lớp</Link> {/* Liên kết đến trang DsLop */}
                   </Menu.Item>
                 </SubMenu>
                 <SubMenu key="group04" icon={<ReadOutlined />} title="Thi">
@@ -232,6 +233,7 @@ const App: React.FC = () => {
                   <Route path="/testing" element={isAuthenticated ? <Testing /> : <Navigate to="/login" />} />
                   <Route path="/timkiem" element={isAuthenticated ? <TimKiem /> : <Navigate to="/login" />} />
                   <Route path="/ds-hoc-vien-lop/:maLopHoc" element={isAuthenticated ? <DsHocVienLopHoc /> : <Navigate to="/login" />} />
+                  <Route path="/ds_lop" element={isAuthenticated ? <DsLop /> : <Navigate to="/login" />} /> {/* Thêm route cho DsLop */}
                 </Routes>
               </Content>
             </Layout>

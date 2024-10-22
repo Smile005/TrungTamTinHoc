@@ -142,7 +142,7 @@ Content-Type: application/json
 
 # Lấy danh sách lớp học
 GET http://localhost:8081/api/lophoc/ds-lophoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjgxMjAwMDYsImV4cCI6MTcyODEyMzYwNn0.sWdhoh0TN_iEphyYWMbZJx6J1liprIn4tVEhuLaabKg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MTEwOTgsImV4cCI6MTcyOTQxNDY5OH0.HsIg7_Z9Wrh0KmyPOts_suJYFMC285Lgu_Pe7LnrZs8
 
 ###
 
@@ -327,9 +327,14 @@ Content-Type: application/json
   "maNhanVien": "NV0002"
 }
 
-###Lấy ds học viên theo lớp
+### Lấy ds học viên theo lớp
 Get http://localhost:8081/api/lophoc/ds-hocvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDA0NzIsImV4cCI6MTcyOTQwNDA3Mn0.-UMrs3ia0DnKQcv4MmGOOuJFl9q_kBl8ea4qiOLpMzs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MjY1NzUsImV4cCI6MTcyOTQzMDE3NX0.y1M_eHm6B206f09deBmfqkrMDHWHHMuxI5WgL_-5z7w
+Content-Type: application/json
+
+### Lấy ds học viên trong lớp theo mã lớp
+Get http://localhost:8081/api/lophoc/ds-hocvien02
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MjY1NzUsImV4cCI6MTcyOTQzMDE3NX0.y1M_eHm6B206f09deBmfqkrMDHWHHMuxI5WgL_-5z7w
 Content-Type: application/json
 
 {
