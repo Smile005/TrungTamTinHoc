@@ -11,10 +11,20 @@ const getMonHoc = async (req, res) => {
 
 const createMaMH = async (connection) => {
   try {
-    const query = `SELECT COUNT(maMonHoc) AS soLuong FROM MonHoc;`;
+    const query = `SELECT maMonHoc FROM MonHoc ORDER BY maMonHoc DESC LIMIT 1;`;
     const [result] = await connection.query(query);
-    const soLuong = result[0].soLuong || 0;
-    const nextMaMonHoc = `MH${(soLuong + 1).toString().padStart(4, '0')}`;
+
+    let nextMaMonHoc;
+
+    if (result.length > 0) {
+      const lastMaMonHoc = result[0].maMonHoc.toUpperCase();
+      const numericPart = parseInt(lastMaMonHoc.slice(2));
+      const newNumericPart = numericPart + 1;
+      nextMaMonHoc = `MH${newNumericPart.toString().padStart(4, '0')}`;
+    } else {
+      nextMaMonHoc = 'MH0001';
+    }
+
     return nextMaMonHoc;
   } catch (error) {
     throw new Error('Không thể tạo mã môn học');

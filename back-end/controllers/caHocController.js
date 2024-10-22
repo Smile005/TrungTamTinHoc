@@ -11,10 +11,20 @@ const getCaHoc = async (req, res) => {
 
 const createMaCa = async (connection) => {
   try {
-    const query = `SELECT COUNT(maCa) AS soLuong FROM CaHoc;`;
+    const query = `SELECT maCa FROM CaHoc ORDER BY maCa DESC LIMIT 1;`;
     const [result] = await connection.query(query);
-    const soLuong = result[0].soLuong || 0;
-    const nextMaCa = `CA${(soLuong + 1).toString().padStart(5, '0')}`;
+
+    let nextMaCa;
+
+    if (result.length > 0) {
+      const lastMaCa = result[0].maCa;
+      const numericPart = parseInt(lastMaCa.slice(2));
+      const newNumericPart = numericPart + 1;
+      nextMaCa = `Ca${newNumericPart.toString().padStart(4, '0')}`;
+    } else {
+      nextMaCa = 'Ca0001';
+    }
+
     return nextMaCa;
   } catch (error) {
     throw new Error('Không thể tạo mã ca học');

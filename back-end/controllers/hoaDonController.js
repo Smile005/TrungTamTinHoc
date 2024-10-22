@@ -11,10 +11,20 @@ const getHoaDon = async (req, res) => {
 
 const createMaHD = async (connection) => {
   try {
-    const query = `SELECT COUNT(maHoaDon) AS soLuong FROM HoaDon;`;
+    const query = `SELECT maHoaDon FROM HoaDon ORDER BY maHoaDon DESC LIMIT 1;`;
     const [result] = await connection.query(query);
-    const soLuong = result[0].soLuong || 0;
-    const nextMaHoaDon = `HD${(soLuong + 1).toString().padStart(5, '0')}`;
+
+    let nextMaHoaDon;
+
+    if (result.length > 0) {
+      const lastMaHoaDon = result[0].maHoaDon;
+      const numericPart = parseInt(lastMaHoaDon.slice(2));
+      const newNumericPart = numericPart + 1;
+      nextMaHoaDon = `HD${newNumericPart.toString().padStart(4, '0')}`;
+    } else {
+      nextMaHoaDon = 'HD0001';
+    }
+
     return nextMaHoaDon;
   } catch (error) {
     throw new Error('Không thể tạo mã hóa đơn');
