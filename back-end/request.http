@@ -329,13 +329,12 @@ Content-Type: application/json
 
 ### Lấy ds học viên theo lớp
 Get http://localhost:8081/api/lophoc/ds-hocvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MjY1NzUsImV4cCI6MTcyOTQzMDE3NX0.y1M_eHm6B206f09deBmfqkrMDHWHHMuxI5WgL_-5z7w
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDk3ODcsImV4cCI6MTcyOTYxMzM4N30.ZyfUe6et7DfgN7G1bjRG9RYtKIptR0QI3W2NmUXlY3M
 Content-Type: application/json
 
 ### Lấy ds học viên trong lớp theo mã lớp
 Get http://localhost:8081/api/lophoc/ds-hocvien02
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MjY1NzUsImV4cCI6MTcyOTQzMDE3NX0.y1M_eHm6B206f09deBmfqkrMDHWHHMuxI5WgL_-5z7w
-Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDk3ODcsImV4cCI6MTcyOTYxMzM4N30.ZyfUe6et7DfgN7G1bjRG9RYtKIptR0QI3W2NmUXlY3M
 
 {
   "maLopHoc": "LH0001"
