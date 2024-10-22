@@ -11,10 +11,20 @@ const getPhongHoc = async (req, res) => {
 
 const createMaPhong = async (connection) => {
   try {
-    const query = `SELECT COUNT(maPhong) AS soLuong FROM PhongHoc;`;
+    const query = `SELECT maPhong FROM PhongHoc ORDER BY maPhong DESC LIMIT 1;`;
     const [result] = await connection.query(query);
-    const soLuong = result[0].soLuong || 0;
-    const nextMaPhong = `PH${(soLuong + 1).toString().padStart(3, '0')}`;
+
+    let nextMaPhong;
+
+    if (result.length > 0) {
+      const lastMaPhong = result[0].maPhong.toUpperCase();
+      const numericPart = parseInt(lastMaPhong.slice(2));
+      const newNumericPart = numericPart + 1;
+      nextMaPhong = `PH${newNumericPart.toString().padStart(4, '0')}`;
+    } else {
+      nextMaPhong = 'PH0001';
+    }
+
     return nextMaPhong;
   } catch (error) {
     throw new Error('Không thể tạo mã phòng học');
