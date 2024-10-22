@@ -212,7 +212,7 @@ const TimKiem: React.FC = () => {
 
   return (
     <div>
-      <h1 className="page-name">Tìm Kiếm Dữ Liệu</h1>
+      <h1 className="page-name">TÌM KIẾM DỮ LIỆU</h1>
       <Input.Search
         placeholder="Nhập từ khóa tìm kiếm"
         onSearch={handleSearch}
@@ -220,20 +220,20 @@ const TimKiem: React.FC = () => {
         style={{ marginBottom: 20 }}
       />
       <Tabs defaultActiveKey="1">
-        <Tabs.TabPane tab="Ca Học" key="1">
-          <Table 
-            columns={caHocColumns} 
-            dataSource={filteredCaHoc} 
-            rowKey="maCa" 
-            pagination={{ pageSize: 7 }} 
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="Học Viên" key="2">
+        <Tabs.TabPane tab="Học Viên" key="1">
           <Table 
             columns={hocVienColumns} 
             dataSource={filteredHocVien} 
             rowKey="maHocVien" 
             pagination={{ pageSize: 7 }}
+          />
+        </Tabs.TabPane>
+        <Tabs.TabPane tab="Ca Học" key="2">
+          <Table 
+            columns={caHocColumns} 
+            dataSource={filteredCaHoc} 
+            rowKey="maCa" 
+            pagination={{ pageSize: 7 }} 
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="Lớp Học" key="3">

@@ -14,29 +14,19 @@ const initialState: LopHocState = {
   error: null,
 };
 
-// Thunk để fetch dữ liệu lớp học, chỉ gọi API nếu dữ liệu trong store trống
-export const fetchLopHoc = createAsyncThunk(
-  'lopHoc/fetchLopHoc',
-  async (_, { getState, rejectWithValue }) => {
-    const state = getState() as { lopHoc: LopHocState };
-    
-    // Nếu dữ liệu đã có, không cần gọi lại API
-    if (state.lopHoc.data.length > 0) {
-      return state.lopHoc.data;
-    }
-
-    try {
-      const response = await axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response.data);
-    }
+// Thunk để fetch dữ liệu lớp học
+export const fetchLopHoc = createAsyncThunk('lopHoc/fetchLopHoc', async (_, { rejectWithValue }) => {
+  try {
+    const response = await axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    return rejectWithValue(error.response.data);
   }
-);
+});
 
 const lopHocSlice = createSlice({
   name: 'lopHoc',
