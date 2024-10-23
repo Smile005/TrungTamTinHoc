@@ -17,7 +17,15 @@
 .custom-button {
   margin-right: 10px;
 }
+.custom-layout {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh; 
+}
 
+.custom-table-container {
+  overflow: hidden;
+}
 .custom-table .ant-table-thead>tr>th {
   background-color: #f0f1f1;
   color: black;

@@ -39,7 +39,7 @@
 
 .user-info-container {
   position: relative;
-  left: 1020px;
+  left: 980px;
   border-radius: '50%';
   
 }
@@ -63,4 +63,10 @@
 .user-icon{
   color: white;
   font-size: 20px;
+}
+.lg-change{
+  width: 120px;
+  top: 3px;
+  color: white;
+  position: relative;
 }

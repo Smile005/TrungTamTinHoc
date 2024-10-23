@@ -2,21 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined, FileDoneOutlined } from '@ant-design/icons';
 import SuaTaiKhoanModal from '../components/SuaTaiKhoanModal';
-import ThemTaiKhoanModal from '../components/ThemTaiKhoanModal'; 
-import DoiMatKhauModal from '../components/DoiMatKhauModal'; 
+import ThemTaiKhoanModal from '../components/ThemTaiKhoanModal';
+import DoiMatKhauModal from '../components/DoiMatKhauModal';
 import { TaiKhoanType } from '../types/TaiKhoanType';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { fetchTaiKhoanData } from '../store/slices/taiKhoanSlice';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 const { Search } = Input;
 
 const TaiKhoan: React.FC = () => {
+  const { t } = useTranslation(); // Sử dụng hook useTranslation để dịch
   const [searchText, setSearchText] = useState('');
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [isThemModalVisible, setIsThemModalVisible] = useState(false); 
-  const [isDoiMatKhauModalVisible, setIsDoiMatKhauModalVisible] = useState(false); 
+  const [isThemModalVisible, setIsThemModalVisible] = useState(false);
+  const [isDoiMatKhauModalVisible, setIsDoiMatKhauModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<TaiKhoanType | null>(null);
 
   const dispatch: AppDispatch = useDispatch();
@@ -28,7 +30,7 @@ const TaiKhoan: React.FC = () => {
 
   const onSearch = (value: string) => {
     const filtered = data.filter((item: TaiKhoanType) => {
-      const phanQuyenText = item.phanQuyen === 1 ? 'Quản trị viên' : item.phanQuyen === 2 ? 'Người dùng' : 'Khác';
+      const phanQuyenText = item.phanQuyen === 1 ? t('admin') : item.phanQuyen === 2 ? t('user') : t('other');
       return (
         item.maNhanVien.toLowerCase().includes(value.toLowerCase()) ||
         phanQuyenText.toLowerCase().includes(value.toLowerCase()) ||
@@ -57,10 +59,10 @@ const TaiKhoan: React.FC = () => {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      message.success('Xóa tài khoản thành công!');
-      dispatch(fetchTaiKhoanData()); // Reload dữ liệu sau khi xóa
+      message.success(t('deleteSuccess'));
+      dispatch(fetchTaiKhoanData()); 
     } catch (error) {
-      message.error('Xóa tài khoản thất bại!');
+      message.error(t('deleteFailed'));
     }
   };
 
@@ -84,48 +86,50 @@ const TaiKhoan: React.FC = () => {
     setSelectedRecord(null);
   };
 
+  // Cấu hình bảng, thêm thuộc tính scroll để tránh lỗi ResizeObserver
   const columns = [
     {
-      title: 'Mã Nhân Viên',
+      title: t('employeeId'),
       dataIndex: 'maNhanVien',
       key: 'maNhanVien',
       width: '20%',
     },
     {
-      title: 'Tên Nhân Viên',
+      title: t('employeeName'),
       dataIndex: 'tenNhanVien',
       key: 'tenNhanVien',
       width: '20%',
     },
     {
-      title: 'Phân Quyền',
+      title: t('role'),
       dataIndex: 'phanQuyen',
       key: 'phanQuyen',
       width: '20%',
       render: (phanQuyen: number): JSX.Element => {
-        let role = phanQuyen === 1 ? 'Quản trị viên' : phanQuyen === 2 ? 'Nhân viên' : 'Khác';
+        let role = phanQuyen === 1 ? t('admin') : phanQuyen === 2 ? t('user') : t('other');
         return <span>{role}</span>;
       },
     },
     {
-      title: 'Trạng Thái',
+      title: t('status'),
       dataIndex: 'trangThai',
       key: 'trangThai',
       render: (trangThai: string): JSX.Element => {
+        let translatedStatus = trangThai === 'Đang hoạt động' ? t('active') : t('inactive');
         let color = trangThai === 'Đang hoạt động' ? 'geekblue' : 'volcano';
-        return <Tag color={color}>{trangThai}</Tag>;
+        return <Tag color={color}>{translatedStatus}</Tag>;
       },
     },
     {
-      title: 'Quản lý',
+      title: t('action'),
       key: 'action',
       width: '10%',
       render: (_: any, record: TaiKhoanType) => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>
-            <Menu.Item key="changepw" icon={<FileDoneOutlined />}>Đổi Mật Khẩu</Menu.Item>
-            <Menu.Item key="edit" icon={<EditOutlined />}>Sửa Quyền và Trạng Thái</Menu.Item>
-            <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
+            <Menu.Item key="changepw" icon={<FileDoneOutlined />}>{t('changePassword')}</Menu.Item>
+            <Menu.Item key="edit" icon={<EditOutlined />}>{t('editRoleStatus')}</Menu.Item>
+            <Menu.Item key="delete" icon={<DeleteOutlined />}>{t('delete')}</Menu.Item>
           </Menu>
         );
         return (
@@ -139,31 +143,33 @@ const TaiKhoan: React.FC = () => {
 
   return (
     <Layout>
-      <h1 className='page-name'>QUẢN LÝ TÀI KHOẢN</h1>
+      <h1 className='page-name'>{t('accountManagement')}</h1>
       <div className="button-container">
         <Search
           className="custom-search"
-          placeholder="Tìm kiếm Mã Nhân Viên, Phân Quyền, Trạng Thái"
-          onSearch={onSearch} 
+          placeholder={t('searchPlaceholder')}
+          onSearch={onSearch}
           enterButton
           value={searchText}
-          onChange={(e) => setSearchText(e.target.value)} 
+          onChange={(e) => setSearchText(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>Thêm</Button>
-          <Button className='custom-button'>Nhập Excel</Button>
+          <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>{t('add')}</Button>
+          <Button className='custom-button'>{t('importExcel')}</Button>
         </div>
       </div>
 
-      <Table
-        className="custom-table"
-        columns={columns}
-        dataSource={onSearch(searchText)}
-        pagination={{ pageSize: 5 }}
-        rowKey="maNhanVien"
-        loading={loading}
-        style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
-      />
+      <div className="custom-table-container">
+        <Table
+          className="custom-table"
+          columns={columns}
+          dataSource={onSearch(searchText)}
+          pagination={{ pageSize: 5 }}
+          rowKey="maNhanVien"
+          loading={loading}
+          style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
+        />
+      </div>
 
       <SuaTaiKhoanModal
         visible={isEditModalVisible}
@@ -176,13 +182,13 @@ const TaiKhoan: React.FC = () => {
         visible={isThemModalVisible}
         onCancel={() => setIsThemModalVisible(false)}
         onSubmit={handleThemSubmit}
-        taiKhoanData={data} 
+        taiKhoanData={data}
       />
 
       <DoiMatKhauModal
         visible={isDoiMatKhauModalVisible}
         onCancel={handleDoiMatKhauCancel}
-        maNhanVien={selectedRecord?.maNhanVien || ''} 
+        maNhanVien={selectedRecord?.maNhanVien || ''}
       />
     </Layout>
   );
