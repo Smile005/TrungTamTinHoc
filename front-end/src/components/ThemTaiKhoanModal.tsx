@@ -3,17 +3,19 @@ import { Modal, Form, Input, Select, Button, message } from 'antd';
 import axios from 'axios';
 import { NhanVienType } from '../types/NhanVienType'; 
 import { TaiKhoanType } from '../types/TaiKhoanType';
+import { useTranslation } from 'react-i18next';  // Import useTranslation
 
 interface ThemTaiKhoanModalProps {
   visible: boolean;
   onCancel: () => void;
   onSubmit: (values: any) => void;
-  taiKhoanData: TaiKhoanType[];  // Nhận danh sách tài khoản
+  taiKhoanData: TaiKhoanType[];  
 }
 
 const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel, onSubmit, taiKhoanData }) => {
   const [form] = Form.useForm();
   const [nhanVienList, setNhanVienList] = useState<NhanVienType[]>([]);
+  const { t } = useTranslation();  // Sử dụng useTranslation
 
   useEffect(() => {
     const fetchNhanVien = async () => {
@@ -27,16 +29,15 @@ const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel
         setNhanVienList(response.data);
       } catch (error) {
         console.error('Lỗi khi lấy danh sách nhân viên:', error);
-        message.error('Không thể lấy danh sách nhân viên!');
+        message.error(t('errorFetchingEmployees'));
       }
     };
 
     if (visible) {
       fetchNhanVien();
     }
-  }, [visible]);
+  }, [visible, t]);
 
-  // Lọc danh sách nhân viên để chỉ hiển thị những nhân viên chưa có tài khoản
   const filteredNhanVienList = nhanVienList.filter((nv) =>
     !taiKhoanData.some((tk) => tk.maNhanVien === nv.maNhanVien)
   );
@@ -45,7 +46,7 @@ const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel
     if (!value || form.getFieldValue('matKhau') === value) {
       return Promise.resolve();
     }
-    return Promise.reject(new Error('Mật khẩu xác nhận không khớp!'));
+    return Promise.reject(new Error(t('passwordMismatch')));
   };
 
   const handleOk = () => {
@@ -69,12 +70,12 @@ const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel
               },
             }
           );
-          message.success('Thêm tài khoản thành công!');
+          message.success(t('addAccountSuccess'));
           onSubmit(values); 
           form.resetFields();
         } catch (error) {
           console.error('Lỗi khi thêm tài khoản:', error);
-          message.error('Không thể thêm tài khoản!');
+          message.error(t('addAccountFailed'));
         }
       })
       .catch((info) => {
@@ -84,25 +85,25 @@ const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel
 
   return (
     <Modal
-      title="Thêm Tài Khoản"
+      title={t('addAccount')}
       visible={visible}
       onCancel={onCancel}
       footer={[
         <Button key="cancel" onClick={onCancel}>
-          Hủy
+          {t('cancel')}
         </Button>,
         <Button key="submit" type="primary" onClick={handleOk}>
-          Thêm
+          {t('add')}
         </Button>,
       ]}
     >
       <Form form={form} layout="vertical">
         <Form.Item
-          label="Mã Nhân Viên"
+          label={t('employeeId')}
           name="maNhanVien"
-          rules={[{ required: true, message: 'Vui lòng chọn mã nhân viên!' }]}
+          rules={[{ required: true, message: t('selectEmployeeId') }]}
         >
-          <Select placeholder="Chọn mã nhân viên">
+          <Select placeholder={t('selectEmployee')}>
             {filteredNhanVienList.map((nv) => (
               <Select.Option key={nv.maNhanVien} value={nv.maNhanVien}>
                 {nv.maNhanVien} - {nv.tenNhanVien}
@@ -112,45 +113,45 @@ const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel
         </Form.Item>
 
         <Form.Item
-          label="Mật Khẩu"
+          label={t('password')}
           name="matKhau"
-          rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+          rules={[{ required: true, message: t('enterPassword') }]}
         >
-          <Input.Password placeholder="Nhập mật khẩu" />
+          <Input.Password placeholder={t('enterPassword')} />
         </Form.Item>
 
         <Form.Item
-          label="Xác Nhận Mật Khẩu"
+          label={t('confirmPassword')}
           name="xacNhanMatKhau"
           dependencies={['matKhau']}
           hasFeedback
           rules={[
-            { required: true, message: 'Vui lòng xác nhận mật khẩu!' },
+            { required: true, message: t('confirmPassword') },
             { validator: validatePassword }, 
           ]}
         >
-          <Input.Password placeholder="Xác nhận mật khẩu" />
+          <Input.Password placeholder={t('confirmPassword')} />
         </Form.Item>
 
         <Form.Item
-          label="Phân Quyền"
+          label={t('role')}
           name="phanQuyen"
-          rules={[{ required: true, message: 'Vui lòng chọn phân quyền!' }]}
+          rules={[{ required: true, message: t('selectRole') }]}
         >
-          <Select placeholder="Chọn phân quyền">
-            <Select.Option value={1}>Quản trị viên</Select.Option>
-            <Select.Option value={2}>Nhân viên</Select.Option>
+          <Select placeholder={t('selectRole')}>
+            <Select.Option value={1}>{t('admin')}</Select.Option>
+            <Select.Option value={2}>{t('user')}</Select.Option>
           </Select>
         </Form.Item>
 
         <Form.Item
-          label="Trạng Thái"
+          label={t('status')}
           name="trangThai"
-          rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+          rules={[{ required: true, message: t('selectStatus') }]}
         >
-          <Select placeholder="Chọn trạng thái">
-            <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
-            <Select.Option value="Đã khóa">Đã khóa</Select.Option>
+          <Select placeholder={t('selectStatus')}>
+            <Select.Option value="Đang hoạt động">{t('active')}</Select.Option>
+            <Select.Option value="Đã khóa">{t('inactive')}</Select.Option>
           </Select>
         </Form.Item>
       </Form>

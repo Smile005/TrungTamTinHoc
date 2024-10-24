@@ -51,7 +51,7 @@ const App: React.FC = () => {
   } = theme.useToken();
 
   const [collapsed, setCollapsed] = useState(false);
-  const { t } = useTranslation(); // Hook để dịch các chuỗi văn bản
+  const { t } = useTranslation();
   const [isUserInfoModalVisible, setIsUserInfoModalVisible] = useState(false);
   const [userList, setUserList] = useState<NhanVienType[]>([]);
   const location = useLocation();
@@ -122,7 +122,7 @@ const App: React.FC = () => {
                   alt="Logo"
                 />
                 <Link to="/">
-                  <h1 style={{ color: 'white', marginLeft: '15px' }}>Trung Tâm Prometheus</h1> 
+                  <h1 style={{ color: 'white', marginLeft: '15px', top: '50px' }}>{t('TTPrometheus')}</h1> 
                 </Link>
               </div>
 
