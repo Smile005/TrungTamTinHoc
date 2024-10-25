@@ -132,18 +132,6 @@ const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel
         >
           <Input.Password placeholder={t('confirmPassword')} />
         </Form.Item>
-
-        <Form.Item
-          label={t('role')}
-          name="phanQuyen"
-          rules={[{ required: true, message: t('selectRole') }]}
-        >
-          <Select placeholder={t('selectRole')}>
-            <Select.Option value={1}>{t('admin')}</Select.Option>
-            <Select.Option value={2}>{t('user')}</Select.Option>
-          </Select>
-        </Form.Item>
-
         <Form.Item
           label={t('status')}
           name="trangThai"

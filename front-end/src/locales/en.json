@@ -74,5 +74,6 @@
   "fullTime": "Full time",
   "partTime": "Part time",
   "edit": "Edit",
+  "edit&detail":"Edit & detail",
   "deleteError": "Failed to delete employee"
 }
