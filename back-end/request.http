@@ -53,7 +53,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 # Thêm ca học
 POST http://localhost:8081/api/cahoc/them-cahoc
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDU2NjYsImV4cCI6MTcyOTYwOTI2Nn0._LRM6nZYhMsBWwrwwLoEtzIjgZG9MWyCgjSXpjMKAf0
 Content-Type: application/json
 
 {
@@ -86,7 +86,7 @@ Authorization: Bearer <JWT_TOKEN>
 
 # Thêm hóa đơn
 POST http://localhost:8081/api/hoadon/them-hoadon
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDU2NjYsImV4cCI6MTcyOTYwOTI2Nn0._LRM6nZYhMsBWwrwwLoEtzIjgZG9MWyCgjSXpjMKAf0
 Content-Type: application/json
 
 {
@@ -107,7 +107,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 # Thêm học viên
 POST http://localhost:8081/api/hocvien/them-hocvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDE2MDMsImV4cCI6MTcyOTQwNTIwM30.CkDMVsqqGUFbHqhNEnSYkcL9prmd9XmJuCFnvMhMT24
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDU2NjYsImV4cCI6MTcyOTYwOTI2Nn0._LRM6nZYhMsBWwrwwLoEtzIjgZG9MWyCgjSXpjMKAf0
 Content-Type: application/json
 
 {
@@ -148,7 +148,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 # Thêm lớp học
 POST http://localhost:8081/api/lophoc/them-lophoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjgxMjAwMDYsImV4cCI6MTcyODEyMzYwNn0.sWdhoh0TN_iEphyYWMbZJx6J1liprIn4tVEhuLaabKg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDU2NjYsImV4cCI6MTcyOTYwOTI2Nn0._LRM6nZYhMsBWwrwwLoEtzIjgZG9MWyCgjSXpjMKAf0
 Content-Type: application/json
 
 {
@@ -329,12 +329,12 @@ Content-Type: application/json
 
 ### Lấy ds học viên theo lớp
 Get http://localhost:8081/api/lophoc/ds-hocvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MjY1NzUsImV4cCI6MTcyOTQzMDE3NX0.y1M_eHm6B206f09deBmfqkrMDHWHHMuxI5WgL_-5z7w
-Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MTAwODEsImV4cCI6MTcyOTYxMzY4MX0.pP42wmMH2fPT7JMwzS5gfXU7n6bOxGjCvxHq0Gz8SZ8
+Content-Type: application/json 
 
 ### Lấy ds học viên trong lớp theo mã lớp
 Get http://localhost:8081/api/lophoc/ds-hocvien02
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MjY1NzUsImV4cCI6MTcyOTQzMDE3NX0.y1M_eHm6B206f09deBmfqkrMDHWHHMuxI5WgL_-5z7w
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDk5MzYsImV4cCI6MTcyOTYxMzUzNn0.93472O10Pt_DPlnkf9PtKDgANWsRdRwf1zXze6mmxdY
 Content-Type: application/json
 
 {
