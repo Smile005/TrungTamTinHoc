@@ -105,12 +105,12 @@ const NhanVien: React.FC = () => {
       key: 'tenNhanVien',
     },
     {
-      title: t('role'), // Sử dụng dịch ngôn ngữ
+      title: t('role'), 
       dataIndex: 'chucVu',
       key: 'chucVu',
     },
     {
-      title: t('gender'), // Sử dụng dịch ngôn ngữ
+      title: t('gender'), 
       dataIndex: 'gioiTinh',
       key: 'gioiTinh',
       filters: [
@@ -124,12 +124,12 @@ const NhanVien: React.FC = () => {
       },
     },
     {
-      title: t('startDate'), // Sử dụng dịch ngôn ngữ
+      title: t('startDate'), 
       dataIndex: 'ngayVaoLam',
       key: 'ngayVaoLam',
     },
     {
-      title: t('status'), // Sử dụng dịch ngôn ngữ
+      title: t('status'), 
       dataIndex: 'trangThai',
       key: 'trangThai',
       filters: [
@@ -149,7 +149,7 @@ const NhanVien: React.FC = () => {
       render: (_: any, record: NhanVienType) => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>
-            <Menu.Item key="edit" icon={<EditOutlined />}>{t('edit')}</Menu.Item> {/* Sử dụng dịch ngôn ngữ */}
+            <Menu.Item key="edit" icon={<EditOutlined />}>{t('edit&detail')}</Menu.Item> {/* Sử dụng dịch ngôn ngữ */}
             <Menu.Item key="delete" icon={<DeleteOutlined />}>{t('delete')}</Menu.Item> {/* Sử dụng dịch ngôn ngữ */}
           </Menu>
         );
