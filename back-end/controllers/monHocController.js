@@ -42,12 +42,27 @@ const createMonHoc = async (req, res) => {
   try {
     await connection.beginTransaction();
 
-    const maMonHoc = await createMaMH(connection);
+    let maMonHoc = await createMaMH(connection);
+    let maxAttempts = 3;
+    let attempt = 0;
+    let isUnique = false;
 
-    await pool.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
-    const [existingMonHoc] = await connection.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
-    if (existingMonHoc.length > 0) {
-      return res.status(400).json({ message: 'Môn học đã tồn tại.' });
+    while (attempt < maxAttempts && !isUnique) {
+      const [existingMonHoc] = await connection.query(
+        'SELECT * FROM MonHoc WHERE maMonHoc = ?',
+        [maMonHoc]
+      );
+
+      if (existingMonHoc.length === 0) {
+        isUnique = true;
+      } else {
+        maMonHoc++;
+        attempt++;
+      }
+    }
+
+    if (!isUnique) {
+      return res.status(400).json({ message: `Không thể tạo môn học với mã ${maMonHoc}, hãy thử lại.` });
     }
 
     await connection.query(

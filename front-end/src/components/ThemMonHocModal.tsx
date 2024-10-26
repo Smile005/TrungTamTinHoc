@@ -33,9 +33,15 @@ const ThemMonHocModal: React.FC<ThemMonHocModalProps> = ({ visible, onCancel, on
                         },
                     })
                     .then((response) => {
-                        message.success('Thêm môn học thành công');
-                        onSubmit({ ...formattedValues, key: response.data.maMonHoc, maMonHoc: response.data.maMonHoc }); 
-                        form.resetFields(); 
+                        if (response.data && response.data.maMonHoc) { 
+                            message.success('Thêm môn học thành công');
+                            onSubmit({
+                                ...formattedValues,
+                                key: response.data.maMonHoc,
+                                maMonHoc: response.data.maMonHoc,
+                            });
+                            form.resetFields(); 
+                        }
                     })
                     .catch((error) => {
                         message.error('Lỗi khi thêm môn học: ' + error.message);
@@ -54,7 +60,7 @@ const ThemMonHocModal: React.FC<ThemMonHocModalProps> = ({ visible, onCancel, on
                 form.resetFields(); 
                 onCancel();
             }}
-            onOk={handleOk}
+            onOk={handleOk} 
         >
             <Form form={form} layout="vertical">
                 <Form.Item
@@ -78,10 +84,7 @@ const ThemMonHocModal: React.FC<ThemMonHocModalProps> = ({ visible, onCancel, on
                 >
                     <InputNumber min={0} style={{ width: '100%' }} />
                 </Form.Item>
-                <Form.Item
-                    name="moTa"
-                    label="Mô Tả"
-                >
+                <Form.Item name="moTa" label="Mô Tả">
                     <Input.TextArea />
                 </Form.Item>
                 <Form.Item
@@ -94,10 +97,7 @@ const ThemMonHocModal: React.FC<ThemMonHocModalProps> = ({ visible, onCancel, on
                         <Select.Option value="Tạm Ngưng">Tạm Ngưng</Select.Option>
                     </Select>
                 </Form.Item>
-                <Form.Item
-                    name="ghiChu"
-                    label="Ghi Chú"
-                >
+                <Form.Item name="ghiChu" label="Ghi Chú">
                     <Input.TextArea />
                 </Form.Item>
             </Form>
