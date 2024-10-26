@@ -74,6 +74,7 @@
   "fullTime": "Toàn thời gian",
   "partTime": "Bán thời gian",
   "edit": "Sửa",
-  "edit&detail":"Xem và sửa thông tin",
-  "deleteError": "Lỗi khi xóa nhân viên"
+  "edit&detail": "Xem và sửa thông tin",
+  "deleteError": "Lỗi khi xóa nhân viên",
+  "exportExcel": "Xuất file Excel"
 }

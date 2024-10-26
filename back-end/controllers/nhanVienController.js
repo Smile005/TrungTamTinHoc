@@ -1,5 +1,7 @@
 const pool = require('../config/db');
 const jwt = require('jsonwebtoken');
+const XLSX = require('xlsx');
+const fs = require('fs');
 
 const getNhanVien = async (req, res) => {
   try {
@@ -197,5 +199,42 @@ const xoaNhanVien = async (req, res) => {
     res.status(500).json({ message: 'Xóa nhân viên không thành công', error });
   }
 }
+const exportNhanVienToExcel = async (req, res) => {
+  try {
+    const [results] = await pool.query(`
+      SELECT 
+        maNhanVien,
+        tenNhanVien,
+        img,
+        chucVu,
+        DATE_FORMAT(ngayVaoLam, '%d/%m/%Y') AS ngayVaoLam,
+        gioiTinh,
+        DATE_FORMAT(ngaySinh, '%d/%m/%Y') AS ngaySinh,
+        sdt,
+        email,
+        diaChi,
+        trangThai,
+        ghiChu
+      FROM NhanVien
+    `);
 
-module.exports = { getNhanVien, createNhanVien, updateNhanVien, updateProfile, xoaNhanVien };
+    const worksheet = XLSX.utils.json_to_sheet(results);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'NhanVien');
+
+    const filePath = './nhanvien_data.xlsx';
+    XLSX.writeFile(workbook, filePath);
+
+    res.download(filePath, 'nhanvien_data.xlsx', (err) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Tải file thất bại.' });
+      }
+      fs.unlinkSync(filePath);
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error });
+  }
+};
+
+module.exports = { getNhanVien, createNhanVien, updateNhanVien, updateProfile, xoaNhanVien, exportNhanVienToExcel  };

@@ -9,12 +9,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { fetchNhanVienData } from '../store/slices/nhanVienSlice';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import { useTranslation } from 'react-i18next'; 
 
 const { Search } = Input;
 
 const NhanVien: React.FC = () => {
-  const { t } = useTranslation(); // Sử dụng hook useTranslation để dịch
+  const { t } = useTranslation(); 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isThemModalVisible, setIsThemModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<NhanVienType | null>(null);
@@ -68,10 +68,9 @@ const NhanVien: React.FC = () => {
     dispatch(fetchNhanVienData()); 
   };
 
-  // Hàm xóa nhân viên
   const deleteNhanVien = async (maNhanVien: string | undefined) => {
     if (!maNhanVien) {
-      message.error(t('deleteError')); // Sử dụng dịch ngôn ngữ
+      message.error(t('deleteError')); 
       return;
     }
 
@@ -85,22 +84,44 @@ const NhanVien: React.FC = () => {
           },
         }
       );
-      message.success(t('deleteSuccess')); // Sử dụng dịch ngôn ngữ
+      message.success(t('deleteSuccess')); 
       dispatch(fetchNhanVienData()); 
     } catch (error) {
       console.error('Lỗi khi xóa nhân viên:', error);
-      message.error(t('deleteError')); // Sử dụng dịch ngôn ngữ
+      message.error(t('deleteError')); 
+    }
+  };
+
+  const handleExportExcel = async () => {
+    try {
+      const response = await axios.get('http://localhost:8081/api/nhanvien/export-nhanvien', {
+        responseType: 'blob', 
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'nhanvien_data.xlsx'); 
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Lỗi khi tải file Excel:', error);
+      message.error(t('exportError'));
     }
   };
 
   const columns: TableColumnsType<NhanVienType> = [
     {
-      title: t('employeeId'), // Sử dụng dịch ngôn ngữ
+      title: t('employeeId'), 
       dataIndex: 'maNhanVien',
       key: 'maNhanVien',
     },
     {
-      title: t('employeeName'), // Sử dụng dịch ngôn ngữ
+      title: t('employeeName'), 
       dataIndex: 'tenNhanVien',
       key: 'tenNhanVien',
     },
@@ -144,13 +165,13 @@ const NhanVien: React.FC = () => {
       },
     },
     {
-      title: t('action'), // Sử dụng dịch ngôn ngữ
+      title: t('action'), 
       key: 'action',
       render: (_: any, record: NhanVienType) => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>
-            <Menu.Item key="edit" icon={<EditOutlined />}>{t('edit&detail')}</Menu.Item> {/* Sử dụng dịch ngôn ngữ */}
-            <Menu.Item key="delete" icon={<DeleteOutlined />}>{t('delete')}</Menu.Item> {/* Sử dụng dịch ngôn ngữ */}
+            <Menu.Item key="edit" icon={<EditOutlined />}>{t('edit&detail')}</Menu.Item> 
+            <Menu.Item key="delete" icon={<DeleteOutlined />}>{t('delete')}</Menu.Item> 
           </Menu>
         );
         return (
@@ -164,17 +185,18 @@ const NhanVien: React.FC = () => {
 
   return (
     <Layout>
-      <h1 className='page-name'>{t('employeeManagement')}</h1> {/* Sử dụng dịch ngôn ngữ */}
+      <h1 className='page-name'>{t('employeeManagement')}</h1>
       <div className="button-container">
         <Search
           className="custom-search"
-          placeholder={t('searchPlaceholder')} // Sử dụng dịch ngôn ngữ
+          placeholder={t('searchPlaceholder')} 
           onSearch={onSearch}
           enterButton
         />
         <div className="button-container">
-          <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>{t('add')}</Button> {/* Sử dụng dịch ngôn ngữ */}
-          <Button className='custom-button'>{t('importExcel')}</Button> {/* Sử dụng dịch ngôn ngữ */}
+          <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>{t('add')}</Button> 
+          <Button className='custom-button' onClick={handleExportExcel}>{t('exportExcel')}</Button> 
+          <Button className='custom-button'>{t('importExcel')}</Button>
         </div>
       </div>
       <Table
