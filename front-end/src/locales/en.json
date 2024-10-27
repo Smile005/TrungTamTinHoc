@@ -74,5 +74,7 @@
   "fullTime": "Full time",
   "partTime": "Part time",
   "edit": "Edit",
-  "deleteError": "Failed to delete employee"
+  "edit&detail":"Edit & detail",
+  "deleteError": "Failed to delete employee",
+  "exportExcel": "Export Excel"
 }

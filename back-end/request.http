@@ -219,11 +219,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 # Thêm môn học
 POST http://localhost:8081/api/monhoc/them-monhoc
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5MzE3OTgsImV4cCI6MTcyOTkzNTM5OH0.qsjyFfuLIFfvSpjEhT60mTIXntu8-3P-impOGnd9Ipk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5Mzg5MzEsImV4cCI6MTcyOTk0MjUzMX0.1XihSl0DCTdRrNgj7llh0nEI42wZpUPW0agBoQpg0pY
 Content-Type: application/json
 
 {
-  "tenMonHoc": "Toán học",
+  "tenMonHoc": "Ts8",
   "soBuoiHoc": 20,
   "hocPhi": 500000,
   "moTa": "Môn toán căn bản"
@@ -388,11 +388,11 @@ Content-Type: application/json
 
 ### Xóa môn học
 POST http://localhost:8081/api/monhoc/xoa-monhoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDA0NzIsImV4cCI6MTcyOTQwNDA3Mn0.-UMrs3ia0DnKQcv4MmGOOuJFl9q_kBl8ea4qiOLpMzs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5Mzg5MzEsImV4cCI6MTcyOTk0MjUzMX0.1XihSl0DCTdRrNgj7llh0nEI42wZpUPW0agBoQpg0pY
 Content-Type: application/json
 
 {
-  "maMonHoc": "MH0005"
+  "maMonHoc": "MH0019"
 }
 
 
@@ -457,3 +457,8 @@ Content-Type: application/json
 {
   "maHocVien": "HV0001"
 }
+
+### xuat xlsx
+GET http://localhost:8081/api/nhanvien/export-nhanvien
+Authorization: Bearer
+
