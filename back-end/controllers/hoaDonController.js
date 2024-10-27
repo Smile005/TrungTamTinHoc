@@ -65,6 +65,7 @@ const createMaHD = async (connection) => {
 const createHoaDon = async (req, res) => {
   const connection = await pool.getConnection();
   const { maNhanVien, maHocVien, ghiChu, chiTietHD, ngayTaoHoaDon } = req.body;
+  const { maNhanVien, maHocVien, ghiChu, chiTietHD, ngayTaoHoaDon } = req.body;
 
   if (!maNhanVien || !maHocVien) {
     return res.status(400).json({ message: 'Mã nhân viên và mã học viên là bắt buộc.' });
