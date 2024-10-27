@@ -92,8 +92,6 @@ Content-Type: application/json
 {
   "maNhanVien": "NV0001",
   "maHocVien": "HV0003",
-  "ngayTaoHoaDon": "2024-10-05T08:00:00",
-  "trangThai": "Đã thanh toán",
   "chiTietHD": [
     {
       "maLopHoc": "LH0001"
@@ -149,14 +147,13 @@ Content-Type: application/json
 
 # Lấy danh sách lớp học
 GET http://localhost:8081/api/lophoc/ds-lophoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NDIyMDQsImV4cCI6MTcyOTk0NTgwNH0.bTIFV1VUQm0FZtq0w_hAQtVWBvqAwuitYP8x11OUWFk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTY0MTQsImV4cCI6MTczMDAwMDAxNH0.AeGjUXVY8vqPmtMf8dYpDoMZey25im_sV5yf3K2JSHw
 
 ###
 
 # Lấy danh sách lớp học đang hoạt động
 GET http://localhost:8081/api/lophoc/ds-lophocHD
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NDIyMDQsImV4cCI6MTcyOTk0NTgwNH0.bTIFV1VUQm0FZtq0w_hAQtVWBvqAwuitYP8x11OUWFk
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTY0MTQsImV4cCI6MTczMDAwMDAxNH0.AeGjUXVY8vqPmtMf8dYpDoMZey25im_sV5yf3K2JSHw
 ###
 
 # Lấy danh sách lớp theo mã học viên

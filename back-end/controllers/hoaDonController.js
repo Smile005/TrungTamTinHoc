@@ -64,10 +64,10 @@ const createMaHD = async (connection) => {
 
 const createHoaDon = async (req, res) => {
   const connection = await pool.getConnection();
-  const { maNhanVien, maHocVien, ngayTaoHoaDon, trangThai, ghiChu, chiTietHD } = req.body;
+  const { maNhanVien, maHocVien, ghiChu, chiTietHD, ngayTaoHoaDon } = req.body;
 
-  if (!maNhanVien || !maHocVien || !ngayTaoHoaDon) {
-    return res.status(400).json({ message: 'Mã nhân viên, mã học viên và ngày tạo hóa đơn là bắt buộc.' });
+  if (!maNhanVien || !maHocVien) {
+    return res.status(400).json({ message: 'Mã nhân viên và mã học viên là bắt buộc.' });
   }
 
   if (!chiTietHD || !Array.isArray(chiTietHD) || chiTietHD.length === 0) {
@@ -79,9 +79,11 @@ const createHoaDon = async (req, res) => {
 
     const maHoaDon = await createMaHD(connection);
 
+    const currentDate = ngayTaoHoaDon || new Date();
+
     await connection.query(
       'INSERT INTO HoaDon (maHoaDon, maNhanVien, maHocVien, ngayTaoHoaDon, trangThai, ghiChu) VALUES (?, ?, ?, ?, ?, ?)',
-      [maHoaDon, maNhanVien, maHocVien, ngayTaoHoaDon || new Date(), trangThai || 'Đã thanh toán', ghiChu || ""]
+      [maHoaDon, maNhanVien, maHocVien, currentDate, 'Đã Đóng Học Phí', ghiChu || ""]
     );
 
     for (const chiTiet of chiTietHD) {
@@ -92,9 +94,8 @@ const createHoaDon = async (req, res) => {
           [maHoaDon, maLopHoc]
         );
 
-        // Update the status of associated classes in DsLopHoc
         await connection.query(
-          'UPDATE DsLopHoc SET trangThai = "Đã thanh toán" WHERE maLopHoc = ? AND maHocVien = ?',
+          'UPDATE DsLopHoc SET trangThai = "Đã Đóng Học Phí" WHERE maLopHoc = ? AND maHocVien = ?',
           [maLopHoc, maHocVien]
         );
       }
@@ -109,6 +110,5 @@ const createHoaDon = async (req, res) => {
     connection.release();
   }
 };
-
 
 module.exports = { getHoaDon, createHoaDon };

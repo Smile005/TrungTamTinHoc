@@ -83,7 +83,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
         setMonHocList(monHocResponse.data);
         setLopHocList(lopHocResponse.data);
       } catch (error) {
-        message.error('Lỗi khi lấy dữ liệu');
+        message.error('Lỗi khi lấy dữ liệu: ');
       }
     };
 
@@ -393,7 +393,6 @@ const HoaDonForm: React.FC<{
       const payload = {
         maNhanVien: maNhanVien, // Mã nhân viên cố định
         maHocVien: hocVien.maHocVien, // Lấy mã học viên từ props
-        ngayTaoHoaDon: ngayTaoHoaDon, // Ngày tạo hóa đơn hiện tại
         trangThai: 'Đã thanh toán', // Trạng thái hóa đơn
         chiTietHD: chiTietHD, // Danh sách chi tiết hóa đơn
       };
