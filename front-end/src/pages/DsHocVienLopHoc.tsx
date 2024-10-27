@@ -139,8 +139,7 @@ const DsHocVienLopHoc: React.FC = () => {
             enterButton
           />
           <div className="button-container">
-            <Button className='custom-button'>Thêm</Button>
-            <Button className='custom-button'>Nhập Excel</Button>
+            <Button className='custom-button'>Xuất Excel</Button>
           </div>
         </div>
 

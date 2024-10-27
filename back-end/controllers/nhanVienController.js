@@ -205,7 +205,6 @@ const exportNhanVienToExcel = async (req, res) => {
       SELECT 
         maNhanVien,
         tenNhanVien,
-        img,
         chucVu,
         DATE_FORMAT(ngayVaoLam, '%d/%m/%Y') AS ngayVaoLam,
         gioiTinh,

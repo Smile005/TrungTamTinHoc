@@ -22,6 +22,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
   const [selectedLopHoc, setSelectedLopHoc] = useState<string | undefined>(undefined);
   const [registeredClasses, setRegisteredClasses] = useState<{ maLopHoc: string; tenLopHoc: string; trangThai: string }[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [invoiceDetails, setInvoiceDetails] = useState<ChiTietHDType[]>([]); // State để giữ chi tiết hóa đơn
 
   const steps = [
     {
@@ -42,11 +43,11 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
     },
     {
       title: 'Bước 2: Tạo hóa đơn',
-      content: <HoaDonForm hocVien={hocVien} selectedRowKeys={selectedRowKeys} setSelectedRowKeys={setSelectedRowKeys} />,
+      content: <HoaDonForm hocVien={hocVien} selectedRowKeys={selectedRowKeys} setSelectedRowKeys={setSelectedRowKeys} setInvoiceDetails={setInvoiceDetails} />, // Truyền setInvoiceDetails
     },
     {
       title: 'Bước 3: Thông tin hóa đơn',
-      content: 'Xem lại và xác nhận thông tin hóa đơn',
+      content: <InvoiceSummary invoiceDetails={invoiceDetails} />, // Hiển thị chi tiết hóa đơn
     },
   ];
 
@@ -112,6 +113,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
             type="primary"
             onClick={() => {
               message.success('Processing complete!');
+              setCurrent(0);
               onCancel();
             }}
           >
@@ -171,12 +173,7 @@ const LopHocForm: React.FC<{
       title: 'Thao tác',
       key: 'action',
       render: (text: string, record: { maLopHoc: string }) => (
-        <Button
-          type="link"
-          onClick={() => handleDeleteLopHoc(record.maLopHoc)}
-        >
-          Xóa
-        </Button>
+        <Button type="link" onClick={() => handleDeleteLopHoc(record.maLopHoc)}>Xóa</Button>
       ),
     },
   ];
@@ -267,65 +264,62 @@ const LopHocForm: React.FC<{
       </p>
 
       <h1>Danh sách đăng ký</h1>
-      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignContent: 'space-between' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'space-between' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px' }}>
-            <Col span={12}>
-              <Select
-                placeholder="Chọn môn học"
-                style={{ width: '100%' }}
-                value={selectedMonHoc}
-                onChange={(value) => {
-                  setSelectedMonHoc(value);
-                  setSelectedLopHoc(undefined);
-                }}
-              >
-                {monHocList.map((monHoc) => (
-                  <Select.Option key={monHoc.maMonHoc} value={monHoc.maMonHoc}>
-                    {monHoc.maMonHoc} - {monHoc.tenMonHoc}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Col>
-            <Col span={12}>
-              <Select
-                placeholder="Chọn lớp học"
-                style={{ width: '100%' }}
-                value={selectedLopHoc}
-                onChange={setSelectedLopHoc}
-                disabled={!selectedMonHoc}
-              >
-                {filteredLopHocList.map((lopHoc) => (
-                  <Select.Option key={lopHoc.maLopHoc} value={lopHoc.maLopHoc}>
-                    {lopHoc.maLopHoc} - {lopHoc.tenLopHoc}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Col>
-          </div>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', width: '100%' }}>
+          <Col span={12}>
+            <Select
+              placeholder="Chọn môn học"
+              style={{ width: '100%' }}
+              value={selectedMonHoc}
+              onChange={(value) => {
+                setSelectedMonHoc(value);
+                setSelectedLopHoc(undefined);
+              }}
+            >
+              {monHocList.map((monHoc) => (
+                <Select.Option key={monHoc.maMonHoc} value={monHoc.maMonHoc}>
+                  {monHoc.maMonHoc} - {monHoc.tenMonHoc}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col>
+          <Col span={12}>
+            <Select
+              placeholder="Chọn lớp học"
+              style={{ width: '100%' }}
+              value={selectedLopHoc}
+              onChange={setSelectedLopHoc}
+              disabled={!selectedMonHoc}
+            >
+              {filteredLopHocList.map((lopHoc) => (
+                <Select.Option key={lopHoc.maLopHoc} value={lopHoc.maLopHoc}>
+                  {lopHoc.maLopHoc} - {lopHoc.tenLopHoc}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col>
+        </div>
 
-          <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px' }}>
-            <Input
-              addonBefore="Số lượng đăng ký"
-              value={selectedLopHocObj ? `${selectedLopHocObj.soLuongHV} / ${selectedLopHocObj.soLuong}` : ''}
-              disabled
-            />
-            <Input
-              addonBefore="Trạng thái"
-              value={selectedLopHocObj ? selectedLopHocObj.trangThai : ''}
-              disabled
-            />
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', width: '100%' }}>
+          <Input
+            addonBefore="Số lượng đăng ký"
+            value={selectedLopHocObj ? `${selectedLopHocObj.soLuongHV} / ${selectedLopHocObj.soLuong}` : ''}
+            disabled
+          />
+          <Input
+            addonBefore="Trạng thái"
+            value={selectedLopHocObj ? selectedLopHocObj.trangThai : ''}
+            disabled
+          />
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignContent: 'space-between', marginLeft: '20px' }}>
-          <Button
-            type="primary"
-            style={{ marginTop: '5px' }}
-            onClick={dangKy}
-          >
-            Đăng ký
-          </Button>
-        </div>
+
+        <Button
+          type="primary"
+          style={{ marginTop: '10px', width: '250px' }}
+          onClick={dangKy}
+        >
+          Đăng ký
+        </Button>
       </div>
 
       <h1>Lớp học đã đăng ký</h1>
@@ -334,16 +328,18 @@ const LopHocForm: React.FC<{
   );
 };
 
+// Hóa đơn
 const HoaDonForm: React.FC<{
   hocVien: { maHocVien: string; tenHocVien: string };
   selectedRowKeys: React.Key[];
   setSelectedRowKeys: (value: React.Key[]) => void;
-}> = ({ hocVien, selectedRowKeys, setSelectedRowKeys }) => {
+  setInvoiceDetails: (details: ChiTietHDType[]) => void; // Thêm setInvoiceDetails prop
+}> = ({ hocVien, selectedRowKeys, setSelectedRowKeys, setInvoiceDetails }) => {
   const [dataSource, setDataSource] = useState<ChiTietHDType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [totalAmount, setTotalAmount] = useState<number>(0);
-  const maNhanVien = "NV0001"; // Mã nhân viên cần được lấy từ hệ thống hoặc context thực tế
-  const ngayTaoHoaDon = new Date().toISOString(); // Lấy ngày tạo hóa đơn hiện tại
+  const maNhanVien = "NV0001"; 
+  const ngayTaoHoaDon = new Date().toISOString(); 
 
   const columns = [
     {
@@ -364,6 +360,7 @@ const HoaDonForm: React.FC<{
       dataIndex: 'trangThai',
     },
   ];
+  
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -389,30 +386,34 @@ const HoaDonForm: React.FC<{
       const chiTietHD = selectedRowKeys.map((maLopHoc) => ({
         maLopHoc: maLopHoc as string,
       }));
-       
+
       const payload = {
-        maNhanVien: maNhanVien, // Mã nhân viên cố định
-        maHocVien: hocVien.maHocVien, // Lấy mã học viên từ props
-        ngayTaoHoaDon: ngayTaoHoaDon, // Ngày tạo hóa đơn hiện tại
-        trangThai: 'Đã thanh toán', // Trạng thái hóa đơn
-        chiTietHD: chiTietHD, // Danh sách chi tiết hóa đơn
+        maNhanVien: maNhanVien,
+        maHocVien: hocVien.maHocVien,
+        chiTietHD: chiTietHD,
       };
 
-      const token = localStorage.getItem('token'); // Lấy token từ localStorage
-
-      await axios.post('http://localhost:8081/api/hoadon/them-hoadon', payload, {
+      const response = await axios.post('http://localhost:8081/api/hoadon/them-hoadon', payload, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'application/json',
         },
       });
 
       message.success('Tạo hóa đơn thành công!');
+      
+      const invoiceDetailsResponse = await axios.get(`http://localhost:8081/api/hoadon/ds-hoadon?maHocVien=${hocVien.maHocVien}&maHoaDon=${response.data.maHoaDon}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      setInvoiceDetails(invoiceDetailsResponse.data); 
     } catch (error) {
       console.error('Error details:', error);
       console.log('Dòng đã chọn khi có lỗi:', selectedRowKeys);
       message.error('Lỗi khi tạo hóa đơn');
-   }
+    }
   };
 
   useEffect(() => {
@@ -472,6 +473,58 @@ const HoaDonForm: React.FC<{
       />
       <h1>Thành tiền: {totalAmount.toLocaleString()} VND</h1>
       <Button type="primary" onClick={handleCreateInvoice}>Tạo hóa đơn</Button>
+    </>
+  );
+};
+
+const InvoiceSummary: React.FC<{ invoiceDetails: ChiTietHDType[] }> = ({ invoiceDetails }) => {
+  const [currentMaHoaDon, setCurrentMaHoaDon] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (invoiceDetails.length > 0) {
+      setCurrentMaHoaDon(invoiceDetails[0]?.maHoaDon);
+    }
+  }, [invoiceDetails]);
+
+  const filteredInvoiceDetails = invoiceDetails.filter(item => item.maHoaDon === currentMaHoaDon);
+
+  const columns = [
+    {
+      title: 'Mã hóa đơn',
+      dataIndex: 'maHoaDon',
+    },
+    {
+      title: 'Mã lớp học',
+      dataIndex: 'maLopHoc',
+    },
+    {
+      title: 'Học viên',
+      dataIndex: 'tenHocVien',
+    },
+    {
+      title: 'Mã nhân viên',
+      dataIndex: 'maNhanVien',
+    },
+    {
+      title: 'Tên nhân viên',
+      dataIndex: 'tenNhanVien',
+    },
+    {
+      title: 'Ngày sinh',
+      dataIndex: 'ngaySinh',
+      render: (ngaySinh: string) => new Date(ngaySinh).toLocaleDateString(),
+    },
+    {
+      title: 'Học phí',
+      dataIndex: 'hocPhi',
+      render: (hocPhi: number) => hocPhi ? hocPhi.toLocaleString() : 'Không có dữ liệu',
+    },
+  ];
+
+  return (
+    <>
+      <h1>Chi tiết hóa đơn</h1>
+      <Table<ChiTietHDType> columns={columns} dataSource={filteredInvoiceDetails} pagination={false} />
     </>
   );
 };

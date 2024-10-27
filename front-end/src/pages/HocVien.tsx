@@ -6,9 +6,10 @@ import ThemHocVienModal from '../components/ThemHocVienModal';
 import SuaHocVienModal from '../components/SuaHocVienModal';
 import '../styles/TableCustom.css';
 import ImportExcelModal from '../components/ImportExcelModal';
+import DangKyLopHoc from '../components/DangKyLopHoc'; 
 import axios from 'axios';
 import moment from 'moment';
-import { Key } from 'antd/es/table/interface'; // Import Key từ Ant Design
+import { Key } from 'antd/es/table/interface'; 
 
 const { Search } = Input;
 
@@ -16,7 +17,9 @@ const HocVien: React.FC = () => {
     const [isThemHocVienModalVisible, setIsThemHocVienModalVisible] = useState(false);
     const [isImportModalVisible, setIsImportModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+    const [isDangKyModalVisible, setIsDangKyModalVisible] = useState(false); 
     const [selectedRecord, setSelectedRecord] = useState<HocVienType | null>(null);
+    const [selectedHocVien, setSelectedHocVien] = useState<HocVienType | null>(null); 
     const [data, setData] = useState<HocVienType[]>([]); 
     const [filteredData, setFilteredData] = useState<HocVienType[]>([]); 
     const [loading, setLoading] = useState<boolean>(false); 
@@ -26,7 +29,7 @@ const HocVien: React.FC = () => {
         try {
             const response = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`, 
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
             });
             setData(response.data); 
@@ -47,17 +50,16 @@ const HocVien: React.FC = () => {
             setSelectedRecord(record);
             setIsEditModalVisible(true);
         } else if (e.key === 'delete') {
-            deleteHocVien(record.maHocVien); // Gọi hàm xóa học viên
+            deleteHocVien(record.maHocVien);
+        } else if (e.key === 'dangKy') { 
+            setSelectedHocVien(record); 
+            setIsDangKyModalVisible(true); 
         }
     };
 
-    const showHocVienModal = () => {
-        setIsThemHocVienModalVisible(true);
-    };
+    const showHocVienModal = () => setIsThemHocVienModalVisible(true);
 
-    const showImportModal = (type: 'hocvien' | 'nhanvien') => {
-        setIsImportModalVisible(true);
-    };
+    const showImportModal = (type: 'hocvien' | 'nhanvien') => setIsImportModalVisible(true);
 
     const handleThemHocVien = (hocVien: HocVienType) => {
         fetchHocVien();
@@ -73,6 +75,7 @@ const HocVien: React.FC = () => {
         setIsThemHocVienModalVisible(false);
         setIsEditModalVisible(false);
         setIsImportModalVisible(false);
+        setIsDangKyModalVisible(false); // Đóng modal đăng ký
     };
 
     const onSearch = (value: string) => {
@@ -86,7 +89,6 @@ const HocVien: React.FC = () => {
         setFilteredData(filtered); 
     };
 
-    // Hàm xóa học viên
     const deleteHocVien = async (maHocVien: string | undefined) => {
         if (!maHocVien) {
             message.error('Không thể xóa: Mã học viên không hợp lệ.');
@@ -104,7 +106,7 @@ const HocVien: React.FC = () => {
                 }
             );
             message.success('Xóa học viên thành công');
-            fetchHocVien(); // Tải lại danh sách sau khi xóa
+            fetchHocVien(); 
         } catch (error) {
             console.error('Lỗi khi xóa học viên:', error);
             message.error('Lỗi khi xóa học viên');
@@ -133,7 +135,6 @@ const HocVien: React.FC = () => {
                 { text: 'Nữ', value: 'Nữ' },
                 { text: 'Undefined', value: 'Undefined' },
             ],
-            // Định nghĩa kiểu cho `value` và `record`
             onFilter: (value: Key | boolean, record: HocVienType) => {
                 if (value === 'Undefined') {
                     return record.gioiTinh === undefined;
@@ -181,22 +182,13 @@ const HocVien: React.FC = () => {
                 { text: 'Đang học', value: 'Đang học' },
                 { text: 'Đã tốt nghiệp', value: 'Đã tốt nghiệp' },
             ],
-            // Sửa kiểu dữ liệu `value` thành `Key | boolean`
             onFilter: (value: Key | boolean, record: HocVienType) => record.tinhTrang?.indexOf(value as string) === 0,
             render: (tinhTrang: string): JSX.Element => {
                 let color = '';
-                if (tinhTrang === 'Đang Học') {
-                    color = 'geekblue';
-                } else if (tinhTrang === 'Đã Tốt Nghiệp') {
-                    color = 'green';
-                } else if (tinhTrang === 'Chưa Đăng Ký') {
-                    color = 'volcano';
-                }
-                return (
-                    <Tag color={color} key={tinhTrang}>
-                        {tinhTrang}
-                    </Tag>
-                );
+                if (tinhTrang === 'Đang Học') color = 'geekblue';
+                else if (tinhTrang === 'Đã Tốt Nghiệp') color = 'green';
+                else if (tinhTrang === 'Chưa Đăng Ký') color = 'volcano';
+                return <Tag color={color} key={tinhTrang}>{tinhTrang}</Tag>;
             },
         },
         {
@@ -212,7 +204,13 @@ const HocVien: React.FC = () => {
                 const menu = (
                     <Menu onClick={(e) => handleMenuClick(e, record)}>
                         <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
-                        <Menu.Item key="dangKy" icon={<FormOutlined />}>Đăng ký</Menu.Item>
+                        <Menu.Item 
+                            key="dangKy" 
+                            icon={<FormOutlined />} 
+                            disabled={record.tinhTrang === 'Đã Tốt Nghiệp'} 
+                        >
+                            Đăng ký
+                        </Menu.Item>
                         <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
                     </Menu>
                 );
@@ -222,7 +220,7 @@ const HocVien: React.FC = () => {
                     </Dropdown>
                 );
             },
-        },
+        }        
     ];
 
     return (
@@ -268,6 +266,12 @@ const HocVien: React.FC = () => {
                 visible={isImportModalVisible}
                 onCancel={handleCancel}
                 modalType="hocvien"
+            />
+
+            <DangKyLopHoc
+                visible={isDangKyModalVisible}
+                onCancel={handleCancel}
+                hocVien={selectedHocVien || {} as HocVienType} 
             />
         </Layout>
     );

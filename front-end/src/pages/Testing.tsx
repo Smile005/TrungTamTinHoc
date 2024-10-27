@@ -5,7 +5,7 @@ import { HocVienType } from '../types/HocVienType';
 
 const hocVienMau: HocVienType = {
   key: '1',                      // Key dùng để phân biệt đối tượng trong danh sách
-  maHocVien: 'HV0004',             // Mã học viên, khóa chính
+  maHocVien: 'HV00004',             // Mã học viên, khóa chính
   tenHocVien: 'Nguyễn Văn C',     // Tên học viên
   img: 'https://example.com/image.jpg', // Link ảnh, có thể null
   ngayVaoHoc: '2024-01-15',       // Ngày vào học, sử dụng định dạng chuỗi yyyy-mm-dd
