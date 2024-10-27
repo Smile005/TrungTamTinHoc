@@ -9,10 +9,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { fetchNhanVienData } from '../store/slices/nhanVienSlice';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 const { Search } = Input;
 
 const NhanVien: React.FC = () => {
+  const { t } = useTranslation(); // Sử dụng hook useTranslation để dịch
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isThemModalVisible, setIsThemModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<NhanVienType | null>(null);
@@ -69,7 +71,7 @@ const NhanVien: React.FC = () => {
   // Hàm xóa nhân viên
   const deleteNhanVien = async (maNhanVien: string | undefined) => {
     if (!maNhanVien) {
-      message.error('Không thể xóa: Mã nhân viên không hợp lệ.');
+      message.error(t('deleteError')); // Sử dụng dịch ngôn ngữ
       return;
     }
 
@@ -83,37 +85,37 @@ const NhanVien: React.FC = () => {
           },
         }
       );
-      message.success('Xóa nhân viên thành công');
+      message.success(t('deleteSuccess')); // Sử dụng dịch ngôn ngữ
       dispatch(fetchNhanVienData()); 
     } catch (error) {
       console.error('Lỗi khi xóa nhân viên:', error);
-      message.error('Lỗi khi xóa nhân viên');
+      message.error(t('deleteError')); // Sử dụng dịch ngôn ngữ
     }
   };
 
   const columns: TableColumnsType<NhanVienType> = [
     {
-      title: 'Mã nhân viên',
+      title: t('employeeId'), // Sử dụng dịch ngôn ngữ
       dataIndex: 'maNhanVien',
       key: 'maNhanVien',
     },
     {
-      title: 'Họ và tên',
+      title: t('employeeName'), // Sử dụng dịch ngôn ngữ
       dataIndex: 'tenNhanVien',
       key: 'tenNhanVien',
     },
     {
-      title: 'Chức Vụ',
+      title: t('role'), // Sử dụng dịch ngôn ngữ
       dataIndex: 'chucVu',
       key: 'chucVu',
     },
     {
-      title: 'Giới tính',
+      title: t('gender'), // Sử dụng dịch ngôn ngữ
       dataIndex: 'gioiTinh',
       key: 'gioiTinh',
       filters: [
-        { text: 'Nam', value: 'Nam' },
-        { text: 'Nữ', value: 'Nữ' },
+        { text: t('male'), value: 'Nam' },
+        { text: t('female'), value: 'Nữ' },
       ],
       onFilter: (value, record) => record.gioiTinh?.indexOf(value as string) === 0,
       render: (gioiTinh: string): JSX.Element => {
@@ -122,18 +124,18 @@ const NhanVien: React.FC = () => {
       },
     },
     {
-      title: 'Ngày vào làm',
+      title: t('startDate'), // Sử dụng dịch ngôn ngữ
       dataIndex: 'ngayVaoLam',
       key: 'ngayVaoLam',
     },
     {
-      title: 'Trạng Thái',
+      title: t('status'), // Sử dụng dịch ngôn ngữ
       dataIndex: 'trangThai',
       key: 'trangThai',
       filters: [
-        { text: 'Thực tập sinh', value: 'Thực tập sinh' },
-        { text: 'Full time', value: 'Full time' },
-        { text: 'Part time', value: 'Part time' },
+        { text: t('intern'), value: 'Thực tập sinh' },
+        { text: t('fullTime'), value: 'Full time' },
+        { text: t('partTime'), value: 'Part time' },
       ],
       onFilter: (value, record) => record.trangThai?.indexOf(value as string) === 0,
       render: (trangThai: string): JSX.Element => {
@@ -142,13 +144,13 @@ const NhanVien: React.FC = () => {
       },
     },
     {
-      title: 'Quản lý',
+      title: t('action'), // Sử dụng dịch ngôn ngữ
       key: 'action',
       render: (_: any, record: NhanVienType) => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>
-            <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
-            <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
+            <Menu.Item key="edit" icon={<EditOutlined />}>{t('edit')}</Menu.Item> {/* Sử dụng dịch ngôn ngữ */}
+            <Menu.Item key="delete" icon={<DeleteOutlined />}>{t('delete')}</Menu.Item> {/* Sử dụng dịch ngôn ngữ */}
           </Menu>
         );
         return (
@@ -162,17 +164,17 @@ const NhanVien: React.FC = () => {
 
   return (
     <Layout>
-      <h1 className='page-name'>QUẢN LÝ NHÂN VIÊN</h1>
+      <h1 className='page-name'>{t('employeeManagement')}</h1> {/* Sử dụng dịch ngôn ngữ */}
       <div className="button-container">
         <Search
           className="custom-search"
-          placeholder="Nhập tên nhân viên"
+          placeholder={t('searchPlaceholder')} // Sử dụng dịch ngôn ngữ
           onSearch={onSearch}
           enterButton
         />
         <div className="button-container">
-          <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>Thêm</Button>
-          <Button className='custom-button'>Nhập Excel</Button>
+          <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>{t('add')}</Button> {/* Sử dụng dịch ngôn ngữ */}
+          <Button className='custom-button'>{t('importExcel')}</Button> {/* Sử dụng dịch ngôn ngữ */}
         </div>
       </div>
       <Table

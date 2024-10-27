@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Modal, Form, Input, Select, message } from 'antd';
 import axios from 'axios';  
 import { TaiKhoanType } from '../types/TaiKhoanType';
+import { useTranslation } from 'react-i18next';  // Import useTranslation
 
 interface SuaTaiKhoanModalProps {
   visible: boolean;
@@ -17,6 +18,7 @@ const SuaTaiKhoanModal: React.FC<SuaTaiKhoanModalProps> = ({
   initialValues,
 }) => {
   const [form] = Form.useForm();
+  const { t } = useTranslation();  // Sử dụng useTranslation
 
   useEffect(() => {
     if (initialValues) {
@@ -62,11 +64,11 @@ const SuaTaiKhoanModal: React.FC<SuaTaiKhoanModalProps> = ({
             }
           );
 
-          message.success('Đã đổi cập nhật tài khoản thành công!');  
+          message.success(t('updateAccountSuccess'));  
           onSubmit(values); 
           form.resetFields(); 
         } catch (error) {
-          message.error('Có lỗi xảy ra khi cập nhật trạng thái tài khoản!');  
+          message.error(t('updateAccountFailed'));  
         }
       })
       .catch((info) => {
@@ -76,7 +78,7 @@ const SuaTaiKhoanModal: React.FC<SuaTaiKhoanModalProps> = ({
 
   return (
     <Modal
-      title="Sửa Tài Khoản"
+      title={t('editAccount')}
       visible={visible}
       onCancel={() => {
         form.resetFields();
@@ -87,29 +89,29 @@ const SuaTaiKhoanModal: React.FC<SuaTaiKhoanModalProps> = ({
       <Form form={form} layout="vertical">
         <Form.Item
           name="maNhanVien"
-          label="Mã Nhân Viên"
-          rules={[{ required: true, message: 'Vui lòng nhập mã nhân viên!' }]}
+          label={t('employeeId')}
+          rules={[{ required: true, message: t('enterEmployeeId') }]}
         >
           <Input disabled />
         </Form.Item>
         <Form.Item
           name="phanQuyen"
-          label="Phân Quyền"
-          rules={[{ required: true, message: 'Vui lòng chọn phân quyền!' }]}
+          label={t('role')}
+          rules={[{ required: true, message: t('selectRole') }]}
         >
           <Select>
-            <Select.Option value={1}>Quản trị viên</Select.Option>
-            <Select.Option value={2}>Nhân viên</Select.Option>
+            <Select.Option value={1}>{t('admin')}</Select.Option>
+            <Select.Option value={2}>{t('user')}</Select.Option>
           </Select>
         </Form.Item>
         <Form.Item
-          label="Trạng Thái"
+          label={t('status')}
           name="trangThai"
-          rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+          rules={[{ required: true, message: t('selectStatus') }]}
         >
-          <Select placeholder="Chọn trạng thái">
-            <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
-            <Select.Option value="Đã khóa">Đã khóa</Select.Option>
+          <Select placeholder={t('selectStatus')}>
+            <Select.Option value="Đang hoạt động">{t('active')}</Select.Option>
+            <Select.Option value="Đã khóa">{t('inactive')}</Select.Option>
           </Select>
         </Form.Item>
       </Form>

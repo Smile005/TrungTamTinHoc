@@ -9,6 +9,15 @@ const getMonHoc = async (req, res) => {
   }
 };
 
+const getMonHocHD = async (req, res) => {
+  try {
+    const [results] = await pool.query('SELECT * FROM MonHoc WHERE trangThai = ?', ['Đang Giảng Dạy']);
+    res.json(results);
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error });
+  }
+};
+
 const createMaMH = async (connection) => {
   try {
     const query = `SELECT maMonHoc FROM MonHoc ORDER BY maMonHoc DESC LIMIT 1;`;
@@ -42,12 +51,27 @@ const createMonHoc = async (req, res) => {
   try {
     await connection.beginTransaction();
 
-    const maMonHoc = await createMaMH(connection);
+    let maMonHoc = await createMaMH(connection);
+    let maxAttempts = 3;
+    let attempt = 0;
+    let isUnique = false;
 
-    await pool.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
-    const [existingMonHoc] = await connection.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
-    if (existingMonHoc.length > 0) {
-      return res.status(400).json({ message: 'Môn học đã tồn tại.' });
+    while (attempt < maxAttempts && !isUnique) {
+      const [existingMonHoc] = await connection.query(
+        'SELECT * FROM MonHoc WHERE maMonHoc = ?',
+        [maMonHoc]
+      );
+
+      if (existingMonHoc.length === 0) {
+        isUnique = true;
+      } else {
+        maMonHoc++;
+        attempt++;
+      }
+    }
+
+    if (!isUnique) {
+      return res.status(400).json({ message: `Không thể tạo môn học với mã ${maMonHoc}, hãy thử lại.` });
     }
 
     await connection.query(
@@ -72,6 +96,7 @@ const createMonHoc = async (req, res) => {
     connection.release();
   }
 };
+
 
 const updateMonHoc = async (req, res) => {
   const { maMonHoc, tenMonHoc, soBuoiHoc, hocPhi, moTa, trangThai, ghiChu } = req.body;
@@ -109,15 +134,15 @@ const xoaMonHoc = async (req, res) => {
   const { maMonHoc } = req.body;
 
   try {
-      const [monHoc] = await pool.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
-      if (monHoc.length === 0) return res.status(400).json({ message: 'Không tìm thấy môn học' });
+    const [monHoc] = await pool.query('SELECT * FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
+    if (monHoc.length === 0) return res.status(400).json({ message: 'Không tìm thấy môn học' });
 
-      await pool.query('DELETE FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
-      
-      res.json({ message: `Môn học ${maMonHoc} đã bị xóa` });
+    await pool.query('DELETE FROM MonHoc WHERE maMonHoc = ?', [maMonHoc]);
+
+    res.json({ message: `Môn học ${maMonHoc} đã bị xóa` });
   } catch (error) {
-      res.status(500).json({ message: 'Xóa môn học không thành công', error });
+    res.status(500).json({ message: 'Xóa môn học không thành công', error });
   }
 }
 
-module.exports = { getMonHoc, createMonHoc, updateMonHoc, xoaMonHoc};
+module.exports = { getMonHoc, createMonHoc, updateMonHoc, xoaMonHoc, getMonHocHD };

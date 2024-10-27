@@ -9,6 +9,21 @@ const getLopHoc = async (req, res) => {
   }
 };
 
+const getLopHocHD = async (req, res) => {
+  try {
+    const [results] = await pool.query(`
+      SELECT LopHoc.*, 
+             (SELECT COUNT(*) FROM DsLopHoc WHERE DsLopHoc.maLopHoc = LopHoc.maLopHoc) AS soLuongHV
+      FROM LopHoc
+      WHERE trangThai = ?
+    `, ['Có thể đăng ký']);
+    
+    res.json(results);
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error });
+  }
+};
+
 const createMaLop = async (connection) => {
   try {
     const query = `SELECT maLopHoc FROM LopHoc ORDER BY maLopHoc DESC LIMIT 1;`;
@@ -119,7 +134,7 @@ const updateLopHoc = async (req, res) => {
   }
 };
 
-const xoaLopHoc = async (req,res)=>{
+const xoaLopHoc = async (req, res) => {
   const { maLopHoc } = req.body;
 
   try {
@@ -134,4 +149,4 @@ const xoaLopHoc = async (req,res)=>{
   }
 }
 
-module.exports = { getLopHoc, createLopHoc, updateLopHoc, xoaLopHoc};
+module.exports = { getLopHoc, getLopHocHD, createLopHoc, updateLopHoc, xoaLopHoc };

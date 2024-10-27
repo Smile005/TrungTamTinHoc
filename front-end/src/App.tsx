@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, Navigate, useLocation, Link, useNavigate } from 'react-router-dom';
-import { Layout, Menu, Button, message, theme } from 'antd';
+import { Layout, Menu, Button, message, Dropdown, theme } from 'antd'; 
 import {
   ScheduleOutlined,
   FundOutlined,
@@ -13,6 +13,7 @@ import {
   AppstoreOutlined,
   LogoutOutlined,
   AuditOutlined,
+  GlobalOutlined
 } from '@ant-design/icons';
 import HocVien from './pages/HocVien';
 import NhanVien from './pages/NhanVien';
@@ -31,13 +32,15 @@ import Login from './pages/Login';
 import TimKiem from './pages/TimKiem';
 import UserInfoModal from './components/UserInforModal';
 import DsHocVienLopHoc from './pages/DsHocVienLopHoc';
-import DsLop from './pages/DsLop'; // Đường dẫn đến file DsLop.tsx
+import DsLop from './pages/DsLop'; 
 import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
 import { logout } from './store/slices/authSlice';
 import axios from 'axios';
 import './App.css';
+import { useTranslation } from 'react-i18next'; // Import hook từ i18next
+import i18n from './i18n'; // Import i18n cấu hình
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -48,6 +51,7 @@ const App: React.FC = () => {
   } = theme.useToken();
 
   const [collapsed, setCollapsed] = useState(false);
+  const { t } = useTranslation();
   const [isUserInfoModalVisible, setIsUserInfoModalVisible] = useState(false);
   const [userList, setUserList] = useState<NhanVienType[]>([]);
   const location = useLocation();
@@ -55,7 +59,7 @@ const App: React.FC = () => {
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-  const userInfo = useSelector((state: RootState) => state.auth.userInfo); 
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
 
   useEffect(() => {
     const fetchUserList = async () => {
@@ -80,7 +84,7 @@ const App: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    message.success('Đã đăng xuất thành công!');
+    message.success(t('logout')); // Sử dụng t() để dịch
   };
 
   const handleUserInfo = () => {
@@ -91,6 +95,19 @@ const App: React.FC = () => {
     const user = userList.find(user => user.maNhanVien === maNhanVien);
     return user ? user.tenNhanVien : '';
   };
+
+  const handleLanguageChange = (value: string) => {
+    i18n.changeLanguage(value);
+    message.success(t('language') + `: ${value === 'vi' ? 'Tiếng Việt' : value === 'en' ? 'English' : '日本語'}`);
+  };
+
+  const languageMenu = (
+    <Menu onClick={(e) => handleLanguageChange(e.key)}>
+      <Menu.Item key="vi">Tiếng Việt</Menu.Item>
+      <Menu.Item key="en">English</Menu.Item>
+      {/* <Menu.Item key="jp">日本語</Menu.Item> */}
+    </Menu>
+  );
 
   return (
     <Layout style={{ height: '104vh' }}>
@@ -105,12 +122,15 @@ const App: React.FC = () => {
                   alt="Logo"
                 />
                 <Link to="/">
-                  <h1 style={{ color: 'white', marginLeft: '15px' }}>Trung Tâm Prometheus</h1>
+                  <h1 style={{ color: 'white', marginLeft: '15px', top: '50px' }}>{t('TTPrometheus')}</h1> 
                 </Link>
               </div>
 
               {isAuthenticated && userInfo && (
                 <div className='user-info-container'>
+                  <Dropdown overlay={languageMenu} trigger={['click']} className='lg-change'>
+                    <Button type="link" icon={<GlobalOutlined style={{ fontSize: '25px' }} />} />
+                  </Dropdown>
                   <Button type="link" className='user-info' onClick={handleUserInfo}>
                     <p className='user-icon'><UserOutlined /></p>
                     <p className='user-name'>{getTenNhanVien(userInfo.maNhanVien)}</p>
@@ -140,68 +160,68 @@ const App: React.FC = () => {
             >
               <Menu className="custom-menu" mode="inline">
                 <Menu.Item key="0" icon={<AppstoreOutlined />}>
-                  <Link to="/">Trang chủ</Link>
+                  <Link to="/">{t('home')}</Link> 
                 </Menu.Item>
-                <SubMenu key="group01" icon={<AuditOutlined />} title="Tổ chức">
+                <SubMenu key="group01" icon={<AuditOutlined />} title={t('organization')}>
                   <Menu.Item key="1">
-                    <Link to="/taikhoan">Tài khoản</Link>
+                    <Link to="/taikhoan">{t('accounts')}</Link>
                   </Menu.Item>
                   <Menu.Item key="2">
-                    <Link to="/nhanvien">Nhân viên</Link>
+                    <Link to="/nhanvien">{t('employees')}</Link>
                   </Menu.Item>
                   <Menu.Item key="3">
-                    <Link to="/hocvien">Học viên</Link>
+                    <Link to="/hocvien">{t('students')}</Link>
                   </Menu.Item>
                   <Menu.Item key="4">
-                    <Link to="/cahoc">Ca học</Link>
+                    <Link to="/cahoc">{t('shifts')}</Link>
                   </Menu.Item>
                   <Menu.Item key="5">
-                    <Link to="/phonghoc">Phòng học</Link>
+                    <Link to="/phonghoc">{t('classrooms')}</Link>
                   </Menu.Item>
                   <Menu.Item key="6">
-                    <Link to="/monhoc">Môn học</Link>
+                    <Link to="/monhoc">{t('subjects')}</Link>
                   </Menu.Item>
                   <Menu.Item key="16">
-                    <Link to="/timkiem">Tìm Kiếm</Link>
+                    <Link to="/timkiem">{t('search')}</Link>
                   </Menu.Item>
                 </SubMenu>
-                <SubMenu key="group02" icon={<ScheduleOutlined />} title="Lập kế hoạch">
+                <SubMenu key="group02" icon={<ScheduleOutlined />} title={t('planning')}>
                   <Menu.Item key="7">
-                    <Link to="/lophoc">Lớp học</Link>
+                    <Link to="/lophoc">{t('classes')}</Link>
                   </Menu.Item>
                   <Menu.Item key="8">
-                    <Link to="/lichhoc">Lịch học</Link>
+                    <Link to="/lichhoc">{t('schedule')}</Link>
                   </Menu.Item>
                 </SubMenu>
-                <SubMenu key="group03" icon={<SolutionOutlined />} title="Ghi danh">
+                <SubMenu key="group03" icon={<SolutionOutlined />} title={t('enrollment')}>
                   <Menu.Item key="9">
-                    <Link to="/dangky">Đăng ký</Link>
+                    <Link to="/dangky">{t('registration')}</Link>
                   </Menu.Item>
                   <Menu.Item key="10">
-                    <Link to="/ds_lop">Danh sách lớp</Link> {/* Liên kết đến trang DsLop */}
+                    <Link to="/ds_lop">{t('classList')}</Link>
                   </Menu.Item>
                 </SubMenu>
-                <SubMenu key="group04" icon={<ReadOutlined />} title="Thi">
+                <SubMenu key="group04" icon={<ReadOutlined />} title={t('exam')}>
                   <Menu.Item key="11">
-                    <Link to="/ds_thi">Danh sách lịch thi</Link>
+                    <Link to="/ds_thi">{t('examList')}</Link>
                   </Menu.Item>
                   <Menu.Item key="12">
-                    <Link to="/nhapdiem">Nhập điểm</Link>
+                    <Link to="/nhapdiem">{t('enterGrades')}</Link>
                   </Menu.Item>
                 </SubMenu>
-                <SubMenu key="group05" icon={<FundOutlined />} title="Thống kê">
+                <SubMenu key="group05" icon={<FundOutlined />} title={t('statistics')}>
                   <Menu.Item key="13">
-                    <Link to="/tk_hocvien">Thống kê học viên</Link>
+                    <Link to="/tk_hocvien">{t('studentStatistics')}</Link>
                   </Menu.Item>
                   <Menu.Item key="14">
-                    <Link to="/tk_giangvien">Thống kê giảng viên</Link>
+                    <Link to="/tk_giangvien">{t('teacherStatistics')}</Link>
                   </Menu.Item>
                   <Menu.Item key="15">
-                    <Link to="/tk_coso">Thống kê trạng thái</Link>
+                    <Link to="/tk_coso">{t('statusStatistics')}</Link>
                   </Menu.Item>
                 </SubMenu>
                 <Menu.Item key="99" icon={<SettingOutlined />}>
-                  <Link to="/testing">Thử nghiệm</Link>
+                  <Link to="/testing">{t('testing')}</Link>
                 </Menu.Item>
               </Menu>
             </Sider>
@@ -233,7 +253,7 @@ const App: React.FC = () => {
                   <Route path="/testing" element={isAuthenticated ? <Testing /> : <Navigate to="/login" />} />
                   <Route path="/timkiem" element={isAuthenticated ? <TimKiem /> : <Navigate to="/login" />} />
                   <Route path="/ds-hoc-vien-lop/:maLopHoc" element={isAuthenticated ? <DsHocVienLopHoc /> : <Navigate to="/login" />} />
-                  <Route path="/ds_lop" element={isAuthenticated ? <DsLop /> : <Navigate to="/login" />} /> {/* Thêm route cho DsLop */}
+                  <Route path="/ds_lop" element={isAuthenticated ? <DsLop /> : <Navigate to="/login" />} />
                 </Routes>
               </Content>
             </Layout>
@@ -255,7 +275,6 @@ const App: React.FC = () => {
         onCancel={() => setIsUserInfoModalVisible(false)}
         onLogout={handleLogout}
       />
-
     </Layout>
   );
 };

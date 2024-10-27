@@ -2,8 +2,39 @@ const pool = require('../config/db');
 
 const getHoaDon = async (req, res) => {
   try {
-    const [results] = await pool.query('SELECT * FROM HoaDon');
-    res.json(results);
+    const [hoaDonResults] = await pool.query(`
+      SELECT 
+        HoaDon.maHoaDon,
+        NhanVien.maNhanVien,
+        NhanVien.tenNhanVien,
+        HocVien.maHocVien,
+        HocVien.tenHocVien,
+        HocVien.ngaySinh,
+        HocVien.sdt,
+        HocVien.email,
+        GROUP_CONCAT(ChiTiet_HoaDon.maLopHoc) AS maLopHocs,
+        GROUP_CONCAT(DsLopHoc.trangThai) AS trangThais
+      FROM HoaDon
+      INNER JOIN NhanVien ON HoaDon.maNhanVien = NhanVien.maNhanVien
+      INNER JOIN HocVien ON HoaDon.maHocVien = HocVien.maHocVien
+      LEFT JOIN ChiTiet_HoaDon ON HoaDon.maHoaDon = ChiTiet_HoaDon.maHoaDon
+      LEFT JOIN DsLopHoc ON ChiTiet_HoaDon.maLopHoc = DsLopHoc.maLopHoc
+      GROUP BY HoaDon.maHoaDon
+    `);
+
+    hoaDonResults.forEach(hoaDon => {
+      hoaDon.maLopHocs = hoaDon.maLopHocs ? hoaDon.maLopHocs.split(',') : [];
+      hoaDon.trangThais = hoaDon.trangThais ? hoaDon.trangThais.split(',') : [];
+      hoaDon.chiTietHD = hoaDon.maLopHocs.map((maLopHoc, index) => ({
+        maLopHoc,
+        trangThai: hoaDon.trangThais[index]
+      }));
+   
+      delete hoaDon.maLopHocs;
+      delete hoaDon.trangThais;
+    });
+
+    res.json(hoaDonResults);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });
   }
@@ -33,26 +64,44 @@ const createMaHD = async (connection) => {
 
 const createHoaDon = async (req, res) => {
   const connection = await pool.getConnection();
-  const { maNhanVien, maHocVien, ngayTaoHoaDon, trangThai, ghiChu } = req.body;
+  const { maNhanVien, maHocVien, ngayTaoHoaDon, trangThai, ghiChu, chiTietHD } = req.body;
 
-  // Kiểm tra các trường bắt buộc
   if (!maNhanVien || !maHocVien || !ngayTaoHoaDon) {
     return res.status(400).json({ message: 'Mã nhân viên, mã học viên và ngày tạo hóa đơn là bắt buộc.' });
+  }
+
+  if (!chiTietHD || !Array.isArray(chiTietHD) || chiTietHD.length === 0) {
+    return res.status(400).json({ message: 'Không thể tạo hóa đơn do không có chi tiết hóa đơn (chiTietHD).' });
   }
 
   try {
     await connection.beginTransaction();
 
-    // Tạo mã hóa đơn mới
     const maHoaDon = await createMaHD(connection);
 
-    await pool.query(
+    await connection.query(
       'INSERT INTO HoaDon (maHoaDon, maNhanVien, maHocVien, ngayTaoHoaDon, trangThai, ghiChu) VALUES (?, ?, ?, ?, ?, ?)',
-      [maHoaDon, maNhanVien, maHocVien, ngayTaoHoaDon || new Date(), trangThai || 'Đang hoạt động', ghiChu]
+      [maHoaDon, maNhanVien, maHocVien, ngayTaoHoaDon || new Date(), trangThai || 'Đã thanh toán', ghiChu || ""]
     );
 
+    for (const chiTiet of chiTietHD) {
+      const { maLopHoc } = chiTiet;
+      if (maLopHoc) {
+        await connection.query(
+          'INSERT INTO ChiTiet_HoaDon (maHoaDon, maLopHoc) VALUES (?, ?)',
+          [maHoaDon, maLopHoc]
+        );
+
+        // Update the status of associated classes in DsLopHoc
+        await connection.query(
+          'UPDATE DsLopHoc SET trangThai = "Đã thanh toán" WHERE maLopHoc = ? AND maHocVien = ?',
+          [maLopHoc, maHocVien]
+        );
+      }
+    }
+
     await connection.commit();
-    res.status(201).json({ message: 'Tạo hóa đơn thành công.', maHoaDon });
+    res.status(201).json({ message: 'Tạo hóa đơn và chi tiết hóa đơn thành công.', maHoaDon });
   } catch (error) {
     await connection.rollback();
     res.status(500).json({ message: 'Lỗi server', error });
@@ -60,5 +109,6 @@ const createHoaDon = async (req, res) => {
     connection.release();
   }
 };
+
 
 module.exports = { getHoaDon, createHoaDon };
