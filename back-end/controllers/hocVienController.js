@@ -20,7 +20,7 @@ const createMaHV = async (connection) => {
       const lastMaHocVien = result[0].maHocVien.toUpperCase(); // Chuyển về chữ hoa
       const numericPart = parseInt(lastMaHocVien.slice(2)); // Lấy phần số
       const newNumericPart = numericPart + 1;
-      nextMaHocVien = `HV${newNumericPart.toString().padStart(5, '0')}`; // Tạo mã mới với định dạng HVxxxxx
+      nextMaHocVien = `HV${newNumericPart.toString().padStart(4, '0')}`; // Tạo mã mới với định dạng HVxxxxx
     } else {
       nextMaHocVien = 'HV00001'; // Nếu chưa có mã
     }
