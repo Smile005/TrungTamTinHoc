@@ -22,8 +22,9 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
   const [selectedLopHoc, setSelectedLopHoc] = useState<string | undefined>(undefined);
   const [registeredClasses, setRegisteredClasses] = useState<{ maLopHoc: string; tenLopHoc: string; trangThai: string }[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [invoiceDetails, setInvoiceDetails] = useState<ChiTietHDType[]>([]); // State để giữ chi tiết hóa đơn
-  const [totalAmount, setTotalAmount] = useState<number>(0); // Tổng học phí để truyền cho bước 3
+  const [invoiceDetails, setInvoiceDetails] = useState<ChiTietHDType[]>([]);
+  const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [maHoaDon, setMaHoaDon] = useState<string>(''); // Thêm state để lưu mã hóa đơn
 
   const steps = [
     {
@@ -44,11 +45,27 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
     },
     {
       title: 'Bước 2: Tạo hóa đơn',
-      content: <HoaDonForm hocVien={hocVien} selectedRowKeys={selectedRowKeys} setSelectedRowKeys={setSelectedRowKeys} setInvoiceDetails={setInvoiceDetails} setTotalAmount={setTotalAmount} />, // Truyền setInvoiceDetails và setTotalAmount
+      content: (
+        <HoaDonForm
+          hocVien={hocVien}
+          selectedRowKeys={selectedRowKeys}
+          setSelectedRowKeys={setSelectedRowKeys}
+          setInvoiceDetails={setInvoiceDetails}
+          setTotalAmount={setTotalAmount}
+          setMaHoaDon={setMaHoaDon} // Truyền hàm để lưu mã hóa đơn
+        />
+      ),
     },
     {
       title: 'Bước 3: Thông tin hóa đơn',
-      content: <InvoiceSummary invoiceDetails={invoiceDetails} totalAmount={totalAmount} />, // Hiển thị chi tiết hóa đơn và tổng học phí
+      content: (
+        <InvoiceSummary
+          invoiceDetails={invoiceDetails}
+          totalAmount={totalAmount}
+          tenHocVien={hocVien.tenHocVien}
+          maHoaDon={maHoaDon} // Truyền mã hóa đơn vào InvoiceSummary
+        />
+      ),
     },
   ];
 
@@ -335,13 +352,14 @@ const HoaDonForm: React.FC<{
   hocVien: { maHocVien: string; tenHocVien: string };
   selectedRowKeys: React.Key[];
   setSelectedRowKeys: (value: React.Key[]) => void;
-  setInvoiceDetails: (details: ChiTietHDType[]) => void; // Thêm setInvoiceDetails prop
-  setTotalAmount: (amount: number) => void; // Thêm setTotalAmount prop để truyền tổng học phí
-}> = ({ hocVien, selectedRowKeys, setSelectedRowKeys, setInvoiceDetails, setTotalAmount }) => {
+  setInvoiceDetails: (details: ChiTietHDType[]) => void;
+  setTotalAmount: (amount: number) => void;
+  setMaHoaDon: (maHoaDon: string) => void; // Thêm hàm để lưu mã hóa đơn
+}> = ({ hocVien, selectedRowKeys, setSelectedRowKeys, setInvoiceDetails, setTotalAmount, setMaHoaDon }) => {
   const [dataSource, setDataSource] = useState<ChiTietHDType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const maNhanVien = "NV0001"; 
-  const ngayTaoHoaDon = new Date().toISOString(); 
+  const maNhanVien = "NV0001";
+  const ngayTaoHoaDon = new Date().toISOString();
   const [totalAmount, internalSetTotalAmount] = useState<number>(0);
 
   const columns = [
@@ -404,14 +422,15 @@ const HoaDonForm: React.FC<{
       });
 
       message.success('Tạo hóa đơn thành công!');
-      
+
       const invoiceDetailsResponse = await axios.get(`http://localhost:8081/api/hoadon/ds-hoadon?maHocVien=${hocVien.maHocVien}&maHoaDon=${response.data.maHoaDon}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
 
-      setInvoiceDetails(invoiceDetailsResponse.data); 
+      setInvoiceDetails(invoiceDetailsResponse.data);
+      setMaHoaDon(response.data.maHoaDon); // Lưu mã hóa đơn được tạo
     } catch (error) {
       console.error('Error details:', error);
       console.log('Dòng đã chọn khi có lỗi:', selectedRowKeys);
@@ -436,7 +455,7 @@ const HoaDonForm: React.FC<{
 
         const dataWithKeys = response.data.map((item: any, index: number) => ({
           ...item,
-          key: item.maLopHoc, 
+          key: item.maLopHoc,
         }));
 
         setDataSource(dataWithKeys);
@@ -480,25 +499,19 @@ const HoaDonForm: React.FC<{
   );
 };
 
-const InvoiceSummary: React.FC<{ invoiceDetails: ChiTietHDType[], totalAmount: number }> = ({ invoiceDetails, totalAmount }) => {
-  const [currentMaHoaDon, setCurrentMaHoaDon] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    if (invoiceDetails.length > 0) {
-      setCurrentMaHoaDon(invoiceDetails[0]?.maHoaDon);
-    }
-  }, [invoiceDetails]);
-
-  const filteredInvoiceDetails = invoiceDetails.filter(item => item.maHoaDon === currentMaHoaDon);
+const InvoiceSummary: React.FC<{ invoiceDetails: ChiTietHDType[], totalAmount: number, tenHocVien: string, maHoaDon: string }> = ({ invoiceDetails, totalAmount, tenHocVien, maHoaDon }) => {
+  const filteredInvoiceDetails = invoiceDetails.filter(item => item.maHoaDon === maHoaDon);
 
   const columns = [
     {
       title: 'Mã hóa đơn',
       dataIndex: 'maHoaDon',
+      render: () => maHoaDon, 
     },
     {
       title: 'Học viên',
       dataIndex: 'tenHocVien',
+      render: () => tenHocVien, 
     },
     {
       title: 'Mã nhân viên',
@@ -516,7 +529,7 @@ const InvoiceSummary: React.FC<{ invoiceDetails: ChiTietHDType[], totalAmount: n
     {
       title: 'Học phí',
       dataIndex: 'hocPhi',
-      render: () => totalAmount.toLocaleString(), 
+      render: () => totalAmount.toLocaleString(),
     },
   ];
 
