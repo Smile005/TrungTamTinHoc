@@ -133,7 +133,7 @@ const AddLopHoc: React.FC<AddLopHocModalProps> = ({ visible, onCancel }) => {
                 visible={isModalVisible}
                 onCancel={handleCancel}
                 footer={null}
-                style={{ width: '1000px', height: '1000px' }}
+                width={1000}
             >
                 <Steps current={current} items={steps.map(item => ({ key: item.title, title: item.title }))} />
                 <div style={contentStyle}>{steps[current].content}</div>

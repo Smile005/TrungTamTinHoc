@@ -53,7 +53,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 # Thêm ca học
 POST http://localhost:8081/api/cahoc/them-cahoc
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDU2NjYsImV4cCI6MTcyOTYwOTI2Nn0._LRM6nZYhMsBWwrwwLoEtzIjgZG9MWyCgjSXpjMKAf0
 Content-Type: application/json
 
 {
@@ -80,21 +80,28 @@ Content-Type: application/json
 
 # Lấy danh sách hóa đơn
 GET http://localhost:8081/api/hoadon/ds-hoadon
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTI2NzQsImV4cCI6MTcyOTk5NjI3NH0.plZ4XW8NnZ-BiXI5rNqdYBGL6A9mrGsOfwGf---W-Cg
 
 ###
 
 # Thêm hóa đơn
 POST http://localhost:8081/api/hoadon/them-hoadon
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTI2NzQsImV4cCI6MTcyOTk5NjI3NH0.plZ4XW8NnZ-BiXI5rNqdYBGL6A9mrGsOfwGf---W-Cg
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV001",
-  "maHocVien": "HV001",
+  "maNhanVien": "NV0001",
+  "maHocVien": "HV0003",
   "ngayTaoHoaDon": "2024-10-05T08:00:00",
   "trangThai": "Đã thanh toán",
-  "ghiChu": "Hóa đơn học phí"
+  "chiTietHD": [
+    {
+      "maLopHoc": "LH0001"
+    },
+    {
+      "maLopHoc": "LH0002"
+    }
+  ]
 }
 
 ###
@@ -107,7 +114,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 # Thêm học viên
 POST http://localhost:8081/api/hocvien/them-hocvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDE2MDMsImV4cCI6MTcyOTQwNTIwM30.CkDMVsqqGUFbHqhNEnSYkcL9prmd9XmJuCFnvMhMT24
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDU2NjYsImV4cCI6MTcyOTYwOTI2Nn0._LRM6nZYhMsBWwrwwLoEtzIjgZG9MWyCgjSXpjMKAf0
 Content-Type: application/json
 
 {
@@ -142,13 +149,26 @@ Content-Type: application/json
 
 # Lấy danh sách lớp học
 GET http://localhost:8081/api/lophoc/ds-lophoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MTEwOTgsImV4cCI6MTcyOTQxNDY5OH0.HsIg7_Z9Wrh0KmyPOts_suJYFMC285Lgu_Pe7LnrZs8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NDIyMDQsImV4cCI6MTcyOTk0NTgwNH0.bTIFV1VUQm0FZtq0w_hAQtVWBvqAwuitYP8x11OUWFk
+
+###
+
+# Lấy danh sách lớp học đang hoạt động
+GET http://localhost:8081/api/lophoc/ds-lophocHD
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NDIyMDQsImV4cCI6MTcyOTk0NTgwNH0.bTIFV1VUQm0FZtq0w_hAQtVWBvqAwuitYP8x11OUWFk
+
+###
+
+# Lấy danh sách lớp theo mã học viên
+GET http://localhost:8081/api/lophoc/ds-theo-maHV/HV0001
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTA2ODAsImV4cCI6MTcyOTk5NDI4MH0.YnJ44L_WoigIXAkfv8deMKpBmMP4UjRp-4OLSjGe1WE
+Content-Type: application/json
 
 ###
 
 # Thêm lớp học
 POST http://localhost:8081/api/lophoc/them-lophoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MjgxMjAwMDYsImV4cCI6MTcyODEyMzYwNn0.sWdhoh0TN_iEphyYWMbZJx6J1liprIn4tVEhuLaabKg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDU2NjYsImV4cCI6MTcyOTYwOTI2Nn0._LRM6nZYhMsBWwrwwLoEtzIjgZG9MWyCgjSXpjMKAf0
 Content-Type: application/json
 
 {
@@ -186,7 +206,14 @@ Content-Type: application/json
 
 # Lấy danh sách môn học
 GET http://localhost:8081/api/monhoc/ds-monhoc
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NDIyMDQsImV4cCI6MTcyOTk0NTgwNH0.bTIFV1VUQm0FZtq0w_hAQtVWBvqAwuitYP8x11OUWFk
+
+###
+
+# Lấy danh sách môn học đang hoạt động
+GET http://localhost:8081/api/monhoc/ds-monhocHD
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NDIyMDQsImV4cCI6MTcyOTk0NTgwNH0.bTIFV1VUQm0FZtq0w_hAQtVWBvqAwuitYP8x11OUWFk
+
 
 ###
 
@@ -329,12 +356,13 @@ Content-Type: application/json
 
 ### Lấy ds học viên theo lớp
 Get http://localhost:8081/api/lophoc/ds-hocvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDk3ODcsImV4cCI6MTcyOTYxMzM4N30.ZyfUe6et7DfgN7G1bjRG9RYtKIptR0QI3W2NmUXlY3M
-Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MTAwODEsImV4cCI6MTcyOTYxMzY4MX0.pP42wmMH2fPT7JMwzS5gfXU7n6bOxGjCvxHq0Gz8SZ8
+Content-Type: application/json 
 
 ### Lấy ds học viên trong lớp theo mã lớp
 Get http://localhost:8081/api/lophoc/ds-hocvien02
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDk3ODcsImV4cCI6MTcyOTYxMzM4N30.ZyfUe6et7DfgN7G1bjRG9RYtKIptR0QI3W2NmUXlY3M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDk5MzYsImV4cCI6MTcyOTYxMzUzNn0.93472O10Pt_DPlnkf9PtKDgANWsRdRwf1zXze6mmxdY
+Content-Type: application/json
 
 {
   "maLopHoc": "LH0001"
@@ -395,6 +423,42 @@ Content-Type: application/json
   "maLopHoc": "LH0001"
 }
 
+###
+
+# Xếp lớp 
+POST http://localhost:8081/api/lophoc/xepLop
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "maLopHoc": "LH0002",
+  "maHocVien": "HV0001"
+}
+
+###
+
+# Xóa xếp lớp 
+DELETE http://localhost:8081/api/lophoc/xoaXepLop
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
+
+{
+  "maLopHoc": "LH0002",
+  "maHocVien": "HV0001"
+}
+
+###
+
+# Lấy ds lớp học của học viên 
+GET http://localhost:8081/api/lophoc/dsLopCuaHV
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NTc4NDgsImV4cCI6MTcyOTk2MTQ0OH0.FAF3cqO_D8gLNsfxjWcZ0mKguKKeKwArDhBRV8WgVrc
+Content-Type: application/json
+
+{
+  "maHocVien": "HV0001"
+}
+
 ### xuat xlsx
 GET http://localhost:8081/api/nhanvien/export-nhanvien
 Authorization: Bearer
+

@@ -20,9 +20,9 @@ const createMaCa = async (connection) => {
       const lastMaCa = result[0].maCa;
       const numericPart = parseInt(lastMaCa.slice(2));
       const newNumericPart = numericPart + 1;
-      nextMaCa = `Ca${newNumericPart.toString().padStart(4, '0')}`;
+      nextMaCa = `Ca${newNumericPart.toString().padStart(3, '0')}`;
     } else {
-      nextMaCa = 'Ca0001';
+      nextMaCa = 'Ca001';
     }
 
     return nextMaCa;
@@ -35,6 +35,7 @@ const createCaHoc = async (req, res) => {
   const connection = await pool.getConnection();
   const { batDau, ketThuc, trangThai, ghiChu } = req.body;
 
+  // Kiểm tra xem thời gian bắt đầu có được cung cấp hay không
   if (!batDau) {
     return res.status(400).json({ message: 'Thời gian bắt đầu là bắt buộc.' });
   }
@@ -42,17 +43,24 @@ const createCaHoc = async (req, res) => {
   try {
     await connection.beginTransaction();
 
+    // Tạo mã ca học mới
     const maCa = await createMaCa(connection);
 
+    // Chuyển đổi batDau thành định dạng phù hợp với MySQL
+    const batDauValue = new Date(batDau).toISOString().slice(0, 19).replace('T', ' ');
+    
     // Nếu không có thời gian kết thúc, đặt nó là 2 tiếng sau thời gian bắt đầu
-    const ketThuc = req.body.ketThuc || new Date(new Date(batDau).getTime() + 2 * 60 * 60 * 1000);
+    const ketThucValue = req.body.ketThuc 
+      ? new Date(req.body.ketThuc).toISOString().slice(0, 19).replace('T', ' ') 
+      : new Date(new Date(batDau).getTime() + 2 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
 
-    await pool.query(
+    // Chèn dữ liệu vào bảng CaHoc
+    await connection.query(
       'INSERT INTO CaHoc (maCa, batDau, ketThuc, trangThai, ghiChu) VALUES (?, ?, ?, ?, ?)',
       [
         maCa,
-        batDau,
-        ketThuc,
+        batDauValue,
+        ketThucValue,
         trangThai || 'Đang hoạt động',
         ghiChu || null
       ]
@@ -62,7 +70,7 @@ const createCaHoc = async (req, res) => {
     res.status(201).json({ message: 'Thêm ca học thành công.', maCa });
   } catch (error) {
     await connection.rollback();
-    res.status(500).json({ message: 'Lỗi server', error });
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
   } finally {
     connection.release();
   }

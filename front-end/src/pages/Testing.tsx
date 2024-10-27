@@ -1,28 +1,48 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
-import AddLopHoc from '../components/AddLopHoc';
+import DangKyLopHoc from '../components/DangKyLopHoc';
+import { HocVienType } from '../types/HocVienType';
 
-const Testing: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false);
+const hocVienMau: HocVienType = {
+  key: '1',                      // Key dùng để phân biệt đối tượng trong danh sách
+  maHocVien: 'HV0004',             // Mã học viên, khóa chính
+  tenHocVien: 'Nguyễn Văn C',     // Tên học viên
+  img: 'https://example.com/image.jpg', // Link ảnh, có thể null
+  ngayVaoHoc: '2024-01-15',       // Ngày vào học, sử dụng định dạng chuỗi yyyy-mm-dd
+  ngaySinh: '1998-05-20',         // Ngày sinh, định dạng chuỗi yyyy-mm-dd
+  gioiTinh: 'Nam',                // Giới tính
+  sdt: '0123456789',              // Số điện thoại
+  email: 'nguyenvana@example.com', // Email
+  diaChi: '123 Đường ABC, Quận X', // Địa chỉ
+  tinhTrang: 'Đang học',          // Tình trạng học viên
+  ghiChu: 'Ghi chú về học viên',  // Ghi chú, có thể null
+};
 
-  const toggleVisibility = () => {
-    setIsVisible(!isVisible); // Toggle trạng thái hiển thị
+const App: React.FC = () => {
+  const [current, setCurrent] = useState(0);
+  const [visible, setVisible] = useState(false);
+
+  const openModal = () => {
+    setVisible(true);
   };
 
-  const handleCancel = () => {
-    setIsVisible(false); // Ẩn modal khi cancel
+  const closeModal = () => {
+    setVisible(false);
+    setCurrent(0); 
   };
 
   return (
     <>
-      <Button type="primary" onClick={toggleVisibility}>
-        {isVisible ? 'Đóng' : 'Mở'} AddLopHoc
+      <Button type="primary" onClick={openModal}>
+        Open Steps Modal
       </Button>
-
-      <AddLopHoc visible={isVisible} onCancel={handleCancel} />
-      {/* Truyền visible và onCancel vào AddLopHoc */}
+      <DangKyLopHoc
+        visible={visible}
+        onCancel={closeModal}
+        hocVien={hocVienMau}
+      />
     </>
   );
-}
+};
 
-export default Testing;
+export default App;
