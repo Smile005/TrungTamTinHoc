@@ -23,6 +23,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
   const [registeredClasses, setRegisteredClasses] = useState<{ maLopHoc: string; tenLopHoc: string; trangThai: string }[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [invoiceDetails, setInvoiceDetails] = useState<ChiTietHDType[]>([]); // State để giữ chi tiết hóa đơn
+  const [totalAmount, setTotalAmount] = useState<number>(0); // Tổng học phí để truyền cho bước 3
 
   const steps = [
     {
@@ -43,11 +44,11 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
     },
     {
       title: 'Bước 2: Tạo hóa đơn',
-      content: <HoaDonForm hocVien={hocVien} selectedRowKeys={selectedRowKeys} setSelectedRowKeys={setSelectedRowKeys} setInvoiceDetails={setInvoiceDetails} />, // Truyền setInvoiceDetails
+      content: <HoaDonForm hocVien={hocVien} selectedRowKeys={selectedRowKeys} setSelectedRowKeys={setSelectedRowKeys} setInvoiceDetails={setInvoiceDetails} setTotalAmount={setTotalAmount} />, // Truyền setInvoiceDetails và setTotalAmount
     },
     {
       title: 'Bước 3: Thông tin hóa đơn',
-      content: <InvoiceSummary invoiceDetails={invoiceDetails} />, // Hiển thị chi tiết hóa đơn
+      content: <InvoiceSummary invoiceDetails={invoiceDetails} totalAmount={totalAmount} />, // Hiển thị chi tiết hóa đơn và tổng học phí
     },
   ];
 
@@ -106,7 +107,8 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
     <Modal title="Đăng ký khóa học" open={visible} onCancel={handleCancel} footer={null} width={1000}>
       <Steps current={current} items={items} />
       <div style={contentStyle}>{steps[current].content}</div>
-      <div style={{ marginTop: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 24 }}>
+        {current > 0 && <Button style={{ margin: '0 8px' }} onClick={prev}>Previous</Button>}
         {current < steps.length - 1 && <Button type="primary" onClick={next}>Next</Button>}
         {current === steps.length - 1 && (
           <Button
@@ -120,7 +122,6 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
             Done
           </Button>
         )}
-        {current > 0 && <Button style={{ margin: '0 8px' }} onClick={prev}>Previous</Button>}
       </div>
     </Modal>
   );
@@ -128,6 +129,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
 
 export default DangKyLopHoc;
 
+// Form đăng ký lớp học
 const LopHocForm: React.FC<{
   hocVien: HocVienType;
   monHocList: { maMonHoc: string; tenMonHoc: string; trangThai: string }[];
@@ -328,18 +330,19 @@ const LopHocForm: React.FC<{
   );
 };
 
-// Hóa đơn
+// Form tạo hóa đơn
 const HoaDonForm: React.FC<{
   hocVien: { maHocVien: string; tenHocVien: string };
   selectedRowKeys: React.Key[];
   setSelectedRowKeys: (value: React.Key[]) => void;
   setInvoiceDetails: (details: ChiTietHDType[]) => void; // Thêm setInvoiceDetails prop
-}> = ({ hocVien, selectedRowKeys, setSelectedRowKeys, setInvoiceDetails }) => {
+  setTotalAmount: (amount: number) => void; // Thêm setTotalAmount prop để truyền tổng học phí
+}> = ({ hocVien, selectedRowKeys, setSelectedRowKeys, setInvoiceDetails, setTotalAmount }) => {
   const [dataSource, setDataSource] = useState<ChiTietHDType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [totalAmount, setTotalAmount] = useState<number>(0);
   const maNhanVien = "NV0001"; 
   const ngayTaoHoaDon = new Date().toISOString(); 
+  const [totalAmount, internalSetTotalAmount] = useState<number>(0);
 
   const columns = [
     {
@@ -360,7 +363,6 @@ const HoaDonForm: React.FC<{
       dataIndex: 'trangThai',
     },
   ];
-  
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -368,6 +370,7 @@ const HoaDonForm: React.FC<{
       newSelectedRowKeys.includes(item.maLopHoc)
     );
     const total = selectedRows.reduce((sum, row) => sum + row.hocPhi, 0);
+    internalSetTotalAmount(total);
     setTotalAmount(total);
   };
 
@@ -433,7 +436,7 @@ const HoaDonForm: React.FC<{
 
         const dataWithKeys = response.data.map((item: any, index: number) => ({
           ...item,
-          key: item.maLopHoc, // Đảm bảo có key duy nhất
+          key: item.maLopHoc, 
         }));
 
         setDataSource(dataWithKeys);
@@ -477,7 +480,7 @@ const HoaDonForm: React.FC<{
   );
 };
 
-const InvoiceSummary: React.FC<{ invoiceDetails: ChiTietHDType[] }> = ({ invoiceDetails }) => {
+const InvoiceSummary: React.FC<{ invoiceDetails: ChiTietHDType[], totalAmount: number }> = ({ invoiceDetails, totalAmount }) => {
   const [currentMaHoaDon, setCurrentMaHoaDon] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -492,10 +495,6 @@ const InvoiceSummary: React.FC<{ invoiceDetails: ChiTietHDType[] }> = ({ invoice
     {
       title: 'Mã hóa đơn',
       dataIndex: 'maHoaDon',
-    },
-    {
-      title: 'Mã lớp học',
-      dataIndex: 'maLopHoc',
     },
     {
       title: 'Học viên',
@@ -517,7 +516,7 @@ const InvoiceSummary: React.FC<{ invoiceDetails: ChiTietHDType[] }> = ({ invoice
     {
       title: 'Học phí',
       dataIndex: 'hocPhi',
-      render: (hocPhi: number) => hocPhi ? hocPhi.toLocaleString() : 'Không có dữ liệu',
+      render: () => totalAmount.toLocaleString(), 
     },
   ];
 
