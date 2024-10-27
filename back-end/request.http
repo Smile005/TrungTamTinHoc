@@ -80,24 +80,19 @@ Content-Type: application/json
 
 # Lấy danh sách hóa đơn
 GET http://localhost:8081/api/hoadon/ds-hoadon
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTI2NzQsImV4cCI6MTcyOTk5NjI3NH0.plZ4XW8NnZ-BiXI5rNqdYBGL6A9mrGsOfwGf---W-Cg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzAwMTc2MjcsImV4cCI6MTczMDAyMTIyN30.db-HQvGOfk4ZeDEJ0W1-ojwxyj3t-rMNaeVw8cVNzI8
 
 ###
 
 # Thêm hóa đơn
 POST http://localhost:8081/api/hoadon/them-hoadon
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTI2NzQsImV4cCI6MTcyOTk5NjI3NH0.plZ4XW8NnZ-BiXI5rNqdYBGL6A9mrGsOfwGf---W-Cg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTczNTQsImV4cCI6MTczMDAwMDk1NH0.NEEHy1U9Cyw3wKqjnMUglfbB5JFSv4tPPMDxRhjqil8
 Content-Type: application/json
 
 {
   "maNhanVien": "NV0001",
-  "maHocVien": "HV0003",
-  "ngayTaoHoaDon": "2024-10-05T08:00:00",
-  "trangThai": "Đã thanh toán",
+  "maHocVien": "HV00007",
   "chiTietHD": [
-    {
-      "maLopHoc": "LH0001"
-    },
     {
       "maLopHoc": "LH0002"
     }
@@ -427,12 +422,12 @@ Content-Type: application/json
 
 # Xếp lớp 
 POST http://localhost:8081/api/lophoc/xepLop
-Authorization: Bearer YOUR_JWT_TOKEN
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTYyNTQsImV4cCI6MTcyOTk5OTg1NH0.lp0oLhy6I-2GIznhUpPMZ1yww6kL0ooSmhsfknohwyg
 Content-Type: application/json
 
 {
   "maLopHoc": "LH0002",
-  "maHocVien": "HV0001"
+  "maHocVien": "HV00007"
 }
 
 ###
@@ -461,4 +456,3 @@ Content-Type: application/json
 ### xuat xlsx
 GET http://localhost:8081/api/nhanvien/export-nhanvien
 Authorization: Bearer
-
