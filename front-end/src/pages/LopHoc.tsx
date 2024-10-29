@@ -65,6 +65,7 @@ const LopHoc: React.FC = () => {
 
         setFilteredData(formattedLopHoc);
       } catch (error) {
+        console.error('Lỗi khi gọi API:', error);
         message.error('Lỗi khi lấy dữ liệu');
       } finally {
         setLoading(false);

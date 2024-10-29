@@ -24,7 +24,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [invoiceDetails, setInvoiceDetails] = useState<ChiTietHDType[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
-  const [maHoaDon, setMaHoaDon] = useState<string>(''); // Thêm state để lưu mã hóa đơn
+  const [maHoaDon, setMaHoaDon] = useState<string>(''); 
 
   const steps = [
     {
@@ -347,14 +347,13 @@ const LopHocForm: React.FC<{
   );
 };
 
-// Form tạo hóa đơn
 const HoaDonForm: React.FC<{
   hocVien: { maHocVien: string; tenHocVien: string };
   selectedRowKeys: React.Key[];
   setSelectedRowKeys: (value: React.Key[]) => void;
   setInvoiceDetails: (details: ChiTietHDType[]) => void;
   setTotalAmount: (amount: number) => void;
-  setMaHoaDon: (maHoaDon: string) => void; // Thêm hàm để lưu mã hóa đơn
+  setMaHoaDon: (maHoaDon: string) => void; 
 }> = ({ hocVien, selectedRowKeys, setSelectedRowKeys, setInvoiceDetails, setTotalAmount, setMaHoaDon }) => {
   const [dataSource, setDataSource] = useState<ChiTietHDType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
