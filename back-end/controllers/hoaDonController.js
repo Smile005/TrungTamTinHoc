@@ -40,6 +40,67 @@ const getHoaDon = async (req, res) => {
   }
 };
 
+const getHoaDonByMa = async (req, res) => {
+  const connection = await pool.getConnection();
+  const { maHoaDon } = req.params;
+
+  try {
+    const [hoaDon] = await connection.query(
+      `SELECT 
+         hd.maHoaDon, 
+         hd.maNhanVien, 
+         nv.tenNhanVien, 
+         hd.maHocVien, 
+         hv.tenHocVien,
+         hv.ngaySinh,
+         hv.gioiTinh, 
+         hd.ngayTaoHoaDon
+       FROM 
+         HoaDon hd
+       JOIN 
+         NhanVien nv ON hd.maNhanVien = nv.maNhanVien
+       JOIN 
+         HocVien hv ON hd.maHocVien = hv.maHocVien
+       WHERE 
+         hd.maHoaDon = ?`,
+      [maHoaDon]
+    );
+
+    if (hoaDon.length === 0) {
+      return res.status(404).json({ message: "Không tìm thấy hóa đơn." });
+    }
+
+    const [chiTietHoaDon] = await connection.query(
+      `SELECT 
+         mh.maMonHoc,
+         mh.tenMonHoc,
+         cthd.maLopHoc,
+         lh.tenLopHoc,
+         mh.hocPhi,
+         cthd.ghiCHu
+       FROM 
+         ChiTiet_HoaDon cthd
+       JOIN 
+         LopHoc lh ON cthd.maLopHoc = lh.maLopHoc
+       JOIN 
+         MonHoc mh ON lh.maMonHoc = mh.maMonHoc
+       WHERE 
+         cthd.maHoaDon = ?`,
+      [maHoaDon]
+    );
+
+    res.status(200).json({
+        ...hoaDon[0],
+        chiTietHoaDon: chiTietHoaDon
+    });
+    
+  } catch (error) {
+    res.status(500).json({ message: "Không thể tìm thấy hóa đơn theo mã", error });
+  } finally {
+    connection.release();
+  }
+};
+
 const createMaHD = async (connection) => {
   try {
     const query = `SELECT maHoaDon FROM HoaDon ORDER BY maHoaDon DESC LIMIT 1;`;
@@ -66,7 +127,6 @@ const createHoaDon = async (req, res) => {
   const connection = await pool.getConnection();
   const { maNhanVien, maHocVien, ghiChu, chiTietHD, ngayTaoHoaDon } = req.body;
 
-  // Kiểm tra các thông tin bắt buộc
   if (!maNhanVien || !maHocVien) {
     return res.status(400).json({ message: 'Mã nhân viên và mã học viên là bắt buộc.' });
   }
@@ -80,12 +140,11 @@ const createHoaDon = async (req, res) => {
 
     const maHoaDon = await createMaHD(connection);
 
-    // Sử dụng ngayTaoHoaDon từ req.body nếu có, nếu không thì lấy ngày hiện tại
     const currentDate = ngayTaoHoaDon || new Date();
 
     await connection.query(
       'INSERT INTO HoaDon (maHoaDon, maNhanVien, maHocVien, ngayTaoHoaDon, trangThai, ghiChu) VALUES (?, ?, ?, ?, ?, ?)',
-      [maHoaDon, maNhanVien, maHocVien, currentDate, 'Đã đóng học phí', ghiChu || ""]
+      [maHoaDon, maNhanVien, maHocVien, currentDate, 'Đã Đóng Học Phí', ghiChu || ""]
     );
 
     for (const chiTiet of chiTietHD) {
@@ -97,11 +156,16 @@ const createHoaDon = async (req, res) => {
         );
 
         await connection.query(
-          'UPDATE DsLopHoc SET trangThai = "Đã đóng học phí" WHERE maLopHoc = ? AND maHocVien = ?',
+          'UPDATE DsLopHoc SET trangThai = "Đã Đóng Học Phí" WHERE maLopHoc = ? AND maHocVien = ?',
           [maLopHoc, maHocVien]
         );
       }
     }
+
+    await connection.query(
+      'UPDATE HocVien SET tinhTrang = "Đang Học" WHERE maHocVien = ?',
+      [maHocVien]
+    );
 
     await connection.commit();
     res.status(201).json({ message: 'Tạo hóa đơn và chi tiết hóa đơn thành công.', maHoaDon });
@@ -113,4 +177,4 @@ const createHoaDon = async (req, res) => {
   }
 };
 
-module.exports = { getHoaDon, createHoaDon };
+module.exports = { getHoaDon, createHoaDon, getHoaDonByMa };
