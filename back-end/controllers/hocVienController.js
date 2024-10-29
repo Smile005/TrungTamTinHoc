@@ -46,7 +46,7 @@ const createHocVien = async (req, res) => {
     const hocVienList = isMultiple ? hocViens : [hocViens];
 
     for (let hocVien of hocVienList) {
-      const { tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, tinhTrang, ghiChu } = hocVien;
+      const { tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, ghiChu } = hocVien;
 
       if (!tenHocVien) {
         console.log('Học viên bị bỏ qua do thiếu tên:', hocVien);
@@ -56,7 +56,7 @@ const createHocVien = async (req, res) => {
       const maHocVien = await createMaHV(connection);
 
       await connection.query(
-        'INSERT INTO HocVien (maHocVien, tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, tinhTrang, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO HocVien (maHocVien, tenHocVien, ngayVaoHoc, ngaySinh, gioiTinh, sdt, email, diaChi, tinhTrang, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?, ?, "Chưa Đăng Ký", ?)',
         [
           maHocVien,
           tenHocVien,
@@ -66,7 +66,6 @@ const createHocVien = async (req, res) => {
           sdt || null,
           email || null,
           diaChi || null,
-          tinhTrang || 'Đang hoạt động',
           ghiChu || null
         ]
       );

@@ -86,12 +86,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 # Thêm hóa đơn
 POST http://localhost:8081/api/hoadon/them-hoadon
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTczNTQsImV4cCI6MTczMDAwMDk1NH0.NEEHy1U9Cyw3wKqjnMUglfbB5JFSv4tPPMDxRhjqil8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzAxOTM5NjcsImV4cCI6MTczMDIwNDc2N30.lNca2EIS6PAsp6Ety0ALvyckZAExFk-8U-DTotUsypw
 Content-Type: application/json
 
 {
   "maNhanVien": "NV0001",
-  "maHocVien": "HV00007",
+  "maHocVien": "HV0009",
   "chiTietHD": [
     {
       "maLopHoc": "LH0002"
@@ -144,14 +144,13 @@ Content-Type: application/json
 
 # Lấy danh sách lớp học
 GET http://localhost:8081/api/lophoc/ds-lophoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NDIyMDQsImV4cCI6MTcyOTk0NTgwNH0.bTIFV1VUQm0FZtq0w_hAQtVWBvqAwuitYP8x11OUWFk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTY0MTQsImV4cCI6MTczMDAwMDAxNH0.AeGjUXVY8vqPmtMf8dYpDoMZey25im_sV5yf3K2JSHw
 
 ###
 
 # Lấy danh sách lớp học đang hoạt động
 GET http://localhost:8081/api/lophoc/ds-lophocHD
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NDIyMDQsImV4cCI6MTcyOTk0NTgwNH0.bTIFV1VUQm0FZtq0w_hAQtVWBvqAwuitYP8x11OUWFk
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTY0MTQsImV4cCI6MTczMDAwMDAxNH0.AeGjUXVY8vqPmtMf8dYpDoMZey25im_sV5yf3K2JSHw
 ###
 
 # Lấy danh sách lớp theo mã học viên
@@ -456,3 +455,8 @@ Content-Type: application/json
 ### xuat xlsx
 GET http://localhost:8081/api/nhanvien/export-nhanvien
 Authorization: Bearer
+
+### Tìm hóa đơn theo mã hóa đơn
+GET http://localhost:8081/api/hoadon/hoaDonByMa/maHoaDon=HD0003
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzAxOTI1NjMsImV4cCI6MTczMDIwMzM2M30.Dd4N7B_hhAQHUP6JKGPHKeBrw8_Plaz4YrkZQMxzbcA
+Content-Type: application/json

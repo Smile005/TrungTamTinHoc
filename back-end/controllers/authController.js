@@ -38,7 +38,7 @@ const login = async (req, res) => {
     const validPassword = await bcrypt.compare(matKhau, user[0].matKhau);
     if (!validPassword) return res.status(400).json({ message: 'Mật khẩu không đúng' });
 
-    const token = jwt.sign({ maNhanVien: user[0].maNhanVien, phanQuyen: user[0].phanQuyen }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ maNhanVien: user[0].maNhanVien, phanQuyen: user[0].phanQuyen }, process.env.JWT_SECRET, { expiresIn: '3h' });
 
     const [nhanVien] = await pool.query('SELECT * FROM NhanVien WHERE maNhanVien = ?', [maNhanVien]);
 
