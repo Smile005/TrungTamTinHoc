@@ -124,7 +124,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
     <Modal title="Đăng ký khóa học" open={visible} onCancel={handleCancel} footer={null} width={1000}>
       <Steps current={current} items={items} />
       <div style={contentStyle}>{steps[current].content}</div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 5 }}>
         {current > 0 && <Button style={{ margin: '0 8px' }} onClick={prev}>Previous</Button>}
         {current < steps.length - 1 && <Button type="primary" onClick={next}>Next</Button>}
         {current === steps.length - 1 && (
@@ -430,7 +430,7 @@ const HoaDonForm: React.FC<{
       });
 
       setInvoiceDetails(invoiceDetailsResponse.data);
-      setMaHoaDon(response.data.maHoaDon); // Lưu mã hóa đơn được tạo
+      setMaHoaDon(response.data.maHoaDon); 
     } catch (error) {
       console.error('Error details:', error);
       console.log('Dòng đã chọn khi có lỗi:', selectedRowKeys);
