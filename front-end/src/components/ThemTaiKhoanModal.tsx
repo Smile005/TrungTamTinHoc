@@ -132,16 +132,6 @@ const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel
         >
           <Input.Password placeholder={t('confirmPassword')} />
         </Form.Item>
-        <Form.Item
-          label={t('status')}
-          name="trangThai"
-          rules={[{ required: true, message: t('selectStatus') }]}
-        >
-          <Select placeholder={t('selectStatus')}>
-            <Select.Option value="Đang hoạt động">{t('active')}</Select.Option>
-            <Select.Option value="Đã khóa">{t('inactive')}</Select.Option>
-          </Select>
-        </Form.Item>
       </Form>
     </Modal>
   );

@@ -87,12 +87,12 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
         >
           <Input />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           name="img"
           label="URL Ảnh"
         >
           <Input placeholder="URL hình ảnh" />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           name="ngayVaoHoc"
           label="Ngày Vào Học"
@@ -132,17 +132,6 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
           label="Địa Chỉ"
         >
           <Input />
-        </Form.Item>
-        <Form.Item
-          name="tinhTrang"
-          label="Tình Trạng"
-          rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
-        >
-          <Select>
-            <Select.Option value="Đang Học">Đang Học</Select.Option>
-            <Select.Option value="Đã Tốt Nghiệp">Đã Tốt Nghiệp</Select.Option>
-            <Select.Option value="Chưa Đăng Ký">Chưa Đăng Ký</Select.Option>
-          </Select>
         </Form.Item>
         <Form.Item
           name="ghiChu"

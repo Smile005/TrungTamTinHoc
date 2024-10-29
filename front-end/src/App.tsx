@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, Navigate, useLocation, Link, useNavigate } from 'react-router-dom';
-import { Layout, Menu, Button, message, Dropdown, theme } from 'antd'; 
+import { Layout, Menu, Button, message, Dropdown, theme } from 'antd';
 import {
   ScheduleOutlined,
   FundOutlined,
@@ -32,7 +32,8 @@ import Login from './pages/Login';
 import TimKiem from './pages/TimKiem';
 import UserInfoModal from './components/UserInforModal';
 import DsHocVienLopHoc from './pages/DsHocVienLopHoc';
-import DsLop from './pages/DsLop'; 
+import DsLop from './pages/DsLop';
+import HoaDon from './pages/HoaDon';
 import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
@@ -122,7 +123,7 @@ const App: React.FC = () => {
                   alt="Logo"
                 />
                 <Link to="/">
-                  <h1 style={{ color: 'white', marginLeft: '15px', top: '50px' }}>{t('TTPrometheus')}</h1> 
+                  <h1 style={{ color: 'white', marginLeft: '15px', top: '50px' }}>{t('TTPrometheus')}</h1>
                 </Link>
               </div>
 
@@ -160,7 +161,7 @@ const App: React.FC = () => {
             >
               <Menu className="custom-menu" mode="inline">
                 <Menu.Item key="0" icon={<AppstoreOutlined />}>
-                  <Link to="/">{t('home')}</Link> 
+                  <Link to="/">{t('home')}</Link>
                 </Menu.Item>
                 <SubMenu key="group01" icon={<AuditOutlined />} title={t('organization')}>
                   <Menu.Item key="1">
@@ -191,6 +192,9 @@ const App: React.FC = () => {
                   </Menu.Item>
                   <Menu.Item key="8">
                     <Link to="/lichhoc">{t('schedule')}</Link>
+                  </Menu.Item>
+                  <Menu.Item key="15">
+                    <Link to="/hoa-don">{t('invoiceDetails')}</Link> 
                   </Menu.Item>
                 </SubMenu>
                 <SubMenu key="group03" icon={<SolutionOutlined />} title={t('enrollment')}>
@@ -254,6 +258,7 @@ const App: React.FC = () => {
                   <Route path="/timkiem" element={isAuthenticated ? <TimKiem /> : <Navigate to="/login" />} />
                   <Route path="/ds-hoc-vien-lop/:maLopHoc" element={isAuthenticated ? <DsHocVienLopHoc /> : <Navigate to="/login" />} />
                   <Route path="/ds_lop" element={isAuthenticated ? <DsLop /> : <Navigate to="/login" />} />
+                  <Route path="/hoa-don" element={isAuthenticated ? <HoaDon /> : <Navigate to="/login" />} />
                 </Routes>
               </Content>
             </Layout>

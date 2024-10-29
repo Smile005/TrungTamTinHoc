@@ -80,7 +80,7 @@ Content-Type: application/json
 
 # Lấy danh sách hóa đơn
 GET http://localhost:8081/api/hoadon/ds-hoadon
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzAwMTc2MjcsImV4cCI6MTczMDAyMTIyN30.db-HQvGOfk4ZeDEJ0W1-ojwxyj3t-rMNaeVw8cVNzI8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzAyMTExMTUsImV4cCI6MTczMDIyMTkxNX0.u47SnQK3tEm4i5xRu_jyG0z6PKQtcNCBzg8uTdmd_QI
 
 ###
 
@@ -457,6 +457,10 @@ GET http://localhost:8081/api/nhanvien/export-nhanvien
 Authorization: Bearer
 
 ### Tìm hóa đơn theo mã hóa đơn
-GET http://localhost:8081/api/hoadon/hoaDonByMa/maHoaDon=HD0003
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzAxOTI1NjMsImV4cCI6MTczMDIwMzM2M30.Dd4N7B_hhAQHUP6JKGPHKeBrw8_Plaz4YrkZQMxzbcA
+GET http://localhost:8081/api/hoadon/hoaDonByMa/maHoaDon=HD0046
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzAyMTIyODMsImV4cCI6MTczMDIyMzA4M30.I_h7uchxKXTapv1w4fTsuve7JGxFyRF3kpFX7Wda3hw
 Content-Type: application/json
+
+### xuat xlsx
+GET http://localhost:8081/api/hoadon/hoaDonPDF/maHoaDon=HD0046
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzAyMTIyODMsImV4cCI6MTczMDIyMzA4M30.I_h7uchxKXTapv1w4fTsuve7JGxFyRF3kpFX7Wda3hw

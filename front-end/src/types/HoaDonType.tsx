@@ -5,8 +5,8 @@ export interface HoaDonType {
     maHoaDon: string;
     maNhanVien: NhanVienType;
     maHocVien: HocVienType;
-    ngayTaoHoaDon: Date;
-    trangThai: "Chờ xác nhận" | "Đã xác nhận" | "Đã hủy" | "Đã thanh toán";
+    ngayTaoHoaDon: string;
+    trangThai: "Chờ xác nhận" | "Đã xác nhận" | "Đã hủy" | "Đã đóng học phí";
     ghiChu: string;
 }
 
