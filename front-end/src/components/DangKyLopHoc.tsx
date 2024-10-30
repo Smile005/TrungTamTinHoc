@@ -28,7 +28,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
 
   const steps = [
     {
-      title: 'Bước 1: Danh sách đăng ký',
+      title: 'Bước 1: Đăng ký lớp học',
       content: (
         <LopHocForm
           hocVien={hocVien}
@@ -63,7 +63,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
           invoiceDetails={invoiceDetails}
           totalAmount={totalAmount}
           tenHocVien={hocVien.tenHocVien}
-          maHoaDon={maHoaDon} // Truyền mã hóa đơn vào InvoiceSummary
+          maHoaDon={maHoaDon} 
         />
       ),
     },
@@ -282,7 +282,7 @@ const LopHocForm: React.FC<{
         <span>Tình trạng: {hocVien.tinhTrang}</span>
       </p>
 
-      <h1>Danh sách đăng ký</h1>
+      <h1>Đăng ký lớp học</h1>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
         <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', width: '100%' }}>
           <Col span={12}>
