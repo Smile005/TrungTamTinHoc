@@ -67,12 +67,12 @@ const ThemNhanVienModal: React.FC<ThemNhanVienModalProps> = ({ visible, onCancel
                 >
                     <Input />
                 </Form.Item>
-                <Form.Item
+                {/* <Form.Item
                     name="img"
                     label="URL Ảnh"
                 >
                     <Input placeholder="URL hình ảnh" />
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item
                     name="chucVu"
                     label="Chức Vụ"
