@@ -3,8 +3,9 @@ import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd
 import { MoreOutlined, EditOutlined, DeleteOutlined, OrderedListOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { LopHocType } from '../types/LopHocType';
-import SuaLopHocModal from '../components/SuaLopHocModal'; // Chỉ giữ lại modal sửa lớp học
-import { useNavigate } from 'react-router-dom'; 
+import SuaLopHocModal from '../components/SuaLopHocModal';
+import AddLopHoc from '../components/AddLopHoc'; // Import modal thêm lớp học
+import { useNavigate } from 'react-router-dom';
 import '../styles/TableCustom.css';
 import moment from 'moment';
 
@@ -14,11 +15,12 @@ const LopHoc: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState<LopHocType[]>([]);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false); // State cho modal thêm lớp học
   const [selectedRecord, setSelectedRecord] = useState<LopHocType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [monHocMap, setMonHocMap] = useState<{ [key: string]: string }>({});
   const [nhanVienMap, setNhanVienMap] = useState<{ [key: string]: string }>({});
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLopHocData = async () => {
@@ -26,19 +28,13 @@ const LopHoc: React.FC = () => {
       try {
         const [lopHocResponse, nhanVienResponse, monHocResponse] = await Promise.all([
           axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           }),
           axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           }),
           axios.get('http://localhost:8081/api/monhoc/ds-monhoc', {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
           }),
         ]);
 
@@ -89,7 +85,7 @@ const LopHoc: React.FC = () => {
       setSelectedRecord(record);
       setIsEditModalVisible(true);
     } else if (e.key === 'danhSachLop') {
-      navigate(`/ds-hoc-vien-lop/${record.maLopHoc}`); 
+      navigate(`/ds-hoc-vien-lop/${record.maLopHoc}`);
     } else if (e.key === 'delete') {
       deleteLopHoc(record.maLopHoc);
     }
@@ -115,8 +111,8 @@ const LopHoc: React.FC = () => {
     }
 
     try {
-      await axios.post('http://localhost:8081/api/lophoc/xoa-lophoc', 
-        { maLopHoc }, 
+      await axios.post('http://localhost:8081/api/lophoc/xoa-lophoc',
+        { maLopHoc },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -125,7 +121,7 @@ const LopHoc: React.FC = () => {
         }
       );
       message.success('Xóa lớp học thành công');
-      setFilteredData(filteredData.filter(item => item.maLopHoc !== maLopHoc)); // Cập nhật lại danh sách
+      setFilteredData(filteredData.filter(item => item.maLopHoc !== maLopHoc));
     } catch (error) {
       console.error('Lỗi khi xóa lớp học:', error);
       message.error('Lỗi khi xóa lớp học');
@@ -220,8 +216,8 @@ const LopHoc: React.FC = () => {
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button'>Thêm</Button> {/* Nút Thêm được giữ lại nhưng không có xử lý */}
-          <Button className='custom-button' >Nhập Excel</Button>
+          <Button className='custom-button' onClick={() => setIsAddModalVisible(true)}>Thêm</Button> {/* Mở modal thêm lớp */}
+          <Button className='custom-button'>Nhập Excel</Button>
         </div>
       </div>
       <Table
@@ -239,6 +235,11 @@ const LopHoc: React.FC = () => {
         onCancel={handleEditCancel}
         onSubmit={handleEditSubmit}
         initialValues={selectedRecord}
+      />
+
+      <AddLopHoc
+        visible={isAddModalVisible}
+        onCancel={() => setIsAddModalVisible(false)}
       />
     </Layout>
   );
