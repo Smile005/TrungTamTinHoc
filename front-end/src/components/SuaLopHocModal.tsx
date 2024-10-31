@@ -147,7 +147,7 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
           <DatePicker format="DD/MM/YYYY" />
         </Form.Item>
         <Form.Item
-          name="soLuong"
+          name="soLuongMax"
           label="Số Lượng"
           rules={[{ required: true, message: 'Vui lòng nhập số lượng học viên!' }]}
         >

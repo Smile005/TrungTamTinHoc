@@ -166,8 +166,8 @@ const LopHoc: React.FC = () => {
     },
     {
       title: 'Số Lượng',
-      dataIndex: 'soLuong',
-      key: 'soLuong',
+      dataIndex: 'soLuongMax',
+      key: 'soLuongMax',
       width: '10%',
     },
     {
