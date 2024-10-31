@@ -4,6 +4,8 @@ import axios from 'axios';
 import type { TableProps } from 'antd';
 import { HocVienType } from '../types/HocVienType';
 import { ChiTietHDType } from '../types/HoaDonType';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 
@@ -52,7 +54,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
           setSelectedRowKeys={setSelectedRowKeys}
           setInvoiceDetails={setInvoiceDetails}
           setTotalAmount={setTotalAmount}
-          setMaHoaDon={setMaHoaDon} // Truyền hàm để lưu mã hóa đơn
+          setMaHoaDon={setMaHoaDon}
         />
       ),
     },
@@ -63,7 +65,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
           invoiceDetails={invoiceDetails}
           totalAmount={totalAmount}
           tenHocVien={hocVien.tenHocVien}
-          maHoaDon={maHoaDon} 
+          maHoaDon={maHoaDon}
         />
       ),
     },
@@ -121,7 +123,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
   };
 
   return (
-    <Modal title="Đăng ký khóa học" open={visible} onCancel={handleCancel} footer={null} width={1000}>
+    <Modal title="Đăng ký lớp học" open={visible} onCancel={handleCancel} footer={null} width={1000}>
       <Steps current={current} items={items} />
       <div style={contentStyle}>{steps[current].content}</div>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 5 }}>
@@ -146,7 +148,6 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
 
 export default DangKyLopHoc;
 
-// Form đăng ký lớp học
 const LopHocForm: React.FC<{
   hocVien: HocVienType;
   monHocList: { maMonHoc: string; tenMonHoc: string; trangThai: string }[];
@@ -173,21 +174,9 @@ const LopHocForm: React.FC<{
   const lopHocDaDangKy = registeredClasses;
 
   const columns = [
-    {
-      title: 'Mã lớp học',
-      dataIndex: 'maLopHoc',
-      key: 'maLopHoc',
-    },
-    {
-      title: 'Tên lớp học',
-      dataIndex: 'tenLopHoc',
-      key: 'tenLopHoc',
-    },
-    {
-      title: 'Trạng thái',
-      dataIndex: 'trangThai',
-      key: 'trangThai',
-    },
+    { title: 'Mã lớp học', dataIndex: 'maLopHoc', key: 'maLopHoc' },
+    { title: 'Tên lớp học', dataIndex: 'tenLopHoc', key: 'tenLopHoc' },
+    { title: 'Trạng thái', dataIndex: 'trangThai', key: 'trangThai' },
     {
       title: 'Thao tác',
       key: 'action',
@@ -210,30 +199,17 @@ const LopHocForm: React.FC<{
 
     try {
       const token = localStorage.getItem('token');
-
       await axios.post(
         'http://localhost:8081/api/lophoc/xepLop',
-        {
-          maLopHoc: selectedLopHoc,
-          maHocVien: hocVien.maHocVien,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          }
-        }
+        { maLopHoc: selectedLopHoc, maHocVien: hocVien.maHocVien },
+        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
       );
 
       message.success('Đăng ký lớp học thành công!');
 
       setRegisteredClasses([
         ...lopHocDaDangKy,
-        {
-          maLopHoc: selectedLopHocObj?.maLopHoc || '',
-          tenLopHoc: selectedLopHocObj?.tenLopHoc || '',
-          trangThai: 'Chưa đóng học phí',
-        },
+        { maLopHoc: selectedLopHocObj?.maLopHoc || '', tenLopHoc: selectedLopHocObj?.tenLopHoc || '', trangThai: 'Chưa đóng học phí' },
       ]);
       setSelectedMonHoc(undefined);
       setSelectedLopHoc(undefined);
@@ -245,16 +221,9 @@ const LopHocForm: React.FC<{
   const handleDeleteLopHoc = async (maLopHoc: string) => {
     try {
       const token = localStorage.getItem('token');
-
       await axios.delete('http://localhost:8081/api/lophoc/xoaXepLop', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        data: {
-          maLopHoc: maLopHoc,
-          maHocVien: hocVien.maHocVien,
-        },
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        data: { maLopHoc, maHocVien: hocVien.maHocVien },
       });
       message.success('Xóa lớp học thành công!');
       setRegisteredClasses(registeredClasses.filter((lopHoc) => lopHoc.maLopHoc !== maLopHoc));
@@ -320,23 +289,11 @@ const LopHocForm: React.FC<{
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', width: '100%' }}>
-          <Input
-            addonBefore="Số lượng đăng ký"
-            value={selectedLopHocObj ? `${selectedLopHocObj.soLuongHV} / ${selectedLopHocObj.soLuong}` : ''}
-            disabled
-          />
-          <Input
-            addonBefore="Trạng thái"
-            value={selectedLopHocObj ? selectedLopHocObj.trangThai : ''}
-            disabled
-          />
+          <Input addonBefore="Số lượng đăng ký" value={selectedLopHocObj ? `${selectedLopHocObj.soLuongHV} / ${selectedLopHocObj.soLuong}` : ''} disabled />
+          <Input addonBefore="Trạng thái" value={selectedLopHocObj ? selectedLopHocObj.trangThai : ''} disabled />
         </div>
 
-        <Button
-          type="primary"
-          style={{ marginTop: '10px', width: '250px' }}
-          onClick={dangKy}
-        >
+        <Button type="primary" style={{ marginTop: '10px', width: '250px' }} onClick={dangKy}>
           Đăng ký
         </Button>
       </div>
@@ -357,35 +314,20 @@ const HoaDonForm: React.FC<{
 }> = ({ hocVien, selectedRowKeys, setSelectedRowKeys, setInvoiceDetails, setTotalAmount, setMaHoaDon }) => {
   const [dataSource, setDataSource] = useState<ChiTietHDType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const maNhanVien = "NV0001";
+  const maNhanVien = useSelector((state: RootState) => state.auth.userInfo?.maNhanVien) || '';
   const ngayTaoHoaDon = new Date().toISOString();
   const [totalAmount, internalSetTotalAmount] = useState<number>(0);
 
   const columns = [
-    {
-      title: 'Mã lớp học',
-      dataIndex: 'maLopHoc',
-    },
-    {
-      title: 'Tên lớp học',
-      dataIndex: 'tenLopHoc',
-    },
-    {
-      title: 'Học phí',
-      dataIndex: 'hocPhi',
-      render: (hocPhi: number) => hocPhi.toLocaleString(),
-    },
-    {
-      title: 'Trạng thái',
-      dataIndex: 'trangThai',
-    },
+    { title: 'Mã lớp học', dataIndex: 'maLopHoc' },
+    { title: 'Tên lớp học', dataIndex: 'tenLopHoc' },
+    { title: 'Học phí', dataIndex: 'hocPhi', render: (hocPhi: number) => hocPhi.toLocaleString() },
+    { title: 'Trạng thái', dataIndex: 'trangThai' },
   ];
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
-    const selectedRows = dataSource.filter((item) =>
-      newSelectedRowKeys.includes(item.maLopHoc)
-    );
+    const selectedRows = dataSource.filter((item) => newSelectedRowKeys.includes(item.maLopHoc));
     const total = selectedRows.reduce((sum, row) => sum + row.hocPhi, 0);
     internalSetTotalAmount(total);
     setTotalAmount(total);
@@ -403,16 +345,8 @@ const HoaDonForm: React.FC<{
     }
 
     try {
-      const chiTietHD = selectedRowKeys.map((maLopHoc) => ({
-        maLopHoc: maLopHoc as string,
-      }));
-
-      const payload = {
-        maNhanVien: maNhanVien,
-        maHocVien: hocVien.maHocVien,
-        chiTietHD: chiTietHD,
-      };
-
+      const chiTietHD = selectedRowKeys.map((maLopHoc) => ({ maLopHoc: maLopHoc as string }));
+      const payload = { maNhanVien, maHocVien: hocVien.maHocVien, chiTietHD };
       const response = await axios.post('http://localhost:8081/api/hoadon/them-hoadon', payload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -421,7 +355,6 @@ const HoaDonForm: React.FC<{
       });
 
       message.success('Tạo hóa đơn thành công!');
-
       const invoiceDetailsResponse = await axios.get(`http://localhost:8081/api/hoadon/ds-hoadon?maHocVien=${hocVien.maHocVien}&maHoaDon=${response.data.maHoaDon}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -429,10 +362,9 @@ const HoaDonForm: React.FC<{
       });
 
       setInvoiceDetails(invoiceDetailsResponse.data);
-      setMaHoaDon(response.data.maHoaDon); 
+      setMaHoaDon(response.data.maHoaDon);
     } catch (error) {
       console.error('Error details:', error);
-      console.log('Dòng đã chọn khi có lỗi:', selectedRowKeys);
       message.error('Lỗi khi tạo hóa đơn');
     }
   };
@@ -444,23 +376,15 @@ const HoaDonForm: React.FC<{
         const token = localStorage.getItem('token');
         const response = await axios.get(
           `http://localhost:8081/api/lophoc/ds-theo-maHV/${hocVien.maHocVien}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          }
+          { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
         );
 
-        const dataWithKeys = response.data.map((item: any, index: number) => ({
-          ...item,
-          key: item.maLopHoc,
-        }));
-
+        const dataWithKeys = response.data.map((item: any) => ({ ...item, key: item.maLopHoc }));
         setDataSource(dataWithKeys);
         setLoading(false);
       } catch (error) {
         message.error('Không thể lấy danh sách lớp học');
+      } finally {
         setLoading(false);
       }
     };
@@ -485,13 +409,7 @@ const HoaDonForm: React.FC<{
         <span>Ngày tạo hóa đơn: {ngayTaoHoaDon}</span>
       </p>
       <h1>Chi tiết hóa đơn</h1>
-      <Table<ChiTietHDType>
-        rowSelection={rowSelection}
-        columns={columns}
-        dataSource={dataSource}
-        loading={loading}
-        pagination={false}
-      />
+      <Table<ChiTietHDType> rowSelection={rowSelection} columns={columns} dataSource={dataSource} loading={loading} pagination={false} />
       <h1>Thành tiền: {totalAmount.toLocaleString()} VND</h1>
       <Button type="primary" onClick={handleCreateInvoice}>Tạo hóa đơn</Button>
     </>
@@ -502,34 +420,12 @@ const InvoiceSummary: React.FC<{ invoiceDetails: ChiTietHDType[], totalAmount: n
   const filteredInvoiceDetails = invoiceDetails.filter(item => item.maHoaDon === maHoaDon);
 
   const columns = [
-    {
-      title: 'Mã hóa đơn',
-      dataIndex: 'maHoaDon',
-      render: () => maHoaDon, 
-    },
-    {
-      title: 'Học viên',
-      dataIndex: 'tenHocVien',
-      render: () => tenHocVien, 
-    },
-    {
-      title: 'Mã nhân viên',
-      dataIndex: 'maNhanVien',
-    },
-    {
-      title: 'Tên nhân viên',
-      dataIndex: 'tenNhanVien',
-    },
-    {
-      title: 'Ngày sinh',
-      dataIndex: 'ngaySinh',
-      render: (ngaySinh: string) => new Date(ngaySinh).toLocaleDateString(),
-    },
-    {
-      title: 'Học phí',
-      dataIndex: 'hocPhi',
-      render: () => totalAmount.toLocaleString(),
-    },
+    { title: 'Mã hóa đơn', dataIndex: 'maHoaDon', render: () => maHoaDon },
+    { title: 'Học viên', dataIndex: 'tenHocVien', render: () => tenHocVien },
+    { title: 'Mã nhân viên', dataIndex: 'maNhanVien' },
+    { title: 'Tên nhân viên', dataIndex: 'tenNhanVien' },
+    { title: 'Ngày sinh', dataIndex: 'ngaySinh', render: (ngaySinh: string) => new Date(ngaySinh).toLocaleDateString() },
+    { title: 'Học phí', dataIndex: 'hocPhi', render: () => totalAmount.toLocaleString() },
   ];
 
   return (
