@@ -86,7 +86,7 @@ const DsLop: React.FC = () => {
       dataIndex: 'soLuong',
       key: 'soLuong',
       render: (soLuong: number, record: LopHocTypeWithMax) => (
-        `${soLuong}/${record.soLuongToiDa}`
+        `${soLuong}/${record.soLuongMax}`
       ),
     },
     {

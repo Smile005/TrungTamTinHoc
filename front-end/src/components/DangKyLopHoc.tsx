@@ -18,7 +18,7 @@ interface DangKyLopHocProps {
 const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien }) => {
   const { token } = theme.useToken();
   const [monHocList, setMonHocList] = useState<{ maMonHoc: string, tenMonHoc: string, trangThai: string }[]>([]);
-  const [lopHocList, setLopHocList] = useState<{ maLopHoc: string, tenLopHoc: string, maMonHoc: string, soLuongHV: number, soLuong: number, trangThai: string }[]>([]);
+  const [lopHocList, setLopHocList] = useState<{ maLopHoc: string, tenLopHoc: string, maMonHoc: string, soLuongHV: number, soLuongMax: number, trangThai: string }[]>([]);
   const [current, setCurrent] = useState<number>(0);
   const [selectedMonHoc, setSelectedMonHoc] = useState<string | undefined>(undefined);
   const [selectedLopHoc, setSelectedLopHoc] = useState<string | undefined>(undefined);
@@ -26,7 +26,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [invoiceDetails, setInvoiceDetails] = useState<ChiTietHDType[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
-  const [maHoaDon, setMaHoaDon] = useState<string>(''); 
+  const [maHoaDon, setMaHoaDon] = useState<string>('');
 
   const steps = [
     {
@@ -87,7 +87,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-
+  
         const [monHocResponse, lopHocResponse] = await Promise.all([
           axios.get('http://localhost:8081/api/monhoc/ds-monhocHD', {
             headers: {
@@ -100,14 +100,20 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
             },
           }),
         ]);
-
-        setMonHocList(monHocResponse.data);
-        setLopHocList(lopHocResponse.data);
+  
+        const lopHocData = lopHocResponse.data;
+  
+        const monHocWithClasses = monHocResponse.data.filter((monHoc: any) =>
+          lopHocData.some((lopHoc: any) => lopHoc.maMonHoc === monHoc.maMonHoc)
+        );
+  
+        setMonHocList(monHocWithClasses);
+        setLopHocList(lopHocData);
       } catch (error) {
         message.error('Lỗi khi lấy dữ liệu: ');
       }
     };
-
+  
     fetchData();
   }, []);
 
@@ -151,7 +157,7 @@ export default DangKyLopHoc;
 const LopHocForm: React.FC<{
   hocVien: HocVienType;
   monHocList: { maMonHoc: string; tenMonHoc: string; trangThai: string }[];
-  lopHocList: { maLopHoc: string; tenLopHoc: string; maMonHoc: string; soLuongHV: number; soLuong: number; trangThai: string }[];
+  lopHocList: { maLopHoc: string; tenLopHoc: string; maMonHoc: string; soLuongHV: number; soLuongMax: number; trangThai: string }[];
   selectedMonHoc: string | undefined;
   selectedLopHoc: string | undefined;
   setSelectedMonHoc: (value: string | undefined) => void;
@@ -169,140 +175,140 @@ const LopHocForm: React.FC<{
   registeredClasses,
   setRegisteredClasses,
 }) => {
-  const filteredLopHocList = lopHocList.filter((lopHoc) => lopHoc.maMonHoc === selectedMonHoc);
-  const selectedLopHocObj = lopHocList.find((lopHoc) => lopHoc.maLopHoc === selectedLopHoc);
-  const lopHocDaDangKy = registeredClasses;
+    const filteredLopHocList = lopHocList.filter((lopHoc) => lopHoc.maMonHoc === selectedMonHoc);
+    const selectedLopHocObj = lopHocList.find((lopHoc) => lopHoc.maLopHoc === selectedLopHoc);
+    const lopHocDaDangKy = registeredClasses;
 
-  const columns = [
-    { title: 'Mã lớp học', dataIndex: 'maLopHoc', key: 'maLopHoc' },
-    { title: 'Tên lớp học', dataIndex: 'tenLopHoc', key: 'tenLopHoc' },
-    { title: 'Trạng thái', dataIndex: 'trangThai', key: 'trangThai' },
-    {
-      title: 'Thao tác',
-      key: 'action',
-      render: (text: string, record: { maLopHoc: string }) => (
-        <Button type="link" onClick={() => handleDeleteLopHoc(record.maLopHoc)}>Xóa</Button>
-      ),
-    },
-  ];
+    const columns = [
+      { title: 'Mã lớp học', dataIndex: 'maLopHoc', key: 'maLopHoc' },
+      { title: 'Tên lớp học', dataIndex: 'tenLopHoc', key: 'tenLopHoc' },
+      { title: 'Trạng thái', dataIndex: 'trangThai', key: 'trangThai' },
+      {
+        title: 'Thao tác',
+        key: 'action',
+        render: (text: string, record: { maLopHoc: string }) => (
+          <Button type="link" onClick={() => handleDeleteLopHoc(record.maLopHoc)}>Xóa</Button>
+        ),
+      },
+    ];
 
-  const dangKy = async () => {
-    if (!selectedLopHoc || !hocVien.maHocVien) {
-      message.error('Vui lòng chọn lớp học và học viên.');
-      return;
-    }
+    const dangKy = async () => {
+      if (!selectedLopHoc || !hocVien.maHocVien) {
+        message.error('Vui lòng chọn lớp học và học viên.');
+        return;
+      }
 
-    if (selectedLopHocObj && selectedLopHocObj.soLuongHV >= selectedLopHocObj.soLuong) {
-      message.warning('Lớp học đã full. Vui lòng chọn lớp khác.');
-      return;
-    }
+      if (selectedLopHocObj && selectedLopHocObj.soLuongHV >= selectedLopHocObj.soLuongMax) {
+        message.warning('Lớp học đã full. Vui lòng chọn lớp khác.');
+        return;
+      }
 
-    try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        'http://localhost:8081/api/lophoc/xepLop',
-        { maLopHoc: selectedLopHoc, maHocVien: hocVien.maHocVien },
-        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
-      );
+      try {
+        const token = localStorage.getItem('token');
+        await axios.post(
+          'http://localhost:8081/api/lophoc/xepLop',
+          { maLopHoc: selectedLopHoc, maHocVien: hocVien.maHocVien },
+          { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+        );
 
-      message.success('Đăng ký lớp học thành công!');
+        message.success('Đăng ký lớp học thành công!');
 
-      setRegisteredClasses([
-        ...lopHocDaDangKy,
-        { maLopHoc: selectedLopHocObj?.maLopHoc || '', tenLopHoc: selectedLopHocObj?.tenLopHoc || '', trangThai: 'Chưa đóng học phí' },
-      ]);
-      setSelectedMonHoc(undefined);
-      setSelectedLopHoc(undefined);
-    } catch (error) {
-      message.error('Đăng ký lớp học thất bại');
-    }
-  };
+        setRegisteredClasses([
+          ...lopHocDaDangKy,
+          { maLopHoc: selectedLopHocObj?.maLopHoc || '', tenLopHoc: selectedLopHocObj?.tenLopHoc || '', trangThai: 'Chưa đóng học phí' },
+        ]);
+        setSelectedMonHoc(undefined);
+        setSelectedLopHoc(undefined);
+      } catch (error) {
+        message.error('Đăng ký lớp học thất bại');
+      }
+    };
 
-  const handleDeleteLopHoc = async (maLopHoc: string) => {
-    try {
-      const token = localStorage.getItem('token');
-      await axios.delete('http://localhost:8081/api/lophoc/xoaXepLop', {
-        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        data: { maLopHoc, maHocVien: hocVien.maHocVien },
-      });
-      message.success('Xóa lớp học thành công!');
-      setRegisteredClasses(registeredClasses.filter((lopHoc) => lopHoc.maLopHoc !== maLopHoc));
-    } catch (error) {
-      message.error('Xóa lớp học thất bại!');
-    }
-  };
+    const handleDeleteLopHoc = async (maLopHoc: string) => {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.delete('http://localhost:8081/api/lophoc/xoaXepLop', {
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          data: { maLopHoc, maHocVien: hocVien.maHocVien },
+        });
+        message.success('Xóa lớp học thành công!');
+        setRegisteredClasses(registeredClasses.filter((lopHoc) => lopHoc.maLopHoc !== maLopHoc));
+      } catch (error) {
+        message.error('Xóa lớp học thất bại!');
+      }
+    };
 
-  return (
-    <>
-      <h1>Thông tin học viên</h1>
-      <p>
-        <span>Mã học viên: {hocVien.maHocVien} - </span>
-        <span>Tên học viên: {hocVien.tenHocVien} - </span>
-        <span>Giới tính: {hocVien.gioiTinh}</span>
-      </p>
-      <p>
-        <span>Ngày vào học: {hocVien.ngayVaoHoc} - </span>
-        <span>Ngày sinh: {hocVien.ngaySinh} - </span>
-        <span>Số điện thoại: {hocVien.sdt}</span>
-      </p>
-      <p>
-        <span>Email: {hocVien.email} - </span>
-        <span>Địa chỉ: {hocVien.diaChi} - </span>
-        <span>Tình trạng: {hocVien.tinhTrang}</span>
-      </p>
+    return (
+      <>
+        <h1>Thông tin học viên</h1>
+        <p>
+          <span>Mã học viên: {hocVien.maHocVien} - </span>
+          <span>Tên học viên: {hocVien.tenHocVien} - </span>
+          <span>Giới tính: {hocVien.gioiTinh}</span>
+        </p>
+        <p>
+          <span>Ngày vào học: {hocVien.ngayVaoHoc} - </span>
+          <span>Ngày sinh: {hocVien.ngaySinh} - </span>
+          <span>Số điện thoại: {hocVien.sdt}</span>
+        </p>
+        <p>
+          <span>Email: {hocVien.email} - </span>
+          <span>Địa chỉ: {hocVien.diaChi} - </span>
+          <span>Tình trạng: {hocVien.tinhTrang}</span>
+        </p>
 
-      <h1>Đăng ký lớp học</h1>
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-        <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', width: '100%' }}>
-          <Col span={12}>
-            <Select
-              placeholder="Chọn môn học"
-              style={{ width: '100%' }}
-              value={selectedMonHoc}
-              onChange={(value) => {
-                setSelectedMonHoc(value);
-                setSelectedLopHoc(undefined);
-              }}
-            >
-              {monHocList.map((monHoc) => (
-                <Select.Option key={monHoc.maMonHoc} value={monHoc.maMonHoc}>
-                  {monHoc.maMonHoc} - {monHoc.tenMonHoc}
-                </Select.Option>
-              ))}
-            </Select>
-          </Col>
-          <Col span={12}>
-            <Select
-              placeholder="Chọn lớp học"
-              style={{ width: '100%' }}
-              value={selectedLopHoc}
-              onChange={setSelectedLopHoc}
-              disabled={!selectedMonHoc}
-            >
-              {filteredLopHocList.map((lopHoc) => (
-                <Select.Option key={lopHoc.maLopHoc} value={lopHoc.maLopHoc}>
-                  {lopHoc.maLopHoc} - {lopHoc.tenLopHoc}
-                </Select.Option>
-              ))}
-            </Select>
-          </Col>
+        <h1>Đăng ký lớp học</h1>
+        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', width: '100%' }}>
+            <Col span={12}>
+              <Select
+                placeholder="Chọn môn học"
+                style={{ width: '100%' }}
+                value={selectedMonHoc}
+                onChange={(value) => {
+                  setSelectedMonHoc(value);
+                  setSelectedLopHoc(undefined);
+                }}
+              >
+                {monHocList.map((monHoc) => (
+                  <Select.Option key={monHoc.maMonHoc} value={monHoc.maMonHoc}>
+                    {monHoc.maMonHoc} - {monHoc.tenMonHoc}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Col>
+            <Col span={12}>
+              <Select
+                placeholder="Chọn lớp học"
+                style={{ width: '100%' }}
+                value={selectedLopHoc}
+                onChange={setSelectedLopHoc}
+                disabled={!selectedMonHoc}
+              >
+                {filteredLopHocList.map((lopHoc) => (
+                  <Select.Option key={lopHoc.maLopHoc} value={lopHoc.maLopHoc}>
+                    {lopHoc.maLopHoc} - {lopHoc.tenLopHoc}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Col>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', width: '100%' }}>
+            <Input addonBefore="Số lượng đăng ký" value={selectedLopHocObj ? `${selectedLopHocObj.soLuongHV} / ${selectedLopHocObj.soLuongMax}` : ''} disabled />
+            <Input addonBefore="Trạng thái" value={selectedLopHocObj ? selectedLopHocObj.trangThai : ''} disabled />
+          </div>
+
+          <Button type="primary" style={{ marginTop: '10px', width: '250px' }} onClick={dangKy}>
+            Đăng ký
+          </Button>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', width: '100%' }}>
-          <Input addonBefore="Số lượng đăng ký" value={selectedLopHocObj ? `${selectedLopHocObj.soLuongHV} / ${selectedLopHocObj.soLuong}` : ''} disabled />
-          <Input addonBefore="Trạng thái" value={selectedLopHocObj ? selectedLopHocObj.trangThai : ''} disabled />
-        </div>
-
-        <Button type="primary" style={{ marginTop: '10px', width: '250px' }} onClick={dangKy}>
-          Đăng ký
-        </Button>
-      </div>
-
-      <h1>Lớp học đã đăng ký</h1>
-      <Table columns={columns} dataSource={lopHocDaDangKy} pagination={false} />
-    </>
-  );
-};
+        <h1>Lớp học đã đăng ký</h1>
+        <Table columns={columns} dataSource={lopHocDaDangKy} pagination={false} />
+      </>
+    );
+  };
 
 const HoaDonForm: React.FC<{
   hocVien: { maHocVien: string; tenHocVien: string };
@@ -310,7 +316,7 @@ const HoaDonForm: React.FC<{
   setSelectedRowKeys: (value: React.Key[]) => void;
   setInvoiceDetails: (details: ChiTietHDType[]) => void;
   setTotalAmount: (amount: number) => void;
-  setMaHoaDon: (maHoaDon: string) => void; 
+  setMaHoaDon: (maHoaDon: string) => void;
 }> = ({ hocVien, selectedRowKeys, setSelectedRowKeys, setInvoiceDetails, setTotalAmount, setMaHoaDon }) => {
   const [dataSource, setDataSource] = useState<ChiTietHDType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
