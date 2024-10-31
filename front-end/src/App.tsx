@@ -195,9 +195,9 @@ const App: React.FC = () => {
                   </Menu.Item>
                 </SubMenu>
                 <SubMenu key="group03" icon={<SolutionOutlined />} title={t('enrollment')}>
-                  <Menu.Item key="9">
+                  {/* <Menu.Item key="9">
                     <Link to="/dangky">{t('registration')}</Link>
-                  </Menu.Item>
+                  </Menu.Item> */}
                   <Menu.Item key="10">
                     <Link to="/ds_lop">{t('classList')}</Link>
                   </Menu.Item>
