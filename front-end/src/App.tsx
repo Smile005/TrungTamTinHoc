@@ -193,16 +193,16 @@ const App: React.FC = () => {
                   <Menu.Item key="8">
                     <Link to="/lichhoc">{t('schedule')}</Link>
                   </Menu.Item>
-                  <Menu.Item key="15">
-                    <Link to="/hoa-don">{t('invoiceDetails')}</Link> 
-                  </Menu.Item>
                 </SubMenu>
                 <SubMenu key="group03" icon={<SolutionOutlined />} title={t('enrollment')}>
-                  <Menu.Item key="9">
+                  {/* <Menu.Item key="9">
                     <Link to="/dangky">{t('registration')}</Link>
-                  </Menu.Item>
+                  </Menu.Item> */}
                   <Menu.Item key="10">
                     <Link to="/ds_lop">{t('classList')}</Link>
+                  </Menu.Item>
+                  <Menu.Item key="15">
+                    <Link to="/hoa-don">{t('invoiceDetails')}</Link> 
                   </Menu.Item>
                 </SubMenu>
                 <SubMenu key="group04" icon={<ReadOutlined />} title={t('exam')}>

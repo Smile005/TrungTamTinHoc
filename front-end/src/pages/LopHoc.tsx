@@ -3,8 +3,7 @@ import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd
 import { MoreOutlined, EditOutlined, DeleteOutlined, OrderedListOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { LopHocType } from '../types/LopHocType';
-import ThemLopHocModal from '../components/ThemLopHocModal';
-import SuaLopHocModal from '../components/SuaLopHocModal';
+import SuaLopHocModal from '../components/SuaLopHocModal'; // Chỉ giữ lại modal sửa lớp học
 import { useNavigate } from 'react-router-dom'; 
 import '../styles/TableCustom.css';
 import moment from 'moment';
@@ -14,7 +13,6 @@ const { Search } = Input;
 const LopHoc: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState<LopHocType[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<LopHocType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -97,24 +95,9 @@ const LopHoc: React.FC = () => {
     }
   };
 
-  const handleAddClass = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
   const handleEditCancel = () => {
     setIsEditModalVisible(false);
     setSelectedRecord(null);
-  };
-
-  const handleOk = (values: any) => {
-    const newData = [...filteredData, { key: String(filteredData.length + 1), ...values }];
-    setFilteredData(newData);
-    setIsModalVisible(false);
-    message.success('Thêm mới lớp học thành công!');
   };
 
   const handleEditSubmit = (values: any) => {
@@ -123,7 +106,6 @@ const LopHoc: React.FC = () => {
     );
     setFilteredData(updatedData);
     setIsEditModalVisible(false);
-    message.success('Sửa lớp học thành công!');
   };
 
   const deleteLopHoc = async (maLopHoc: string | undefined) => {
@@ -238,7 +220,7 @@ const LopHoc: React.FC = () => {
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button' onClick={handleAddClass}>Thêm</Button>
+          <Button className='custom-button'>Thêm</Button> {/* Nút Thêm được giữ lại nhưng không có xử lý */}
           <Button className='custom-button' >Nhập Excel</Button>
         </div>
       </div>
@@ -251,8 +233,6 @@ const LopHoc: React.FC = () => {
         loading={loading}
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
       />
-
-      <ThemLopHocModal visible={isModalVisible} onCancel={handleCancel} onSubmit={handleOk} />
 
       <SuaLopHocModal
         visible={isEditModalVisible}

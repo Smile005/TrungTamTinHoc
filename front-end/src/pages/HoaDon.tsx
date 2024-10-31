@@ -99,7 +99,7 @@ const HoaDon: React.FC = () => {
         className="custom-table"
         columns={columns}
         dataSource={filteredData}
-        pagination={{ pageSize: 5 }}
+        pagination={{ pageSize: 7 }}
         loading={loading}
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
       />

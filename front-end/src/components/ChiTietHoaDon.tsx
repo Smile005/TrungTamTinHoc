@@ -14,23 +14,37 @@ const ChiTietHoaDon: React.FC<ChiTietHoaDonProps> = ({ visible, onCancel, maHoaD
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchHoaDon = async () => {
+    const fetchHoaDonAndHocVien = async () => {
       try {
-        const response = await axios.get(`http://localhost:8081/api/hoadon/hoaDonByMa/maHoaDon=${maHoaDon}`, {
+        const hoaDonResponse = await axios.get(`http://localhost:8081/api/hoadon/hoaDonByMa/maHoaDon=${maHoaDon}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         });
-        setHoaDon(response.data);
+
+        const hocVienResponse = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        const hoaDonData = hoaDonResponse.data;
+        const hocVienData = hocVienResponse.data.find((hv: any) => hv.maHocVien === hoaDonData.maHocVien);
+
+        setHoaDon({
+          ...hoaDonData,
+          sdtHocVien: hocVienData?.sdt,
+          diaChiHocVien: hocVienData?.diaChi,
+        });
       } catch (error) {
-        message.error('Lỗi khi lấy thông tin hóa đơn');
+        message.error('Lỗi khi lấy thông tin hóa đơn hoặc học viên');
       } finally {
         setLoading(false);
       }
     };
 
     if (maHoaDon) {
-      fetchHoaDon();
+      fetchHoaDonAndHocVien();
     }
   }, [maHoaDon]);
 
@@ -38,13 +52,13 @@ const ChiTietHoaDon: React.FC<ChiTietHoaDonProps> = ({ visible, onCancel, maHoaD
 
   const handleExportPDF = () => {
     window.open(`http://localhost:8081/api/hoadon/hoaDonPDF/${maHoaDon}`, '_blank');
-  };  
+  };
 
   return (
-    <Modal 
-      visible={visible} 
-      onCancel={onCancel} 
-      title="Hóa Đơn Chi Tiết" 
+    <Modal
+      visible={visible}
+      onCancel={onCancel}
+      title="Hóa Đơn Điện Tử"
       footer={[
         <Button key="export-pdf" type="primary" onClick={handleExportPDF}>
           Xuất PDF
@@ -54,6 +68,7 @@ const ChiTietHoaDon: React.FC<ChiTietHoaDonProps> = ({ visible, onCancel, maHoaD
         </Button>
       ]}
       width={700}
+      style={{ top: 5 }}
     >
       {loading ? (
         <Spin tip="Đang tải..." />
@@ -62,15 +77,28 @@ const ChiTietHoaDon: React.FC<ChiTietHoaDonProps> = ({ visible, onCancel, maHoaD
           <div style={{ padding: '20px', backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '8px' }}>
             <Row justify="space-between" style={{ marginBottom: '20px' }}>
               <Col>
-                <Title level={3}>Hóa Đơn: {hoaDon.maHoaDon}</Title>
-              </Col>
-              <Col>
-                <Text>Mã Nhân Viên: {hoaDon.maNhanVien}</Text><br/>
-                <Text>Nhân Viên: {hoaDon.tenNhanVien}</Text>
+                <Text>Trung Tâm Prometheus</Text><br/>
+                <Text>Mã Số Thuế: 123456789</Text><br/>
+                <Text>Địa chỉ: 123 Đường XYZ, TP HCM</Text>
               </Col>
             </Row>
 
-            <Row justify="space-between">
+            <Row justify="space-between" style={{ marginBottom: '20px' }}>
+              <Col>
+                <Title level={3}>Hóa Đơn: {hoaDon.maHoaDon}</Title>
+                <Text>Số liên: 001</Text>
+              </Col>
+              <Col>
+                <Text>Mã Nhân Viên: {hoaDon.maNhanVien}</Text><br />
+                <Text>Nhân Viên: {hoaDon.tenNhanVien}</Text><br />
+                <Text>Ngày Tạo: {moment(hoaDon.ngayTaoHoaDon).format('DD/MM/YYYY')}</Text>
+              </Col>
+            </Row>
+
+            <Divider />
+
+            {/* Customer Information */}
+            <Row justify="space-between" style={{ marginBottom: '20px' }}>
               <Col>
                 <Text strong>Mã Học Viên: </Text>
                 <Text>{hoaDon.maHocVien} - {hoaDon.tenHocVien}</Text><br/>
@@ -80,8 +108,10 @@ const ChiTietHoaDon: React.FC<ChiTietHoaDonProps> = ({ visible, onCancel, maHoaD
                 <Text>{hoaDon.gioiTinh}</Text>
               </Col>
               <Col>
-                <Text strong>Ngày Tạo Hóa Đơn: </Text>
-                <Text>{moment(hoaDon.ngayTaoHoaDon).format('DD/MM/YYYY')}</Text>
+                <Text strong>Số Điện Thoại: </Text>
+                <Text>{hoaDon.sdtHocVien}</Text><br />
+                <Text strong>Địa Chỉ: </Text>
+                <Text>{hoaDon.diaChiHocVien}</Text>
               </Col>
             </Row>
 
@@ -115,6 +145,17 @@ const ChiTietHoaDon: React.FC<ChiTietHoaDonProps> = ({ visible, onCancel, maHoaD
                 <Text strong style={{ fontSize: '18px' }}>
                   {hoaDon.chiTietHoaDon.reduce((acc: number, item: any) => acc + item.hocPhi, 0).toLocaleString()} VND
                 </Text>
+              </Col>
+            </Row>
+
+            <Divider />
+            <Row justify="space-between">
+              <Col>
+                <Text>Người Lập Hóa Đơn: {hoaDon.tenNhanVien}</Text><br />
+                <Text>Chữ Ký (Điện Tử)</Text>
+              </Col>
+              <Col>
+                <Text>Lưu ý: Hóa đơn này được tạo bởi hệ thống và không cần chữ ký tay.</Text>
               </Col>
             </Row>
           </div>
