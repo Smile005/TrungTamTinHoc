@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Select, DatePicker, Input, Button, Form, Modal, Steps, message, theme, Table, InputNumber } from 'antd';
-import moment from 'moment';
 import axios from 'axios';
 import type { MonHocType } from '../types/MonHocType';
 import type { NhanVienType } from '../types/NhanVienType';
@@ -42,7 +41,14 @@ const AddLopHoc: React.FC<AddLopHocProps> = ({ visible, onCancel }) => {
     };
 
     return (
-        <Modal title="Tạo lớp học" open={visible} onCancel={handleCancel} footer={null} width={1000}>
+        <Modal
+            title="Tạo lớp học"
+            open={visible}
+            onCancel={handleCancel}
+            footer={null}
+            width={current === 0 ? 500 : 1000} // Đặt chiều rộng 500px ở bước 1, trở lại 1000px ở bước 2
+            style={{ maxWidth: '100%', margin: '0 auto', top: 50 }}
+        >
             <Steps current={current} items={steps.map(item => ({ key: item.title, title: item.title }))} />
             <div style={{ padding: '24px', textAlign: 'center', border: '1px dashed #e6e6e6', borderRadius: '8px' }}>
                 {steps[current].content}
@@ -92,7 +98,6 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
                 setGiangViens(giangVienResponse.data);
                 setMonHocs(monHocResponse.data);
             } catch (error) {
-                console.error('Lỗi khi lấy dữ liệu:', error);
                 message.error('Có lỗi xảy ra khi tải dữ liệu.');
             }
         };
@@ -113,8 +118,6 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
             ],
         };
 
-        console.log(data)
-
         try {
             const token = localStorage.getItem('token');
             const response = await axios.post('http://localhost:8081/api/lophoc/them-lophoc', data, {
@@ -128,15 +131,14 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
             onLopHocCreated(createdMaLopHoc);
             message.success('Lớp học đã được tạo thành công!');
         } catch (error) {
-            console.error('Lỗi khi thêm lớp học:', error);
             message.error('Có lỗi xảy ra khi tạo lớp học.');
         }
     };
 
     return (
-        <Form layout="vertical" form={form} onFinish={handleSubmit}>
+        <Form layout="vertical" form={form} onFinish={handleSubmit} style={{ maxWidth: '100%' }}>
             <Form.Item label="Mã môn học" name="maMonHoc" rules={[{ required: true, message: 'Vui lòng chọn mã môn học!' }]}>
-                <Select placeholder="Chọn mã môn học">
+                <Select placeholder="Chọn mã môn học" style={{ width: 400 }}>
                     {monHocs.map(monHoc => (
                         <Option key={monHoc.maMonHoc} value={monHoc.maMonHoc}>
                             {monHoc.tenMonHoc}
@@ -145,7 +147,7 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
                 </Select>
             </Form.Item>
             <Form.Item label="Giáo viên" name="maNhanVien" rules={[{ required: true, message: 'Vui lòng chọn giáo viên!' }]}>
-                <Select placeholder="Chọn giáo viên">
+                <Select placeholder="Chọn giáo viên" style={{ width: 400 }}>
                     {giangViens.map(giangVien => (
                         <Option key={giangVien.maNhanVien} value={giangVien.maNhanVien}>
                             {giangVien.tenNhanVien}
@@ -154,16 +156,16 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
                 </Select>
             </Form.Item>
             <Form.Item label="Ngày bắt đầu" name="ngayBatDau" rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu!' }]}>
-                <DatePicker />
+                <DatePicker style={{ width: 400 }} />
             </Form.Item>
             <Form.Item label="Số lượng tối đa" name="soLuongMax" initialValue={30}>
-                <InputNumber min={1} />
+                <InputNumber min={1} style={{ width: 400 }} />
             </Form.Item>
             <Form.Item label="Ghi chú" name="ghiChu">
-                <Input.TextArea />
+                <Input.TextArea style={{ width: 400 }} />
             </Form.Item>
             <Form.Item>
-                <Button type="primary" htmlType="submit">Tạo lớp học</Button>
+                <Button type="primary" htmlType="submit" style={{ width: 400 }}>Tạo lớp học</Button>
             </Form.Item>
         </Form>
     );
