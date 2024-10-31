@@ -8,6 +8,7 @@ const caHocRoutes = require('./routes/caHocRoutes');
 const monHocRoutes = require('./routes/monHocRoutes');
 const lopHocRoutes = require('./routes/lopHocRoutes');
 const hoaDonRoutes = require('./routes/hoaDonRoutes');
+const lichHocRoutes = require('./routes/lichHocRoutes');
 require('dotenv').config();
 
 const app = express();
@@ -26,6 +27,7 @@ app.use('/api/cahoc', caHocRoutes);
 app.use('/api/monhoc', monHocRoutes);
 app.use('/api/lophoc', lopHocRoutes);
 app.use('/api/hoadon', hoaDonRoutes);
+app.use('/api/lichhoc', lichHocRoutes);
 
 app.listen(process.env.BE_PORT, () => {
   console.log(`Server running on port ${process.env.BE_PORT}`);

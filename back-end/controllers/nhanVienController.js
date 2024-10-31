@@ -28,6 +28,32 @@ const getNhanVien = async (req, res) => {
   }
 };
 
+const getGiangVien = async (req, res) => {
+  try {
+    const [results] = await pool.query(`
+      SELECT 
+        maNhanVien,
+        tenNhanVien,
+        img,
+        chucVu,
+        DATE_FORMAT(ngayVaoLam, '%d/%m/%Y') AS ngayVaoLam,
+        gioiTinh,
+        DATE_FORMAT(ngaySinh, '%d/%m/%Y') AS ngaySinh,
+        sdt,
+        email,
+        diaChi,
+        trangThai,
+        ghiChu
+      FROM NhanVien
+      WHERE chucVu = "Giảng viên"
+    `);
+
+    res.json(results);
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server. Không thể tìm giảng viên', error });
+  }
+};
+
 const createMaNV = async (connection) => {
   try {
     const query = `SELECT maNhanVien FROM NhanVien ORDER BY maNhanVien DESC LIMIT 1;`;
@@ -236,4 +262,4 @@ const exportNhanVienToExcel = async (req, res) => {
   }
 };
 
-module.exports = { getNhanVien, createNhanVien, updateNhanVien, updateProfile, xoaNhanVien, exportNhanVienToExcel  };
+module.exports = { getNhanVien, createNhanVien, updateNhanVien, getGiangVien, updateProfile, xoaNhanVien, exportNhanVienToExcel  };

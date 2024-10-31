@@ -79,7 +79,7 @@ const LopHoc: React.FC = () => {
     const filtered = filteredData.filter((item) =>
       item.maLopHoc.toLowerCase().includes(value.toLowerCase()) ||
       item.tenLopHoc.toLowerCase().includes(value.toLowerCase()) ||
-      item.soLuong.toString().includes(value) ||
+      item.soLuongMax.toString().includes(value) ||
       item.trangThai.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredData(filtered);
