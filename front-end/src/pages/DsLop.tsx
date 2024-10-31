@@ -42,10 +42,10 @@ const DsLop: React.FC = () => {
 
               const soLuongHienTai = hocVienResponse.data.filter((hocVien: any) => hocVien.maLopHoc === lopHoc.maLopHoc).length;
 
-              return { ...lopHoc, soLuongToiDa: lopHoc.soLuong, soLuong: soLuongHienTai };
+              return { ...lopHoc, soLuongToiDa: lopHoc.soLuongMax, soLuong: soLuongHienTai };
             } catch (error) {
               message.error(`Lỗi khi lấy dữ liệu học viên của lớp ${lopHoc.maLopHoc}`);
-              return { ...lopHoc, soLuongToiDa: lopHoc.soLuong, soLuong: 0 };
+              return { ...lopHoc, soLuongToiDa: lopHoc.soLuongMax, soLuong: 0 };
             }
           })
         );

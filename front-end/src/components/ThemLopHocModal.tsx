@@ -53,7 +53,7 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
                     maMonHoc: values.maMonHoc, // Dùng maMonHoc để gửi dữ liệu
                     maNhanVien: values.maNhanVien, // Dùng maNhanVien để gửi dữ liệu
                     ngayBatDau: values.ngayBatDau ? values.ngayBatDau.format('YYYY-MM-DD') : null,
-                    soLuong: values.soLuong,
+                    soLuongMax: values.soLuong,
                     trangThai: values.trangThai,
                     ghiChu: values.ghiChu || undefined,
                 };
