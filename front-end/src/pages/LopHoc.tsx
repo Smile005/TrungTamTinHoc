@@ -74,17 +74,14 @@ const LopHoc: React.FC = () => {
   }, []);
 
   const onSearch = (value: string) => {
-    const lowercasedValue = value.toLowerCase(); 
-    const filtered = filteredData.filter((item) => {
-      return (
-        item.maLopHoc.toLowerCase().includes(lowercasedValue) || 
-        item.tenLopHoc.toLowerCase().includes(lowercasedValue) || 
-        item.soLuong.toString().includes(lowercasedValue) || 
-        item.trangThai.toLowerCase().includes(lowercasedValue) 
-      );
-    });
-    setFilteredData(filtered); 
-    setSearchText(value); 
+    const filtered = filteredData.filter((item) =>
+      item.maLopHoc.toLowerCase().includes(value.toLowerCase()) ||
+      item.tenLopHoc.toLowerCase().includes(value.toLowerCase()) ||
+      item.soLuongMax.toString().includes(value) ||
+      item.trangThai.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredData(filtered);
+    setSearchText(value);
   };
 
   const handleMenuClick = (e: any, record: LopHocType) => {

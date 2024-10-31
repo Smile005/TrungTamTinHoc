@@ -1,5 +1,5 @@
 const express = require('express');
-const { getLopHoc, createLopHoc, updateLopHoc, xoaLopHoc, getLopHocHD } = require('../controllers/lopHocController');
+const { getLopHoc, createLopHoc, updateLopHoc, deleteLopHoc, getLopHocHD, getLopHocByMaLop } = require('../controllers/lopHocController');
 const { getDS_Lop, xepLop, diemDanh, nhapDiem, chuyenLop, getDS_Lop02, xoaXepLop, getDS_LopHV, getDS_maHV02 } = require('../controllers/dsLopHocController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
@@ -7,9 +7,10 @@ const router = express.Router();
 
 router.get('/ds-lophoc', authMiddleware(2), getLopHoc);
 router.get('/ds-lophocHD', authMiddleware(2), getLopHocHD);
+router.get('/lophocByMa/:maLopHoc', authMiddleware(2), getLopHocByMaLop);
 router.post('/them-lophoc', authMiddleware(2), createLopHoc);
 router.post('/sua-lophoc', authMiddleware(2), updateLopHoc);
-router.post('/xoa-lophoc', authMiddleware(2), xoaLopHoc);
+router.post('/xoa-lophoc', authMiddleware(2), deleteLopHoc);
 
 router.get('/ds-hocvien', authMiddleware(2), getDS_Lop);
 router.get('/ds-hocvien02', authMiddleware(2), getDS_Lop02);

@@ -1,14 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Table, message, Layout, Tag, Button, Menu, Dropdown } from 'antd'; // Bổ sung các thành phần từ Ant Design
-import { EditOutlined, DeleteOutlined, OrderedListOutlined, MoreOutlined } from '@ant-design/icons'; // Bổ sung icon từ Ant Design
-import { LopHocType } from '../types/LopHocType'; // Import LopHocType
-import moment from 'moment'; // Import moment.js để định dạng ngày tháng
-import '../styles/TableCustom.css';
-
-const Testing: React.FC = () => {
-  const [lopHocData, setLopHocData] = useState<LopHocType[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+import React, { useState } from 'react';
+import { Button } from 'antd';
+import AddLopHoc from '../components/AddLopHoc';
 
   useEffect(() => {
     const fetchLopHocData = async () => {
@@ -121,15 +113,13 @@ const Testing: React.FC = () => {
   ];
 
   return (
-    <Layout>
-      <h1 className="page-name">Danh Sách Lớp Học - Testing</h1>
-      <Table
-        columns={columns}
-        dataSource={lopHocData}
-        rowKey="maLopHoc"
-        loading={loading}
-        pagination={{ pageSize: 5 }}
-        style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
+    <>
+      <Button type="primary" onClick={openModal}>
+        Open Steps Modal
+      </Button>
+      <AddLopHoc
+        visible={visible}
+        onCancel={closeModal}
       />
     </Layout>
   );
