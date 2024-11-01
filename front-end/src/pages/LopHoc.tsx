@@ -4,10 +4,11 @@ import { MoreOutlined, EditOutlined, DeleteOutlined, OrderedListOutlined } from 
 import axios from 'axios';
 import { LopHocType } from '../types/LopHocType';
 import SuaLopHocModal from '../components/SuaLopHocModal';
-import AddLopHoc from '../components/AddLopHoc'; // Import modal thêm lớp học
+import AddLopHoc from '../components/AddLopHoc';
 import { useNavigate } from 'react-router-dom';
 import '../styles/TableCustom.css';
 import moment from 'moment';
+import * as XLSX from 'xlsx';
 
 const { Search } = Input;
 
@@ -15,7 +16,7 @@ const LopHoc: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState<LopHocType[]>([]);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [isAddModalVisible, setIsAddModalVisible] = useState(false); // State cho modal thêm lớp học
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<LopHocType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [monHocMap, setMonHocMap] = useState<{ [key: string]: string }>({});
@@ -128,6 +129,25 @@ const LopHoc: React.FC = () => {
     }
   };
 
+  const exportLopHocToExcel = async () => {
+    try {
+      const response = await axios.get('http://localhost:8081/api/lophoc/xuat-lophoc', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        },
+        responseType: 'arraybuffer'
+      });
+
+      const workbook = XLSX.read(response.data, { type: 'array' });
+      XLSX.writeFile(workbook, 'DanhSachLopHoc.xlsx');
+      message.success('Xuất danh sách lớp học thành công!');
+    } catch (error) {
+      console.error('Lỗi khi xuất danh sách lớp học:', error);
+      message.error('Xuất danh sách lớp học không thành công');
+    }
+  };
+
   const columns = [
     {
       title: 'Mã Lớp Học',
@@ -216,7 +236,10 @@ const LopHoc: React.FC = () => {
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button' onClick={() => setIsAddModalVisible(true)}>Thêm</Button> {/* Mở modal thêm lớp */}
+          <Button className='custom-button' onClick={() => setIsAddModalVisible(true)}>Thêm</Button>
+          <Button className='custom-button' onClick={exportLopHocToExcel}>
+            Xuất Excel
+          </Button>
           <Button className='custom-button'>Nhập Excel</Button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 const express = require('express');
-const { getLopHoc, createLopHoc, updateLopHoc, deleteLopHoc, getLopHocHD, getLopHocByMaLop } = require('../controllers/lopHocController');
-const { getDS_Lop, xepLop, diemDanh, nhapDiem, chuyenLop, getDS_Lop02, xoaXepLop, getDS_LopHV, getDS_maHV02 } = require('../controllers/dsLopHocController');
+const { getLopHoc, createLopHoc, updateLopHoc, deleteLopHoc, getLopHocHD, getLopHocByMaLop, exportLopHocToExcel  } = require('../controllers/lopHocController');
+const { getDS_Lop, xepLop, diemDanh, nhapDiem, chuyenLop, getDS_Lop02, xoaXepLop, getDS_LopHV, getDS_maHV02, exportDsLopHocToExcel  } = require('../controllers/dsLopHocController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = express.Router();
@@ -21,5 +21,7 @@ router.delete('/xoaXepLop', authMiddleware(2), xoaXepLop);
 router.post('/chuyenLop', authMiddleware(2), chuyenLop);
 router.post('/diemDanh', authMiddleware(2), diemDanh);
 router.post('/nhapDiem', authMiddleware(2), nhapDiem);
+router.get('/xuat-lophoc', authMiddleware(2), exportLopHocToExcel);
+router.get('/xuat-ds-lophoc/:maLopHoc', authMiddleware(2), exportDsLopHocToExcel);
 
 module.exports = router;
