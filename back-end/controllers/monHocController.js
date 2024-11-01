@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const XLSX = require('xlsx');
 
 const getMonHoc = async (req, res) => {
   try {
@@ -145,4 +146,31 @@ const xoaMonHoc = async (req, res) => {
   }
 }
 
-module.exports = { getMonHoc, createMonHoc, updateMonHoc, xoaMonHoc, getMonHocHD };
+const exportMonHocToExcel = async (req, res) => {
+  try {
+    const [results] = await pool.query(`
+      SELECT 
+        maMonHoc, 
+        tenMonHoc, 
+        soBuoiHoc, 
+        hocPhi, 
+        moTa, 
+        trangThai, 
+        ghiChu 
+      FROM MonHoc
+    `);
+
+    const worksheet = XLSX.utils.json_to_sheet(results);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách môn học');
+
+    const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    res.setHeader('Content-Disposition', 'attachment; filename="DanhSachMonHoc.xlsx"');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer);
+  } catch (error) {
+    res.status(500).json({ message: 'Xuất Excel không thành công', error });
+  }
+};
+
+module.exports = { getMonHoc, createMonHoc, updateMonHoc, xoaMonHoc, getMonHocHD, exportMonHocToExcel };

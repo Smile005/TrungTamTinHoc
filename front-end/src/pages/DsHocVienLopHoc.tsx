@@ -6,6 +6,7 @@ import { HocVienType } from '../types/HocVienType';
 import { DsLopHocType } from '../types/DsHocVienLopHocType';
 import { DeleteOutlined, LeftCircleOutlined } from '@ant-design/icons';
 import '../styles/TableCustom.css';
+import * as XLSX from 'xlsx';
 
 const { Search } = Input;
 
@@ -86,6 +87,25 @@ const DsHocVienLopHoc: React.FC = () => {
     setSearchText(value);
   };
 
+  const exportDsLopHocToExcel = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8081/api/lophoc/xuat-ds-lophoc/${maLopHoc}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        },
+        responseType: 'arraybuffer',
+      });
+
+      const workbook = XLSX.read(response.data, { type: 'array' });
+      XLSX.writeFile(workbook, `DanhSachHocVienLop_${maLopHoc}.xlsx`);
+      message.success(`Xuất danh sách học viên cho lớp ${maLopHoc} thành công!`);
+    } catch (error) {
+      console.error('Lỗi khi xuất danh sách học viên:', error);
+      message.error('Xuất danh sách học viên không thành công');
+    }
+  };
+
   const columns = [
     {
       title: 'Mã Học Viên',
@@ -139,7 +159,9 @@ const DsHocVienLopHoc: React.FC = () => {
             enterButton
           />
           <div className="button-container">
-            <Button className='custom-button'>Xuất Excel</Button>
+            <Button className='custom-button' onClick={exportDsLopHocToExcel}>
+              Xuất Excel
+            </Button>
           </div>
         </div>
 

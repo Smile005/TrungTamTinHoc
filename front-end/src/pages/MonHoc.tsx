@@ -6,6 +6,7 @@ import ThemMonHocModal from '../components/ThemMonHocModal';
 import SuaMonHocModal from '../components/SuaMonHocModal';
 import '../styles/TableCustom.css';
 import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 const { Search } = Input;
 
@@ -93,7 +94,7 @@ const MonHoc: React.FC = () => {
     };
 
     const handleOk = (values: MonHocType) => {
-        setFilteredData((prevData) => [...prevData, values]); 
+        setFilteredData((prevData) => [...prevData, values]);
         setIsModalVisible(false);
     };
 
@@ -108,6 +109,25 @@ const MonHoc: React.FC = () => {
 
     const handleImportExcel = () => {
         message.info('Chức năng nhập từ Excel!');
+    };
+
+    const exportMonHocToExcel = async () => {
+        try {
+            const response = await axios.get('http://localhost:8081/api/monhoc/xuat-monhoc', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                },
+                responseType: 'arraybuffer' // Đảm bảo nhận về file dưới dạng buffer
+            });
+
+            const workbook = XLSX.read(response.data, { type: 'array' });
+            XLSX.writeFile(workbook, 'DanhSachMonHoc.xlsx');
+            message.success('Xuất danh sách môn học thành công!');
+        } catch (error) {
+            console.error('Lỗi khi xuất danh sách môn học:', error);
+            message.error('Xuất danh sách môn học không thành công');
+        }
     };
 
     const columns = [
@@ -190,6 +210,9 @@ const MonHoc: React.FC = () => {
                 <div className="button-container">
                     <Button className="custom-button" onClick={handleAddCourse}>
                         Thêm
+                    </Button>
+                    <Button className="custom-button" onClick={exportMonHocToExcel}>
+                        Xuất Excel
                     </Button>
                     <Button className="custom-button" onClick={handleImportExcel}>
                         Nhập Excel

@@ -1,5 +1,7 @@
 // Import kết nối tới cơ sở dữ liệu
 const pool = require('../config/db');
+const XLSX = require('xlsx');
+const moment = require('moment');
 
 // 1. Hàm lấy tất cả các lớp học
 const getLopHoc = async (req, res) => {
@@ -244,6 +246,44 @@ const deleteLopHoc = async (req, res) => {
   }
 };
 
+
+const exportLopHocToExcel = async (req, res) => {
+  try {
+    const [results] = await pool.query(`
+      SELECT 
+        LopHoc.maLopHoc, 
+        LopHoc.tenLopHoc, 
+        LopHoc.maMonHoc, 
+        MonHoc.tenMonHoc, 
+        LopHoc.maNhanVien, 
+        NhanVien.tenNhanVien, 
+        LopHoc.ngayBatDau, 
+        LopHoc.soLuongMax, 
+        LopHoc.trangThai, 
+        LopHoc.ghiChu
+      FROM LopHoc
+      JOIN MonHoc ON LopHoc.maMonHoc = MonHoc.maMonHoc
+      JOIN NhanVien ON LopHoc.maNhanVien = NhanVien.maNhanVien
+    `);
+
+    const formattedResults = results.map((row) => ({
+      ...row,
+      ngayBatDau: row.ngayBatDau ? moment(row.ngayBatDau).format('DD/MM/YYYY') : null,
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedResults);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách lớp học');
+
+    const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    res.setHeader('Content-Disposition', 'attachment; filename="DanhSachLopHoc.xlsx"');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer);
+  } catch (error) {
+    res.status(500).json({ message: 'Xuất Excel không thành công', error });
+  }
+};
+
 // Xuất các hàm
 module.exports = {
   getLopHoc,
@@ -251,5 +291,6 @@ module.exports = {
   getLopHocHD,
   createLopHoc,
   updateLopHoc,
-  deleteLopHoc
+  deleteLopHoc,
+  exportLopHocToExcel
 };

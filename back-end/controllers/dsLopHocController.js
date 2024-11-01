@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const XLSX = require('xlsx');
 
 const getDS_Lop = async (req, res) => {
   try {
@@ -230,4 +231,42 @@ const nhapDiem = async (req, res) => {
 
 };
 
-module.exports = { getDS_Lop, chuyenLop, xepLop, diemDanh, nhapDiem, getDS_Lop02, xoaXepLop, getDS_LopHV, getDS_maHV02 };
+const exportDsLopHocToExcel = async (req, res) => {
+  const { maLopHoc } = req.params;
+
+  try {
+    const [results] = await pool.query(`
+      SELECT 
+        hv.maHocVien, 
+        hv.tenHocVien, 
+        hv.gioiTinh,
+        hv.sdt,
+        hv.email,
+        dl.trangThai, 
+        dl.ghiChu
+      FROM 
+        DsLopHoc dl
+      JOIN 
+        HocVien hv ON dl.maHocVien = hv.maHocVien
+      WHERE 
+        dl.maLopHoc = ?
+    `, [maLopHoc]);
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: `Không tìm thấy học viên nào trong lớp có mã ${maLopHoc}.` });
+    }
+
+    const worksheet = XLSX.utils.json_to_sheet(results);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, `Danh sách lớp ${maLopHoc}`);
+
+    const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    res.setHeader('Content-Disposition', `attachment; filename="DanhSachLop_${maLopHoc}.xlsx"`);
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer);
+  } catch (error) {
+    res.status(500).json({ message: 'Xuất Excel không thành công', error });
+  }
+};
+
+module.exports = { getDS_Lop, chuyenLop, xepLop, diemDanh, nhapDiem, getDS_Lop02, xoaXepLop, getDS_LopHV, getDS_maHV02, exportDsLopHocToExcel };
