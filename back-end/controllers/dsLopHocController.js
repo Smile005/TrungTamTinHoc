@@ -113,7 +113,7 @@ const xepLop = async (req, res) => {
 
     // Check if the class exists and get the total allowed students (soLuong)
     const [lopHocRecord] = await connection.query(
-      'SELECT trangThai, soLuong FROM LopHoc WHERE maLopHoc = ?',
+      'SELECT trangThai, soLuongMax FROM LopHoc WHERE maLopHoc = ?',
       [maLopHoc]
     );
 
@@ -128,7 +128,7 @@ const xepLop = async (req, res) => {
       return res.status(403).json({ message: 'Lớp học chưa mở đăng ký.' });
     }
 
-    const soLuong = lopHocRecord[0].soLuong;
+    const soLuongMax = lopHocRecord[0].soLuongMax;
 
     // Check if the class is full by counting current students
     const [countRecord] = await connection.query(
@@ -138,7 +138,7 @@ const xepLop = async (req, res) => {
 
     const currentStudents = countRecord[0].currentStudents;
 
-    if (currentStudents >= soLuong) {
+    if (currentStudents >= soLuongMax) {
       await connection.rollback();
       return res.status(409).json({ message: 'Lớp học đã đầy.' });
     }

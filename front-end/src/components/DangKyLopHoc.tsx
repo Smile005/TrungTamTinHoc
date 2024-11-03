@@ -6,6 +6,8 @@ import { HocVienType } from '../types/HocVienType';
 import { ChiTietHDType } from '../types/HoaDonType';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
+import { Link } from 'react-router-dom';
+import ChiTietHoaDon from '../components/ChiTietHoaDon';
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 
@@ -27,6 +29,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
   const [invoiceDetails, setInvoiceDetails] = useState<ChiTietHDType[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [maHoaDon, setMaHoaDon] = useState<string>('');
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const steps = [
     {
@@ -61,12 +64,24 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
     {
       title: 'Bước 3: Thông tin hóa đơn',
       content: (
-        <InvoiceSummary
-          invoiceDetails={invoiceDetails}
-          totalAmount={totalAmount}
-          tenHocVien={hocVien.tenHocVien}
-          maHoaDon={maHoaDon}
-        />
+        <>
+          <InvoiceSummary
+            invoiceDetails={invoiceDetails}
+            totalAmount={totalAmount}
+            tenHocVien={hocVien.tenHocVien}
+            maHoaDon={maHoaDon}
+          />
+          <Button type="link" onClick={() => setIsModalVisible(true)}>
+            Xem chi tiết hóa đơn
+          </Button>
+          {isModalVisible && (
+            <ChiTietHoaDon
+              visible={isModalVisible}
+              onCancel={() => setIsModalVisible(false)}
+              maHoaDon={maHoaDon}
+            />
+          )}
+        </>
       ),
     },
   ];
@@ -87,7 +102,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('token');
-  
+
         const [monHocResponse, lopHocResponse] = await Promise.all([
           axios.get('http://localhost:8081/api/monhoc/ds-monhocHD', {
             headers: {
@@ -100,20 +115,20 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
             },
           }),
         ]);
-  
+
         const lopHocData = lopHocResponse.data;
-  
+
         const monHocWithClasses = monHocResponse.data.filter((monHoc: any) =>
           lopHocData.some((lopHoc: any) => lopHoc.maMonHoc === monHoc.maMonHoc)
         );
-  
+
         setMonHocList(monHocWithClasses);
         setLopHocList(lopHocData);
       } catch (error) {
         message.error('Lỗi khi lấy dữ liệu: ');
       }
     };
-  
+
     fetchData();
   }, []);
 

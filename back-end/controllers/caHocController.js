@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const XLSX = require('xlsx');
 
 const getCaHoc = async (req, res) => {
   try {
@@ -48,10 +49,10 @@ const createCaHoc = async (req, res) => {
 
     // Chuyển đổi batDau thành định dạng phù hợp với MySQL
     const batDauValue = new Date(batDau).toISOString().slice(0, 19).replace('T', ' ');
-    
+
     // Nếu không có thời gian kết thúc, đặt nó là 2 tiếng sau thời gian bắt đầu
-    const ketThucValue = req.body.ketThuc 
-      ? new Date(req.body.ketThuc).toISOString().slice(0, 19).replace('T', ' ') 
+    const ketThucValue = req.body.ketThuc
+      ? new Date(req.body.ketThuc).toISOString().slice(0, 19).replace('T', ' ')
       : new Date(new Date(batDau).getTime() + 2 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
 
     // Chèn dữ liệu vào bảng CaHoc
@@ -117,11 +118,32 @@ const xoaCaHoc = async (req, res) => {
     if (caHoc.length === 0) return res.status(400).json({ message: 'Ca học không tồn tại.' });
 
     await pool.query('DELETE FROM CaHoc WHERE maCa = ?', [maCa]);
-   
+
     res.json({ message: `Ca học ${maCa} đã bị xóa` });
   } catch (error) {
     res.status(500).json({ message: 'Xóa ca học không thành công', error });
   }
 }
+const exportCaHocToExcel = async (req, res) => {
+  try {
+    const [results] = await pool.query('SELECT * FROM CaHoc');
 
-module.exports = { getCaHoc, createCaHoc, updateCaHoc, xoaCaHoc};
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Không có ca học nào để xuất' });
+    }
+
+    const worksheet = XLSX.utils.json_to_sheet(results);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'DanhSachCaHoc');
+
+    const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+
+    res.setHeader('Content-Disposition', 'attachment; filename="DanhSachCaHoc.xlsx"');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer);
+  } catch (error) {
+    res.status(500).json({ message: 'Xuất Excel không thành công', error });
+  }
+};
+
+module.exports = { getCaHoc, createCaHoc, updateCaHoc, xoaCaHoc, exportCaHocToExcel };

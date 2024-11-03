@@ -73,7 +73,7 @@ const HoaDon: React.FC = () => {
       width: '25%',  
     },
     {
-      title: 'Hành Động',
+      title: 'Chi Tiết Hóa Đơn',
       key: 'action',
       width: '15%',  
       render: (text: any, record: any) => (
