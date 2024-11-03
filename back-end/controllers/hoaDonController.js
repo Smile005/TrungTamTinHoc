@@ -236,18 +236,15 @@ const exportHoaDonPDF = async (req, res) => {
     res.setHeader('Content-type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=${hoaDon[0].maHoaDon}.pdf`);
 
-    // Header
     doc.fontSize(14).text('Trung Tâm Prometheus', { align: 'center' });
     doc.text('Mã Số Thuế: 123456789', { align: 'center' });
     doc.text('Địa chỉ: 123 Đường XYZ, TP HCM', { align: 'center' });
     doc.moveDown(1.5);
 
-    // Thông tin hóa đơn và nhân viên
     doc.fontSize(18).text(`Hóa Đơn: ${hoaDon[0].maHoaDon}`, { align: 'center' });
     doc.fontSize(12).text(`Số liên: 001`, { align: 'center' });
     doc.moveDown(1.5);
 
-    // Thông tin nhân viên và ngày tạo hóa đơn
     doc.fontSize(12)
       .text(`Mã Nhân Viên: ${hoaDon[0].maNhanVien}`, 50)
       .text(`Nhân Viên: ${hoaDon[0].tenNhanVien}`, 50, doc.y + 15)
@@ -255,44 +252,40 @@ const exportHoaDonPDF = async (req, res) => {
 
     doc.moveDown(1.5);
 
-    // Thông tin học viên
     doc.text(`Mã Học Viên: ${hoaDon[0].maHocVien} - ${hoaDon[0].tenHocVien}`, 50)
       .text(`Ngày Sinh: ${moment(hoaDon[0].ngaySinh).format('DD/MM/YYYY')}`, 50, doc.y + 15)
       .text(`Giới Tính: ${hoaDon[0].gioiTinh}`, 50, doc.y + 15);
 
-    doc.text(`Số Điện Thoại: ${hoaDon[0].sdtHocVien}`, 300)
-      .text(`Địa Chỉ: ${hoaDon[0].diaChiHocVien}`, 300, doc.y + 15);
+    doc.text(`Số Điện Thoại: ${hoaDon[0].sdtHocVien}`, 310, doc.y - 40)
+      .text(`Địa Chỉ: ${hoaDon[0].diaChiHocVien}`, 310, doc.y + 15);
 
     doc.moveDown();
     doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
     doc.moveDown(1.5);
 
-    // Chi tiết các môn học
-    doc.fontSize(14).text('Chi Tiết Các Môn Học', 50);  // Đưa tiêu đề sang trái
+    doc.fontSize(14).text('Chi Tiết Các Môn Học', 50);
     doc.moveDown(1);
 
-    // Table header
     doc.fontSize(12)
       .text('Môn Học', 50)
-      .text('Học Phí', 400);
+      .text('Học Phí', 450);
 
-    // Thông tin chi tiết từng môn học
     chiTietHoaDon.forEach((monHoc, index) => {
-      doc.text(`${index + 1}. ${monHoc.tenMonHoc}`, 50, doc.y + 15)
-         .text(`${monHoc.hocPhi.toLocaleString()} VND`, 400, doc.y);
+      doc.text(`${index + 1}. ${monHoc.tenMonHoc}`, 50, doc.y + 5)
+        .text(`${monHoc.hocPhi.toLocaleString()} VND`, 450, doc.y - 15);
     });
 
     doc.moveDown();
     doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
     doc.moveDown(1.5);
 
-    // Tổng số tiền
     const totalHocPhi = chiTietHoaDon.reduce((total, item) => total + item.hocPhi, 0);
-    doc.fontSize(16).text(`Tổng Số Tiền: ${totalHocPhi.toLocaleString()} VND`, { align: 'center' });
+    doc.fontSize(14).text(`Tổng Số Tiền:`, 270, doc.y);
+    doc.fontSize(14).text(`${totalHocPhi.toLocaleString()} VND`, 270, doc.y + 20);
+
 
     doc.moveDown(2);
 
-    // Ký tên và lưu ý
     doc.fontSize(12)
       .text(`Người Lập Hóa Đơn: ${hoaDon[0].tenNhanVien}`, 50)
       .text(`Chữ Ký (Điện Tử)`, 50, doc.y + 15)

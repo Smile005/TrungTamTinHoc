@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const XLSX = require('xlsx');
 
 const getPhongHoc = async (req, res) => {
   try {
@@ -99,4 +100,25 @@ const xoaPhongHoc = async (req, res) => {
   }
 }
 
-module.exports = { getPhongHoc, createPhongHoc, updatePhongHoc, xoaPhongHoc };
+const exportPhongHocToExcel = async (req, res) => {
+  try {
+    const [results] = await pool.query(`SELECT maPhong, soLuong, trangThai, ghiChu FROM PhongHoc`);
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Không có dữ liệu phòng học để xuất.' });
+    }
+
+    const worksheet = XLSX.utils.json_to_sheet(results);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Danh sách phòng học');
+
+    const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    res.setHeader('Content-Disposition', 'attachment; filename="DanhSachPhongHoc.xlsx"');
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer);
+  } catch (error) {
+    res.status(500).json({ message: 'Xuất Excel không thành công', error });
+  }
+};
+
+module.exports = { getPhongHoc, createPhongHoc, updatePhongHoc, xoaPhongHoc, exportPhongHocToExcel };

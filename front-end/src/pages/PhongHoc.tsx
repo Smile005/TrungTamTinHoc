@@ -107,6 +107,27 @@ const PhongHoc: React.FC = () => {
     }
   };
 
+  const handleExportExcel = async () => {
+    try {
+      const response = await axios.get('http://localhost:8081/api/phonghoc/xuat-phong', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'DanhSachPhongHoc.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Lỗi khi xuất danh sách phòng học:', error);
+      message.error('Xuất Excel không thành công');
+    }
+  };
+
   const columns = [
     {
       title: 'Mã Phòng',
@@ -182,6 +203,7 @@ const PhongHoc: React.FC = () => {
         />
         <div className="button-container">
           <Button className='custom-button' onClick={showModal}>Thêm</Button>
+          <Button className='custom-button' onClick={handleExportExcel}>Xuất Excel</Button>
           <Button className='custom-button'>Nhập Excel</Button>
         </div>
       </div>
