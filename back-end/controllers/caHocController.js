@@ -62,7 +62,7 @@ const createCaHoc = async (req, res) => {
         maCa,
         batDauValue,
         ketThucValue,
-        trangThai || 'Đang hoạt động',
+        trangThai || 'Đang Hoạt Động',
         ghiChu || null
       ]
     );
@@ -98,7 +98,7 @@ const updateCaHoc = async (req, res) => {
       [
         batDau,
         ketThuc,
-        trangThai || 'Đang hoạt động',
+        trangThai || 'Đang Hoạt Động',
         ghiChu || null,
         maCa
       ]
