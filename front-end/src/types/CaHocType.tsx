@@ -3,6 +3,6 @@ export interface CaHocType {
     maCa: string;          // Primary key, không NULL
     batDau: string;       // Kiểu TIME, có thể NULL
     ketThuc: string;      // Kiểu TIME, có thể NULL
-    trangThai?: "Đang hoạt động" | "Ngưng hoạt động";    // Có thể NULL
+    trangThai?: "Đang Hoạt Động" | "Ngưng Hoạt Động";    // Có thể NULL
     ghiChu?: string;
 }

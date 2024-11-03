@@ -53,7 +53,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 # Thêm ca học
 POST http://localhost:8081/api/cahoc/them-cahoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk2MDU2NjYsImV4cCI6MTcyOTYwOTI2Nn0._LRM6nZYhMsBWwrwwLoEtzIjgZG9MWyCgjSXpjMKAf0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzA2NDY3OTEsImV4cCI6MTczMDY1NzU5MX0.tAmS7PlrrJGoChkKeEppdLRuLytOX8JYWldkHPVPaHI
 Content-Type: application/json
 
 {
@@ -277,7 +277,7 @@ Authorization: Bearer <JWT_TOKEN>
 
 ### Thêm phòng học
 POST http://localhost:8081/api/phonghoc/them-phong
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzA2NDY3OTEsImV4cCI6MTczMDY1NzU5MX0.tAmS7PlrrJGoChkKeEppdLRuLytOX8JYWldkHPVPaHI
 Content-Type: application/json
 
 {
