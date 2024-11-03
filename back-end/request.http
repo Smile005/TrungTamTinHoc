@@ -400,12 +400,12 @@ Content-Type: application/json
 
 ### Xếp lớp 
 POST http://localhost:8081/api/lophoc/xepLop
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTYyNTQsImV4cCI6MTcyOTk5OTg1NH0.lp0oLhy6I-2GIznhUpPMZ1yww6kL0ooSmhsfknohwyg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzA2NDIzNzIsImV4cCI6MTczMDY1MzE3Mn0.ZKwjrUjCO7mpq9HVWyk3MVBCAv8IvHBFWA_ddeCdtow
 Content-Type: application/json
 
 {
-  "maLopHoc": "LH0002",
-  "maHocVien": "HV00007"
+  "maLopHoc": "LH0005",
+  "maHocVien": "HV00004"
 }
 
 ### Xóa xếp lớp 
@@ -428,8 +428,8 @@ Content-Type: application/json
 }
 
 ### xuat xlsx
-GET http://localhost:8081/api/nhanvien/export-nhanvien
-Authorization: Bearer
+GET http://localhost:8081/api/cahoc/xuat-cahoc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzA2NDIzNzIsImV4cCI6MTczMDY1MzE3Mn0.ZKwjrUjCO7mpq9HVWyk3MVBCAv8IvHBFWA_ddeCdtow
 
 ### Tìm hóa đơn theo mã hóa đơn
 GET http://localhost:8081/api/hoadon/hoaDonByMa/maHoaDon=HD0046

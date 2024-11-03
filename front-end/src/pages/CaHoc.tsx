@@ -6,6 +6,7 @@ import SuaCaHocModal from '../components/SuaCaHocModal';
 import { CaHocType } from '../types/CaHocType';
 import '../styles/TableCustom.css';
 import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 const { Search } = Input;
 
@@ -97,6 +98,48 @@ const CaHoc: React.FC = () => {
         record.maCa.toLowerCase().includes(searchText.toLowerCase())
     );
 
+    const exportToExcel = async () => {
+        // try {
+        //     const response = await axios.get('http://localhost:8081/api/cahoc/xuat-excel', {
+        //         headers: {
+        //             Authorization: `Bearer ${localStorage.getItem('token')}`,
+        //         },
+        //         responseType: 'arraybuffer', 
+        //     });
+    
+        //     const blob = new Blob([response.data], {
+        //         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        //     });
+    
+        //     const url = window.URL.createObjectURL(blob);
+        //     const link = document.createElement('a');
+        //     link.href = url;
+        //     link.setAttribute('download', 'DanhSachCaHoc.xlsx');
+        //     document.body.appendChild(link);
+        //     link.click();
+        //     document.body.removeChild(link);
+        // } catch (error) {
+        //     console.error('Lỗi khi xuất file Excel:', error);
+        //     message.error('Lỗi khi xuất file Excel');
+        // }
+        try {
+            const response = await axios.get('http://localhost:8081/api/cahoc/xuat-excel', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                },
+                responseType: 'arraybuffer'
+            });
+
+            const workbook = XLSX.read(response.data, { type: 'array' });
+            XLSX.writeFile(workbook, 'DanhSachCaHoc.xlsx');
+            message.success('Xuất danh sách thành công!');
+        } catch (error) {
+            console.error('Lỗi khi xuất danh sách:', error);
+            message.error('Xuất danh sách không thành công');
+        }
+    };
+
     const columns = [
         {
             title: 'Mã ca học',
@@ -170,6 +213,9 @@ const CaHoc: React.FC = () => {
                 <div className="button-container">
                     <Button className='custom-button' onClick={() => setIsThemCaModalVisible(true)}>
                         Thêm
+                    </Button>
+                    <Button className='custom-button' onClick={exportToExcel}>
+                        Xuất Excel
                     </Button>
                     <Button className='custom-button'>
                         Nhập Excel
