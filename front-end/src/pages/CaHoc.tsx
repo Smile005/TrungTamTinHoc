@@ -1,49 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import ThemCaHocModal from '../components/ThemCaHocModal'; 
-import SuaCaHocModal from '../components/SuaCaHocModal'; 
+import ThemCaHocModal from '../components/ThemCaHocModal';
+import SuaCaHocModal from '../components/SuaCaHocModal';
 import { CaHocType } from '../types/CaHocType';
 import '../styles/TableCustom.css';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
+import { fetchCaHoc, deleteCaHoc } from '../store/slices/caHocSlice';
 
 const { Search } = Input;
 
 const CaHoc: React.FC = () => {
-    const [searchText, setSearchText] = useState(''); 
+    const dispatch = useDispatch<AppDispatch>();
+    const caHocState = useSelector((state: RootState) => state.caHoc);
+    const { data: reduxData, loading: reduxLoading, error } = caHocState;
+
+    const [searchText, setSearchText] = useState('');
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const [isThemCaModalVisible, setIsThemCaModalVisible] = useState(false); 
+    const [isThemCaModalVisible, setIsThemCaModalVisible] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<CaHocType | null>(null);
-    const [data, setData] = useState<CaHocType[]>([]); 
-    const [loading, setLoading] = useState<boolean>(false); 
+    const [data, setData] = useState<CaHocType[]>([]);
 
     useEffect(() => {
-        const fetchCaHoc = async () => {
-            setLoading(true); 
-            try {
-                const response = await axios.get('http://localhost:8081/api/cahoc', {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`, 
-                    },
-                });
-                setData(response.data); 
-            } catch (error) {
-                console.error('Lỗi khi lấy danh sách ca học:', error);
-            } finally {
-                setLoading(false); 
-            }
-        };
+        dispatch(fetchCaHoc());
+    }, [dispatch]);
 
-        fetchCaHoc();
-    }, []);
+    useEffect(() => {
+        if (reduxData.length > 0) {
+            setData(reduxData);
+        }
+    }, [reduxData]);
 
     const handleMenuClick = (e: any, record: CaHocType) => {
         if (e.key === 'edit') {
             setSelectedRecord(record);
             setIsEditModalVisible(true);
         } else if (e.key === 'delete') {
-            deleteCaHoc(record.maCa); 
+            if (record.maCa) {
+                dispatch(deleteCaHoc(record.maCa))
+                    .then(() => {
+                        message.success('Xóa ca học thành công');
+                    })
+                    .catch(() => {
+                        message.error('Lỗi khi xóa ca học');
+                    });
+            }
         }
     };
 
@@ -65,80 +69,27 @@ const CaHoc: React.FC = () => {
         setIsThemCaModalVisible(false);
     };
 
-    const deleteCaHoc = async (maCa: string | undefined) => {
-        if (!maCa) {
-            message.error('Không thể xóa ca học: Mã ca học không hợp lệ.');
+    const onSearch = (value: string) => {
+        setSearchText(value);
+    };
+
+    const handleExportExcel = () => {
+        if (data.length === 0) {
+            message.warning('Không có dữ liệu để xuất');
             return;
         }
 
-        try {
-            await axios.post('http://localhost:8081/api/cahoc/xoa-cahoc', 
-                { maCa }, 
-                {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('token')}`,
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
-            const newData = data.filter((item) => item.maCa !== maCa);
-            setData(newData);
-            message.success('Xóa ca học thành công');
-        } catch (error) {
-            console.error('Lỗi khi xóa ca học:', error);
-            message.error('Lỗi khi xóa ca học');
-        }
-    };
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'CaHoc');
 
-    const onSearch = (value: string) => {
-        setSearchText(value);
+        XLSX.writeFile(workbook, 'DanhSachCaHoc.xlsx');
+        message.success('Xuất file Excel thành công');
     };
 
     const filteredData = data.filter((record) =>
         record.maCa.toLowerCase().includes(searchText.toLowerCase())
     );
-
-    const exportToExcel = async () => {
-        // try {
-        //     const response = await axios.get('http://localhost:8081/api/cahoc/xuat-excel', {
-        //         headers: {
-        //             Authorization: `Bearer ${localStorage.getItem('token')}`,
-        //         },
-        //         responseType: 'arraybuffer', 
-        //     });
-    
-        //     const blob = new Blob([response.data], {
-        //         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        //     });
-    
-        //     const url = window.URL.createObjectURL(blob);
-        //     const link = document.createElement('a');
-        //     link.href = url;
-        //     link.setAttribute('download', 'DanhSachCaHoc.xlsx');
-        //     document.body.appendChild(link);
-        //     link.click();
-        //     document.body.removeChild(link);
-        // } catch (error) {
-        //     console.error('Lỗi khi xuất file Excel:', error);
-        //     message.error('Lỗi khi xuất file Excel');
-        // }
-        try {
-            const response = await axios.get('http://localhost:8081/api/cahoc/xuat-excel', {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                },
-                responseType: 'arraybuffer'
-            });
-
-            const workbook = XLSX.read(response.data, { type: 'array' });
-            XLSX.writeFile(workbook, 'DanhSachCaHoc.xlsx');
-            message.success('Xuất danh sách thành công!');
-        } catch (error) {
-            console.error('Lỗi khi xuất danh sách:', error);
-            message.error('Xuất danh sách không thành công');
-        }
-    };
 
     const columns = [
         {
@@ -162,11 +113,7 @@ const CaHoc: React.FC = () => {
             dataIndex: 'trangThai',
             key: 'trangThai',
             render: (trangThai: string): JSX.Element => {
-                let color = '';
-                if (trangThai === 'Đang Hoạt Động') {
-                    color = 'geekblue';
-                } else if (trangThai === 'Ngưng Hoạt Động') 
-                    color = 'green';
+                let color = trangThai === 'Đang Hoạt Động' ? 'geekblue' : 'green';
                 return (
                     <Tag color={color} key={trangThai}>
                         {trangThai}
@@ -208,13 +155,13 @@ const CaHoc: React.FC = () => {
                     placeholder="Nhập mã ca học"
                     onSearch={onSearch}
                     enterButton
-                    style={{ backgroundColor: '#fff' }} 
+                    style={{ backgroundColor: '#fff' }}
                 />
                 <div className="button-container">
                     <Button className='custom-button' onClick={() => setIsThemCaModalVisible(true)}>
                         Thêm
                     </Button>
-                    <Button className='custom-button' onClick={exportToExcel}>
+                    <Button className='custom-button' onClick={handleExportExcel}>
                         Xuất Excel
                     </Button>
                     <Button className='custom-button'>
@@ -225,9 +172,9 @@ const CaHoc: React.FC = () => {
             <Table
                 className="custom-table"
                 columns={columns}
-                dataSource={filteredData.length ? filteredData : data} 
+                dataSource={filteredData.length ? filteredData : data}
                 pagination={{ pageSize: 5 }}
-                loading={loading} 
+                loading={reduxLoading}
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
 

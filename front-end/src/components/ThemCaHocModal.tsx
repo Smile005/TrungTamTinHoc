@@ -81,6 +81,16 @@ const ThemCaHocModal: React.FC<ThemCaHocModalProps> = ({ visible, onCancel, onSu
                     <TimePicker format="HH:mm:ss" />
                 </Form.Item>
                 <Form.Item
+                    name="trangThai"
+                    label="Tình Trạng"
+                    rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
+                >
+                    <Select>
+                        <Select.Option value="Đang hoạt động">Đang Hoạt Động</Select.Option>
+                        <Select.Option value="Ngưng hoạt động">Ngưng Hoạt Động</Select.Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item
                     name="ghiChu"
                     label="Ghi Chú"
                 >
