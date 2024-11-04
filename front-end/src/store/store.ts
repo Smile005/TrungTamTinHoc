@@ -4,6 +4,7 @@ import nhanVienReducer from './slices/nhanVienSlice'; // Import nhanVien reducer
 import hocVienReducer from './slices/hocVienSlice'; // Import hocVien reducer
 import taiKhoanReducer from './slices/taiKhoanSlice'; // Import taiKhoan reducer
 import lopHocReducer from './slices/lopHocSlice'; // Import lopHoc reducer
+import caHocReducer from './slices/caHocSlice';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     hocvien: hocVienReducer, // Thêm hocVien reducer
     taikhoan: taiKhoanReducer, // Thêm taiKhoan reducer
     lopHoc: lopHocReducer, // Thêm lopHoc reducer
+    caHoc: caHocReducer,
   },
 });
 
