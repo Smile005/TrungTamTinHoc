@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
-import { MoreOutlined, EditOutlined, DeleteOutlined, OrderedListOutlined } from '@ant-design/icons';
+import { MoreOutlined, EditOutlined, DeleteOutlined, OrderedListOutlined, FileAddOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { LopHocType } from '../types/LopHocType';
 import SuaLopHocModal from '../components/SuaLopHocModal';
@@ -87,6 +87,8 @@ const LopHoc: React.FC = () => {
       setIsEditModalVisible(true);
     } else if (e.key === 'danhSachLop') {
       navigate(`/ds-hoc-vien-lop/${record.maLopHoc}`);
+    } else if (e.key === 'nhapDiem') {
+      navigate(`/nhapdiem/${record.maLopHoc}`);
     } else if (e.key === 'delete') {
       deleteLopHoc(record.maLopHoc);
     }
@@ -211,6 +213,7 @@ const LopHoc: React.FC = () => {
           <Menu onClick={(e) => handleMenuClick(e, record)}>
             <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
             <Menu.Item key="danhSachLop" icon={<OrderedListOutlined />}>Danh sách lớp</Menu.Item>
+            <Menu.Item key="nhapDiem" icon={<FileAddOutlined />}>Nhập Điểm</Menu.Item>
             <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
           </Menu>
         );

@@ -15,6 +15,7 @@ const getLopHoc = async (req, res) => {
         LopHoc.maNhanVien, 
         NhanVien.tenNhanVien,
         LopHoc.soLuongMax,
+        LopHoc.trangThai,
         MonHoc.soBuoiHoc, 
         LopHoc.ngayBatDau
       FROM 

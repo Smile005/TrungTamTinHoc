@@ -73,6 +73,22 @@ const DsHocVienLopHoc: React.FC = () => {
       };
   };
 
+  const onDelete = async (maHocVien: string) => {
+    try {
+      await axios.delete(`http://localhost:8081/api/lophoc/xoaXepLop`, {
+        data: { maLopHoc, maHocVien },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      setHocVienList(prevList => prevList.filter(hocVien => hocVien.maHocVien !== maHocVien));
+      message.success('Xóa học viên khỏi lớp học thành công!');
+    } catch (error) {
+      message.error('Xóa học viên không thành công');
+    }
+  };
+
   const filteredHocVienList = hocVienList
     .filter(hocVien => hocVien.maLopHoc === maLopHoc)
     .filter(hocVien => {
@@ -136,7 +152,11 @@ const DsHocVienLopHoc: React.FC = () => {
       key: 'action',
       render: (_: any, record: DsLopHocType) => (
         <span>
-          <Button type="link" icon={<DeleteOutlined />} />
+          <Button
+            type="link"
+            icon={<DeleteOutlined />}
+            onClick={() => onDelete(record.maHocVien)}
+          />
         </span>
       ),
     },
