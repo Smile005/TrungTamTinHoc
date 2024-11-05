@@ -6,7 +6,23 @@ const moment = require('moment');
 // 1. Hàm lấy tất cả các lớp học
 const getLopHoc = async (req, res) => {
   try {
-    const [results] = await pool.query('SELECT * FROM LopHoc');
+    const [results] = await pool.query(`
+      SELECT 
+        LopHoc.maMonHoc, 
+        MonHoc.tenMonHoc, 
+        LopHoc.maLopHoc, 
+        LopHoc.tenLopHoc, 
+        LopHoc.maNhanVien, 
+        NhanVien.tenNhanVien,
+        LopHoc.soLuongMax,
+        MonHoc.soBuoiHoc, 
+        LopHoc.ngayBatDau
+      FROM 
+        LopHoc
+      JOIN 
+        MonHoc ON LopHoc.maMonHoc = MonHoc.maMonHoc
+      JOIN 
+        NhanVien ON LopHoc.maNhanVien = NhanVien.maNhanVien`);
     res.json(results);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });

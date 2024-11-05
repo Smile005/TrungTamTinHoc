@@ -4,7 +4,17 @@ const XLSX = require('xlsx');
 const getCaHoc = async (req, res) => {
   try {
     const [results] = await pool.query('SELECT * FROM CaHoc');
-    res.json(results);
+    
+    // Format the batDau and ketThuc to exclude seconds
+    const formattedResults = results.map(caHoc => {
+      return {
+        ...caHoc,
+        batDau: caHoc.batDau.toString().slice(0, 5), // Get HH:MM
+        ketThuc: caHoc.ketThuc.toString().slice(0, 5), // Get HH:MM
+      };
+    });
+
+    res.json(formattedResults);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });
   }
