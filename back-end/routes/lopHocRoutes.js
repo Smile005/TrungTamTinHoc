@@ -20,8 +20,8 @@ router.post('/xepLop', authMiddleware(2), xepLop);
 router.delete('/xoaXepLop', authMiddleware(2), xoaXepLop);
 router.post('/chuyenLop', authMiddleware(2), chuyenLop);
 router.post('/diemDanh', authMiddleware(2), diemDanh);
-router.post('/nhapDiem', authMiddleware(2), nhapDiem);
 router.get('/xuat-lophoc', authMiddleware(2), exportLopHocToExcel);
 router.get('/xuat-ds-lophoc/:maLopHoc', authMiddleware(2), exportDsLopHocToExcel);
+router.post('/nhapDiem/:maLopHoc', authMiddleware(2), nhapDiem);
 
 module.exports = router;

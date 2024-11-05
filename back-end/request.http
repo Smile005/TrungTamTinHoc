@@ -509,3 +509,23 @@ Content-Type: application/json
 ### Xóa buổi học (DELETE)
 DELETE http://localhost:8081/api/lichhoc/deleteBuoiHoc/:maLopHoc/:ngayHoc/:maCa
 Authorization: Bearer {token}
+
+###Nhập điểm
+POST http://localhost:8081/api/lophoc/nhapdiem/LH0001
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzA4MjE1NzMsImV4cCI6MTczMDgzMjM3M30.LcqhsMKoZumiwmfJfTxeVNPRdp4sg5jfqnrYt6ELC2k
+Content-Type: application/json
+
+[
+    {
+        "maHocVien": "HV00001",
+        "diemThuongKy": 6,
+        "diemGiuaKy": 3,
+        "diemCuoiKy": 10
+    },
+    {
+        "maHocVien": "HV00003",
+        "diemThuongKy": 7,
+        "diemGiuaKy": 5,
+        "diemCuoiKy": 8
+    }
+]

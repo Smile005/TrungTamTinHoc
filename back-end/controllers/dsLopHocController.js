@@ -228,7 +228,41 @@ const diemDanh = async (req, res) => {
 };
 
 const nhapDiem = async (req, res) => {
+  const { maLopHoc } = req.params; // Lấy mã lớp học từ tham số URL
+  const bangDiem = req.body; // Lấy danh sách điểm từ phần thân của request
 
+  // Kiểm tra nếu không có maLopHoc hoặc bangDiem không phải là mảng
+  if (!maLopHoc || !Array.isArray(bangDiem)) {
+    return res.status(400).json({ message: 'Dữ liệu không hợp lệ. Cần có maLopHoc và danh sách bangDiem.' });
+  }
+
+  const query = `
+    INSERT INTO dsLopHoc (maLopHoc, maHocVien, diemThuongKy, diemGiuaKy, diemCuoiKy)
+    VALUES (?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+        diemThuongKy = VALUES(diemThuongKy),
+        diemGiuaKy = VALUES(diemGiuaKy),
+        diemCuoiKy = VALUES(diemCuoiKy)
+  `;
+
+  try {
+    // Sử dụng Promise.all để thực hiện nhiều truy vấn song song
+    await Promise.all(bangDiem.map(async (item) => {
+      const { maHocVien, diemThuongKy, diemGiuaKy, diemCuoiKy } = item;
+
+      // Kiểm tra dữ liệu điểm trước khi chèn vào cơ sở dữ liệu
+      if (typeof maHocVien !== 'string' || diemThuongKy == null || diemGiuaKy == null || diemCuoiKy == null) {
+        throw new Error(`Dữ liệu điểm của học viên ${maHocVien} không hợp lệ.`);
+      }
+
+      await pool.query(query, [maLopHoc, maHocVien, diemThuongKy, diemGiuaKy, diemCuoiKy]);
+    }));
+
+    res.status(200).json({ message: 'Nhập điểm thành công.' });
+  } catch (error) {
+    console.error('Lỗi khi nhập điểm:', error);
+    res.status(500).json({ message: 'Lỗi trong quá trình nhập điểm.', error: error.message });
+  }
 };
 
 const exportDsLopHocToExcel = async (req, res) => {

@@ -71,14 +71,14 @@ const ThemCaHocModal: React.FC<ThemCaHocModalProps> = ({ visible, onCancel, onSu
                     label="Giờ Bắt Đầu"
                     rules={[{ required: true, message: 'Vui lòng chọn giờ bắt đầu!' }]}
                 >
-                    <TimePicker format="HH:mm:ss" />
+                    <TimePicker format="HH:mm" />
                 </Form.Item>
                 <Form.Item
                     name="ketThuc"
                     label="Giờ Kết Thúc"
                     rules={[{ required: true, message: 'Vui lòng chọn giờ kết thúc!' }]}
                 >
-                    <TimePicker format="HH:mm:ss" />
+                    <TimePicker format="HH:mm" />
                 </Form.Item>
                 <Form.Item
                     name="trangThai"
