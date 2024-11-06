@@ -179,6 +179,9 @@ const DsHocVienLopHoc: React.FC = () => {
             enterButton
           />
           <div className="button-container">
+            <Button className='custom-button' onClick={() => navigate(`/nhapdiem/${maLopHoc}`)}>
+              Nhập Điểm
+            </Button>
             <Button className='custom-button' onClick={exportDsLopHocToExcel}>
               Xuất Excel
             </Button>
