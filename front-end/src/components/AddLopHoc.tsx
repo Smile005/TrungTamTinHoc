@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Select, DatePicker, Input, Button, Form, Modal, Steps, message, theme, Table, InputNumber } from 'antd';
+import { Select, DatePicker, Input, Button, Form, Modal, Steps, message, theme, Table, InputNumber, Row, Col } from 'antd';
+import moment from 'moment';
 import axios from 'axios';
 import type { MonHocType } from '../types/MonHocType';
 import type { NhanVienType } from '../types/NhanVienType';
 import type { LopHocType } from '../types/LopHocType';
+import ThemLichHoc from './ThemLichHoc';
+import { createWatchCompilerHost } from 'typescript';
+import Test from './Test';
 
 const { Option } = Select;
 
@@ -24,19 +28,20 @@ const AddLopHoc: React.FC<AddLopHocProps> = ({ visible, onCancel }) => {
         },
         {
             title: 'Bước 2: Tạo lịch học',
-            content: <LichHocForm maLopHoc={createdMaLopHoc || ''} />,
+            content: <ThemLichHoc maLopHoc={createdMaLopHoc ?? 'LH0001'}/>,
         },
     ];
 
     const next = () => setCurrent(current + 1);
     const prev = () => setCurrent(current - 1);
+
     const resetForm = () => {
         setCreatedMaLopHoc(null);
+        setCurrent(0);
     };
 
     const handleCancel = () => {
         resetForm();
-        setCurrent(0);
         onCancel();
     };
 
@@ -62,7 +67,6 @@ const AddLopHoc: React.FC<AddLopHocProps> = ({ visible, onCancel }) => {
                         onClick={() => {
                             message.success('Hoàn thành!');
                             resetForm();
-                            setCurrent(0);
                             onCancel();
                         }}
                     >
@@ -88,12 +92,8 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
             try {
                 const token = localStorage.getItem('token');
                 const [giangVienResponse, monHocResponse] = await Promise.all([
-                    axios.get('http://localhost:8081/api/nhanvien/ds-giangvien', {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }),
-                    axios.get('http://localhost:8081/api/monhoc/ds-monhocHD', {
-                        headers: { Authorization: `Bearer ${token}` },
-                    }),
+                    axios.get('http://localhost:8081/api/nhanvien/ds-giangvien', { headers: { Authorization: `Bearer ${token}` } }),
+                    axios.get('http://localhost:8081/api/monhoc/ds-monhocHD', { headers: { Authorization: `Bearer ${token}` } }),
                 ]);
                 setGiangViens(giangVienResponse.data);
                 setMonHocs(monHocResponse.data);
@@ -107,15 +107,13 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
 
     const handleSubmit = async (values: any) => {
         const data = {
-            lopHocs: [
-                {
-                    maMonHoc: values.maMonHoc,
-                    maNhanVien: values.maNhanVien,
-                    ngayBatDau: values.ngayBatDau.format('YYYY-MM-DD'),
-                    soLuongMax: values.soLuongMax || 30,
-                    ghiChu: values.ghiChu || '',
-                },
-            ],
+            lopHocs: [{
+                maMonHoc: values.maMonHoc,
+                maNhanVien: values.maNhanVien,
+                ngayBatDau: values.ngayBatDau.format('YYYY-MM-DD'),
+                soLuongMax: values.soLuongMax || 30,
+                ghiChu: values.ghiChu || '',
+            }],
         };
 
         try {
@@ -129,7 +127,7 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
 
             const createdMaLopHoc = response.data.ds_LopHoc[0];
             onLopHocCreated(createdMaLopHoc);
-            message.success('Lớp học đã được tạo thành công!');
+            message.success(`Lớp học đã được tạo thành công với mã là ${createdMaLopHoc}`);
         } catch (error) {
             message.error('Có lỗi xảy ra khi tạo lớp học.');
         }
@@ -140,18 +138,14 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
             <Form.Item label="Mã môn học" name="maMonHoc" rules={[{ required: true, message: 'Vui lòng chọn mã môn học!' }]}>
                 <Select placeholder="Chọn mã môn học" style={{ width: 400 }}>
                     {monHocs.map(monHoc => (
-                        <Option key={monHoc.maMonHoc} value={monHoc.maMonHoc}>
-                            {monHoc.tenMonHoc}
-                        </Option>
+                        <Option key={monHoc.maMonHoc} value={monHoc.maMonHoc}>{monHoc.tenMonHoc}</Option>
                     ))}
                 </Select>
             </Form.Item>
             <Form.Item label="Giáo viên" name="maNhanVien" rules={[{ required: true, message: 'Vui lòng chọn giáo viên!' }]}>
                 <Select placeholder="Chọn giáo viên" style={{ width: 400 }}>
                     {giangViens.map(giangVien => (
-                        <Option key={giangVien.maNhanVien} value={giangVien.maNhanVien}>
-                            {giangVien.tenNhanVien}
-                        </Option>
+                        <Option key={giangVien.maNhanVien} value={giangVien.maNhanVien}>{giangVien.tenNhanVien}</Option>
                     ))}
                 </Select>
             </Form.Item>
@@ -174,60 +168,5 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
 interface LichHocFormProps {
     maLopHoc: string;
 }
-
-const LichHocForm: React.FC<LichHocFormProps> = ({ maLopHoc }) => {
-    const [lopHoc, setLopHoc] = useState<LopHocType | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [buoiHocs, setBuoiHocs] = useState<any[]>([]);
-
-    useEffect(() => {
-        const fetchLopHoc = async () => {
-            if (!maLopHoc) return;
-            try {
-                const token = localStorage.getItem('token');
-                const response = await axios.get(`http://localhost:8081/api/lophoc/lophocByMa/${maLopHoc}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        Accept: 'application/json',
-                    },
-                });
-                setLopHoc(response.data);
-                setBuoiHocs(response.data.buoiHocs || []);
-            } catch (err) {
-                setError('Không thể tải thông tin lớp học');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchLopHoc();
-    }, [maLopHoc]);
-
-    if (!maLopHoc) return <div>Vui lòng cung cấp mã lớp học hợp lệ.</div>;
-    if (loading) return <div>Đang tải...</div>;
-    if (error) return <div>{error}</div>;
-    if (!lopHoc) return <div>Không tìm thấy lớp học</div>;
-
-    const columns = [
-        { title: 'Thứ', dataIndex: 'thu', key: 'thu' },
-        { title: 'Ca học', dataIndex: 'caHoc', key: 'caHoc' },
-        { title: 'Phòng học', dataIndex: 'phongHoc', key: 'phongHoc' },
-        { title: 'Giáo viên', dataIndex: 'tenGiangVien', key: 'tenGiangVien' },
-        { title: 'Ghi chú', dataIndex: 'ghiChu', key: 'ghiChu' },
-    ];
-
-    return (
-        <>
-            <h3>Thông tin lớp học</h3>
-            <p><strong>Tên lớp học:</strong> {lopHoc.tenLopHoc}</p>
-            <p><strong>Môn học:</strong> {lopHoc.tenMonHoc}</p>
-            <p><strong>Giáo viên:</strong> {lopHoc.tenNhanVien}</p>
-
-            <h4>Danh sách lịch học</h4>
-            <Table columns={columns} dataSource={buoiHocs} rowKey="id" pagination={false} />
-        </>
-    );
-};
 
 export default AddLopHoc;
