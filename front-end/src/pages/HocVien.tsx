@@ -6,10 +6,11 @@ import ThemHocVienModal from '../components/ThemHocVienModal';
 import SuaHocVienModal from '../components/SuaHocVienModal';
 import '../styles/TableCustom.css';
 import ImportExcelModal from '../components/ImportExcelModal';
-import DangKyLopHoc from '../components/DangKyLopHoc'; 
+import DangKyLopHoc from '../components/DangKyLopHoc';
 import axios from 'axios';
 import moment from 'moment';
-import { Key } from 'antd/es/table/interface'; 
+import { Key } from 'antd/es/table/interface';
+import * as XLSX from 'xlsx';
 
 const { Search } = Input;
 
@@ -17,27 +18,27 @@ const HocVien: React.FC = () => {
     const [isThemHocVienModalVisible, setIsThemHocVienModalVisible] = useState(false);
     const [isImportModalVisible, setIsImportModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-    const [isDangKyModalVisible, setIsDangKyModalVisible] = useState(false); 
+    const [isDangKyModalVisible, setIsDangKyModalVisible] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState<HocVienType | null>(null);
-    const [selectedHocVien, setSelectedHocVien] = useState<HocVienType | null>(null); 
-    const [data, setData] = useState<HocVienType[]>([]); 
-    const [filteredData, setFilteredData] = useState<HocVienType[]>([]); 
-    const [loading, setLoading] = useState<boolean>(false); 
+    const [selectedHocVien, setSelectedHocVien] = useState<HocVienType | null>(null);
+    const [data, setData] = useState<HocVienType[]>([]);
+    const [filteredData, setFilteredData] = useState<HocVienType[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const fetchHocVien = async () => {
-        setLoading(true); 
+        setLoading(true);
         try {
             const response = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
             });
-            setData(response.data); 
-            setFilteredData(response.data); 
+            setData(response.data);
+            setFilteredData(response.data);
         } catch (error) {
             console.error('Lỗi khi lấy danh sách học viên:', error);
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     };
 
@@ -51,9 +52,9 @@ const HocVien: React.FC = () => {
             setIsEditModalVisible(true);
         } else if (e.key === 'delete') {
             deleteHocVien(record.maHocVien);
-        } else if (e.key === 'dangKy') { 
-            setSelectedHocVien(record); 
-            setIsDangKyModalVisible(true); 
+        } else if (e.key === 'dangKy') {
+            setSelectedHocVien(record);
+            setIsDangKyModalVisible(true);
         }
     };
 
@@ -63,19 +64,19 @@ const HocVien: React.FC = () => {
 
     const handleThemHocVien = (hocVien: HocVienType) => {
         fetchHocVien();
-        setIsThemHocVienModalVisible(false); 
+        setIsThemHocVienModalVisible(false);
     };
 
     const handleSuaHocVien = (hocVien: HocVienType) => {
         fetchHocVien();
-        setIsEditModalVisible(false); 
+        setIsEditModalVisible(false);
     };
 
     const handleCancel = () => {
         setIsThemHocVienModalVisible(false);
         setIsEditModalVisible(false);
         setIsImportModalVisible(false);
-        setIsDangKyModalVisible(false); // Đóng modal đăng ký
+        setIsDangKyModalVisible(false);
     };
 
     const onSearch = (value: string) => {
@@ -86,7 +87,7 @@ const HocVien: React.FC = () => {
             item.sdt?.toLowerCase().includes(value.toLowerCase()) ||
             item.tinhTrang?.toLowerCase().includes(value.toLowerCase())
         );
-        setFilteredData(filtered); 
+        setFilteredData(filtered);
     };
 
     const deleteHocVien = async (maHocVien: string | undefined) => {
@@ -96,8 +97,8 @@ const HocVien: React.FC = () => {
         }
 
         try {
-            await axios.post('http://localhost:8081/api/hocvien/xoa-hocvien', 
-                { maHocVien }, 
+            await axios.post('http://localhost:8081/api/hocvien/xoa-hocvien',
+                { maHocVien },
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -106,10 +107,29 @@ const HocVien: React.FC = () => {
                 }
             );
             message.success('Xóa học viên thành công');
-            fetchHocVien(); 
+            fetchHocVien();
         } catch (error) {
             console.error('Lỗi khi xóa học viên:', error);
             message.error('Lỗi khi xóa học viên');
+        }
+    };
+
+    const exportHVToExcel = async () => {
+        try {
+            const response = await axios.get('http://localhost:8081/api/hocvien/xuat-hocvien', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                },
+                responseType: 'arraybuffer'
+            });
+
+            const workbook = XLSX.read(response.data, { type: 'array' });
+            XLSX.writeFile(workbook, 'DanhSachHocVien.xlsx');
+            message.success('Xuất danh sách học viên thành công!');
+        } catch (error) {
+            console.error('Lỗi khi xuất danh sách học viên:', error);
+            message.error('Xuất danh sách học viên không thành công');
         }
     };
 
@@ -157,7 +177,7 @@ const HocVien: React.FC = () => {
             key: 'ngayVaoHoc',
             width: '10%',
             render: (ngayVaoHoc: string) => {
-              return ngayVaoHoc ? moment(ngayVaoHoc).format('DD/MM/YYYY') : 'Chưa có ngày';
+                return ngayVaoHoc ? moment(ngayVaoHoc).format('DD/MM/YYYY') : 'Chưa có ngày';
             }
         },
         {
@@ -204,10 +224,10 @@ const HocVien: React.FC = () => {
                 const menu = (
                     <Menu onClick={(e) => handleMenuClick(e, record)}>
                         <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
-                        <Menu.Item 
-                            key="dangKy" 
-                            icon={<FormOutlined />} 
-                            disabled={record.tinhTrang === 'Đã Tốt Nghiệp'} 
+                        <Menu.Item
+                            key="dangKy"
+                            icon={<FormOutlined />}
+                            disabled={record.tinhTrang === 'Đã Tốt Nghiệp'}
                         >
                             Đăng ký
                         </Menu.Item>
@@ -220,7 +240,7 @@ const HocVien: React.FC = () => {
                     </Dropdown>
                 );
             },
-        }        
+        }
     ];
 
     return (
@@ -230,11 +250,14 @@ const HocVien: React.FC = () => {
                 <Search
                     className="custom-search"
                     placeholder="Nhập tên học viên, mã học viên, email hoặc số điện thoại"
-                    onSearch={onSearch} 
+                    onSearch={onSearch}
                     enterButton
                 />
                 <div className="button-container">
                     <Button className='custom-button' onClick={showHocVienModal}>Thêm</Button>
+                    <Button className='custom-button' onClick={exportHVToExcel}>
+                        Xuất Excel
+                    </Button>
                     <Button className='custom-button' onClick={() => showImportModal('hocvien')}>
                         Nhập Excel
                     </Button>
@@ -245,7 +268,7 @@ const HocVien: React.FC = () => {
                 columns={columns}
                 dataSource={filteredData}
                 pagination={{ pageSize: 5 }}
-                loading={loading} 
+                loading={loading}
                 style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
             />
 
@@ -271,7 +294,7 @@ const HocVien: React.FC = () => {
             <DangKyLopHoc
                 visible={isDangKyModalVisible}
                 onCancel={handleCancel}
-                hocVien={selectedHocVien || {} as HocVienType} 
+                hocVien={selectedHocVien || {} as HocVienType}
             />
         </Layout>
     );

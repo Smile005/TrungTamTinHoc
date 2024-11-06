@@ -97,7 +97,6 @@ const ChiTietHoaDon: React.FC<ChiTietHoaDonProps> = ({ visible, onCancel, maHoaD
 
             <Divider />
 
-            {/* Customer Information */}
             <Row justify="space-between" style={{ marginBottom: '20px' }}>
               <Col>
                 <Text strong>Mã Học Viên: </Text>

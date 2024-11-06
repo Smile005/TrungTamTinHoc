@@ -1,9 +1,20 @@
 const pool = require('../config/db');
+const XLSX = require('xlsx');
 
 const getCaHoc = async (req, res) => {
   try {
     const [results] = await pool.query('SELECT * FROM CaHoc');
-    res.json(results);
+    
+    // Format the batDau and ketThuc to exclude seconds
+    const formattedResults = results.map(caHoc => {
+      return {
+        ...caHoc,
+        batDau: caHoc.batDau.toString().slice(0, 5), // Get HH:MM
+        ketThuc: caHoc.ketThuc.toString().slice(0, 5), // Get HH:MM
+      };
+    });
+
+    res.json(formattedResults);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });
   }
@@ -46,22 +57,14 @@ const createCaHoc = async (req, res) => {
     // Tạo mã ca học mới
     const maCa = await createMaCa(connection);
 
-    // Chuyển đổi batDau thành định dạng phù hợp với MySQL
-    const batDauValue = new Date(batDau).toISOString().slice(0, 19).replace('T', ' ');
-    
-    // Nếu không có thời gian kết thúc, đặt nó là 2 tiếng sau thời gian bắt đầu
-    const ketThucValue = req.body.ketThuc 
-      ? new Date(req.body.ketThuc).toISOString().slice(0, 19).replace('T', ' ') 
-      : new Date(new Date(batDau).getTime() + 2 * 60 * 60 * 1000).toISOString().slice(0, 19).replace('T', ' ');
-
     // Chèn dữ liệu vào bảng CaHoc
     await connection.query(
       'INSERT INTO CaHoc (maCa, batDau, ketThuc, trangThai, ghiChu) VALUES (?, ?, ?, ?, ?)',
       [
         maCa,
-        batDauValue,
-        ketThucValue,
-        trangThai || 'Đang hoạt động',
+        batDau,
+        ketThuc || new Date(new Date(`1970-01-01T${batDau}:00`).getTime() + 2 * 60 * 60 * 1000).toISOString().slice(11, 19),
+        trangThai || 'Đang Hoạt Động',
         ghiChu || null
       ]
     );
@@ -89,15 +92,12 @@ const updateCaHoc = async (req, res) => {
       return res.status(404).json({ message: 'Ca học không tồn tại.' });
     }
 
-    // Nếu không có thời gian kết thúc, đặt nó là 2 tiếng sau thời gian bắt đầu
-    const ketThuc = req.body.ketThuc || new Date(new Date(batDau).getTime() + 2 * 60 * 60 * 1000);
-
     await pool.query(
       'UPDATE CaHoc SET batDau = ?, ketThuc = ?, trangThai = ?, ghiChu = ? WHERE maCa = ?',
       [
         batDau,
-        ketThuc,
-        trangThai || 'Đang hoạt động',
+        ketThuc || new Date(new Date(`1970-01-01T${batDau}:00`).getTime() + 2 * 60 * 60 * 1000).toISOString().slice(11, 19),
+        trangThai || 'Đang Hoạt Động',
         ghiChu || null,
         maCa
       ]
@@ -105,7 +105,7 @@ const updateCaHoc = async (req, res) => {
 
     res.status(200).json({ message: 'Cập nhật ca học thành công.' });
   } catch (error) {
-    res.status(500).json({ message: 'Lỗi server', error });
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
   }
 };
 
@@ -117,11 +117,36 @@ const xoaCaHoc = async (req, res) => {
     if (caHoc.length === 0) return res.status(400).json({ message: 'Ca học không tồn tại.' });
 
     await pool.query('DELETE FROM CaHoc WHERE maCa = ?', [maCa]);
-   
+
     res.json({ message: `Ca học ${maCa} đã bị xóa` });
   } catch (error) {
     res.status(500).json({ message: 'Xóa ca học không thành công', error });
   }
 }
+const exportCaHocXLSX = async (req, res) => {
+  try {
+    const [results] = await pool.query('SELECT * FROM CaHoc');
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Không có dữ liệu ca học để xuất.' });
+    }
 
-module.exports = { getCaHoc, createCaHoc, updateCaHoc, xoaCaHoc};
+    const worksheet = XLSX.utils.json_to_sheet(results);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'CaHoc');
+
+    const filePath = './exports/CaHoc_List.xlsx';
+    XLSX.writeFile(workbook, filePath);
+
+    res.download(filePath, 'CaHoc_List.xlsx', (err) => {
+      if (err) {
+        res.status(500).json({ message: 'Lỗi khi tải xuống file.', error: err.message });
+      }
+
+      fs.unlinkSync(filePath);
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server', error: error.message });
+  }
+};
+
+module.exports = { getCaHoc, createCaHoc, updateCaHoc, xoaCaHoc, exportCaHocXLSX };

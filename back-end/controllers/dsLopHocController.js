@@ -1,4 +1,5 @@
 const pool = require('../config/db');
+const XLSX = require('xlsx');
 
 const getDS_Lop = async (req, res) => {
   try {
@@ -112,7 +113,7 @@ const xepLop = async (req, res) => {
 
     // Check if the class exists and get the total allowed students (soLuong)
     const [lopHocRecord] = await connection.query(
-      'SELECT trangThai, soLuong FROM LopHoc WHERE maLopHoc = ?',
+      'SELECT trangThai, soLuongMax FROM LopHoc WHERE maLopHoc = ?',
       [maLopHoc]
     );
 
@@ -127,7 +128,7 @@ const xepLop = async (req, res) => {
       return res.status(403).json({ message: 'Lớp học chưa mở đăng ký.' });
     }
 
-    const soLuong = lopHocRecord[0].soLuong;
+    const soLuongMax = lopHocRecord[0].soLuongMax;
 
     // Check if the class is full by counting current students
     const [countRecord] = await connection.query(
@@ -137,7 +138,7 @@ const xepLop = async (req, res) => {
 
     const currentStudents = countRecord[0].currentStudents;
 
-    if (currentStudents >= soLuong) {
+    if (currentStudents >= soLuongMax) {
       await connection.rollback();
       return res.status(409).json({ message: 'Lớp học đã đầy.' });
     }
@@ -227,7 +228,79 @@ const diemDanh = async (req, res) => {
 };
 
 const nhapDiem = async (req, res) => {
+  const { maLopHoc } = req.params; // Lấy mã lớp học từ tham số URL
+  const bangDiem = req.body; // Lấy danh sách điểm từ phần thân của request
 
+  // Kiểm tra nếu không có maLopHoc hoặc bangDiem không phải là mảng
+  if (!maLopHoc || !Array.isArray(bangDiem)) {
+    return res.status(400).json({ message: 'Dữ liệu không hợp lệ. Cần có maLopHoc và danh sách bangDiem.' });
+  }
+
+  const query = `
+    INSERT INTO dsLopHoc (maLopHoc, maHocVien, diemThuongKy, diemGiuaKy, diemCuoiKy)
+    VALUES (?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+        diemThuongKy = VALUES(diemThuongKy),
+        diemGiuaKy = VALUES(diemGiuaKy),
+        diemCuoiKy = VALUES(diemCuoiKy)
+  `;
+
+  try {
+    // Sử dụng Promise.all để thực hiện nhiều truy vấn song song
+    await Promise.all(bangDiem.map(async (item) => {
+      const { maHocVien, diemThuongKy, diemGiuaKy, diemCuoiKy } = item;
+
+      // Kiểm tra dữ liệu điểm trước khi chèn vào cơ sở dữ liệu
+      if (typeof maHocVien !== 'string' || diemThuongKy == null || diemGiuaKy == null || diemCuoiKy == null) {
+        throw new Error(`Dữ liệu điểm của học viên ${maHocVien} không hợp lệ.`);
+      }
+
+      await pool.query(query, [maLopHoc, maHocVien, diemThuongKy, diemGiuaKy, diemCuoiKy]);
+    }));
+
+    res.status(200).json({ message: 'Nhập điểm thành công.' });
+  } catch (error) {
+    console.error('Lỗi khi nhập điểm:', error);
+    res.status(500).json({ message: 'Lỗi trong quá trình nhập điểm.', error: error.message });
+  }
 };
 
-module.exports = { getDS_Lop, chuyenLop, xepLop, diemDanh, nhapDiem, getDS_Lop02, xoaXepLop, getDS_LopHV, getDS_maHV02 };
+const exportDsLopHocToExcel = async (req, res) => {
+  const { maLopHoc } = req.params;
+
+  try {
+    const [results] = await pool.query(`
+      SELECT 
+        hv.maHocVien, 
+        hv.tenHocVien, 
+        hv.gioiTinh,
+        hv.sdt,
+        hv.email,
+        dl.trangThai, 
+        dl.ghiChu
+      FROM 
+        DsLopHoc dl
+      JOIN 
+        HocVien hv ON dl.maHocVien = hv.maHocVien
+      WHERE 
+        dl.maLopHoc = ?
+    `, [maLopHoc]);
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: `Không tìm thấy học viên nào trong lớp có mã ${maLopHoc}.` });
+    }
+
+    const worksheet = XLSX.utils.json_to_sheet(results);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, `Danh sách lớp ${maLopHoc}`);
+
+    const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    res.setHeader('Content-Disposition', `attachment; filename="DanhSachLop_${maLopHoc}.xlsx"`);
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer);
+  } catch (error) {
+    res.status(500).json({ message: 'Xuất Excel không thành công', error });
+  }
+};
+
+module.exports = { getDS_Lop, chuyenLop, xepLop, diemDanh, nhapDiem, getDS_Lop02, xoaXepLop, getDS_LopHV, getDS_maHV02, exportDsLopHocToExcel };

@@ -98,43 +98,29 @@ const createBuoiHocByMaLichHoc = async (maLichHoc) => {
     }
 };
 
-// Tạo lịch học mới
+const checkExistence = async (query, params, errorMessage) => {
+    const [result] = await pool.query(query, params);
+    if (result.length === 0) {
+        throw new Error(errorMessage);
+    }
+};
+
 const createLichHoc = async (req, res) => {
     const { maLopHoc, thu, maCa, maGiaoVien, maPhong, soBuoi, ghiChu } = req.body;
 
     try {
-        // Kiểm tra sự tồn tại của maLopHoc
-        const lopHocQuery = `SELECT * FROM LopHoc WHERE maLopHoc = ?`;
-        const [lopHocResult] = await pool.query(lopHocQuery, [maLopHoc]);
-        if (lopHocResult.length === 0) {
-            return res.status(400).json({ message: 'Mã lớp học không hợp lệ.' });
-        }
-
-        // Kiểm tra sự tồn tại của maCa
-        const caHocQuery = `SELECT * FROM CaHoc WHERE maCa = ?`;
-        const [caHocResult] = await pool.query(caHocQuery, [maCa]);
-        if (caHocResult.length === 0) {
-            return res.status(400).json({ message: 'Mã ca học không hợp lệ.' });
-        }
-
-        // Kiểm tra sự tồn tại của maPhong
-        const phongHocQuery = `SELECT * FROM PhongHoc WHERE maPhong = ?`;
-        const [phongHocResult] = await pool.query(phongHocQuery, [maPhong]);
-        if (phongHocResult.length === 0) {
-            return res.status(400).json({ message: 'Mã phòng học không hợp lệ.' });
-        }
-
-        // Kiểm tra sự tồn tại của maGiaoVien
-        const giaoVienQuery = `SELECT * FROM NhanVien WHERE maNhanVien = ?`;
-        const [giaoVienResult] = await pool.query(giaoVienQuery, [maGiaoVien]);
-        if (giaoVienResult.length === 0) {
-            return res.status(400).json({ message: 'Mã giáo viên không hợp lệ.' });
-        }
+        // Kiểm tra sự tồn tại của maLopHoc, maCa, maPhong, maGiaoVien
+        await checkExistence('SELECT * FROM LopHoc WHERE maLopHoc = ?', [maLopHoc], 'Mã lớp học không hợp lệ.');
+        await checkExistence('SELECT * FROM CaHoc WHERE maCa = ?', [maCa], 'Mã ca học không hợp lệ.');
+        await checkExistence('SELECT * FROM PhongHoc WHERE maPhong = ?', [maPhong], 'Mã phòng học không hợp lệ.');
+        await checkExistence('SELECT * FROM NhanVien WHERE maNhanVien = ?', [maGiaoVien], 'Mã giáo viên không hợp lệ.');
 
         // Tạo mã lịch học mới
         const maLichHoc = await createMaLichHoc(); // Gọi hàm tạo mã lịch học
-        const query = `INSERT INTO LichHoc (maLichHoc, maLopHoc, thu, maCa, maGiaoVien, maPhong, soBuoi, ghiChu) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-
+        const query = `
+            INSERT INTO LichHoc (maLichHoc, maLopHoc, thu, maCa, maGiaoVien, maPhong, soBuoi, ghiChu)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `;
         await pool.query(query, [
             maLichHoc,
             maLopHoc,
@@ -145,24 +131,31 @@ const createLichHoc = async (req, res) => {
             soBuoi,
             ghiChu || null
         ]);
-        // Tạo buổi học theo mã lịch học
-        const result = await createBuoiHocByMaLichHoc(maLichHoc); // Gọi hàm tạo buổi học
 
-        // Kiểm tra kết quả từ hàm tạo buổi học
-        if (result.status !== 201) {
-            // Nếu tạo buổi học không thành công, xóa LichHoc
-            await pool.query('DELETE FROM LichHoc WHERE maLichHoc = ?', [maLichHoc]);
+        // Lấy thông tin lịch học vừa tạo
+        const lichHocQuery = `
+            SELECT LichHoc.*, LopHoc.tenLopHoc, CaHoc.maCa, NhanVien.tenNhanVien AS tenGiaoVien, PhongHoc.maPhong
+            FROM LichHoc
+            JOIN LopHoc ON LichHoc.maLopHoc = LopHoc.maLopHoc
+            JOIN CaHoc ON LichHoc.maCa = CaHoc.maCa
+            JOIN NhanVien ON LichHoc.maGiaoVien = NhanVien.maNhanVien
+            JOIN PhongHoc ON LichHoc.maPhong = PhongHoc.maPhong
+            WHERE LichHoc.maLichHoc = ?
+        `;
+        const [lichHocResult] = await pool.query(lichHocQuery, [maLichHoc]);
 
-            return res.status(result.status).json({ message: result.message });
+        // Trả về kết quả thành công với thông tin lịch học
+        if (lichHocResult.length > 0) {
+            return res.status(201).json({
+                message: 'Lịch học đã được tạo thành công!',
+                lichHoc: lichHocResult[0] // Trả về thông tin lịch học
+            });
+        } else {
+            throw new Error('Không thể lấy thông tin lịch học vừa tạo.');
         }
-
-        return res.status(201).json({ message: 'Lịch học đã được tạo thành công!', maLichHoc });
-
-
-        return res.status(201).json({ message: 'Lịch học đã được tạo thành công!', maLichHoc });
     } catch (error) {
         console.error("Lỗi khi tạo lịch học:", error.message); // In ra thông báo lỗi
-        return res.status(500).json({ message: 'Không thể tạo lịch học.' });
+        return res.status(500).json({ message: error.message || 'Không thể tạo lịch học.' });
     }
 };
 

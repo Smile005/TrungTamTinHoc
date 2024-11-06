@@ -34,6 +34,7 @@ import UserInfoModal from './components/UserInforModal';
 import DsHocVienLopHoc from './pages/DsHocVienLopHoc';
 import DsLop from './pages/DsLop';
 import HoaDon from './pages/HoaDon';
+import NhapDiem from './pages/NhapDiem';
 import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
@@ -259,6 +260,7 @@ const App: React.FC = () => {
                   <Route path="/ds-hoc-vien-lop/:maLopHoc" element={isAuthenticated ? <DsHocVienLopHoc /> : <Navigate to="/login" />} />
                   <Route path="/ds_lop" element={isAuthenticated ? <DsLop /> : <Navigate to="/login" />} />
                   <Route path="/hoa-don" element={isAuthenticated ? <HoaDon /> : <Navigate to="/login" />} />
+                  <Route path="/nhapdiem/:maLopHoc" element={isAuthenticated ? <NhapDiem /> : <Navigate to="/login" />} />
                 </Routes>
               </Content>
             </Layout>

@@ -129,7 +129,7 @@ const TaiKhoan: React.FC = () => {
           <Menu onClick={(e) => handleMenuClick(e, record)}>
             <Menu.Item key="changepw" icon={<FileDoneOutlined />}>{t('changePassword')}</Menu.Item>
             <Menu.Item key="edit" icon={<EditOutlined />}>{t('editRoleStatus')}</Menu.Item>
-            <Menu.Item key="delete" icon={<DeleteOutlined />}>{t('delete')}</Menu.Item>
+            {/* <Menu.Item key="delete" icon={<DeleteOutlined />}>{t('delete')}</Menu.Item> */}
           </Menu>
         );
         return (
@@ -155,7 +155,6 @@ const TaiKhoan: React.FC = () => {
         />
         <div className="button-container">
           <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>{t('add')}</Button>
-          <Button className='custom-button'>{t('importExcel')}</Button>
         </div>
       </div>
 
