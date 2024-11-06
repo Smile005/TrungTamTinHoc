@@ -84,6 +84,8 @@ const App: React.FC = () => {
 
   const isLoginPage = location.pathname === '/login';
 
+  const currentPathKey = location.pathname.startsWith('/nhapdiem') ? '12' : location.pathname;
+
   const handleLogout = () => {
     dispatch(logout());
     message.success(t('logout')); // Sử dụng t() để dịch
@@ -160,7 +162,7 @@ const App: React.FC = () => {
                 </div>
               }
             >
-              <Menu className="custom-menu" mode="inline">
+              <Menu className="custom-menu" mode="inline" selectedKeys={[currentPathKey]}>
                 <Menu.Item key="0" icon={<AppstoreOutlined />}>
                   <Link to="/">{t('home')}</Link>
                 </Menu.Item>
