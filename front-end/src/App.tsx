@@ -84,7 +84,46 @@ const App: React.FC = () => {
 
   const isLoginPage = location.pathname === '/login';
 
-  const currentPathKey = location.pathname.startsWith('/nhapdiem') ? '12' : location.pathname;
+  const currentPathKey = (() => {
+    switch (true) {
+      case location.pathname.startsWith('/nhapdiem'):
+        return '12';
+      case location.pathname.startsWith('/taikhoan'):
+        return '1';
+      case location.pathname.startsWith('/nhanvien'):
+        return '2';
+      case location.pathname.startsWith('/hocvien'):
+        return '3';
+      case location.pathname.startsWith('/cahoc'):
+        return '4';
+      case location.pathname.startsWith('/phonghoc'):
+        return '5';
+      case location.pathname.startsWith('/monhoc'):
+        return '6';
+      case location.pathname.startsWith('/timkiem'):
+        return '16';
+      case location.pathname.startsWith('/lophoc'):
+        return '7';
+      case location.pathname.startsWith('/lichhoc'):
+        return '8';
+      case location.pathname.startsWith('/ds_lop'):
+        return '10';
+      case location.pathname.startsWith('/hoa-don'):
+        return '15';
+      case location.pathname.startsWith('/ds_thi'):
+        return '11';
+      case location.pathname.startsWith('/tk_hocvien'):
+        return '13';
+      case location.pathname.startsWith('/tk_giangvien'):
+        return '14';
+      case location.pathname.startsWith('/tk_coso'):
+        return '15';
+      case location.pathname.startsWith('/testing'):
+        return '99';
+      default:
+        return '0';
+    }
+  })();
 
   const handleLogout = () => {
     dispatch(logout());
