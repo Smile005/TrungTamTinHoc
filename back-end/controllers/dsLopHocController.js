@@ -319,7 +319,7 @@ const exportDiemLopHocToExcel = async (req, res) => {
               dl.diemThuongKy, 
               dl.diemGiuaKy, 
               dl.diemCuoiKy,
-              ROUND((dl.diemThuongKy + dl.diemGiuaKy + dl.diemCuoiKy) / 3, 2) AS diemTrungBinh
+              (dl.diemCuoiKy * 0.5 + dl.diemGiuaKy * 0.3 + dl.diemThuongKy * 0.2) AS diemTrungBinh
           FROM 
               DsLopHoc dl
           JOIN 

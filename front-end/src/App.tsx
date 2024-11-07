@@ -35,14 +35,15 @@ import DsHocVienLopHoc from './pages/DsHocVienLopHoc';
 import DsLop from './pages/DsLop';
 import HoaDon from './pages/HoaDon';
 import NhapDiem from './pages/NhapDiem';
+import DsLopNhapDiem from './pages/DsLopNhapDiem'; // Import trang mới
 import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
 import { logout } from './store/slices/authSlice';
 import axios from 'axios';
 import './App.css';
-import { useTranslation } from 'react-i18next'; // Import hook từ i18next
-import i18n from './i18n'; // Import i18n cấu hình
+import { useTranslation } from 'react-i18next';
+import i18n from './i18n';
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -84,9 +85,12 @@ const App: React.FC = () => {
 
   const isLoginPage = location.pathname === '/login';
 
+  // Cập nhật `currentPathKey` để xử lý cả đường dẫn `NhapDiem` và `DsLopNhapDiem`
   const currentPathKey = (() => {
     switch (true) {
       case location.pathname.startsWith('/nhapdiem'):
+        return '12';
+      case location.pathname.startsWith('/ds_lop_nhap_diem'):
         return '12';
       case location.pathname.startsWith('/taikhoan'):
         return '1';
@@ -117,7 +121,7 @@ const App: React.FC = () => {
       case location.pathname.startsWith('/tk_giangvien'):
         return '14';
       case location.pathname.startsWith('/tk_coso'):
-        return '15';
+        return '17';
       case location.pathname.startsWith('/testing'):
         return '99';
       default:
@@ -127,7 +131,7 @@ const App: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    message.success(t('logout')); // Sử dụng t() để dịch
+    message.success(t('logout'));
   };
 
   const handleUserInfo = () => {
@@ -252,7 +256,7 @@ const App: React.FC = () => {
                     <Link to="/ds_thi">{t('examList')}</Link>
                   </Menu.Item>
                   <Menu.Item key="12">
-                    <Link to="/nhapdiem">{t('enterGrades')}</Link>
+                    <Link to="/ds_lop_nhap_diem">{t('enterGrades')}</Link>
                   </Menu.Item>
                 </SubMenu>
                 <SubMenu key="group05" icon={<FundOutlined />} title={t('statistics')}>
@@ -262,7 +266,7 @@ const App: React.FC = () => {
                   <Menu.Item key="14">
                     <Link to="/tk_giangvien">{t('teacherStatistics')}</Link>
                   </Menu.Item>
-                  <Menu.Item key="15">
+                  <Menu.Item key="17">
                     <Link to="/tk_coso">{t('statusStatistics')}</Link>
                   </Menu.Item>
                 </SubMenu>
@@ -302,6 +306,7 @@ const App: React.FC = () => {
                   <Route path="/ds_lop" element={isAuthenticated ? <DsLop /> : <Navigate to="/login" />} />
                   <Route path="/hoa-don" element={isAuthenticated ? <HoaDon /> : <Navigate to="/login" />} />
                   <Route path="/nhapdiem/:maLopHoc" element={isAuthenticated ? <NhapDiem /> : <Navigate to="/login" />} />
+                  <Route path="/ds_lop_nhap_diem" element={isAuthenticated ? <DsLopNhapDiem /> : <Navigate to="/login" />} />
                 </Routes>
               </Content>
             </Layout>

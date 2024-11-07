@@ -23,8 +23,9 @@ const NhapDiem: React.FC = () => {
     const { maLopHoc } = useParams<{ maLopHoc: string }>();
     const navigate = useNavigate();
     const [hocVienList, setHocVienList] = useState<DsLopHocType[]>([]);
+    const [originalHocVienList, setOriginalHocVienList] = useState<DsLopHocType[]>([]); // Lưu trữ giá trị gốc
     const [hocVienInfoList, setHocVienInfoList] = useState<HocVienInfo[]>([]);
-    const [tenLopHoc, settenLopHoc] = useState<string>(''); // Tên lớp
+    const [tenLopHoc, settenLopHoc] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [searchText, setSearchText] = useState<string>('');
     const [checkedRows, setCheckedRows] = useState<Set<string>>(new Set());
@@ -33,7 +34,6 @@ const NhapDiem: React.FC = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                // Lấy danh sách điểm của học viên trong lớp học
                 const response = await axios.get('http://localhost:8081/api/lophoc/ds-hocvien', {
                     params: { maLopHoc },
                     headers: {
@@ -41,8 +41,8 @@ const NhapDiem: React.FC = () => {
                     },
                 });
                 setHocVienList(response.data);
+                setOriginalHocVienList(response.data); // Lưu trữ danh sách ban đầu
 
-                // Lấy danh sách thông tin học viên để lấy tên học viên
                 const responseHocVien = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -50,14 +50,13 @@ const NhapDiem: React.FC = () => {
                 });
                 setHocVienInfoList(responseHocVien.data);
 
-                // Lấy tên lớp học dựa trên maLopHoc
                 const responseLopHoc = await axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
                 });
                 const lopHoc = responseLopHoc.data.find((lop: LopHocInfo) => lop.maLopHoc === maLopHoc);
-                settenLopHoc(lopHoc ? lopHoc.tenLopHoc : ''); // Cập nhật tên lớp
+                settenLopHoc(lopHoc ? lopHoc.tenLopHoc : '');
             } catch (error) {
                 message.error('Lỗi khi lấy dữ liệu');
             } finally {
@@ -84,7 +83,6 @@ const NhapDiem: React.FC = () => {
                 },
             });
             message.success('Lưu điểm thành công');
-
             setCheckedRows(new Set());
         } catch (error) {
             message.error('Lỗi khi lưu điểm');
@@ -127,6 +125,14 @@ const NhapDiem: React.FC = () => {
                 updatedChecked.add(maHocVien);
             } else {
                 updatedChecked.delete(maHocVien);
+                const original = originalHocVienList.find(hv => hv.maHocVien === maHocVien);
+                if (original) {
+                    setHocVienList((prevList) =>
+                        prevList.map((hv) =>
+                            hv.maHocVien === maHocVien ? { ...original } : hv
+                        )
+                    );
+                }
             }
             return updatedChecked;
         });
@@ -217,7 +223,7 @@ const NhapDiem: React.FC = () => {
                 const diemThuongKy = record.diemThuongKy ?? 0;
                 const diemGiuaKy = record.diemGiuaKy ?? 0;
                 const diemCuoiKy = record.diemCuoiKy ?? 0;
-                const diemTrungBinh = ((diemThuongKy + diemGiuaKy + diemCuoiKy) / 3).toFixed(2);
+                const diemTrungBinh = (diemCuoiKy * 0.5 + diemGiuaKy * 0.3 + diemThuongKy * 0.2).toFixed(2);
                 return <span>{diemTrungBinh}</span>;
             },
         }
