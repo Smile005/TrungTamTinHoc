@@ -85,7 +85,6 @@ const App: React.FC = () => {
 
   const isLoginPage = location.pathname === '/login';
 
-  // Cập nhật `currentPathKey` để xử lý cả đường dẫn `NhapDiem` và `DsLopNhapDiem`
   const currentPathKey = (() => {
     switch (true) {
       case location.pathname.startsWith('/nhapdiem'):
@@ -98,7 +97,7 @@ const App: React.FC = () => {
         return '2';
       case location.pathname.startsWith('/hocvien'):
         return '3';
-      case location.pathname.startsWith('/cahoc'):
+      case location.pathname.startsWith('/cahoc'):  
         return '4';
       case location.pathname.startsWith('/phonghoc'):
         return '5';
@@ -124,6 +123,8 @@ const App: React.FC = () => {
         return '17';
       case location.pathname.startsWith('/testing'):
         return '99';
+        case location.pathname.startsWith('/ds-hoc-vien-lop'):
+        return '10';
       default:
         return '0';
     }
