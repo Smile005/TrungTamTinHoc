@@ -236,31 +236,45 @@ const nhapDiem = async (req, res) => {
     return res.status(400).json({ message: 'Dữ liệu không hợp lệ. Cần có maLopHoc và danh sách bangDiem.' });
   }
 
-  const query = `
-    INSERT INTO dsLopHoc (maLopHoc, maHocVien, diemThuongKy, diemGiuaKy, diemCuoiKy)
-    VALUES (?, ?, ?, ?, ?)
-    ON DUPLICATE KEY UPDATE
-        diemThuongKy = VALUES(diemThuongKy),
-        diemGiuaKy = VALUES(diemGiuaKy),
-        diemCuoiKy = VALUES(diemCuoiKy)
-  `;
-
   try {
-    // Sử dụng Promise.all để thực hiện nhiều truy vấn song song
     await Promise.all(bangDiem.map(async (item) => {
       const { maHocVien, diemThuongKy, diemGiuaKy, diemCuoiKy } = item;
 
-      // Kiểm tra dữ liệu điểm trước khi chèn vào cơ sở dữ liệu
-      if (
-        typeof maHocVien !== 'string' ||
-        typeof diemThuongKy !== 'number' || isNaN(diemThuongKy) ||
-        typeof diemGiuaKy !== 'number' || isNaN(diemGiuaKy) ||
-        typeof diemCuoiKy !== 'number' || isNaN(diemCuoiKy)
-      ) {
+      // Kiểm tra tính hợp lệ của maHocVien
+      if (typeof maHocVien !== 'string') {
         throw new Error(`Dữ liệu điểm của học viên ${maHocVien} không hợp lệ.`);
       }
 
-      await pool.query(query, [maLopHoc, maHocVien, diemThuongKy, diemGiuaKy, diemCuoiKy]);
+      // Tạo các phần của truy vấn và giá trị cần chèn
+      let fields = [];
+      let values = [maLopHoc, maHocVien];
+      if (diemThuongKy != null) {
+        fields.push('diemThuongKy = VALUES(diemThuongKy)');
+        values.push(diemThuongKy);
+      }
+      if (diemGiuaKy != null) {
+        fields.push('diemGiuaKy = VALUES(diemGiuaKy)');
+        values.push(diemGiuaKy);
+      }
+      if (diemCuoiKy != null) {
+        fields.push('diemCuoiKy = VALUES(diemCuoiKy)');
+        values.push(diemCuoiKy);
+      }
+
+      // Nếu không có loại điểm nào hợp lệ, bỏ qua học viên này
+      if (fields.length === 0) {
+        throw new Error(`Không có dữ liệu điểm hợp lệ cho học viên ${maHocVien}.`);
+      }
+
+      // Tạo truy vấn với các trường động
+      const query = `
+        INSERT INTO dsLopHoc (maLopHoc, maHocVien${diemThuongKy != null ? ', diemThuongKy' : ''}${diemGiuaKy != null ? ', diemGiuaKy' : ''}${diemCuoiKy != null ? ', diemCuoiKy' : ''})
+        VALUES (?, ?${diemThuongKy != null ? ', ?' : ''}${diemGiuaKy != null ? ', ?' : ''}${diemCuoiKy != null ? ', ?' : ''})
+        ON DUPLICATE KEY UPDATE
+          ${fields.join(', ')}
+      `;
+
+      await pool.query(query, values);
     }));
 
     res.status(200).json({ message: 'Nhập điểm thành công.' });

@@ -23,7 +23,7 @@ const NhapDiem: React.FC = () => {
     const { maLopHoc } = useParams<{ maLopHoc: string }>();
     const navigate = useNavigate();
     const [hocVienList, setHocVienList] = useState<DsLopHocType[]>([]);
-    const [originalHocVienList, setOriginalHocVienList] = useState<DsLopHocType[]>([]); // Lưu trữ giá trị gốc
+    const [originalHocVienList, setOriginalHocVienList] = useState<DsLopHocType[]>([]);
     const [hocVienInfoList, setHocVienInfoList] = useState<HocVienInfo[]>([]);
     const [tenLopHoc, settenLopHoc] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -41,7 +41,7 @@ const NhapDiem: React.FC = () => {
                     },
                 });
                 setHocVienList(response.data);
-                setOriginalHocVienList(response.data); // Lưu trữ danh sách ban đầu
+                setOriginalHocVienList(response.data);
 
                 const responseHocVien = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
                     headers: {
@@ -68,21 +68,33 @@ const NhapDiem: React.FC = () => {
     }, [maLopHoc]);
 
     const handleSave = async () => {
-        const selectedHocVienList = hocVienList.filter((hv) => checkedRows.has(hv.maHocVien));
-
-        if (selectedHocVienList.length === 0) {
-            message.warning('Vui lòng chọn ít nhất một hàng để lưu điểm.');
+        const updatedHocVienList = hocVienList.map((hv) => {
+            if (checkedRows.has(hv.maHocVien)) {
+                const original = originalHocVienList.find((originalHv) => originalHv.maHocVien === hv.maHocVien);
+                return {
+                    ...hv,
+                    diemThuongKy: hv.diemThuongKy !== null ? hv.diemThuongKy : original?.diemThuongKy,
+                    diemGiuaKy: hv.diemGiuaKy !== null ? hv.diemGiuaKy : original?.diemGiuaKy,
+                    diemCuoiKy: hv.diemCuoiKy !== null ? hv.diemCuoiKy : original?.diemCuoiKy,
+                };
+            }
+            return hv;
+        }).filter((hv) => checkedRows.has(hv.maHocVien));
+    
+        if (updatedHocVienList.length === 0) {
+            message.warning('Vui lòng chọn ít nhất một hàng để lưu điểm hoặc đảm bảo có sự thay đổi.');
             return;
         }
-
+    
         try {
-            await axios.post(`http://localhost:8081/api/lophoc/nhapdiem/${maLopHoc}`, selectedHocVienList, {
+            await axios.post(`http://localhost:8081/api/lophoc/nhapdiem/${maLopHoc}`, updatedHocVienList, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json',
                 },
             });
             message.success('Lưu điểm thành công');
+            setOriginalHocVienList(hocVienList); 
             setCheckedRows(new Set());
         } catch (error) {
             message.error('Lỗi khi lưu điểm');
@@ -108,15 +120,18 @@ const NhapDiem: React.FC = () => {
         }
     };
 
-    const updateHocVienScore = (maHocVien: string, field: string, value: number) => {
+    const updateHocVienScore = (maHocVien: string, field: keyof DsLopHocType, value: number | null) => {
         if (checkedRows.has(maHocVien)) {
             setHocVienList((prevList) =>
                 prevList.map((hv) =>
-                    hv.maHocVien === maHocVien ? { ...hv, [field]: value } : hv
+                    hv.maHocVien === maHocVien
+                        ? { ...hv, [field]: value !== null ? value : hv[field] } 
+                        : hv
                 )
             );
         }
     };
+    
 
     const handleCheckChange = (maHocVien: string, checked: boolean) => {
         setCheckedRows((prevChecked) => {
@@ -138,9 +153,24 @@ const NhapDiem: React.FC = () => {
         });
     };
 
+    const handleSelectAll = (checked: boolean) => {
+        if (checked) {
+            const allChecked = new Set(hocVienList.map((hv) => hv.maHocVien));
+            setCheckedRows(allChecked);
+        } else {
+            setCheckedRows(new Set());
+        }
+    };
+
     const columns = [
         {
-            title: 'Chọn',
+            title: (
+                <Checkbox
+                    checked={checkedRows.size === hocVienList.length && hocVienList.length > 0}
+                    indeterminate={checkedRows.size > 0 && checkedRows.size < hocVienList.length}
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                />
+            ),
             key: 'checkbox',
             render: (_: any, record: DsLopHocType) => (
                 <Checkbox

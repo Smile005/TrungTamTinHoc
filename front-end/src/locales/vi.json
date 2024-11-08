@@ -77,5 +77,6 @@
   "edit&detail": "Xem và sửa thông tin",
   "deleteError": "Lỗi khi xóa nhân viên",
   "exportExcel": "Xuất Excel",
-  "invoiceDetails": "Danh sách hóa đơn"
+  "invoiceDetails": "Danh sách hóa đơn",
+  "testing": "Testing"
 }

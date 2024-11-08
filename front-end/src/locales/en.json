@@ -77,5 +77,6 @@
   "edit&detail":"Edit & detail",
   "deleteError": "Failed to delete employee",
   "exportExcel": "Export Excel",
-   "invoiceDetails": "Invoice List"
+   "invoiceDetails": "Invoice List",
+   "testing": "Testing"
 }
