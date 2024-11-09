@@ -86,7 +86,9 @@ const LopHoc: React.FC = () => {
       setSelectedRecord(record);
       setIsEditModalVisible(true);
     } else if (e.key === 'danhSachLop') {
-      navigate(`/ds-hoc-vien-lop/${record.maLopHoc}`);
+      navigate(`/ds-hoc-vien-lop/${record.maLopHoc}`); 
+    } else if (e.key === 'themLichHoc') {
+      // <Modal> <ThemLichHoc /> </Modal>
     } else if (e.key === 'nhapDiem') {
       navigate(`/nhapdiem/${record.maLopHoc}`);
     } else if (e.key === 'delete') {
@@ -213,6 +215,7 @@ const LopHoc: React.FC = () => {
           <Menu onClick={(e) => handleMenuClick(e, record)}>
             <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
             <Menu.Item key="danhSachLop" icon={<OrderedListOutlined />}>Danh sách lớp</Menu.Item>
+            <Menu.Item key="themLichHoc" icon={<OrderedListOutlined />}>Thêm lịch học</Menu.Item>
             <Menu.Item key="nhapDiem" icon={<FileAddOutlined />}>Nhập Điểm</Menu.Item>
             <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
           </Menu>
