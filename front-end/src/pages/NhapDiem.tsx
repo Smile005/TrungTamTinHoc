@@ -19,11 +19,15 @@ interface LopHocInfo {
     tenLopHoc: string;
 }
 
+interface DsLopHocTypeWithUpdates extends DsLopHocType {
+    updatedScores?: Partial<Pick<DsLopHocType, 'diemThuongKy' | 'diemGiuaKy' | 'diemCuoiKy'>>;
+}
+
 const NhapDiem: React.FC = () => {
     const { maLopHoc } = useParams<{ maLopHoc: string }>();
     const navigate = useNavigate();
-    const [hocVienList, setHocVienList] = useState<DsLopHocType[]>([]);
-    const [originalHocVienList, setOriginalHocVienList] = useState<DsLopHocType[]>([]);
+    const [hocVienList, setHocVienList] = useState<DsLopHocTypeWithUpdates[]>([]);
+    const [originalHocVienList, setOriginalHocVienList] = useState<DsLopHocTypeWithUpdates[]>([]);
     const [hocVienInfoList, setHocVienInfoList] = useState<HocVienInfo[]>([]);
     const [tenLopHoc, settenLopHoc] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -68,24 +72,19 @@ const NhapDiem: React.FC = () => {
     }, [maLopHoc]);
 
     const handleSave = async () => {
-        const updatedHocVienList = hocVienList.map((hv) => {
-            if (checkedRows.has(hv.maHocVien)) {
-                const original = originalHocVienList.find((originalHv) => originalHv.maHocVien === hv.maHocVien);
-                return {
-                    ...hv,
-                    diemThuongKy: hv.diemThuongKy !== null ? hv.diemThuongKy : original?.diemThuongKy,
-                    diemGiuaKy: hv.diemGiuaKy !== null ? hv.diemGiuaKy : original?.diemGiuaKy,
-                    diemCuoiKy: hv.diemCuoiKy !== null ? hv.diemCuoiKy : original?.diemCuoiKy,
-                };
-            }
-            return hv;
-        }).filter((hv) => checkedRows.has(hv.maHocVien));
-    
+        const updatedHocVienList = hocVienList
+            .filter((hv) => checkedRows.has(hv.maHocVien))
+            .map((hv) => {
+                const updatedFields: Partial<DsLopHocTypeWithUpdates> = { maHocVien: hv.maHocVien, ...hv.updatedScores };
+                return updatedFields;
+            })
+            .filter((updatedFields) => Object.keys(updatedFields).length > 1); // Chỉ giữ lại những đối tượng có thay đổi
+
         if (updatedHocVienList.length === 0) {
             message.warning('Vui lòng chọn ít nhất một hàng để lưu điểm hoặc đảm bảo có sự thay đổi.');
             return;
         }
-    
+
         try {
             await axios.post(`http://localhost:8081/api/lophoc/nhapdiem/${maLopHoc}`, updatedHocVienList, {
                 headers: {
@@ -121,17 +120,16 @@ const NhapDiem: React.FC = () => {
     };
 
     const updateHocVienScore = (maHocVien: string, field: keyof DsLopHocType, value: number | null) => {
-        if (checkedRows.has(maHocVien)) {
-            setHocVienList((prevList) =>
-                prevList.map((hv) =>
-                    hv.maHocVien === maHocVien
-                        ? { ...hv, [field]: value !== null ? value : hv[field] } 
-                        : hv
-                )
-            );
-        }
+        setHocVienList((prevList) =>
+            prevList.map((hv) => {
+                if (hv.maHocVien === maHocVien) {
+                    const updatedScores = { ...hv.updatedScores, [field]: value };
+                    return { ...hv, [field]: value, updatedScores };
+                }
+                return hv;
+            })
+        );
     };
-    
 
     const handleCheckChange = (maHocVien: string, checked: boolean) => {
         setCheckedRows((prevChecked) => {
@@ -172,7 +170,7 @@ const NhapDiem: React.FC = () => {
                 />
             ),
             key: 'checkbox',
-            render: (_: any, record: DsLopHocType) => (
+            render: (_: any, record: DsLopHocTypeWithUpdates) => (
                 <Checkbox
                     checked={checkedRows.has(record.maHocVien)}
                     onChange={(e) => handleCheckChange(record.maHocVien, e.target.checked)}
@@ -187,7 +185,7 @@ const NhapDiem: React.FC = () => {
         {
             title: 'Tên Học Viên',
             key: 'tenHocVien',
-            render: (record: DsLopHocType) => {
+            render: (record: DsLopHocTypeWithUpdates) => {
                 const hocVien = hocVienInfoList.find(hv => hv.maHocVien === record.maHocVien);
                 return hocVien ? hocVien.tenHocVien : 'N/A';
             },
@@ -196,15 +194,13 @@ const NhapDiem: React.FC = () => {
             title: 'Điểm Thường Kỳ',
             dataIndex: 'diemThuongKy',
             key: 'diemThuongKy',
-            render: (value: number | null, record: DsLopHocType) => (
+            render: (value: number | null, record: DsLopHocTypeWithUpdates) => (
                 <InputNumber
                     min={0}
                     max={10}
                     value={value || 0}
                     onChange={(newValue) => {
-                        if (newValue !== null) {
-                            updateHocVienScore(record.maHocVien, 'diemThuongKy', newValue);
-                        }
+                        updateHocVienScore(record.maHocVien, 'diemThuongKy', newValue);
                     }}
                     disabled={!checkedRows.has(record.maHocVien)}
                 />
@@ -214,15 +210,13 @@ const NhapDiem: React.FC = () => {
             title: 'Điểm Giữa Kỳ',
             dataIndex: 'diemGiuaKy',
             key: 'diemGiuaKy',
-            render: (value: number | null, record: DsLopHocType) => (
+            render: (value: number | null, record: DsLopHocTypeWithUpdates) => (
                 <InputNumber
                     min={0}
                     max={10}
                     value={value || 0}
                     onChange={(newValue) => {
-                        if (newValue !== null) {
-                            updateHocVienScore(record.maHocVien, 'diemGiuaKy', newValue);
-                        }
+                        updateHocVienScore(record.maHocVien, 'diemGiuaKy', newValue);
                     }}
                     disabled={!checkedRows.has(record.maHocVien)}
                 />
@@ -232,15 +226,13 @@ const NhapDiem: React.FC = () => {
             title: 'Điểm Cuối Kỳ',
             dataIndex: 'diemCuoiKy',
             key: 'diemCuoiKy',
-            render: (value: number | null, record: DsLopHocType) => (
+            render: (value: number | null, record: DsLopHocTypeWithUpdates) => (
                 <InputNumber
                     min={0}
                     max={10}
                     value={value || 0}
                     onChange={(newValue) => {
-                        if (newValue !== null) {
-                            updateHocVienScore(record.maHocVien, 'diemCuoiKy', newValue);
-                        }
+                        updateHocVienScore(record.maHocVien, 'diemCuoiKy', newValue);
                     }}
                     disabled={!checkedRows.has(record.maHocVien)}
                 />
@@ -249,7 +241,7 @@ const NhapDiem: React.FC = () => {
         {
             title: 'Điểm Trung Bình',
             key: 'diemTrungBinh',
-            render: (record: DsLopHocType) => {
+            render: (record: DsLopHocTypeWithUpdates) => {
                 const diemThuongKy = record.diemThuongKy ?? 0;
                 const diemGiuaKy = record.diemGiuaKy ?? 0;
                 const diemCuoiKy = record.diemCuoiKy ?? 0;
