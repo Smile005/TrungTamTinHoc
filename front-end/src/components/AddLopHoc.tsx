@@ -141,7 +141,7 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
                 <Select placeholder="Chọn mã môn học" style={{ width: 400 }}>
                     {monHocs.map(monHoc => (
                         <Option key={monHoc.maMonHoc} value={monHoc.maMonHoc}>
-                            {monHoc.tenMonHoc}
+                            {monHoc.maMonHoc} - {monHoc.tenMonHoc}
                         </Option>
                     ))}
                 </Select>
@@ -150,7 +150,7 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
                 <Select placeholder="Chọn giáo viên" style={{ width: 400 }}>
                     {giangViens.map(giangVien => (
                         <Option key={giangVien.maNhanVien} value={giangVien.maNhanVien}>
-                            {giangVien.tenNhanVien}
+                            {giangVien.maNhanVien} - {giangVien.tenNhanVien}
                         </Option>
                     ))}
                 </Select>
