@@ -95,6 +95,7 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
                     axios.get('http://localhost:8081/api/nhanvien/ds-giangvien', { headers: { Authorization: `Bearer ${token}` } }),
                     axios.get('http://localhost:8081/api/monhoc/ds-monhocHD', { headers: { Authorization: `Bearer ${token}` } }),
                 ]);
+
                 setGiangViens(giangVienResponse.data);
                 setMonHocs(monHocResponse.data);
             } catch (error) {

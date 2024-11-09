@@ -74,12 +74,12 @@ const createBuoiHocByMaLichHoc = async (maLichHoc) => {
             if (currentDate.day() === thu) {  // Trong moment.js chủ nhật là 0, thứ 2 là 1,...
                 // Tạo buổi học
                 await pool.query(
-                    `INSERT INTO BuoiHoc (maLichHoc, maLopHoc, maGiaoVien, maCa, maPhong, ngayHoc, trangThai)
-                     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                    `INSERT INTO BuoiHoc (maLichHoc, maLopHoc, maGiaoVien, maCa, maPhong, ngayHoc, loai, trangThai)
+                     VALUES (?, ?, ?, ?, ?, ?, 'Ngày học', ?)`,
                     [
                         maLichHoc,
                         maLopHoc,
-                        maGiaoVien, // Sử dụng maGiaoVien từ lịch học
+                        maGiaoVien, 
                         maCa,
                         maPhong,
                         currentDate.format('YYYY-MM-DD'),
@@ -132,7 +132,6 @@ const createLichHoc = async (req, res) => {
             ghiChu || null
         ]);
 
-        // Lấy thông tin lịch học vừa tạo
         const lichHocQuery = `
             SELECT LichHoc.*, LopHoc.tenLopHoc, CaHoc.maCa, NhanVien.tenNhanVien AS tenGiaoVien, PhongHoc.maPhong
             FROM LichHoc
@@ -144,7 +143,6 @@ const createLichHoc = async (req, res) => {
         `;
         const [lichHocResult] = await pool.query(lichHocQuery, [maLichHoc]);
 
-        // Trả về kết quả thành công với thông tin lịch học
         if (lichHocResult.length > 0) {
             return res.status(201).json({
                 message: 'Lịch học đã được tạo thành công!',
