@@ -61,46 +61,49 @@ const ThemMonHocModal: React.FC<ThemMonHocModalProps> = ({ visible, onCancel, on
                 onCancel();
             }}
             onOk={handleOk} 
+            style={{ top: 30}}
         >
-            <Form form={form} layout="vertical">
-                <Form.Item
-                    name="tenMonHoc"
-                    label="Tên Môn Học"
-                    rules={[{ required: true, message: 'Vui lòng nhập tên môn học!' }]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    name="soBuoiHoc"
-                    label="Số Buổi Học"
-                    rules={[{ required: true, message: 'Vui lòng nhập số buổi học!' }]}
-                >
-                    <InputNumber min={1} style={{ width: '100%' }} />
-                </Form.Item>
-                <Form.Item
-                    name="hocPhi"
-                    label="Học Phí"
-                    rules={[{ required: true, message: 'Vui lòng nhập học phí!' }]}
-                >
-                    <InputNumber min={0} style={{ width: '100%' }} />
-                </Form.Item>
-                <Form.Item name="moTa" label="Mô Tả">
-                    <Input.TextArea />
-                </Form.Item>
-                <Form.Item
-                    name="trangThai"
-                    label="Trạng Thái"
-                    rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
-                >
-                    <Select>
-                        <Select.Option value="Đang Giảng Dạy">Đang Giảng Dạy</Select.Option>
-                        <Select.Option value="Tạm Ngưng">Tạm Ngưng</Select.Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item name="ghiChu" label="Ghi Chú">
-                    <Input.TextArea />
-                </Form.Item>
-            </Form>
+            <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
+                <Form form={form} layout="vertical">
+                    <Form.Item
+                        name="tenMonHoc"
+                        label="Tên Môn Học"
+                        rules={[{ required: true, message: 'Vui lòng nhập tên môn học!' }]}
+                    >
+                        <Input placeholder="Nhập tên môn học" />
+                    </Form.Item>
+                    <Form.Item
+                        name="soBuoiHoc"
+                        label="Số Buổi Học"
+                        rules={[{ required: true, message: 'Vui lòng nhập số buổi học!' }]}
+                    >
+                        <InputNumber min={1} style={{ width: '100%' }} placeholder="Nhập số buổi học" />
+                    </Form.Item>
+                    <Form.Item
+                        name="hocPhi"
+                        label="Học Phí"
+                        rules={[{ required: true, message: 'Vui lòng nhập học phí!' }]}
+                    >
+                        <InputNumber min={0} style={{ width: '100%' }} placeholder="Nhập học phí" />
+                    </Form.Item>
+                    <Form.Item name="moTa" label="Mô Tả">
+                        <Input.TextArea placeholder="Nhập mô tả" />
+                    </Form.Item>
+                    <Form.Item
+                        name="trangThai"
+                        label="Trạng Thái"
+                        rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+                    >
+                        <Select placeholder="Chọn trạng thái">
+                            <Select.Option value="Đang Giảng Dạy">Đang Giảng Dạy</Select.Option>
+                            <Select.Option value="Tạm Ngưng">Tạm Ngưng</Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item name="ghiChu" label="Ghi Chú">
+                        <Input.TextArea placeholder="Nhập ghi chú" />
+                    </Form.Item>
+                </Form>
+            </div>
         </Modal>
     );
 };
