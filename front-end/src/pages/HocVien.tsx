@@ -254,7 +254,7 @@ const HocVien: React.FC = () => {
                     enterButton
                 />
                 <div className="button-container">
-                    <Button className='custom-button' onClick={showHocVienModal}>Thêm</Button>
+                    <Button className='custom-button' onClick={showHocVienModal}>Thêm Học Viên</Button>
                     <Button className='custom-button' onClick={exportHVToExcel}>
                         Xuất Excel
                     </Button>

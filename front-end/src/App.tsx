@@ -35,14 +35,15 @@ import DsHocVienLopHoc from './pages/DsHocVienLopHoc';
 import DsLop from './pages/DsLop';
 import HoaDon from './pages/HoaDon';
 import NhapDiem from './pages/NhapDiem';
+import DsLopNhapDiem from './pages/DsLopNhapDiem'; // Import trang mới
 import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
 import { logout } from './store/slices/authSlice';
 import axios from 'axios';
 import './App.css';
-import { useTranslation } from 'react-i18next'; // Import hook từ i18next
-import i18n from './i18n'; // Import i18n cấu hình
+import { useTranslation } from 'react-i18next';
+import i18n from './i18n';
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -84,9 +85,54 @@ const App: React.FC = () => {
 
   const isLoginPage = location.pathname === '/login';
 
+  const currentPathKey = (() => {
+    switch (true) {
+      case location.pathname.startsWith('/nhapdiem'):
+        return '12';
+      case location.pathname.startsWith('/ds_lop_nhap_diem'):
+        return '12';
+      case location.pathname.startsWith('/taikhoan'):
+        return '1';
+      case location.pathname.startsWith('/nhanvien'):
+        return '2';
+      case location.pathname.startsWith('/hocvien'):
+        return '3';
+      case location.pathname.startsWith('/cahoc'):  
+        return '4';
+      case location.pathname.startsWith('/phonghoc'):
+        return '5';
+      case location.pathname.startsWith('/monhoc'):
+        return '6';
+      case location.pathname.startsWith('/timkiem'):
+        return '16';
+      case location.pathname.startsWith('/lophoc'):
+        return '7';
+      case location.pathname.startsWith('/lichhoc'):
+        return '8';
+      case location.pathname.startsWith('/ds_lop'):
+        return '10';
+      case location.pathname.startsWith('/hoa-don'):
+        return '15';
+      case location.pathname.startsWith('/ds_thi'):
+        return '11';
+      case location.pathname.startsWith('/tk_hocvien'):
+        return '13';
+      case location.pathname.startsWith('/tk_giangvien'):
+        return '14';
+      case location.pathname.startsWith('/tk_coso'):
+        return '17';
+      case location.pathname.startsWith('/testing'):
+        return '99';
+        case location.pathname.startsWith('/ds-hoc-vien-lop'):
+        return '10';
+      default:
+        return '0';
+    }
+  })();
+
   const handleLogout = () => {
     dispatch(logout());
-    message.success(t('logout')); // Sử dụng t() để dịch
+    message.success(t('logout'));
   };
 
   const handleUserInfo = () => {
@@ -160,7 +206,7 @@ const App: React.FC = () => {
                 </div>
               }
             >
-              <Menu className="custom-menu" mode="inline">
+              <Menu className="custom-menu" mode="inline" selectedKeys={[currentPathKey]}>
                 <Menu.Item key="0" icon={<AppstoreOutlined />}>
                   <Link to="/">{t('home')}</Link>
                 </Menu.Item>
@@ -211,7 +257,7 @@ const App: React.FC = () => {
                     <Link to="/ds_thi">{t('examList')}</Link>
                   </Menu.Item>
                   <Menu.Item key="12">
-                    <Link to="/nhapdiem">{t('enterGrades')}</Link>
+                    <Link to="/ds_lop_nhap_diem">{t('enterGrades')}</Link>
                   </Menu.Item>
                 </SubMenu>
                 <SubMenu key="group05" icon={<FundOutlined />} title={t('statistics')}>
@@ -221,7 +267,7 @@ const App: React.FC = () => {
                   <Menu.Item key="14">
                     <Link to="/tk_giangvien">{t('teacherStatistics')}</Link>
                   </Menu.Item>
-                  <Menu.Item key="15">
+                  <Menu.Item key="17">
                     <Link to="/tk_coso">{t('statusStatistics')}</Link>
                   </Menu.Item>
                 </SubMenu>
@@ -261,6 +307,7 @@ const App: React.FC = () => {
                   <Route path="/ds_lop" element={isAuthenticated ? <DsLop /> : <Navigate to="/login" />} />
                   <Route path="/hoa-don" element={isAuthenticated ? <HoaDon /> : <Navigate to="/login" />} />
                   <Route path="/nhapdiem/:maLopHoc" element={isAuthenticated ? <NhapDiem /> : <Navigate to="/login" />} />
+                  <Route path="/ds_lop_nhap_diem" element={isAuthenticated ? <DsLopNhapDiem /> : <Navigate to="/login" />} />
                 </Routes>
               </Content>
             </Layout>

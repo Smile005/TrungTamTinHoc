@@ -242,7 +242,7 @@ const LopHoc: React.FC = () => {
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button' onClick={() => setIsAddModalVisible(true)}>Thêm</Button>
+          <Button className='custom-button' onClick={() => setIsAddModalVisible(true)}>Thêm Lớp Học</Button>
           <Button className='custom-button' onClick={exportLopHocToExcel}>
             Xuất Excel
           </Button>

@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Select, DatePicker, Input, Button, Form, Modal, Steps, message, theme, Table, InputNumber, Row, Col } from 'antd';
-import moment from 'moment';
+import { Select, DatePicker, Input, Button, Form, Modal, Steps, message, theme, Table, InputNumber } from 'antd';
 import axios from 'axios';
 import type { MonHocType } from '../types/MonHocType';
 import type { NhanVienType } from '../types/NhanVienType';
-import type { LopHocType } from '../types/LopHocType';
 import ThemLichHoc from './ThemLichHoc';
-import { createWatchCompilerHost } from 'typescript';
-import Test from './Test';
 
 const { Option } = Select;
 
@@ -139,14 +135,18 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
             <Form.Item label="Mã môn học" name="maMonHoc" rules={[{ required: true, message: 'Vui lòng chọn mã môn học!' }]}>
                 <Select placeholder="Chọn mã môn học" style={{ width: 400 }}>
                     {monHocs.map(monHoc => (
-                        <Option key={monHoc.maMonHoc} value={monHoc.maMonHoc}>{monHoc.tenMonHoc}</Option>
+                        <Option key={monHoc.maMonHoc} value={monHoc.maMonHoc}>
+                            {monHoc.maMonHoc} - {monHoc.tenMonHoc}
+                        </Option>
                     ))}
                 </Select>
             </Form.Item>
             <Form.Item label="Giáo viên" name="maNhanVien" rules={[{ required: true, message: 'Vui lòng chọn giáo viên!' }]}>
                 <Select placeholder="Chọn giáo viên" style={{ width: 400 }}>
                     {giangViens.map(giangVien => (
-                        <Option key={giangVien.maNhanVien} value={giangVien.maNhanVien}>{giangVien.tenNhanVien}</Option>
+                        <Option key={giangVien.maNhanVien} value={giangVien.maNhanVien}>
+                            {giangVien.maNhanVien} - {giangVien.tenNhanVien}
+                        </Option>
                     ))}
                 </Select>
             </Form.Item>
@@ -165,9 +165,5 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
         </Form>
     );
 };
-
-interface LichHocFormProps {
-    maLopHoc: string;
-}
 
 export default AddLopHoc;

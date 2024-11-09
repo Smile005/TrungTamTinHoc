@@ -1,19 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Layout, message, InputNumber, Button, Input } from 'antd';
+import { Table, Layout, message, InputNumber, Button, Input, Checkbox } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { DsLopHocType } from '../types/DsHocVienLopHocType';
 import { LeftCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import * as XLSX from 'xlsx';
 import '../styles/TableCustom.css';
 
 const { Search } = Input;
 
+interface HocVienInfo {
+    maHocVien: string;
+    tenHocVien: string;
+}
+
+interface LopHocInfo {
+    maLopHoc: string;
+    tenLopHoc: string;
+}
+
+interface DsLopHocTypeWithUpdates extends DsLopHocType {
+    updatedScores?: Partial<Pick<DsLopHocType, 'diemThuongKy' | 'diemGiuaKy' | 'diemCuoiKy'>>;
+}
+
 const NhapDiem: React.FC = () => {
     const { maLopHoc } = useParams<{ maLopHoc: string }>();
     const navigate = useNavigate();
-    const [hocVienList, setHocVienList] = useState<DsLopHocType[]>([]);
+    const [hocVienList, setHocVienList] = useState<DsLopHocTypeWithUpdates[]>([]);
+    const [originalHocVienList, setOriginalHocVienList] = useState<DsLopHocTypeWithUpdates[]>([]);
+    const [hocVienInfoList, setHocVienInfoList] = useState<HocVienInfo[]>([]);
+    const [tenLopHoc, settenLopHoc] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [searchText, setSearchText] = useState<string>('');
+    const [checkedRows, setCheckedRows] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,8 +45,24 @@ const NhapDiem: React.FC = () => {
                     },
                 });
                 setHocVienList(response.data);
+                setOriginalHocVienList(response.data);
+
+                const responseHocVien = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+                setHocVienInfoList(responseHocVien.data);
+
+                const responseLopHoc = await axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                });
+                const lopHoc = responseLopHoc.data.find((lop: LopHocInfo) => lop.maLopHoc === maLopHoc);
+                settenLopHoc(lopHoc ? lopHoc.tenLopHoc : '');
             } catch (error) {
-                message.error('Lỗi khi lấy danh sách học viên');
+                message.error('Lỗi khi lấy dữ liệu');
             } finally {
                 setLoading(false);
             }
@@ -37,40 +72,137 @@ const NhapDiem: React.FC = () => {
     }, [maLopHoc]);
 
     const handleSave = async () => {
+        const updatedHocVienList = hocVienList
+            .filter((hv) => checkedRows.has(hv.maHocVien))
+            .map((hv) => {
+                const updatedFields: Partial<DsLopHocTypeWithUpdates> = { maHocVien: hv.maHocVien, ...hv.updatedScores };
+                return updatedFields;
+            })
+            .filter((updatedFields) => Object.keys(updatedFields).length > 1); // Chỉ giữ lại những đối tượng có thay đổi
+
+        if (updatedHocVienList.length === 0) {
+            message.warning('Vui lòng chọn ít nhất một hàng để lưu điểm hoặc đảm bảo có sự thay đổi.');
+            return;
+        }
+
         try {
-            await axios.post(`http://localhost:8081/api/lophoc/nhapdiem/${maLopHoc}`, hocVienList, {
+            await axios.post(`http://localhost:8081/api/lophoc/nhapdiem/${maLopHoc}`, updatedHocVienList, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json',
                 },
             });
             message.success('Lưu điểm thành công');
+            setOriginalHocVienList(hocVienList); 
+            setCheckedRows(new Set());
         } catch (error) {
             message.error('Lỗi khi lưu điểm');
         }
     };
 
+    const exportDiemToExcel = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8081/api/lophoc/xuat-diem-lophoc/${maLopHoc}`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                },
+                responseType: 'arraybuffer',
+            });
+
+            const workbook = XLSX.read(response.data, { type: 'array' });
+            XLSX.writeFile(workbook, `DiemLop_${maLopHoc}.xlsx`);
+            message.success(`Xuất danh sách điểm cho lớp ${maLopHoc} thành công!`);
+        } catch (error) {
+            console.error('Lỗi khi xuất danh sách điểm:', error);
+            message.error('Xuất danh sách điểm không thành công');
+        }
+    };
+
+    const updateHocVienScore = (maHocVien: string, field: keyof DsLopHocType, value: number | null) => {
+        setHocVienList((prevList) =>
+            prevList.map((hv) => {
+                if (hv.maHocVien === maHocVien) {
+                    const updatedScores = { ...hv.updatedScores, [field]: value };
+                    return { ...hv, [field]: value, updatedScores };
+                }
+                return hv;
+            })
+        );
+    };
+
+    const handleCheckChange = (maHocVien: string, checked: boolean) => {
+        setCheckedRows((prevChecked) => {
+            const updatedChecked = new Set(prevChecked);
+            if (checked) {
+                updatedChecked.add(maHocVien);
+            } else {
+                updatedChecked.delete(maHocVien);
+                const original = originalHocVienList.find(hv => hv.maHocVien === maHocVien);
+                if (original) {
+                    setHocVienList((prevList) =>
+                        prevList.map((hv) =>
+                            hv.maHocVien === maHocVien ? { ...original } : hv
+                        )
+                    );
+                }
+            }
+            return updatedChecked;
+        });
+    };
+
+    const handleSelectAll = (checked: boolean) => {
+        if (checked) {
+            const allChecked = new Set(hocVienList.map((hv) => hv.maHocVien));
+            setCheckedRows(allChecked);
+        } else {
+            setCheckedRows(new Set());
+        }
+    };
+
     const columns = [
+        {
+            title: (
+                <Checkbox
+                    checked={checkedRows.size === hocVienList.length && hocVienList.length > 0}
+                    indeterminate={checkedRows.size > 0 && checkedRows.size < hocVienList.length}
+                    onChange={(e) => handleSelectAll(e.target.checked)}
+                />
+            ),
+            key: 'checkbox',
+            render: (_: any, record: DsLopHocTypeWithUpdates) => (
+                <Checkbox
+                    checked={checkedRows.has(record.maHocVien)}
+                    onChange={(e) => handleCheckChange(record.maHocVien, e.target.checked)}
+                />
+            ),
+        },
         {
             title: 'Mã Học Viên',
             dataIndex: 'maHocVien',
             key: 'maHocVien',
         },
         {
+            title: 'Tên Học Viên',
+            key: 'tenHocVien',
+            render: (record: DsLopHocTypeWithUpdates) => {
+                const hocVien = hocVienInfoList.find(hv => hv.maHocVien === record.maHocVien);
+                return hocVien ? hocVien.tenHocVien : 'N/A';
+            },
+        },
+        {
             title: 'Điểm Thường Kỳ',
             dataIndex: 'diemThuongKy',
             key: 'diemThuongKy',
-            render: (value: number, record: DsLopHocType) => (
+            render: (value: number | null, record: DsLopHocTypeWithUpdates) => (
                 <InputNumber
                     min={0}
                     max={10}
-                    value={value}
+                    value={value || 0}
                     onChange={(newValue) => {
-                        const newList = hocVienList.map((hv) =>
-                            hv.maHocVien === record.maHocVien ? { ...hv, diemThuongKy: newValue } : hv
-                        );
-                        setHocVienList(newList);
+                        updateHocVienScore(record.maHocVien, 'diemThuongKy', newValue);
                     }}
+                    disabled={!checkedRows.has(record.maHocVien)}
                 />
             ),
         },
@@ -78,17 +210,15 @@ const NhapDiem: React.FC = () => {
             title: 'Điểm Giữa Kỳ',
             dataIndex: 'diemGiuaKy',
             key: 'diemGiuaKy',
-            render: (value: number, record: DsLopHocType) => (
+            render: (value: number | null, record: DsLopHocTypeWithUpdates) => (
                 <InputNumber
                     min={0}
                     max={10}
-                    value={value}
+                    value={value || 0}
                     onChange={(newValue) => {
-                        const newList = hocVienList.map((hv) =>
-                            hv.maHocVien === record.maHocVien ? { ...hv, diemGiuaKy: newValue } : hv
-                        );
-                        setHocVienList(newList);
+                        updateHocVienScore(record.maHocVien, 'diemGiuaKy', newValue);
                     }}
+                    disabled={!checkedRows.has(record.maHocVien)}
                 />
             ),
         },
@@ -96,23 +226,31 @@ const NhapDiem: React.FC = () => {
             title: 'Điểm Cuối Kỳ',
             dataIndex: 'diemCuoiKy',
             key: 'diemCuoiKy',
-            render: (value: number, record: DsLopHocType) => (
+            render: (value: number | null, record: DsLopHocTypeWithUpdates) => (
                 <InputNumber
                     min={0}
                     max={10}
-                    value={value}
+                    value={value || 0}
                     onChange={(newValue) => {
-                        const newList = hocVienList.map((hv) =>
-                            hv.maHocVien === record.maHocVien ? { ...hv, diemCuoiKy: newValue } : hv
-                        );
-                        setHocVienList(newList);
+                        updateHocVienScore(record.maHocVien, 'diemCuoiKy', newValue);
                     }}
+                    disabled={!checkedRows.has(record.maHocVien)}
                 />
             ),
         },
+        {
+            title: 'Điểm Trung Bình',
+            key: 'diemTrungBinh',
+            render: (record: DsLopHocTypeWithUpdates) => {
+                const diemThuongKy = record.diemThuongKy ?? 0;
+                const diemGiuaKy = record.diemGiuaKy ?? 0;
+                const diemCuoiKy = record.diemCuoiKy ?? 0;
+                const diemTrungBinh = (diemCuoiKy * 0.5 + diemGiuaKy * 0.3 + diemThuongKy * 0.2).toFixed(2);
+                return <span>{diemTrungBinh}</span>;
+            },
+        }
     ];
 
-    // Lọc danh sách học viên để chỉ hiển thị học viên có mã lớp học trùng với `maLopHoc` và khớp với từ khóa tìm kiếm
     const filteredHocVienList = hocVienList.filter(
         (hv) => hv.maLopHoc === maLopHoc && hv.maHocVien.includes(searchText)
     );
@@ -129,7 +267,7 @@ const NhapDiem: React.FC = () => {
                     Quay lại
                 </Button>
             </div>
-            <h1 className="page-name1">NHẬP ĐIỂM CHO LỚP: {maLopHoc}</h1>
+            <h1 className="page-name1">NHẬP ĐIỂM CHO LỚP: {tenLopHoc || maLopHoc}</h1>
             <div className="ds-layout">
                 <div className="button-container">
                     <Search
@@ -139,7 +277,9 @@ const NhapDiem: React.FC = () => {
                         enterButton={<SearchOutlined />}
                     />
                     <div className="button-container">
-                        <Button className="custom-button">Xuất Excel</Button>
+                        <Button className="custom-button" onClick={exportDiemToExcel}>
+                            Xuất Excel
+                        </Button>
                         <Button type="primary" className="custom-button" onClick={handleSave}>
                             Lưu điểm
                         </Button>

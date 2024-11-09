@@ -159,7 +159,7 @@ const CaHoc: React.FC = () => {
                 />
                 <div className="button-container">
                     <Button className='custom-button' onClick={() => setIsThemCaModalVisible(true)}>
-                        Thêm
+                        Thêm Ca Học
                     </Button>
                     <Button className='custom-button' onClick={handleExportExcel}>
                         Xuất Excel

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Form, Input, Select, message } from 'antd';
+import { Modal, Form, Input, Select, message, Button } from 'antd';
 import axios from 'axios';
 import { PhongHocType } from '../types/PhongHocType';
 
@@ -22,7 +22,6 @@ const ThemPhongHocModal: React.FC<ThemPhongHocModalProps> = ({ visible, onCancel
                     ghiChu: values.ghiChu || null,
                 };
 
-                // Gửi yêu cầu thêm phòng học qua API
                 axios
                     .post('http://localhost:8081/api/phonghoc/them-phong', formattedValues, {
                         headers: {
@@ -32,9 +31,9 @@ const ThemPhongHocModal: React.FC<ThemPhongHocModalProps> = ({ visible, onCancel
                     })
                     .then((response) => {
                         message.success('Thêm phòng học thành công');
-                        onSubmit({ ...response.data, key: response.data.maPhong }); // Sử dụng `maPhong` làm `key`
-                        form.resetFields(); // Xóa form sau khi thêm thành công
-                        onCancel(); // Đóng modal
+                        onSubmit({ ...response.data, key: response.data.maPhong }); 
+                        form.resetFields(); 
+                        onCancel(); 
                     })
                     .catch((error) => {
                         message.error('Lỗi khi thêm phòng học: ' + error.message);
@@ -53,33 +52,42 @@ const ThemPhongHocModal: React.FC<ThemPhongHocModalProps> = ({ visible, onCancel
                 form.resetFields();
                 onCancel();
             }}
-            onOk={handleOk}
+            footer={[
+                <Button key="cancel" onClick={onCancel}>
+                    Hủy
+                </Button>,
+                <Button key="submit" type="primary" onClick={handleOk}>
+                    Thêm Phòng Học
+                </Button>,
+            ]}
         >
-            <Form form={form} layout="vertical">
-                <Form.Item
-                    name="soLuong"
-                    label="Số Lượng"
-                    rules={[{ required: true, message: 'Vui lòng nhập số lượng!' }]}
-                >
-                    <Input type="number" />
-                </Form.Item>
-                <Form.Item
-                    name="trangThai"
-                    label="Tình Trạng"
-                    rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
-                >
-                    <Select>
-                        <Select.Option value="Đang hoạt động">Đang Hoạt Động</Select.Option>
-                        <Select.Option value="Ngưng hoạt động">Ngưng Hoạt Động</Select.Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    name="ghiChu"
-                    label="Ghi Chú"
-                >
-                    <Input />
-                </Form.Item>
-            </Form>
+            <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
+                <Form form={form} layout="vertical">
+                    <Form.Item
+                        name="soLuong"
+                        label="Số Lượng"
+                        rules={[{ required: true, message: 'Vui lòng nhập số lượng!' }]}
+                    >
+                        <Input type="number" placeholder="Nhập số lượng phòng học" />
+                    </Form.Item>
+                    <Form.Item
+                        name="trangThai"
+                        label="Tình Trạng"
+                        rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
+                    >
+                        <Select placeholder="Chọn tình trạng phòng học">
+                            <Select.Option value="Đang hoạt động">Đang Hoạt Động</Select.Option>
+                            <Select.Option value="Ngưng hoạt động">Ngưng Hoạt Động</Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name="ghiChu"
+                        label="Ghi Chú"
+                    >
+                        <Input placeholder="Nhập ghi chú" />
+                    </Form.Item>
+                </Form>
+            </div>
         </Modal>
     );
 };

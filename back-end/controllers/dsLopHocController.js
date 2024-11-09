@@ -165,9 +165,9 @@ const xepLop = async (req, res) => {
       return res.status(409).json({ message: 'Học viên đã được xếp vào lớp này.' });
     }
 
-    // Insert into the class assignment table
+    // Insert into the class assignment table with default scores
     await connection.query(
-      'INSERT INTO DsLopHoc (maLopHoc, maHocVien, trangThai) VALUES (?, ?, ?)',
+      'INSERT INTO DsLopHoc (maLopHoc, maHocVien, trangThai, diemThuongKy, diemGiuaKy, diemCuoiKy) VALUES (?, ?, ?, 0, 0, 0)',
       [maLopHoc, maHocVien, trangThai]
     );
 
@@ -322,4 +322,42 @@ const exportDsLopHocToExcel = async (req, res) => {
   }
 };
 
-module.exports = { getDS_Lop, chuyenLop, xepLop, diemDanh, nhapDiem, getDS_Lop02, xoaXepLop, getDS_LopHV, getDS_maHV02, exportDsLopHocToExcel };
+const exportDiemLopHocToExcel = async (req, res) => {
+  const { maLopHoc } = req.params;
+
+  try {
+      const [results] = await pool.query(`
+          SELECT 
+              hv.maHocVien, 
+              hv.tenHocVien, 
+              dl.diemThuongKy, 
+              dl.diemGiuaKy, 
+              dl.diemCuoiKy,
+              (dl.diemCuoiKy * 0.5 + dl.diemGiuaKy * 0.3 + dl.diemThuongKy * 0.2) AS diemTrungBinh
+          FROM 
+              DsLopHoc dl
+          JOIN 
+              HocVien hv ON dl.maHocVien = hv.maHocVien
+          WHERE 
+              dl.maLopHoc = ?
+      `, [maLopHoc]);
+
+      if (results.length === 0) {
+          return res.status(404).json({ message: `Không tìm thấy điểm cho lớp có mã ${maLopHoc}.` });
+      }
+
+      const worksheet = XLSX.utils.json_to_sheet(results);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, `Diem_Lop_${maLopHoc}`);
+
+      const buffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+      res.setHeader('Content-Disposition', `attachment; filename="Diem_Lop_${maLopHoc}.xlsx"`);
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.send(buffer);
+  } catch (error) {
+      console.error('Lỗi khi xuất danh sách điểm:', error);
+      res.status(500).json({ message: 'Xuất Excel không thành công', error });
+  }
+};
+
+module.exports = { getDS_Lop, chuyenLop, xepLop, diemDanh, nhapDiem, getDS_Lop02, xoaXepLop, getDS_LopHV, getDS_maHV02, exportDsLopHocToExcel, exportDiemLopHocToExcel };

@@ -209,7 +209,7 @@ const MonHoc: React.FC = () => {
                 />
                 <div className="button-container">
                     <Button className="custom-button" onClick={handleAddCourse}>
-                        Thêm
+                        Thêm Môn Học
                     </Button>
                     <Button className="custom-button" onClick={exportMonHocToExcel}>
                         Xuất Excel
