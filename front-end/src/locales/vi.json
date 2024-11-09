@@ -79,5 +79,8 @@
   "exportExcel": "Xuất Excel",
   "invoiceDetails": "Danh sách hóa đơn",
   "testing": "Testing",
-  "password": "Mật Khẩu"
+  "password": "Mật Khẩu",
+  "xlsx": "Xuất Excel",
+  "exportSuccess": "Xuất Excel thành công",
+  "exportFailed": "Xuất Excel thất bại"
 }

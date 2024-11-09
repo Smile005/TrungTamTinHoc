@@ -3,7 +3,7 @@ import { Modal, Form, Input, Select, Button, message } from 'antd';
 import axios from 'axios';
 import { NhanVienType } from '../types/NhanVienType'; 
 import { TaiKhoanType } from '../types/TaiKhoanType';
-import { useTranslation } from 'react-i18next';  // Import useTranslation
+import { useTranslation } from 'react-i18next';
 
 interface ThemTaiKhoanModalProps {
   visible: boolean;
@@ -15,7 +15,7 @@ interface ThemTaiKhoanModalProps {
 const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel, onSubmit, taiKhoanData }) => {
   const [form] = Form.useForm();
   const [nhanVienList, setNhanVienList] = useState<NhanVienType[]>([]);
-  const { t } = useTranslation();  // Sử dụng useTranslation
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchNhanVien = async () => {
@@ -97,42 +97,44 @@ const ThemTaiKhoanModal: React.FC<ThemTaiKhoanModalProps> = ({ visible, onCancel
         </Button>,
       ]}
     >
-      <Form form={form} layout="vertical">
-        <Form.Item
-          label={t('employeeId')}
-          name="maNhanVien"
-          rules={[{ required: true, message: t('selectEmployeeId') }]}
-        >
-          <Select placeholder={t('selectEmployee')}>
-            {filteredNhanVienList.map((nv) => (
-              <Select.Option key={nv.maNhanVien} value={nv.maNhanVien}>
-                {nv.maNhanVien} - {nv.tenNhanVien}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
+      <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
+        <Form form={form} layout="vertical">
+          <Form.Item
+            label={t('employeeId')}
+            name="maNhanVien"
+            rules={[{ required: true, message: t('selectEmployeeId') }]}
+          >
+            <Select placeholder={t('selectEmployee')}>
+              {filteredNhanVienList.map((nv) => (
+                <Select.Option key={nv.maNhanVien} value={nv.maNhanVien}>
+                  {nv.maNhanVien} - {nv.tenNhanVien}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-        <Form.Item
-          label={t('password')}
-          name="matKhau"
-          rules={[{ required: true, message: t('enterPassword') }]}
-        >
-          <Input.Password placeholder={t('enterPassword')} />
-        </Form.Item>
+          <Form.Item
+            label={t('password')}
+            name="matKhau"
+            rules={[{ required: true, message: t('enterPassword') }]}
+          >
+            <Input.Password placeholder={t('enterPassword')} />
+          </Form.Item>
 
-        <Form.Item
-          label={t('confirmPassword')}
-          name="xacNhanMatKhau"
-          dependencies={['matKhau']}
-          hasFeedback
-          rules={[
-            { required: true, message: t('confirmPassword') },
-            { validator: validatePassword }, 
-          ]}
-        >
-          <Input.Password placeholder={t('confirmPassword')} />
-        </Form.Item>
-      </Form>
+          <Form.Item
+            label={t('confirmPassword')}
+            name="xacNhanMatKhau"
+            dependencies={['matKhau']}
+            hasFeedback
+            rules={[
+              { required: true, message: t('confirmPassword') },
+              { validator: validatePassword }, 
+            ]}
+          >
+            <Input.Password placeholder={t('confirmPassword')} />
+          </Form.Item>
+        </Form>
+      </div>
     </Modal>
   );
 };

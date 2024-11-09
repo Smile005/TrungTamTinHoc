@@ -78,5 +78,8 @@
   "deleteError": "Failed to delete employee",
   "exportExcel": "Export Excel",
    "invoiceDetails": "Invoice List",
-   "testing": "Testing"
+   "testing": "Testing",
+   "xlsx": "Export Excel",
+   "exportSuccess": "Export Excel Success",
+  "exportFailed": "Fail to export Excel"
 }
