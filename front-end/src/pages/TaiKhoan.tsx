@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
-import { MoreOutlined, EditOutlined, DeleteOutlined, FileDoneOutlined } from '@ant-design/icons';
+import { MoreOutlined, EditOutlined, FileDoneOutlined } from '@ant-design/icons';
 import SuaTaiKhoanModal from '../components/SuaTaiKhoanModal';
 import ThemTaiKhoanModal from '../components/ThemTaiKhoanModal';
 import DoiMatKhauModal from '../components/DoiMatKhauModal';
@@ -9,12 +9,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { fetchTaiKhoanData } from '../store/slices/taiKhoanSlice';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import { useTranslation } from 'react-i18next';
 
 const { Search } = Input;
 
 const TaiKhoan: React.FC = () => {
-  const { t } = useTranslation(); // Sử dụng hook useTranslation để dịch
+  const { t } = useTranslation();
   const [searchText, setSearchText] = useState('');
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isThemModalVisible, setIsThemModalVisible] = useState(false);
@@ -60,7 +60,7 @@ const TaiKhoan: React.FC = () => {
         },
       });
       message.success(t('deleteSuccess'));
-      dispatch(fetchTaiKhoanData()); 
+      dispatch(fetchTaiKhoanData());
     } catch (error) {
       message.error(t('deleteFailed'));
     }
@@ -73,12 +73,12 @@ const TaiKhoan: React.FC = () => {
 
   const handleThemSubmit = (values: any) => {
     setIsThemModalVisible(false);
-    dispatch(fetchTaiKhoanData()); // Reload lại dữ liệu sau khi thêm 
+    dispatch(fetchTaiKhoanData());
   };
 
   const handleEditSubmit = (values: any) => {
     setIsEditModalVisible(false);
-    dispatch(fetchTaiKhoanData()); // Reload lại dữ liệu sau khi sửa
+    dispatch(fetchTaiKhoanData());
   };
 
   const handleDoiMatKhauCancel = () => {
@@ -86,7 +86,6 @@ const TaiKhoan: React.FC = () => {
     setSelectedRecord(null);
   };
 
-  // Cấu hình bảng, thêm thuộc tính scroll để tránh lỗi ResizeObserver
   const columns = [
     {
       title: t('employeeId'),
@@ -129,7 +128,6 @@ const TaiKhoan: React.FC = () => {
           <Menu onClick={(e) => handleMenuClick(e, record)}>
             <Menu.Item key="changepw" icon={<FileDoneOutlined />}>{t('changePassword')}</Menu.Item>
             <Menu.Item key="edit" icon={<EditOutlined />}>{t('editRoleStatus')}</Menu.Item>
-            {/* <Menu.Item key="delete" icon={<DeleteOutlined />}>{t('delete')}</Menu.Item> */}
           </Menu>
         );
         return (
@@ -155,6 +153,7 @@ const TaiKhoan: React.FC = () => {
         />
         <div className="button-container">
           <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>{t('add')}</Button>
+          <Button className='custom-button'>{t('xlsx')}</Button>
         </div>
       </div>
 
