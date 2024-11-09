@@ -111,17 +111,24 @@ const createTenLop = async (connection, maMonHoc) => {
     const tenMonHoc = monHocResult[0].tenMonHoc;
 
     const [lastLopHocResult] = await connection.query(`
-      SELECT * FROM LopHoc
+      SELECT tenLopHoc FROM LopHoc
       WHERE maMonHoc = ?
       ORDER BY maLopHoc DESC
       LIMIT 1
     `, [maMonHoc]);
 
     const nextK = lastLopHocResult.length > 0
-      ? parseInt(lastLopHocResult[0].tenLopHoc.split(" K").pop(), 10) + 1
-      : 1;
+      ? (() => {
+          const match = lastLopHocResult[0].tenLopHoc.match(/K(\d+)$/); 
+          if (match) {
+            return parseInt(match[1], 10) + 1; 
+          } else {
+            return 1; // Nếu không khớp với định dạng, bắt đầu từ K1
+          }
+        })()
+      : 1; // Nếu không có lớp học nào, bắt đầu với K1
 
-    return `${tenMonHoc} K${nextK}`; // Tên lớp học mới
+    return `${tenMonHoc} K${nextK}`; 
   } catch (error) {
     console.error("Lỗi khi tạo tên lớp:", error);
     throw error;

@@ -3,7 +3,7 @@ POST http://localhost:8081/api/auth/register
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV00004",
+  "maNhanVien": "NV00002",
   "matKhau": "123"
 }
 
@@ -201,7 +201,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 # Lấy danh sách môn học đang hoạt động
 GET http://localhost:8081/api/monhoc/ds-monhocHD
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NDIyMDQsImV4cCI6MTcyOTk0NTgwNH0.bTIFV1VUQm0FZtq0w_hAQtVWBvqAwuitYP8x11OUWFk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzEwNzg3MzQsImV4cCI6MTczMTA4OTUzNH0.UH_1nKHbc9XOE5uTaosJ--0wFWmhMsJ3vLPiQY3REPY
 
 ###
 
@@ -400,12 +400,12 @@ Content-Type: application/json
 
 ### Xếp lớp 
 POST http://localhost:8081/api/lophoc/xepLop
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzA2NDIzNzIsImV4cCI6MTczMDY1MzE3Mn0.ZKwjrUjCO7mpq9HVWyk3MVBCAv8IvHBFWA_ddeCdtow
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzEwNzg3MzQsImV4cCI6MTczMTA4OTUzNH0.UH_1nKHbc9XOE5uTaosJ--0wFWmhMsJ3vLPiQY3REPY
 Content-Type: application/json
 
 {
-  "maLopHoc": "LH0005",
-  "maHocVien": "HV00004"
+  "maLopHoc": "LH0100",
+  "maHocVien": "HV00005"
 }
 
 ### Xóa xếp lớp 
@@ -474,12 +474,12 @@ Content-Type: application/json
     "maCa": "CA02",
     "maPhong": "PH02",
     "soBuoi": 12,
-    "ghiChu": "Cập nhật lịch học cho lớp 1"
+    "ghiChu": " lịch học cho lớp 1"
 }
 
 ### Lấy danh sách buổi học theo tháng (GET)
-GET http://localhost:8081/api/lichhoc/getBuoiHocByThang?month=10&year=2024
-Authorization: Bearer {token}
+GET http://localhost:8081/api/lichhoc/getBuoiHocByThang?month=2&year=2024
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzExNTA3NjAsImV4cCI6MTczMTE2MTU2MH0.YftDKlJwDl5himfXefd4CzOdbmm8qiVxiZfN_R86pis
 
 ### Tạo buổi học (POST)
 POST http://localhost:8081/api/lichhoc/createBuoiHoc
@@ -510,22 +510,20 @@ Content-Type: application/json
 DELETE http://localhost:8081/api/lichhoc/deleteBuoiHoc/:maLopHoc/:ngayHoc/:maCa
 Authorization: Bearer {token}
 
-###Nhập điểm
+### Nhập điểm
 POST http://localhost:8081/api/lophoc/nhapdiem/LH0001
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzA4MjE1NzMsImV4cCI6MTczMDgzMjM3M30.LcqhsMKoZumiwmfJfTxeVNPRdp4sg5jfqnrYt6ELC2k
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzEwNzg3MzQsImV4cCI6MTczMTA4OTUzNH0.UH_1nKHbc9XOE5uTaosJ--0wFWmhMsJ3vLPiQY3REPY
 Content-Type: application/json
 
 [
     {
-        "maHocVien": "HV00001",
-        "diemThuongKy": 6,
-        "diemGiuaKy": 3,
-        "diemCuoiKy": 10
+        "maHocVien": "HV0001",
+        "diemThuongKy": 2,
+        "diemCuoiKy": 2
     },
     {
-        "maHocVien": "HV00003",
+        "maHocVien": "HV0003",
         "diemThuongKy": 7,
-        "diemGiuaKy": 5,
-        "diemCuoiKy": 8
+        "diemGiuaKy": 5
     }
 ]
