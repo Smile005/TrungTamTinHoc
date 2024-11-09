@@ -1,7 +1,6 @@
 import React from 'react';
-import { Modal, Form, Input, TimePicker, Select, message } from 'antd';
+import { Modal, Form, Input, TimePicker, Select, message, Button } from 'antd';
 import axios from 'axios';
-import moment from 'moment';
 import { CaHocType } from '../types/CaHocType';
 
 interface ThemCaHocModalProps {
@@ -60,43 +59,52 @@ const ThemCaHocModal: React.FC<ThemCaHocModalProps> = ({ visible, onCancel, onSu
             title="Thêm Ca Học"
             visible={visible}
             onCancel={() => {
-                form.resetFields(); // Reset form khi modal bị hủy
-                onCancel(); // Gọi hàm onCancel từ component cha
+                form.resetFields(); 
+                onCancel(); 
             }}
-            onOk={handleOk}
+            footer={[
+                <Button key="cancel" onClick={onCancel}>
+                    Hủy
+                </Button>,
+                <Button key="submit" type="primary" onClick={handleOk}>
+                    Thêm Ca Học
+                </Button>,
+            ]}
         >
-            <Form form={form} layout="vertical">
-                <Form.Item
-                    name="batDau"
-                    label="Giờ Bắt Đầu"
-                    rules={[{ required: true, message: 'Vui lòng chọn giờ bắt đầu!' }]}
-                >
-                    <TimePicker format="HH:mm" />
-                </Form.Item>
-                <Form.Item
-                    name="ketThuc"
-                    label="Giờ Kết Thúc"
-                    rules={[{ required: true, message: 'Vui lòng chọn giờ kết thúc!' }]}
-                >
-                    <TimePicker format="HH:mm" />
-                </Form.Item>
-                <Form.Item
-                    name="trangThai"
-                    label="Tình Trạng"
-                    rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
-                >
-                    <Select>
-                        <Select.Option value="Đang hoạt động">Đang Hoạt Động</Select.Option>
-                        <Select.Option value="Ngưng hoạt động">Ngưng Hoạt Động</Select.Option>
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    name="ghiChu"
-                    label="Ghi Chú"
-                >
-                    <Input />
-                </Form.Item>
-            </Form>
+            <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
+                <Form form={form} layout="vertical">
+                    <Form.Item
+                        name="batDau"
+                        label="Giờ Bắt Đầu"
+                        rules={[{ required: true, message: 'Vui lòng chọn giờ bắt đầu!' }]}
+                    >
+                        <TimePicker format="HH:mm" placeholder="Chọn giờ bắt đầu" />
+                    </Form.Item>
+                    <Form.Item
+                        name="ketThuc"
+                        label="Giờ Kết Thúc"
+                        rules={[{ required: true, message: 'Vui lòng chọn giờ kết thúc!' }]}
+                    >
+                        <TimePicker format="HH:mm" placeholder="Chọn giờ kết thúc" />
+                    </Form.Item>
+                    <Form.Item
+                        name="trangThai"
+                        label="Tình Trạng"
+                        rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
+                    >
+                        <Select placeholder="Chọn tình trạng">
+                            <Select.Option value="Đang hoạt động">Đang Hoạt Động</Select.Option>
+                            <Select.Option value="Ngưng hoạt động">Ngưng Hoạt Động</Select.Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name="ghiChu"
+                        label="Ghi Chú"
+                    >
+                        <Input placeholder="Nhập ghi chú" />
+                    </Form.Item>
+                </Form>
+            </div>
         </Modal>
     );
 };
