@@ -1,15 +1,45 @@
 const pool = require('../config/db');
+const { format } = require('date-fns');
 const moment = require('moment');
+
 
 // Lấy danh sách buổi học theo tháng và năm
 const getBuoiHocByThang = async (req, res) => {
     const { month, year } = req.query;
     try {
         const [rows] = await pool.query(`
-            SELECT * FROM BuoiHoc 
-            WHERE MONTH(ngayHoc) = ? AND YEAR(ngayHoc) = ?
-        `, [month, year]);
-        res.status(200).json(rows);
+             SELECT 
+                bh.maLichHoc, 
+                lh.maMonHoc,
+                mh.tenMonHoc, 
+                bh.maLopHoc, 
+                lh.tenLopHoc,
+                bh.maGiaoVien, 
+                nv.tenNhanVien AS tenGiaoVien,
+                bh.maCa, 
+                bh.maPhong, 
+                bh.ngayHoc, 
+                bh.trangThai, 
+                bh.ghiChu
+            FROM BuoiHoc bh
+            LEFT JOIN LopHoc lh ON bh.maLopHoc = lh.maLopHoc
+            LEFT JOIN MonHoc mh ON lh.maMonHoc = mh.maMonHoc
+            LEFT JOIN NhanVien nv ON bh.maGiaoVien = nv.maNhanVien
+            WHERE YEAR(bh.ngayHoc) = ?
+        `, [year]);
+
+        //     WHERE MONTH(bh.ngayHoc) = ? AND YEAR(bh.ngayHoc) = ?
+        // `, [month, year]);
+
+        // Định dạng lại trường 'ngayHoc'
+        const formattedRows = rows.map(row => {
+            return {
+                ...row,
+                ngayHoc: format(new Date(row.ngayHoc), 'dd/MM/yyyy')
+            };
+        });
+
+        res.status(200).json(formattedRows);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -43,7 +73,7 @@ const getBuoiHocByMaLichHoc = async (req, res) => {
 
 const createBuoiHoc = async (req, res) => {
     const { maLopHoc, maGiaoVien, maCa, maPhong, ngayHoc, ghiChu } = req.body;
-    
+
     // Xác thực cơ bản
     if (!maLopHoc || !maGiaoVien || !maCa || !maPhong || !ngayHoc) {
         return res.status(400).json({ message: "Thiếu thông tin cần thiết" });
@@ -99,11 +129,11 @@ const deleteBuoiHoc = async (req, res) => {
     }
 };
 
-module.exports = { 
-    getBuoiHocByThang, 
-    getBuoiHocByMaLop, 
-    getBuoiHocByMaLichHoc, 
-    createBuoiHoc, 
-    updateBuoiHoc, 
-    deleteBuoiHoc 
+module.exports = {
+    getBuoiHocByThang,
+    getBuoiHocByMaLop,
+    getBuoiHocByMaLichHoc,
+    createBuoiHoc,
+    updateBuoiHoc,
+    deleteBuoiHoc
 };

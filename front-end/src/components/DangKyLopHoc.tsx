@@ -220,6 +220,8 @@ const LopHocForm: React.FC<{
 
       try {
         const token = localStorage.getItem('token');
+        console.log(selectedLopHoc)
+        console.log(hocVien.maHocVien )
         await axios.post(
           'http://localhost:8081/api/lophoc/xepLop',
           { maLopHoc: selectedLopHoc, maHocVien: hocVien.maHocVien },
@@ -236,6 +238,7 @@ const LopHocForm: React.FC<{
         setSelectedLopHoc(undefined);
       } catch (error) {
         message.error('Đăng ký lớp học thất bại');
+        console.log(error)
       }
     };
 

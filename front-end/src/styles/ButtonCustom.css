@@ -1,10 +1,11 @@
 .custom-h1 {
   display: flex; 
-  justify-content: center;
+  justify-content: flex-start;
 }
 .custom-container {
     display: flex;
     justify-content: flex-end;
+    align-content: "center";
 }
 .custom-button {
     padding-right: 15px;

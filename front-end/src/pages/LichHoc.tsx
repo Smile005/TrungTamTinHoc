@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Calendar, Modal, Button, Menu, Dropdown, type CalendarProps } from 'antd';
-import { MoreOutlined, PlusOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Modal, Button, Menu, Dropdown, DatePicker, DatePickerProps, Radio, RadioChangeEvent, ConfigProvider, Badge } from 'antd';
+import { CalendarOutlined, LeftOutlined, MoreOutlined, PlusOutlined, RightOutlined } from '@ant-design/icons';
+import { CalendarProps } from 'antd/es/calendar';
+import axios from 'axios';
 import { BuoiHocType } from '../types/BuoiHocType';
 import dayjs, { type Dayjs } from 'dayjs';
 import SuaBuoiHocModal from '../components/SuaBuoiHocModal';
@@ -13,51 +15,61 @@ const LichHoc: React.FC = () => {
   const [selectedBuoiHoc, setSelectedBuoiHoc] = useState<BuoiHocType | null>(null);
   const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs());
   const [listData, setListData] = useState<BuoiHocType[]>([]);
+  const [filteredData, setFilteredData] = useState(listData);
+  const [radio, setRadio] = useState(1);
+
+  // Lấy dữ liệu cho tháng hiện tại khi vào trang
+  useEffect(() => {
+    // Gọi API để lấy dữ liệu cho tháng hiện tại
+    getListData(currentDate).then((data) => setListData(data));
+  }, [currentDate]); // Chạy lại mỗi khi `currentDate` thay đổi
+
+  // Lấy dữ liệu từ API
+  const getListData = async (date: Dayjs | null) => {
+    // Kiểm tra nếu date là null hoặc không hợp lệ
+    if (!date) {
+      console.error("Invalid date provided");
+      return [];  // Trả về mảng rỗng nếu ngày không hợp lệ
+    }
+
+    const month = date.month() + 1; // Lấy tháng từ 1 đến 12
+    const year = date.year();
+
+    try {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        console.error("Token not found in localStorage");
+        return [];
+      }
+
+      const response = await axios.get(`http://localhost:8081/api/lichhoc/getBuoiHocByThang?month=${month}&year=${year}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Kiểm tra xem response có dữ liệu hay không
+      if (response && response.data) {
+        return response.data; // Giả sử API trả về mảng BuoiHocType
+      } else {
+        console.error("No data received from API");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];  // Trả về mảng rỗng nếu có lỗi khi gọi API
+    }
+  };
 
   const handleTodayClick = () => {
     const today = dayjs();
     setCurrentDate(today);
   };
 
-  const getMonthData = (value: Dayjs) => {
-    if (value.month() === 8) {
-      return 1394;
-    }
-  };
-
-  const monthCellRender = (value: Dayjs) => {
-    const num = getMonthData(value);
-    return num ? (
-      <div className="notes-month" style={{ padding: '8px', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
-        <section style={{ fontWeight: 'bold' }}>{num}</section>
-        <span>Backlog number</span>
-      </div>
-    ) : null;
-  };
-
-  const dateCellRender = (value: Dayjs) => {
-    const listData = getListData(value);
-    return (
-      <ul className="events">
-        {listData.map((item) => (
-          <li key={item.maBuoiHoc} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>- {item.tenLopHoc}</span>
-          </li>
-        ))}
-      </ul>
-    );
-  };
-
-  const cellRender: CalendarProps<Dayjs>['cellRender'] = (current, info) => {
-    if (info.type === 'date') return dateCellRender(current);
-    if (info.type === 'month') return monthCellRender(current);
-    return info.originNode;
-  };
-
   const handleSelect = (value: Dayjs) => {
-    const events = getListData(value);
     setSelectedDate(value);
-    setListData(events);
+    setCurrentDate(value);
     setIsLichHocVisible(true);
   };
 
@@ -72,6 +84,9 @@ const LichHoc: React.FC = () => {
 
   const handleMenuClick = (action: string) => {
     switch (action) {
+      case 'details':
+        console.log("Hiển thị thông tin chi tiết buổi học");
+        break;
       case 'editSchedule':
         console.log("Chỉnh sửa lịch học");
         break;
@@ -82,12 +97,16 @@ const LichHoc: React.FC = () => {
         console.log("Xóa buổi học");
         break;
       default:
+        console.log("Chức năng được chọn trong menu không thể xác định");
         break;
     }
   };
 
   const menu = (
     <Menu>
+      <Menu.Item key="details" onClick={() => handleMenuClick('details')}>
+        Thông tin chi tiết
+      </Menu.Item>
       <Menu.Item key="editSchedule" onClick={() => handleMenuClick('editSchedule')}>
         Chỉnh sửa lịch học
       </Menu.Item>
@@ -100,21 +119,89 @@ const LichHoc: React.FC = () => {
     </Menu>
   );
 
+  const dateCellRender = (value: Dayjs) => {
+    const listDataForDay = listData.filter((item) => dayjs(item.ngayHoc).isSame(value, 'day'));
+    return (
+      <ul className="events">
+        {listDataForDay.map((item: BuoiHocType) => (
+          <li
+            key={`${item.maLopHoc}-${item.maCa}-${item.maPhong}`}
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Badge
+              color={
+                item.loai === 'Ngày học' ? 'primary'
+                  : item.loai === 'Ngày thi' ? 'warning'
+                    : 'default'}
+              text={item.tenLopHoc}
+            />
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  const cellRender: CalendarProps<Dayjs>['cellRender'] = (current, info) => {
+    if (info.type === 'date') return dateCellRender(current);
+    return info.originNode;
+  };
+
+  const radioChange = (e: RadioChangeEvent) => {
+    const value = e.target.value;
+    setRadio(value);
+
+    if (value === 1) {
+      setFilteredData(listData);
+    } else if (value === 2) {
+      setFilteredData(listData.filter(item => item.loai === 'Ngày học'));
+    } else if (value === 3) {
+      setFilteredData(listData.filter(item => item.loai === 'Ngày thi'));
+    }
+  };
+
+  const datePickerChange: DatePickerProps['onChange'] = (date, dateString) => {
+    setCurrentDate(date)
+  };
+
+  const headerRender: CalendarProps<Dayjs>['headerRender'] = ({ value, type, onChange, onTypeChange }) => {
+    return null; // No rendering of header
+  };
+
+  const handleTroVeClick = () => {
+    const newDate = currentDate.subtract(1, 'month');  // Dùng dayjs để trừ đi 1 tháng
+    setCurrentDate(newDate);
+  }
+
+  const handleTiepClick = () => {
+    const newDate = currentDate.add(1, 'month');  // Dùng dayjs để trừ đi 1 tháng
+    setCurrentDate(newDate);
+  }
+
   return (
     <>
-      <h1 className='custom-h1'>QUẢN LÝ LỊCH HỌC</h1>
+      <h1 className='custom-h1'>Lịch học, lịch thi theo tuần</h1>
       <div className="custom-container">
-        <Button className="custom-button" onClick={handleTodayClick}>Hoàn tác</Button>
-        <Button className="custom-button" icon={<PlusOutlined />}>Thêm Buổi học</Button>
-        <Button className="custom-button" icon={<PlusOutlined />}>Thêm Lịch học</Button>
+        <Radio.Group onChange={radioChange} value={radio}>
+          <Radio value={1}>Tất cả</Radio>
+          <Radio value={2}>Lịch học</Radio>
+          <Radio value={3}>Lịch thi</Radio>
+        </Radio.Group>
+        <DatePicker onChange={datePickerChange} value={currentDate} format="DD/MM/YYYY" />
+        <Button className="custom-button" icon={<CalendarOutlined />} onClick={handleTodayClick}>Hiện tại</Button>
+        <Button className="custom-button" icon={<LeftOutlined />} onClick={handleTroVeClick}>Trở về</Button>
+        <Button className="custom-button" icon={<RightOutlined />} onClick={handleTiepClick}>Tiếp</Button>
+        {/* <Button className="custom-button" icon={<PlusOutlined />}>Thêm lịch</Button> */}
       </div>
-      <Calendar
-        value={currentDate}
-        cellRender={cellRender}
-        onSelect={handleSelect}
-      />
+      <ConfigProvider>
+        <Calendar
+          value={currentDate}
+          cellRender={cellRender}
+          headerRender={headerRender}
+          onSelect={handleSelect}
+        />
+      </ConfigProvider>
+
       <Modal
-        title={`Details for ${selectedDate?.format('DD-MM-YYYY')}`}
+        title={`Details for ${selectedDate?.format('DD/MM/YYYY')}`}
         open={isLichHocVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -123,23 +210,36 @@ const LichHoc: React.FC = () => {
         {listData.length > 0 ? (
           <div>
             <ul>
-              {listData.map((item) => (
-                <li key={item.maBuoiHoc} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span>
-                    - {item.tenLopHoc} - {item.caHoc.maCa} - {item.phongHoc.maPhong} - {item.giaoVien.tenNhanVien}
-                  </span>
-                  <Dropdown overlay={menu} trigger={['click']}>
-                    <Button icon={<MoreOutlined />} />
-                  </Dropdown>
-                </li>
-              ))}
+              {listData
+                .filter((item: BuoiHocType) => {
+                  // So sánh ngày (ngayHoc) với selectedDate
+                  return dayjs(item.ngayHoc).isSame(selectedDate, 'day');
+                })
+                .map((item: BuoiHocType) => (
+                  <li
+                    key={`${item.maLopHoc}-${item.maCa}-${item.maPhong}`}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '8px 0',
+                      borderBottom: '1px solid #e8e8e8',
+                    }}
+                  >
+                    <span style={{ fontWeight: 'bold', flex: 1 }}>
+                      - {item.tenLopHoc} - {item.maCa} - {item.maPhong} - {item.tenGiaoVien}
+                    </span>
+                    <Dropdown overlay={menu} trigger={['click']}>
+                      <Button icon={<MoreOutlined />} />
+                    </Dropdown>
+                  </li>
+                ))}
             </ul>
           </div>
         ) : (
           <p>No events for this day.</p>
         )}
         <Button className="custom-button" icon={<PlusOutlined />}>Thêm Buổi học</Button>
-        <Button className="custom-button" icon={<PlusOutlined />}>Thêm Lịch học</Button>
       </Modal>
 
       <SuaBuoiHocModal
@@ -156,53 +256,3 @@ const LichHoc: React.FC = () => {
 };
 
 export default LichHoc;
-
-// Hàm lấy dữ liệu buổi học
-const getListData = (value: Dayjs): BuoiHocType[] => {
-  let listData: BuoiHocType[] = [];
-  switch (value.date()) {
-    case 8:
-      listData = [
-        {
-          maBuoiHoc: 'BH001',
-          tenLopHoc: 'Lập trình Web',
-          ngayHoc: value.toDate(),
-          caHoc: {key: '1', maCa: 'CA01', batDau: "07:00", ketThuc: "10:00", ghiChu: 'Ca học bình thường' },
-          phongHoc: {key: '1', maPhong: 'PH01', soLuong: 30, trangThai: 'Đang hoạt động', ghiChu: 'Phòng học lý thuyết' },
-          giaoVien: { maNhanVien: 'NV001', tenNhanVien: 'Nguyễn Văn A', gioiTinh: 'nam', ngaySinh: '1990-01-01', trangThai: 'Đang làm việc' },
-          loai: 'Ngày học',
-          trangThai: 'Đã lên lịch',
-          ghiChu: '',
-        },
-        {
-          maBuoiHoc: 'BH002',
-          tenLopHoc: 'Thi giữa kỳ',
-          ngayHoc: value.toDate(),
-          caHoc: { key: '1', maCa: 'CA02', batDau: "07:00", ketThuc: "10:00", ghiChu: 'Ca thi' },
-          phongHoc: {key: '1', maPhong: 'PH02', soLuong: 30, trangThai: 'Đang hoạt động', ghiChu: 'Phòng thi' },
-          giaoVien: { maNhanVien: 'NV002', tenNhanVien: 'Trần Thị B', gioiTinh: 'nữ', ngaySinh: '1992-05-15', trangThai: 'Đang làm việc' },
-          loai: 'Ngày thi',
-          trangThai: 'Đã lên lịch',
-          ghiChu: '',
-        },
-      ];
-      break;
-    case 10:
-      listData = [
-        {
-          maBuoiHoc: 'BH003',
-          tenLopHoc: 'Nghỉ lễ',
-          ngayHoc: value.toDate(),
-          caHoc: { key: '1', maCa: 'CA03', batDau: "07:00", ketThuc: "10:00", ghiChu: 'Ngày nghỉ lễ' },
-          phongHoc: {key: '1', maPhong: 'PH03', soLuong: 30, trangThai: 'Ngưng hoạt động', ghiChu: 'Không có lớp' },
-          giaoVien: { maNhanVien: 'NV003', tenNhanVien: 'Lê Văn C', gioiTinh: 'nam', ngaySinh: '1985-12-20', trangThai: 'Đang làm việc' },
-          loai: 'Ngày nghỉ',
-          trangThai: 'Đã lên lịch',
-          ghiChu: '',
-        },
-      ];
-      break;
-    default:
-  }
-  return listData || [];
-};
