@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Bar, Line, PolarArea } from 'react-chartjs-2';
-import { Select } from 'antd';
-import { Chart, CategoryScale, LinearScale, BarElement,PointElement, LineElement, RadialLinearScale, Title, Tooltip, Legend } from 'chart.js';
+import { Select, Button, message } from 'antd';
+import { Chart, CategoryScale, LinearScale, BarElement, PointElement, LineElement, RadialLinearScale, Title, Tooltip, Legend } from 'chart.js';
 import axios from 'axios';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const { Option } = Select;
 
-Chart.register(CategoryScale, LinearScale, BarElement, LineElement,PointElement, RadialLinearScale, Title, Tooltip, Legend);
+Chart.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, RadialLinearScale, Title, Tooltip, Legend);
 
 const TKGiangVien: React.FC = () => {
     const [teacherData, setTeacherData] = useState<{ teacher: string; classCount: number }[]>([]);
     const [chartType, setChartType] = useState<string>('bar'); 
+    const chartRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         fetchTeacherData();
@@ -131,8 +134,34 @@ const TKGiangVien: React.FC = () => {
         }
     };
 
+    const exportToPDF = async () => {
+        if (chartRef.current) {
+            const chartContainer = chartRef.current.querySelector('.chart-container');
+            if (chartContainer) {
+                const canvas = await html2canvas(chartContainer as HTMLElement);
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF();
+
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
+               
+
+                teacherData.forEach((data, index) => {
+                    
+                });
+
+                pdf.save('ThongKeGiangVien.pdf');
+            } else {
+                message.error('Không tìm thấy phần tử biểu đồ để xuất PDF.');
+            }
+        }
+    };
+
     return (
-        <div style={{ width: '80%', margin: '0 auto' }}>
+        <div style={{ width: '80%', margin: '0 auto' }} ref={chartRef}>
             <h1 className='page-name'>Thống Kê Giảng Viên</h1>
 
             <Select
@@ -145,7 +174,13 @@ const TKGiangVien: React.FC = () => {
                 <Option value="polar">Polar Chart</Option>
             </Select>
 
-            {renderChart()}
+            <Button type="primary" onClick={exportToPDF} style={{ bottom: 1, left: 860 }}>
+                Xuất PDF
+            </Button>
+
+            <div className="chart-container">
+                {renderChart()}
+            </div>
         </div>
     );
 };
