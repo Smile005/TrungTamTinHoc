@@ -61,6 +61,7 @@ const ThemMonHocModal: React.FC<ThemMonHocModalProps> = ({ visible, onCancel, on
                 onCancel();
             }}
             onOk={handleOk} 
+            okText="Thêm Môn Học"
             style={{ top: 30}}
         >
             <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>

@@ -58,6 +58,7 @@ const ThemNhanVienModal: React.FC<ThemNhanVienModalProps> = ({ visible, onCancel
                 onCancel();
             }}
             onOk={handleOk}
+            okText="Thêm Nhân Viên"
             style={{ top: 10}}
         >
             <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
