@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Bar, Line, PolarArea } from 'react-chartjs-2';
-import { Select, message } from 'antd';
+import { Select, message, Button } from 'antd';
 import { Chart, CategoryScale, LinearScale, BarElement, LineElement, PointElement, RadialLinearScale, Title, Tooltip, Legend } from 'chart.js';
 import axios from 'axios';
 import moment from 'moment';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const { Option } = Select;
 
@@ -14,6 +16,7 @@ const TKHocVien: React.FC = () => {
     const [year, setYear] = useState<number>(new Date().getFullYear()); 
     const [availableYears, setAvailableYears] = useState<number[]>([]);
     const [chartType, setChartType] = useState<string>('bar'); 
+    const chartRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         fetchStudentData(year); 
@@ -135,31 +138,65 @@ const TKHocVien: React.FC = () => {
         }
     };
 
-    return (
-        <div style={{ width: '80%', margin: '0 auto' }}>
-            <h1 className='page-name'>Thống Kê Học Viên</h1>
-            <Select 
-                defaultValue={year} 
-                style={{ width: 120, marginBottom: 20 }}
-                onChange={handleYearChange}
-            >
-                {availableYears.map((year) => (
-                    <Option key={year} value={year}>
-                        {year}
-                    </Option>
-                ))}
-            </Select>
-            <Select
-                defaultValue="bar"
-                style={{ width: 120, marginLeft: 20, marginBottom: 20 }}
-                onChange={handleChartTypeChange}
-            >
-                <Option value="bar">Bar Chart</Option>
-                <Option value="line">Line Chart</Option>
-                <Option value="polar">Polar Chart</Option>
-            </Select>
+    const exportToPDF = async () => {
+        if (chartRef.current) {
+            const chartElement = chartRef.current.querySelector('.chart-container');
+            if (chartElement) {
+                const canvas = await html2canvas(chartElement as HTMLElement);
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF();
 
-            {renderChart()}
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
+
+                let yPosition = pdfHeight + 30;
+                studentData.forEach((data) => {
+                    
+                });
+
+                pdf.save(`ThongKeHocVien_${year}.pdf`);
+            } else {
+                message.error('Không tìm thấy phần tử biểu đồ để xuất PDF.');
+            }
+        }
+    };
+
+    return (
+        <div style={{ width: '80%', margin: '0 auto' }} ref={chartRef}>
+            <h1 className='page-name'>Thống Kê Học Viên</h1>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div>
+                    <Select 
+                        defaultValue={year} 
+                        style={{ width: 120, marginBottom: 20 }}
+                        onChange={handleYearChange}
+                    >
+                        {availableYears.map((year) => (
+                            <Option key={year} value={year}>
+                                {year}
+                            </Option>
+                        ))}
+                    </Select>
+                    <Select
+                        defaultValue="bar"
+                        style={{ width: 120, marginLeft: 20, marginBottom: 20 }}
+                        onChange={handleChartTypeChange}
+                    >
+                        <Option value="bar">Bar Chart</Option>
+                        <Option value="line">Line Chart</Option>
+                        <Option value="polar">Polar Chart</Option>
+                    </Select>
+                </div>
+                <Button type="primary" style={{ bottom: 10}} onClick={exportToPDF}>
+                    Xuất PDF
+                </Button>
+            </div>
+            <div className="chart-container">
+                {renderChart()}
+            </div>
         </div>
     );
 };
