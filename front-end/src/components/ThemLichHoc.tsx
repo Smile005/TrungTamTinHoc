@@ -3,6 +3,7 @@ import { Button, Row, Col, Select, InputNumber, message, Table, Modal } from 'an
 import axios from 'axios';
 import { LichHocType } from '../types/LichHocType';
 import { LopHocType } from '../types/LopHocType';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
@@ -17,20 +18,17 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
     const [buoiHocs, setBuoiHocs] = useState<LichHocType[]>([]);
     const [caHocList, setCaHocList] = useState<{ maCa: string; batDau: string; ketThuc: string }[]>([]);
     const [phongHocList, setPhongHocList] = useState<{ maPhong: string; soLuong: number }[]>([]);
-    const [giaoVienList, setGiaoVienList] = useState<{ maNhanVien: string; tenNhanVien: string }[]>([]);
 
     const [selectedThu, setSelectedThu] = useState<string | undefined>();
     const [selectedCaHoc, setSelectedCaHoc] = useState<string | undefined>();
     const [selectedPhong, setSelectedPhong] = useState<string | undefined>();
-    const [selectedGiaoVien, setSelectedGiaoVien] = useState<string | undefined>();
     const [selectedSoBuoi, setSelectedSoBuoi] = useState<number | undefined>(10);
-
 
     useEffect(() => {
         const fetchLopHocData = async () => {
             if (!maLopHoc) return;
 
-            setLoading(true); // Bắt đầu hiển thị loading
+            setLoading(true);
             const token = localStorage.getItem('token');
             try {
                 const [
@@ -38,7 +36,6 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                     lichHocResponse,
                     caHocResponse,
                     phongHocResponse,
-                    giaoVienResponse
                 ] = await Promise.all([
                     axios.get(`http://localhost:8081/api/lophoc/lophocByMa/${maLopHoc}`, {
                         headers: { Authorization: `Bearer ${token}` },
@@ -56,16 +53,12 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                     axios.get('http://localhost:8081/api/phonghoc/ds-phong', {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
-                    axios.get('http://localhost:8081/api/nhanvien/ds-giangvien', {
-                        headers: { Authorization: `Bearer ${token}` },
-                    })
                 ]);
 
                 setLopHoc(lopHocResponse.data || null);
                 setBuoiHocs(lichHocResponse?.data || []);
                 setCaHocList(caHocResponse.data || []);
                 setPhongHocList(phongHocResponse.data || []);
-                setGiaoVienList(giaoVienResponse.data || []);
                 setLoading(false);
             } catch (error) {
                 setLoading(false);
@@ -78,8 +71,8 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
     }, [maLopHoc]);
 
     if (!maLopHoc) return <div>Vui lòng cung cấp mã lớp học hợp lệ.</div>;
-    if (loading) return <div>Đang tải...</div>; // Hiển thị "Đang tải..." khi loading
-    if (error) return <div>{error}</div>; // Hiển thị lỗi nếu có lỗi
+    if (loading) return <div>Đang tải...</div>;
+    if (error) return <div>{error}</div>;
 
     // Hàm để chuyển đổi số thu thành tên ngày trong tuần
     const getDayOfWeek = (thu: number) => {
@@ -89,7 +82,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
 
     const columns = [
         { title: 'Mã lịch học', dataIndex: 'maLichHoc', key: 'maLichHoc' },
-        { title: 'Thứ', dataIndex: 'thu', key: 'thu', render: (thu: number) => getDayOfWeek(thu) }, // Hiển thị tên ngày
+        { title: 'Thứ', dataIndex: 'thu', key: 'thu', render: (thu: number) => getDayOfWeek(thu) },
         { title: 'Ca học', dataIndex: 'maCa', key: 'maCa' },
         { title: 'Phòng học', dataIndex: 'maPhong', key: 'maPhong' },
         { title: 'Giáo viên', dataIndex: 'tenGiaoVien', key: 'tenGiaoVien' },
@@ -98,16 +91,24 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
             title: 'Hành động',
             key: 'action',
             render: (text: any, record: any) => (
-                <span>
-                    <Button onClick={() => handleEdit(record)}>Sửa</Button>
-                    <Button onClick={() => handleDelete(record.maLichHoc)}>Xóa</Button>
+                <span style={{ display: 'flex', gap: '8px' }}>
+                    <Button
+                        icon={<EditOutlined style={{ color: 'blue' }} />}
+                        onClick={() => handleEdit(record)}
+                        type="text"
+                    />
+                    <Button
+                        icon={<DeleteOutlined style={{ color: 'blue' }} />}
+                        onClick={() => handleDelete(record.maLichHoc)}
+                        type="text"
+                    />
                 </span>
             ),
         },
     ];
 
     const createLichHoc = async () => {
-        if (!selectedThu || !selectedCaHoc || !selectedPhong || !selectedGiaoVien || !selectedSoBuoi || selectedSoBuoi <= 0) {
+        if (!selectedThu || !selectedCaHoc || !selectedPhong || !selectedSoBuoi || selectedSoBuoi <= 0) {
             message.error('Vui lòng điền đầy đủ thông tin.');
             return;
         }
@@ -116,7 +117,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
             maLopHoc,
             thu: parseInt(selectedThu),
             maCa: selectedCaHoc,
-            maGiaoVien: selectedGiaoVien,
+            maGiaoVien: lopHoc?.maNhanVien,
             maPhong: selectedPhong,
             soBuoi: selectedSoBuoi,
         };
@@ -150,6 +151,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
             content: 'Khi xóa, lịch học sẽ không thể phục hồi.',
             cancelText: 'Hủy',
             okText: 'Xóa',
+            style: { bottom: '10px' },
             onOk: async () => {
                 try {
                     const token = localStorage.getItem('token');
@@ -171,7 +173,6 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
         setSelectedThu(undefined);
         setSelectedCaHoc(undefined);
         setSelectedPhong(undefined);
-        setSelectedGiaoVien(undefined);
         setSelectedSoBuoi(10);
     };
 
@@ -191,21 +192,27 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
 
     return (
         <div>
-            <h3>Thông tin lớp học</h3>
+            <h2>Thông Tin Lớp Học</h2>
             <Row>
-                <p><strong>Mã lớp học:</strong> {maLopHoc}</p>
-                <p><strong>Tên lớp học:</strong> {lopHoc?.tenLopHoc}</p>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <p><strong>Mã lớp học:</strong> {maLopHoc}</p>
+                    <p><strong>Tên lớp học:</strong> {lopHoc?.tenLopHoc}</p>
+                </div>
             </Row>
             <Row>
-                <p><strong>Môn học:</strong> {lopHoc?.tenMonHoc}</p>
-                <p><strong>Giảng viên:</strong> {lopHoc?.tenNhanVien}</p>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <p><strong>Môn học:</strong> {lopHoc?.tenMonHoc}</p>
+                    <p><strong>Giảng viên:</strong> {lopHoc?.tenNhanVien}</p>
+                </div>
             </Row>
             <Row>
-                <p><strong>Số học viên:</strong> 0 / {lopHoc?.soLuongMax}</p>
-                <p><strong>Số buổi học:</strong> 0 / {lopHoc?.soBuoiHoc}</p>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <p><strong>Số học viên:</strong> 0 / {lopHoc?.soLuongMax}</p>
+                    <p><strong>Số buổi học:</strong> 0 / {lopHoc?.soBuoiHoc}</p>
+                </div>
             </Row>
 
-            <h3>Thêm lịch học</h3>
+            <h3>Thêm Lịch Học</h3>
             <Row gutter={16}>
                 <Col>
                     <Select value={selectedThu} placeholder="Chọn thứ" onChange={setSelectedThu} style={{ width: 100 }}>
@@ -229,13 +236,6 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                     </Select>
                 </Col>
                 <Col>
-                    <Select value={selectedGiaoVien} placeholder="Chọn giảng viên" onChange={setSelectedGiaoVien} style={{ width: 150 }}>
-                        {giaoVienList.map(gv => (
-                            <Option key={gv.maNhanVien} value={gv.maNhanVien}>{gv.tenNhanVien}</Option>
-                        ))}
-                    </Select>
-                </Col>
-                <Col>
                     <InputNumber
                         min={1}
                         max={lopHoc?.soBuoiHoc}
@@ -243,7 +243,6 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                         onChange={handleSoBuoiChange}
                         placeholder="Số buổi học"
                     />
-
                 </Col>
                 <Col>
                     <Button type="primary" onClick={createLichHoc}>Thêm lịch học</Button>

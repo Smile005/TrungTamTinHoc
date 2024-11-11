@@ -10,6 +10,7 @@ import { RootState, AppDispatch } from '../store/store';
 import { fetchTaiKhoanData } from '../store/slices/taiKhoanSlice';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import * as XLSX from 'xlsx'; // Import thư viện xlsx
 
 const { Search } = Input;
 
@@ -86,6 +87,24 @@ const TaiKhoan: React.FC = () => {
     setSelectedRecord(null);
   };
 
+  const exportToExcel = () => {
+    const formattedData = data.map((item) => ({
+      ...item,
+      phanQuyen:
+        item.phanQuyen === 1
+          ? 'Quản trị viên'
+          : item.phanQuyen === 2
+            ? 'Người dùng'
+            : 'Khác',
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(formattedData); // Chuyển đổi dữ liệu đã định dạng thành worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'TaiKhoan'); // Thêm worksheet vào workbook
+    XLSX.writeFile(workbook, 'DanhSachTaiKhoan.xlsx'); // Lưu workbook dưới dạng file .xlsx
+    message.success(t('exportSuccess'));
+  };
+
   const columns = [
     {
       title: t('employeeId'),
@@ -153,7 +172,7 @@ const TaiKhoan: React.FC = () => {
         />
         <div className="button-container">
           <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>{t('add')}</Button>
-          <Button className='custom-button'>{t('xlsx')}</Button>
+          <Button className='custom-button' onClick={exportToExcel}>{t('xlsx')}</Button>
         </div>
       </div>
 
