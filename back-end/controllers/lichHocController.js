@@ -132,6 +132,13 @@ const createLichHoc = async (req, res) => {
             ghiChu || null
         ]);
 
+        // Gọi hàm tạo buổi học dựa trên mã lịch học vừa tạo
+        const buoiHocResult = await createBuoiHocByMaLichHoc(maLichHoc);
+        if (buoiHocResult.status !== 201) {
+            throw new Error(buoiHocResult.message || 'Không thể tạo buổi học.');
+        }
+
+        // Lấy thông tin lịch học sau khi tạo
         const lichHocQuery = `
             SELECT LichHoc.*, LopHoc.tenLopHoc, CaHoc.maCa, NhanVien.tenNhanVien AS tenGiaoVien, PhongHoc.maPhong
             FROM LichHoc
@@ -146,7 +153,8 @@ const createLichHoc = async (req, res) => {
         if (lichHocResult.length > 0) {
             return res.status(201).json({
                 message: 'Lịch học đã được tạo thành công!',
-                lichHoc: lichHocResult[0] // Trả về thông tin lịch học
+                lichHoc: lichHocResult[0], // Trả về thông tin lịch học
+                buoiHocMessage: buoiHocResult.message // Trả về thông báo của buổi học
             });
         } else {
             throw new Error('Không thể lấy thông tin lịch học vừa tạo.');

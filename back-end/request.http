@@ -446,14 +446,14 @@ Authorization: Bearer {token}
 
 ### Tạo lịch học (POST)
 POST http://localhost:8081/api/lichhoc/createLichHoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzAzMDQ2MjcsImV4cCI6MTczMDMxNTQyN30.tylS8bil-JC_lESm8V69kQBluFcJU8Mw6b4PLEYHg8w
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzEyNDQzMTYsImV4cCI6MTczMTI1NTExNn0.kYkV_CpyfRXzC_F4atEVkuygLKQA3tPPJDewg5cqACc
 Content-Type: application/json
 
 {
     "maLopHoc": "LH0001",
-    "thu": 3,
+    "thu": 2,
     "maCa": "CA0001",
-    "maGiaoVien": "NV0001", 
+    "maGiaoVien": "NV00004", 
     "maPhong": "P0001",
     "soBuoi": 10,
     "ghiChu": "Lịch học cho lớp 1"
@@ -479,7 +479,7 @@ Content-Type: application/json
 
 ### Lấy danh sách buổi học theo tháng (GET)
 GET http://localhost:8081/api/lichhoc/getBuoiHocByThang?month=2&year=2024
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzExNTA3NjAsImV4cCI6MTczMTE2MTU2MH0.YftDKlJwDl5himfXefd4CzOdbmm8qiVxiZfN_R86pis
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzEyNDUzMDMsImV4cCI6MTczMTI1NjEwM30.Tdc2NCE-ma_mlHZLTGJmZVCg-L-zOIQHChBDTyuq33Q
 
 ### Tạo buổi học (POST)
 POST http://localhost:8081/api/lichhoc/createBuoiHoc
