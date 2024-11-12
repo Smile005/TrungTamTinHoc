@@ -15,6 +15,7 @@ const { Search } = Input;
 
 const LopHoc: React.FC = () => {
   const [searchText, setSearchText] = useState('');
+  const [data, setData] = useState<LopHocType[]>([]); // Dữ liệu gốc
   const [filteredData, setFilteredData] = useState<LopHocType[]>([]);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
@@ -25,55 +26,56 @@ const LopHoc: React.FC = () => {
   const [nhanVienMap, setNhanVienMap] = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
 
+  const fetchLopHocData = async () => {
+    setLoading(true);
+    try {
+      const [lopHocResponse, nhanVienResponse, monHocResponse] = await Promise.all([
+        axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }),
+        axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }),
+        axios.get('http://localhost:8081/api/monhoc/ds-monhoc', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        }),
+      ]);
+
+      const monHocMap = monHocResponse.data.reduce((acc: any, monHoc: any) => {
+        acc[monHoc.maMonHoc] = monHoc.tenMonHoc;
+        return acc;
+      }, {});
+
+      const nhanVienMap = nhanVienResponse.data.reduce((acc: any, nhanVien: any) => {
+        acc[nhanVien.maNhanVien] = nhanVien.tenNhanVien;
+        return acc;
+      }, {});
+
+      setMonHocMap(monHocMap);
+      setNhanVienMap(nhanVienMap);
+
+      const formattedLopHoc = lopHocResponse.data.map((lopHoc: LopHocType) => ({
+        ...lopHoc,
+        tenMonHoc: lopHoc.maMonHoc ? monHocMap[lopHoc.maMonHoc] : 'Không xác định',
+        tenNhanVien: lopHoc.maNhanVien ? nhanVienMap[lopHoc.maNhanVien] : 'Không xác định',
+      }));
+
+      setData(formattedLopHoc);
+      setFilteredData(formattedLopHoc);
+    } catch (error) {
+      console.error('Lỗi khi gọi API:', error);
+      message.error('Lỗi khi lấy dữ liệu');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchLopHocData = async () => {
-      setLoading(true);
-      try {
-        const [lopHocResponse, nhanVienResponse, monHocResponse] = await Promise.all([
-          axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-          }),
-          axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-          }),
-          axios.get('http://localhost:8081/api/monhoc/ds-monhoc', {
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-          }),
-        ]);
-
-        const monHocMap = monHocResponse.data.reduce((acc: any, monHoc: any) => {
-          acc[monHoc.maMonHoc] = monHoc.tenMonHoc;
-          return acc;
-        }, {});
-
-        const nhanVienMap = nhanVienResponse.data.reduce((acc: any, nhanVien: any) => {
-          acc[nhanVien.maNhanVien] = nhanVien.tenNhanVien;
-          return acc;
-        }, {});
-
-        setMonHocMap(monHocMap);
-        setNhanVienMap(nhanVienMap);
-
-        const formattedLopHoc = lopHocResponse.data.map((lopHoc: LopHocType) => ({
-          ...lopHoc,
-          tenMonHoc: lopHoc.maMonHoc ? monHocMap[lopHoc.maMonHoc] : 'Không xác định',
-          tenNhanVien: lopHoc.maNhanVien ? nhanVienMap[lopHoc.maNhanVien] : 'Không xác định',
-        }));
-
-        setFilteredData(formattedLopHoc);
-      } catch (error) {
-        console.error('Lỗi khi gọi API:', error);
-        message.error('Lỗi khi lấy dữ liệu');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchLopHocData();
   }, []);
 
   const onSearch = (value: string) => {
-    const filtered = filteredData.filter((item) =>
+    const filtered = data.filter((item) =>
       item.maLopHoc.toLowerCase().includes(value.toLowerCase()) ||
       item.tenLopHoc.toLowerCase().includes(value.toLowerCase()) ||
       item.soLuongMax.toString().includes(value) ||
@@ -130,7 +132,7 @@ const LopHoc: React.FC = () => {
         }
       );
       message.success('Xóa lớp học thành công');
-      setFilteredData(filteredData.filter(item => item.maLopHoc !== maLopHoc));
+      fetchLopHocData(); // Cập nhật dữ liệu sau khi xóa
     } catch (error) {
       console.error('Lỗi khi xóa lớp học:', error);
       message.error('Lỗi khi xóa lớp học');
@@ -272,7 +274,10 @@ const LopHoc: React.FC = () => {
 
       <AddLopHoc
         visible={isAddModalVisible}
-        onCancel={() => setIsAddModalVisible(false)}
+        onCancel={() => {
+          setIsAddModalVisible(false);
+          fetchLopHocData(); // Cập nhật dữ liệu sau khi thêm lớp học mới
+        }}
       />
 
       <Modal

@@ -5,7 +5,6 @@ import ThemCaHocModal from '../components/ThemCaHocModal';
 import SuaCaHocModal from '../components/SuaCaHocModal';
 import { CaHocType } from '../types/CaHocType';
 import '../styles/TableCustom.css';
-import axios from 'axios';
 import * as XLSX from 'xlsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
@@ -16,7 +15,7 @@ const { Search } = Input;
 const CaHoc: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const caHocState = useSelector((state: RootState) => state.caHoc);
-    const { data: reduxData, loading: reduxLoading, error } = caHocState;
+    const { data: reduxData, loading: reduxLoading } = caHocState;
 
     const [searchText, setSearchText] = useState('');
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);

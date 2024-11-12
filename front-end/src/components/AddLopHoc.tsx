@@ -48,7 +48,7 @@ const AddLopHoc: React.FC<AddLopHocProps> = ({ visible, onCancel }) => {
             onCancel={handleCancel}
             footer={null}
             width={current === 0 ? 500 : 1000} // Đặt chiều rộng 500px ở bước 1, trở lại 1000px ở bước 2
-            style={{ maxWidth: '100%', margin: '0 auto', top: 50 }}
+            style={{ maxWidth: '100%', margin: '0 auto', top: 33 }}
         >
             <Steps current={current} items={steps.map(item => ({ key: item.title, title: item.title }))} />
             <div style={{ padding: '24px', textAlign: 'center', border: '1px dashed #e6e6e6', borderRadius: '8px' }}>

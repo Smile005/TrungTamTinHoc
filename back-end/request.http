@@ -86,7 +86,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 # Thêm hóa đơn
 POST http://localhost:8081/api/hoadon/them-hoadon
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzAxOTM5NjcsImV4cCI6MTczMDIwNDc2N30.lNca2EIS6PAsp6Ety0ALvyckZAExFk-8U-DTotUsypw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzEzMzk0MTAsImV4cCI6MTczMTM1MDIxMH0.lsgKOi_p26cwSo0OtineGNCUf5f09E_czyFYRDmzoTg
 Content-Type: application/json
 
 {

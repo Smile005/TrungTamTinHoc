@@ -58,7 +58,7 @@ const App: React.FC = () => {
   const [isUserInfoModalVisible, setIsUserInfoModalVisible] = useState(false);
   const [userList, setUserList] = useState<NhanVienType[]>([]);
   const location = useLocation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
