@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Divider, Typography, message, Spin, Row, Col, Button } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
+import { QRCodeCanvas } from 'qrcode.react';
 
 interface ChiTietHoaDonProps {
   visible: boolean;
@@ -77,9 +78,15 @@ const ChiTietHoaDon: React.FC<ChiTietHoaDonProps> = ({ visible, onCancel, maHoaD
           <div style={{ padding: '20px', backgroundColor: '#fff', border: '1px solid #ddd', borderRadius: '8px' }}>
             <Row justify="space-between" style={{ marginBottom: '20px' }}>
               <Col>
-                <Text>Trung Tâm Prometheus</Text><br/>
-                <Text>Mã Số Thuế: 123456789</Text><br/>
+                <Text>Trung Tâm Prometheus</Text><br />
+                <Text>Mã Số Thuế: 123456789</Text><br />
                 <Text>Địa chỉ: 123 Đường XYZ, TP HCM</Text>
+              </Col>
+              <Col style={{ marginRight: 50 }}> 
+                <QRCodeCanvas
+                  value={`http://localhost:8081/api/hoadon/hoaDonPDF/${maHoaDon}`}
+                  size={100}
+                />
               </Col>
             </Row>
 
@@ -100,9 +107,9 @@ const ChiTietHoaDon: React.FC<ChiTietHoaDonProps> = ({ visible, onCancel, maHoaD
             <Row justify="space-between" style={{ marginBottom: '20px' }}>
               <Col>
                 <Text strong>Mã Học Viên: </Text>
-                <Text>{hoaDon.maHocVien} - {hoaDon.tenHocVien}</Text><br/>
+                <Text>{hoaDon.maHocVien} - {hoaDon.tenHocVien}</Text><br />
                 <Text strong>Ngày Sinh: </Text>
-                <Text>{moment(hoaDon.ngaySinh).format('DD/MM/YYYY')}</Text><br/>
+                <Text>{moment(hoaDon.ngaySinh).format('DD/MM/YYYY')}</Text><br />
                 <Text strong>Giới Tính: </Text>
                 <Text>{hoaDon.gioiTinh}</Text>
               </Col>
