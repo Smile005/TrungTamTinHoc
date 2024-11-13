@@ -10,6 +10,7 @@ import '../styles/TableCustom.css';
 import moment from 'moment';
 import * as XLSX from 'xlsx';
 import ThemLichHoc from '../components/ThemLichHoc';
+import { Modal } from 'antd';
 
 const { Search } = Input;
 

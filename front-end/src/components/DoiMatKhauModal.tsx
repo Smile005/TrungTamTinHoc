@@ -57,43 +57,45 @@ const DoiMatKhauModal: React.FC<DoiMatKhauModalProps> = ({ visible, onCancel, ma
         </Button>,
       ]}
     >
-      <Form form={form} layout="vertical">
-        <Form.Item
-          label="Mật khẩu cũ"
-          name="oldPassword"
-          rules={[{ required: true, message: 'Vui lòng nhập mật khẩu cũ!' }]}
-        >
-          <Input.Password placeholder="Nhập mật khẩu cũ" />
-        </Form.Item>
+      <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
+        <Form form={form} layout="vertical">
+          <Form.Item
+            label="Mật khẩu cũ"
+            name="oldPassword"
+            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu cũ!' }]}
+          >
+            <Input.Password placeholder="Nhập mật khẩu cũ" />
+          </Form.Item>
 
-        <Form.Item
-          label="Mật khẩu mới"
-          name="newPassword"
-          rules={[{ required: true, message: 'Vui lòng nhập mật khẩu mới!' }]}
-        >
-          <Input.Password placeholder="Nhập mật khẩu mới" />
-        </Form.Item>
+          <Form.Item
+            label="Mật khẩu mới"
+            name="newPassword"
+            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu mới!' }]}
+          >
+            <Input.Password placeholder="Nhập mật khẩu mới" />
+          </Form.Item>
 
-        <Form.Item
-          label="Xác nhận mật khẩu mới"
-          name="confirmNewPassword"
-          dependencies={['newPassword']}
-          hasFeedback
-          rules={[
-            { required: true, message: 'Vui lòng xác nhận mật khẩu mới!' },
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                if (!value || getFieldValue('newPassword') === value) {
-                  return Promise.resolve();
-                }
-                return Promise.reject(new Error('Mật khẩu xác nhận không khớp!'));
-              },
-            }),
-          ]}
-        >
-          <Input.Password placeholder="Xác nhận mật khẩu mới" />
-        </Form.Item>
-      </Form>
+          <Form.Item
+            label="Xác nhận mật khẩu mới"
+            name="confirmNewPassword"
+            dependencies={['newPassword']}
+            hasFeedback
+            rules={[
+              { required: true, message: 'Vui lòng xác nhận mật khẩu mới!' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('newPassword') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('Mật khẩu xác nhận không khớp!'));
+                },
+              }),
+            ]}
+          >
+            <Input.Password placeholder="Xác nhận mật khẩu mới" />
+          </Form.Item>
+        </Form>
+      </div>
     </Modal>
   );
 };

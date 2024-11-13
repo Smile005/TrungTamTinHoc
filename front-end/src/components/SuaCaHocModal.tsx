@@ -73,45 +73,47 @@ const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
       }}
       onOk={handleOk}
     >
-      <Form form={form} layout="vertical">
-        <Form.Item
-          name="maCa"
-          label="Mã Ca Học"
-          rules={[{ required: true, message: 'Vui lòng nhập mã ca!' }]}
-        >
-          <Input disabled /> 
-        </Form.Item>
-        <Form.Item
-          name="batDau"
-          label="Thời Gian Bắt Đầu"
-          rules={[{ required: true, message: 'Vui lòng nhập thời gian bắt đầu!' }]}
-        >
-          <TimePicker format="HH:mm" />
-        </Form.Item>
-        <Form.Item
-          name="ketThuc"
-          label="Thời Gian Kết Thúc"
-          rules={[{ required: true, message: 'Vui lòng nhập thời gian kết thúc!' }]}
-        >
-          <TimePicker format="HH:mm" />
-        </Form.Item>
-        <Form.Item
-          name="trangThai"
-          label="Tình Trạng"
-          rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
-        >
-          <Select>
-            <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
-            <Select.Option value="Ngưng hoạt động">Ngưng hoạt động</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          name="ghiChu"
-          label="Ghi Chú"
-        >
-          <Input />
-        </Form.Item>
-      </Form>
+      <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
+        <Form form={form} layout="vertical">
+          {/* <Form.Item
+            name="maCa"
+            label="Mã Ca Học"
+            rules={[{ required: true, message: 'Vui lòng nhập mã ca!' }]}
+          >
+            <Input disabled placeholder="Mã ca tự động" />
+          </Form.Item> */}
+          <Form.Item
+            name="batDau"
+            label="Thời Gian Bắt Đầu"
+            rules={[{ required: true, message: 'Vui lòng nhập thời gian bắt đầu!' }]}
+          >
+            <TimePicker format="HH:mm" placeholder="Chọn thời gian bắt đầu" />
+          </Form.Item>
+          <Form.Item
+            name="ketThuc"
+            label="Thời Gian Kết Thúc"
+            rules={[{ required: true, message: 'Vui lòng nhập thời gian kết thúc!' }]}
+          >
+            <TimePicker format="HH:mm" placeholder="Chọn thời gian kết thúc" />
+          </Form.Item>
+          <Form.Item
+            name="trangThai"
+            label="Tình Trạng"
+            rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
+          >
+            <Select placeholder="Chọn tình trạng ca học">
+              <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
+              <Select.Option value="Ngưng hoạt động">Ngưng hoạt động</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="ghiChu"
+            label="Ghi Chú"
+          >
+            <Input placeholder="Nhập ghi chú (nếu có)" />
+          </Form.Item>
+        </Form>
+      </div>
     </Modal>
   );
 };
