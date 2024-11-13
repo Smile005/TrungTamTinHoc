@@ -138,18 +138,19 @@ const HocVien: React.FC = () => {
             title: 'Mã học viên',
             dataIndex: 'maHocVien',
             key: 'maHocVien',
-            width: '10%',
+            width: '13%',
         },
         {
             title: 'Họ và tên',
             dataIndex: 'tenHocVien',
             key: 'tenHocVien',
+            width: '16%',
         },
         {
             title: 'Giới tính',
             dataIndex: 'gioiTinh',
             key: 'gioiTinh',
-            width: '8%',
+            width: '10%',
             filters: [
                 { text: 'Nam', value: 'Nam' },
                 { text: 'Nữ', value: 'Nữ' },
@@ -196,7 +197,7 @@ const HocVien: React.FC = () => {
             title: 'Tình trạng',
             dataIndex: 'tinhTrang',
             key: 'tinhTrang',
-            width: '6%',
+            width: '10%',
             filters: [
                 { text: 'Chưa đăng ký', value: 'Chưa đăng ký' },
                 { text: 'Đang học', value: 'Đang học' },

@@ -7,7 +7,7 @@ interface SuaMonHocModalProps {
   visible: boolean;
   onCancel: () => void;
   onSubmit: (values: MonHocType) => void;
-  initialValues?: MonHocType | null; 
+  initialValues?: MonHocType | null;
 }
 
 const SuaMonHocModal: React.FC<SuaMonHocModalProps> = ({ visible, onCancel, onSubmit, initialValues }) => {
@@ -15,7 +15,7 @@ const SuaMonHocModal: React.FC<SuaMonHocModalProps> = ({ visible, onCancel, onSu
 
   useEffect(() => {
     if (initialValues) {
-      form.setFieldsValue(initialValues); 
+      form.setFieldsValue(initialValues);
     }
   }, [initialValues, form]);
 
@@ -43,8 +43,8 @@ const SuaMonHocModal: React.FC<SuaMonHocModalProps> = ({ visible, onCancel, onSu
           .then(() => {
             message.success('Cập nhật môn học thành công');
             onSubmit(formattedValues as MonHocType);
-            form.resetFields(); 
-            onCancel(); 
+            form.resetFields();
+            onCancel();
           })
           .catch((error) => {
             message.error('Lỗi khi cập nhật môn học: ' + error.message);
@@ -60,57 +60,59 @@ const SuaMonHocModal: React.FC<SuaMonHocModalProps> = ({ visible, onCancel, onSu
       title="Sửa Môn Học"
       visible={visible}
       onCancel={() => {
-        form.resetFields(); 
-        onCancel(); 
+        form.resetFields();
+        onCancel();
       }}
       onOk={handleOk}
     >
-      <Form form={form} layout="vertical">
-        <Form.Item
-          name="maMonHoc"
-          label="Mã Môn Học"
-          rules={[{ required: true, message: 'Vui lòng nhập mã môn học!' }]}
-        >
-          <Input disabled />
-        </Form.Item>
-        <Form.Item
-          name="tenMonHoc"
-          label="Tên Môn Học"
-          rules={[{ required: true, message: 'Vui lòng nhập tên môn học!' }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="soBuoiHoc"
-          label="Số Buổi Học"
-          rules={[{ required: true, message: 'Vui lòng nhập số buổi học!' }]}
-        >
-          <InputNumber min={1} style={{ width: '100%' }} />
-        </Form.Item>
-        <Form.Item
-          name="hocPhi"
-          label="Học Phí"
-          rules={[{ required: true, message: 'Vui lòng nhập học phí!' }]}
-        >
-          <InputNumber min={0} style={{ width: '100%' }} />
-        </Form.Item>
-        <Form.Item name="moTa" label="Mô Tả">
-          <Input.TextArea />
-        </Form.Item>
-        <Form.Item
-          name="trangThai"
-          label="Trạng Thái"
-          rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
-        >
-          <Select>
-            <Select.Option value="Đang Giảng Dạy">Đang Giảng Dạy</Select.Option>
-            <Select.Option value="Tạm ngưng">Tạm ngưng</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item name="ghiChu" label="Ghi Chú">
-          <Input.TextArea />
-        </Form.Item>
-      </Form>
+      <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
+        <Form form={form} layout="vertical">
+          {/* <Form.Item
+            name="maMonHoc"
+            label="Mã Môn Học"
+            rules={[{ required: true, message: 'Vui lòng nhập mã môn học!' }]}
+          >
+            <Input disabled placeholder="Mã môn học tự động" />
+          </Form.Item> */}
+          <Form.Item
+            name="tenMonHoc"
+            label="Tên Môn Học"
+            rules={[{ required: true, message: 'Vui lòng nhập tên môn học!' }]}
+          >
+            <Input placeholder="Nhập tên môn học" />
+          </Form.Item>
+          <Form.Item
+            name="soBuoiHoc"
+            label="Số Buổi Học"
+            rules={[{ required: true, message: 'Vui lòng nhập số buổi học!' }]}
+          >
+            <InputNumber min={1} style={{ width: '100%' }} placeholder="Nhập số buổi học" />
+          </Form.Item>
+          <Form.Item
+            name="hocPhi"
+            label="Học Phí"
+            rules={[{ required: true, message: 'Vui lòng nhập học phí!' }]}
+          >
+            <InputNumber min={0} style={{ width: '100%' }} placeholder="Nhập học phí" />
+          </Form.Item>
+          <Form.Item name="moTa" label="Mô Tả">
+            <Input.TextArea placeholder="Nhập mô tả môn học" />
+          </Form.Item>
+          <Form.Item
+            name="trangThai"
+            label="Trạng Thái"
+            rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+          >
+            <Select placeholder="Chọn trạng thái môn học">
+              <Select.Option value="Đang Giảng Dạy">Đang Giảng Dạy</Select.Option>
+              <Select.Option value="Tạm ngưng">Tạm ngưng</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item name="ghiChu" label="Ghi Chú">
+            <Input.TextArea placeholder="Nhập ghi chú (nếu có)" />
+          </Form.Item>
+        </Form>
+      </div>
     </Modal>
   );
 };
