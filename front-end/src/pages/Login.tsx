@@ -54,13 +54,13 @@ const Login: React.FC = () => {
 
   return (
     <div>
-      <div style={{ 
-          position: 'absolute', 
-          display: 'flex', 
-          justifyContent: 'flex-start', 
-          alignItems: 'center', 
-          padding: '10px'
-        }}>
+      <div style={{
+        position: 'absolute',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        padding: '10px'
+      }}>
         <img
           style={{ width: '50px', height: '50px', marginTop: '5px', borderRadius: '15px', marginLeft: '30px' }}
           src="https://res.cloudinary.com/dhyt592i7/image/upload/v1727774226/u5hvgxq11k3swhd7ca43.png"
@@ -72,26 +72,33 @@ const Login: React.FC = () => {
       {/* Phần chính của trang login */}
       <div className="login-container">
         <div className="login-left">
-          <h1 className="login-title">Đăng Nhập</h1>
-
-          <Form onFinish={onFinish}>
-            <Form.Item
-              name="username"
-              rules={[{ required: true, message: 'Vui lòng nhập tài khoản!' }]}>
-              <Input placeholder="Tài khoản" />
-            </Form.Item>
-            <Form.Item
-              name="password"
-              className="input-pw"
-              rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}>
-              <Input.Password placeholder="Mật khẩu" />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" className="login-submit-btn" loading={loading}>
-                Đăng Nhập
-              </Button>
-            </Form.Item>
-          </Form>
+          <div className="item-left">
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+              <img
+                src="https://res.cloudinary.com/dhyt592i7/image/upload/v1731508891/ydjbjkrqqduuw9t33u5t.png"
+                alt="Đăng nhập"
+                style={{ width: '150px', height: '150px' }}
+              />
+            </div>
+            <Form onFinish={onFinish}>
+              <Form.Item
+                name="username"
+                rules={[{ required: true, message: 'Vui lòng nhập mã nhân viên!' }]}>
+                <Input placeholder=" Nhập Mã Nhân Viên" />
+              </Form.Item>
+              <Form.Item
+                name="password"
+                className="input-pw"
+                rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}>
+                <Input.Password placeholder="Nhập Mật khẩu" />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit" className="login-submit-btn" loading={loading}>
+                  Đăng Nhập
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
         </div>
         <div className="login-right">
           <img
