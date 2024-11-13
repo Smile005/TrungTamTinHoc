@@ -1,19 +1,56 @@
 .custom-h1 {
-  display: flex; 
-  justify-content: flex-start;
+  display: flex;
+  justify-content: flex-start; /* Căn tiêu đề về bên trái */
+  align-items: center; /* Đảm bảo nội dung căn giữa theo chiều dọc */
+  margin-bottom: 20px; /* Tạo khoảng cách dưới tiêu đề */
+  font-size: 24px; /* Điều chỉnh kích thước chữ */
+  font-weight: bold; /* Làm tiêu đề đậm */
 }
+
 .custom-container {
-    display: flex;
-    justify-content: flex-end;
-    align-content: "center";
+  display: flex;
+  justify-content: flex-end; /* Điều chỉnh các phần tử căn về phía cuối */
+  padding: 10px; /* Tạo khoảng cách bên trong container */
 }
+
 .custom-style {
   display: flex;
-  justify-content: space-between;
-  align-content: "center";
+  justify-content: space-between; /* Căn đều các phần tử */
+  align-items: center; /* Đảm bảo căn giữa theo chiều dọc */
 }
+
 .custom-button {
-    padding-right: 15px;
-    background-color: #2591de;
-    color: white;
+  padding: 8px 15px; /* Tăng kích thước padding để nút trông đẹp hơn */
+  background-color: #2591de; /* Giữ nguyên màu nền */
+  color: white; /* Màu chữ trắng */
+  border-radius: 5px; /* Thêm bo tròn cho nút */
+  cursor: pointer; /* Con trỏ thay đổi khi hover */
+  transition: background-color 0.3s ease; /* Hiệu ứng mượt khi thay đổi màu */
+}
+
+.custom-button:hover {
+  background-color: #1b6fb8; /* Thay đổi màu khi hover */
+}
+
+.calendar-wrapper {
+  max-width: 100%; /* Giới hạn chiều rộng */
+  margin: 0 auto;
+  height: 610px; /* Đặt chiều cao cố định cho lịch */
+  overflow: hidden; /* Đảm bảo không có phần tử nào vượt ra ngoài */
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+}
+
+.ant-picker-calendar {
+  height: 100%; /* Đảm bảo lịch vừa với wrapper */
+}
+
+.ant-picker-calendar-date {
+  height: 50px; /* Giảm chiều cao của mỗi ô ngày */
+  font-size: 12px; /* Giảm kích thước chữ trong ô ngày */
+  line-height: 50px; /* Căn chỉnh nội dung ngày giữa ô */
+}
+
+.ant-picker-calendar-header {
+  display: none; /* Ẩn phần header mặc định của lịch */
 }
