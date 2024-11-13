@@ -67,13 +67,13 @@ const SuaMonHocModal: React.FC<SuaMonHocModalProps> = ({ visible, onCancel, onSu
     >
       <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
         <Form form={form} layout="vertical">
-          {/* <Form.Item
+          <Form.Item
             name="maMonHoc"
             label="Mã Môn Học"
             rules={[{ required: true, message: 'Vui lòng nhập mã môn học!' }]}
           >
             <Input disabled placeholder="Mã môn học tự động" />
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item
             name="tenMonHoc"
             label="Tên Môn Học"
