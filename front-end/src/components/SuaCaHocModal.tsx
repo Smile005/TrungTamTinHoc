@@ -75,13 +75,13 @@ const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
     >
       <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
         <Form form={form} layout="vertical">
-          {/* <Form.Item
+          <Form.Item
             name="maCa"
             label="Mã Ca Học"
             rules={[{ required: true, message: 'Vui lòng nhập mã ca!' }]}
           >
             <Input disabled placeholder="Mã ca tự động" />
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item
             name="batDau"
             label="Thời Gian Bắt Đầu"

@@ -74,12 +74,12 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
         >
             <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
                 <Form form={form} layout="vertical">
-                    {/* <Form.Item
+                    <Form.Item
                         label="Mã học viên"
                         name="maHocVien"
                     >
                         <Input disabled placeholder="Mã học viên tự động" />
-                    </Form.Item> */}
+                    </Form.Item>
                     <Form.Item
                         label="Họ và tên"
                         name="tenHocVien"

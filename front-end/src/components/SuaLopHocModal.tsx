@@ -23,12 +23,8 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
         .get('http://localhost:8081/api/monhoc/ds-monhoc', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
-        .then((response) => {
-          setMonHocList(response.data);
-        })
-        .catch((error) => {
-          message.error('Lỗi khi lấy danh sách môn học: ' + error.message);
-        });
+        .then((response) => setMonHocList(response.data))
+        .catch((error) => message.error('Lỗi khi lấy danh sách môn học: ' + error.message));
 
       // Fetch danh sách giảng viên
       axios
@@ -39,9 +35,7 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
           const giangVienData = response.data.filter((nhanVien: any) => nhanVien.chucVu === 'Giảng Viên');
           setNhanVienList(giangVienData);
         })
-        .catch((error) => {
-          message.error('Lỗi khi lấy danh sách giảng viên: ' + error.message);
-        });
+        .catch((error) => message.error('Lỗi khi lấy danh sách giảng viên: ' + error.message));
     }
 
     if (initialValues) {
@@ -61,7 +55,6 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
           ngayBatDau: values.ngayBatDau ? values.ngayBatDau.format('YYYY-MM-DD') : null,
         };
 
-        // Gửi request cập nhật lớp học qua API
         axios
           .post('http://localhost:8081/api/lophoc/sua-lophoc', formattedValues, {
             headers: {
@@ -76,7 +69,11 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
             onCancel();
           })
           .catch((error) => {
-            message.error('Lỗi khi cập nhật lớp học: ' + error.message);
+            if (error.response && error.response.data) {
+              message.error('Lỗi: ' + (error.response.data.message || 'Không thể cập nhật lớp học.'));
+            } else {
+              message.error('Lỗi khi cập nhật lớp học: ' + error.message);
+            }
           });
       })
       .catch((info) => {
@@ -96,9 +93,12 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
     >
       <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
         <Form form={form} layout="vertical">
-          {/* <Form.Item name="maLopHoc" label="Mã Lớp Học">
+          <Form.Item
+            name="maLopHoc"
+            label="Mã Lớp Học"
+          >
             <Input disabled placeholder="Mã lớp học tự động" />
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item
             name="tenLopHoc"
             label="Tên Lớp Học"
@@ -156,7 +156,10 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
               <Select.Option value="Chưa mở đăng ký">Chưa mở đăng ký</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item name="ghiChu" label="Ghi Chú">
+          <Form.Item
+            name="ghiChu"
+            label="Ghi Chú"
+          >
             <Input placeholder="Nhập ghi chú (nếu có)" />
           </Form.Item>
         </Form>

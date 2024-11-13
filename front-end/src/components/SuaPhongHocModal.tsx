@@ -61,13 +61,13 @@ const SuaPhongHocModal: React.FC<SuaPhongHocModalProps> = ({ visible, onCancel, 
     >
       <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
         <Form form={form} layout="vertical">
-          {/* <Form.Item
+          <Form.Item
             name="maPhong"
             label="Mã Phòng"
             rules={[{ required: true, message: 'Vui lòng nhập mã phòng!' }]}
           >
             <Input disabled placeholder="Mã phòng tự động" />
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item
             name="soLuong"
             label="Số Lượng"
