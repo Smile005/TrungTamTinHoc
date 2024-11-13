@@ -1,6 +1,117 @@
 const pool = require('../config/db');
 const moment = require('moment');
 
+// Hàm tính toán các buổi học
+const calculateLichHoc = (ngayBatDau, thu, soBuoi) => {
+    let currentDate = moment(ngayBatDau);  // Khởi tạo ngày bắt đầu
+    let daysOfWeek = [];
+    let createdBuoiHoc = 0;
+
+    // Tính các ngày học từ ngayBatDau dựa trên thu (Ngày trong tuần)
+    while (createdBuoiHoc < soBuoi) {
+        // Tìm ngày có thu tương ứng (Thứ 'thu' trong tuần)
+        if (currentDate.day() === thu) {
+            daysOfWeek.push(currentDate.format('YYYY-MM-DD'));  // Lưu ngày học vào mảng
+            createdBuoiHoc++;
+        }
+        // Chuyển đến ngày tiếp theo
+        currentDate.add(1, 'day');
+    }
+
+    return daysOfWeek;  // Trả về danh sách các ngày học
+};
+
+// Hàm kiểm tra buổi học trùng maCa và maPhong
+const checkTrungLichHoc = async (maCa, maPhong, ngayHoc) => {
+    try {
+        // Tạo câu truy vấn MySQL để kiểm tra sự trùng lặp trong BuoiHoc
+        const query = `
+        SELECT * FROM BuoiHoc 
+        WHERE maCa = ? AND maPhong = ? AND ngayHoc = ?;
+      `;
+        const [rows] = await db.execute(query, [maCa, maPhong, ngayHoc]); // db.execute cần có kết nối cơ sở dữ liệu
+
+        // Nếu có kết quả, trả về thông báo trùng lặp
+        if (rows.length > 0) {
+            return { trungLich: true, message: 'Có buổi học trùng lịch' };
+        } else {
+            return { trungLich: false, message: 'Không có buổi học trùng lịch' };
+        }
+    } catch (error) {
+        console.error(error);
+        throw new Error('Lỗi khi kiểm tra lịch học');
+    }
+};
+
+// Hàm kiểm tra sự trùng lặp của giáo viên (maGiaoVien) trong maCa và ngayHoc
+const checkTrungGiaoVien = async (maCa, maGiaoVien, ngayHoc) => {
+    try {
+        // Tạo câu truy vấn MySQL để kiểm tra sự trùng lặp trong BuoiHoc
+        const query = `
+        SELECT * FROM BuoiHoc 
+        WHERE maCa = ? AND maGiaoVien = ? AND ngayHoc = ?;
+      `;
+        const [rows] = await db.execute(query, [maCa, maGiaoVien, ngayHoc]); // db.execute cần có kết nối cơ sở dữ liệu
+
+        // Nếu có kết quả, trả về thông báo trùng lịch
+        if (rows.length > 0) {
+            return { trungLich: true, message: 'Giáo viên này đã có lịch trong ca học và ngày này' };
+        } else {
+            return { trungLich: false, message: 'Giáo viên không trùng lịch' };
+        }
+    } catch (error) {
+        console.error(error);
+        throw new Error('Lỗi khi kiểm tra lịch học');
+    }
+};
+
+// Hàm kiểm tra lịch học
+const kiemTraLichHoc = async (req, res) => {
+    const { maCa, maPhong, soBuoi, thu, maGiaoVien, maLopHoc } = req.query;
+    try {
+        // 1. Lấy thông tin lớp học
+        const lopHocResponse = await axios.get(`/api/lopHoc/${maLopHoc}`);
+        if (lopHocResponse.status !== 200) {
+            return res.status(404).json({ message: 'Lớp học không tồn tại' });
+        }
+        const { ngayBatDau } = lopHocResponse.data;
+
+        // 2. Kiểm tra các buổi học cụ thể
+        const buoiHoc = calculateLichHoc(ngayBatDau, thu, soBuoi);
+        console.log(buoiHoc)
+
+        // 3. Kiểm tra phòng học có trống không
+        for (const ngayHoc of buoiHoc) {
+            const resultBuoiHoc = await checkTrungLichHoc(maCa, maPhong, ngayHoc);
+            console.log(resultBuoiHoc.message);
+
+            // Nếu phát hiện trùng lịch, trả về thông báo lỗi
+            if (resultBuoiHoc.trungLich) {
+                return res.status(400).json({ message: resultBuoiHoc.message });
+            }
+        }
+
+        // 4. Kiểm tra giáo viên có trùng lịch dạy không
+        for (const ngayHoc of buoiHoc) {
+            const resultGiaoVien = await checkTrungGiaoVien(maCa, maGiaoVien, ngayHoc);
+            console.log(resultGiaoVien.message);
+
+            // Nếu phát hiện giáo viên trùng lịch, trả về thông báo lỗi
+            if (resultGiaoVien.trungLich) {
+                return res.status(400).json({ message: resultGiaoVien.message });
+            }
+        }
+
+        // Nếu không có sự trùng lặp, trả về thông báo hợp lệ
+        return res.status(200).json({ message: 'Lịch học hợp lệ' });
+
+    } catch (error) {
+        console.error("Lỗi kiểm tra lịch học:", error.message);
+        return res.status(500).json({ message: 'Lỗi hệ thống' });
+    }
+};
+
+
 // Lấy lịch học theo mã lớp
 const getLichHocByMaLop = async (req, res) => {
     const { maLopHoc } = req.params; // Lấy maLopHoc từ tham số URL
@@ -79,7 +190,7 @@ const createBuoiHocByMaLichHoc = async (maLichHoc) => {
                     [
                         maLichHoc,
                         maLopHoc,
-                        maGiaoVien, 
+                        maGiaoVien,
                         maCa,
                         maPhong,
                         currentDate.format('YYYY-MM-DD'),
@@ -238,4 +349,4 @@ const deleteLichHoc = async (req, res) => {
     }
 };
 
-module.exports = { getLichHocByMaLop, createLichHoc, updateLichHoc, deleteLichHoc }; 
+module.exports = { getLichHocByMaLop, createLichHoc, updateLichHoc, deleteLichHoc, kiemTraLichHoc }; 

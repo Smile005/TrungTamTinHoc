@@ -7,6 +7,11 @@
     justify-content: flex-end;
     align-content: "center";
 }
+.custom-style {
+  display: flex;
+  justify-content: space-between;
+  align-content: "center";
+}
 .custom-button {
     padding-right: 15px;
     background-color: #2591de;

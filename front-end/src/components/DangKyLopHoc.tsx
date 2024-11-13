@@ -6,7 +6,6 @@ import { HocVienType } from '../types/HocVienType';
 import { ChiTietHDType } from '../types/HoaDonType';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import { Link } from 'react-router-dom';
 import ChiTietHoaDon from '../components/ChiTietHoaDon';
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
