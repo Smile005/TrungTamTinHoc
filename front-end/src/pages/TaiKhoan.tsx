@@ -23,7 +23,7 @@ const TaiKhoan: React.FC = () => {
   const [selectedRecord, setSelectedRecord] = useState<TaiKhoanType | null>(null);
 
   const dispatch: AppDispatch = useDispatch();
-  const { data, loading, error } = useSelector((state: RootState) => state.taikhoan);
+  const { data, loading } = useSelector((state: RootState) => state.taikhoan);
 
   useEffect(() => {
     dispatch(fetchTaiKhoanData());

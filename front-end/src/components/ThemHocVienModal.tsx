@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, DatePicker, Radio, Button, message } from 'antd';
+import { Modal, Form, Input, DatePicker, Radio, Button, message, Row } from 'antd';
 import axios from 'axios';
 import { HocVienType } from '../types/HocVienType';
+import '../styles/ButtonCustom.css';
 import moment from 'moment';
 
 interface ThemHocVienModalProps {
@@ -18,7 +19,6 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
       form.resetFields();
       form.setFieldsValue({
         gioiTinh: 'Nam',
-        ngaySinh: moment(),
         ngayVaoHoc: moment(),
       });
     }
@@ -64,7 +64,7 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
   return (
     <Modal
       title="Thêm Học Viên"
-      visible={visible}
+      open={visible}
       onCancel={() => {
         form.resetFields();
         onCancel();
@@ -94,19 +94,21 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
           >
             <Input placeholder="URL hình ảnh" />
           </Form.Item> */}
-          <Form.Item
-            name="ngayVaoHoc"
-            label="Ngày Vào Học"
-          >
-            <DatePicker format="YYYY-MM-DD" placeholder="Chọn ngày vào học" />
-          </Form.Item>
-          <Form.Item
-            name="ngaySinh"
-            label="Ngày Sinh"
-            rules={[{ required: true, message: 'Vui lòng nhập ngày sinh!' }]}
-          >
-            <DatePicker format="YYYY-MM-DD" placeholder="Chọn ngày sinh" />
-          </Form.Item>
+          <Row className='custom-style'>
+            <Form.Item
+              name="ngaySinh"
+              label="Ngày Sinh"
+              rules={[{ required: true, message: 'Vui lòng nhập ngày sinh!' }]}
+            >
+              <DatePicker format="DD/MM/YYYY" placeholder="Chọn ngày sinh" />
+            </Form.Item>
+            <Form.Item
+              name="ngayVaoHoc"
+              label="Ngày Vào Học"
+            >
+              <DatePicker format="DD/MM/YYYY" placeholder="Chọn ngày vào học" />
+            </Form.Item>
+          </Row>
           <Form.Item
             name="gioiTinh"
             label="Giới Tính"

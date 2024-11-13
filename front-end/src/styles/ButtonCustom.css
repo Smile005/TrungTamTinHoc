@@ -9,8 +9,14 @@
 
 .custom-container {
   display: flex;
-  justify-content: flex-end; /* Điều chỉnh các phần tử cách đều nhau */
+  justify-content: flex-end; /* Điều chỉnh các phần tử căn về phía cuối */
   padding: 10px; /* Tạo khoảng cách bên trong container */
+}
+
+.custom-style {
+  display: flex;
+  justify-content: space-between; /* Căn đều các phần tử */
+  align-items: center; /* Đảm bảo căn giữa theo chiều dọc */
 }
 
 .custom-button {
@@ -25,6 +31,7 @@
 .custom-button:hover {
   background-color: #1b6fb8; /* Thay đổi màu khi hover */
 }
+
 .calendar-wrapper {
   max-width: 100%; /* Giới hạn chiều rộng */
   margin: 0 auto;

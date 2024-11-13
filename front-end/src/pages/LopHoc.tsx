@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/TableCustom.css';
 import moment from 'moment';
 import * as XLSX from 'xlsx';
+import ThemLichHoc from '../components/ThemLichHoc';
 
 const { Search } = Input;
 
@@ -18,6 +19,7 @@ const LopHoc: React.FC = () => {
   const [filteredData, setFilteredData] = useState<LopHocType[]>([]);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const [isThemLichHocVisible, setIsThemLichHocVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<LopHocType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [monHocMap, setMonHocMap] = useState<{ [key: string]: string }>({});
@@ -88,8 +90,10 @@ const LopHoc: React.FC = () => {
       setSelectedRecord(record);
       setIsEditModalVisible(true);
     } else if (e.key === 'danhSachLop') {
-      navigate(`/ds-hoc-vien-lop/${record.maLopHoc}`); 
+      navigate(`/ds-hoc-vien-lop/${record.maLopHoc}`);
     } else if (e.key === 'themLichHoc') {
+      setSelectedRecord(record);
+      setIsThemLichHocVisible(true)
     } else if (e.key === 'nhapDiem') {
       navigate(`/nhapdiem/${record.maLopHoc}`);
     } else if (e.key === 'delete') {
@@ -100,6 +104,7 @@ const LopHoc: React.FC = () => {
   const handleEditCancel = () => {
     setIsEditModalVisible(false);
     setSelectedRecord(null);
+    setIsThemLichHocVisible(false)
   };
 
   const handleEditSubmit = (values: any) => {
@@ -274,6 +279,15 @@ const LopHoc: React.FC = () => {
           fetchLopHocData(); // Cập nhật dữ liệu sau khi thêm lớp học mới
         }}
       />
+
+      <Modal
+        open={isThemLichHocVisible}
+        onCancel={() => setIsThemLichHocVisible(false)}
+        onOk={handleEditCancel}
+        width={1000}
+      >
+        <ThemLichHoc maLopHoc={selectedRecord?.maLopHoc || ''} />
+      </Modal>
     </Layout>
   );
 };
