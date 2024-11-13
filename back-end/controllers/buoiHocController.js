@@ -32,14 +32,7 @@ const getBuoiHocByThang = async (req, res) => {
         // `, [month, year]);
 
         // Định dạng lại trường 'ngayHoc'
-        const formattedRows = rows.map(row => {
-            return {
-                ...row,
-                ngayHoc: format(new Date(row.ngayHoc), 'dd/MM/yyyy')
-            };
-        });
-
-        res.status(200).json(formattedRows);
+        res.status(200).json(rows);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

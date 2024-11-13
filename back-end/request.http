@@ -479,7 +479,7 @@ Content-Type: application/json
 
 ### Lấy danh sách buổi học theo tháng (GET)
 GET http://localhost:8081/api/lichhoc/getBuoiHocByThang?month=2&year=2024
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzEyNDUzMDMsImV4cCI6MTczMTI1NjEwM30.Tdc2NCE-ma_mlHZLTGJmZVCg-L-zOIQHChBDTyuq33Q
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE0MjU0MDgsImV4cCI6MTczMTQzNjIwOH0.Q1Pd3wYexnSkTDpfhfdMV21klwW-9FcpdwIMYeh7NFY
 
 ### Tạo buổi học (POST)
 POST http://localhost:8081/api/lichhoc/createBuoiHoc
@@ -527,3 +527,7 @@ Content-Type: application/json
         "diemGiuaKy": 5
     }
 ]
+
+### Xét tư cách thi cuối kỳ
+GET http://localhost:8081/api/lophoc/xet-thi-cuoi-ky/LH0001
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE1MDQyMTAsImV4cCI6MTczMTUxNTAxMH0.L-lFAGyo4bpwxOZsYaSTAH59XlbfgXd-YEm-0vhgClI
