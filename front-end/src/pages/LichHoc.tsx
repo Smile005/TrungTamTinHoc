@@ -185,8 +185,10 @@ const LichHoc: React.FC = () => {
           <Radio value={2}>Lịch học</Radio>
           <Radio value={3}>Lịch thi</Radio>
         </Radio.Group>
-        <DatePicker onChange={datePickerChange} value={currentDate} format="DD/MM/YYYY" />
-        <Button className="custom-button" icon={<CalendarOutlined />} onClick={handleTodayClick}>Hiện tại</Button>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          <DatePicker onChange={datePickerChange} value={currentDate} format="DD/MM/YYYY" />
+          <Button className="custom-button" icon={<CalendarOutlined />} onClick={handleTodayClick}>Hiện tại</Button>
+        </div>
         <Button className="custom-button" icon={<LeftOutlined />} onClick={handleTroVeClick}>Trở về</Button>
         <Button className="custom-button" icon={<RightOutlined />} onClick={handleTiepClick}>Tiếp</Button>
         {/* <Button className="custom-button" icon={<PlusOutlined />}>Thêm lịch</Button> */}
