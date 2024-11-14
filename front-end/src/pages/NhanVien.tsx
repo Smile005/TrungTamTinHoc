@@ -154,13 +154,12 @@ const NhanVien: React.FC = () => {
       dataIndex: 'trangThai',
       key: 'trangThai',
       filters: [
-        { text: t('intern'), value: 'Thực tập sinh' },
-        { text: t('fullTime'), value: 'Full time' },
-        { text: t('partTime'), value: 'Part time' },
+        { text: t('activenv'), value: 'Đang Làm Việc' },
+        { text: t('inactivenv'), value: 'Đã Nghỉ' },
       ],
       onFilter: (value, record) => record.trangThai?.indexOf(value as string) === 0,
       render: (trangThai: string): JSX.Element => {
-        let color = trangThai === 'Full time' ? 'geekblue' : trangThai === 'Part time' ? 'green' : 'volcano';
+        let color = trangThai === 'Đang Làm Việc' ? 'geekblue' : trangThai === 'Đã Nghỉ' ? 'green' : 'volcano';
         return <Tag color={color}>{trangThai}</Tag>;
       },
     },

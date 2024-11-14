@@ -62,15 +62,15 @@ const DsHocVienLopHoc: React.FC = () => {
     const hocVien = hocVienData.find(hv => hv.maHocVien === maHocVien);
     return hocVien
       ? {
-        tenHocVien: hocVien.tenHocVien,
-        sdt: hocVien.sdt,
-        gioiTinh: hocVien.gioiTinh,
-      }
+          tenHocVien: hocVien.tenHocVien,
+          sdt: hocVien.sdt,
+          gioiTinh: hocVien.gioiTinh,
+        }
       : {
-        tenHocVien: 'Không xác định',
-        sdt: 'Không xác định',
-        gioiTinh: 'Không xác định',
-      };
+          tenHocVien: 'Không xác định',
+          sdt: 'Không xác định',
+          gioiTinh: 'Không xác định',
+        };
   };
 
   const onDelete = async (maHocVien: string) => {
@@ -181,6 +181,12 @@ const DsHocVienLopHoc: React.FC = () => {
           <div className="button-container">
             <Button className='custom-button' onClick={() => navigate(`/nhapdiem/${maLopHoc}`)}>
               Nhập Điểm
+            </Button>
+            <Button
+              className='custom-button'
+              onClick={() => navigate(`/ds_thi/${maLopHoc}`)}
+            >
+              Danh Sách Thi
             </Button>
             <Button className='custom-button' onClick={exportDsLopHocToExcel}>
               Xuất Excel

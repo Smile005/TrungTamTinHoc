@@ -302,16 +302,16 @@ const nhapDiem = async (req, res) => {
         throw new Error(`Dữ liệu điểm của học viên ${maHocVien} không hợp lệ.`);
       }
 
-      // Kiểm tra tư cách thi cuối kỳ (tuCachThiCuoiKy = 1)
-      const [hocVienData] = await pool.query(`
-        SELECT tuCachThiCuoiKy
-        FROM DsLopHoc
-        WHERE maLopHoc = ? AND maHocVien = ?
-      `, [maLopHoc, maHocVien]);
+      // // Kiểm tra tư cách thi cuối kỳ (tuCachThiCuoiKy = 1)
+      // const [hocVienData] = await pool.query(`
+      //   SELECT tuCachThiCuoiKy
+      //   FROM DsLopHoc
+      //   WHERE maLopHoc = ? AND maHocVien = ?
+      // `, [maLopHoc, maHocVien]);
 
-      if (!hocVienData || hocVienData[0].tuCachThiCuoiKy !== 1) {
-        throw new Error(`Học viên ${maHocVien} không đủ tư cách thi cuối kỳ.`);
-      }
+      // if (!hocVienData || hocVienData[0].tuCachThiCuoiKy !== 1) {
+      //   throw new Error(`Học viên ${maHocVien} không đủ tư cách thi cuối kỳ.`);
+      // }
 
       // Tạo các phần của truy vấn và giá trị cần chèn
       let fields = [];

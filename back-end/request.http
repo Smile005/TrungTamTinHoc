@@ -420,7 +420,7 @@ Content-Type: application/json
 
 ### Lấy ds lớp học của học viên 
 GET http://localhost:8081/api/lophoc/dsLopCuaHV
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NTc4NDgsImV4cCI6MTcyOTk2MTQ0OH0.FAF3cqO_D8gLNsfxjWcZ0mKguKKeKwArDhBRV8WgVrc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE1OTU2MzksImV4cCI6MTczMTYwNjQzOX0.1c0OnvC7LGMDE1moM5gJTH5WQOqyH5pUBnubjAURGqM
 Content-Type: application/json
 
 {
@@ -530,4 +530,4 @@ Content-Type: application/json
 
 ### Xét tư cách thi cuối kỳ
 GET http://localhost:8081/api/lophoc/xet-thi-cuoi-ky/LH0001
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE1MDQyMTAsImV4cCI6MTczMTUxNTAxMH0.L-lFAGyo4bpwxOZsYaSTAH59XlbfgXd-YEm-0vhgClI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE1OTU2MzksImV4cCI6MTczMTYwNjQzOX0.1c0OnvC7LGMDE1moM5gJTH5WQOqyH5pUBnubjAURGqM
