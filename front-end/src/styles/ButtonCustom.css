@@ -12,6 +12,16 @@
   justify-content: space-between;
   align-content: "center";
 }
+.custom-style02 {
+  display: flex;
+  justify-content: space-around;
+  align-content: "center";
+}
+.custom-style03 {
+  display: flex;
+  justify-content: space-around;
+  align-content: "center";
+}
 .custom-button {
     padding-right: 15px;
     background-color: #2591de;
