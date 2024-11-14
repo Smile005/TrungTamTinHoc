@@ -82,12 +82,6 @@ const SuaNhanVienModal: React.FC<SuaNhanVienModalProps> = ({ visible, onCancel, 
                         <Input placeholder="Nhập họ và tên nhân viên" />
                     </Form.Item>
                     <Form.Item
-                        name="img"
-                        label="URL Ảnh"
-                    >
-                        <Input placeholder="Nhập URL hình ảnh" />
-                    </Form.Item>
-                    <Form.Item
                         name="chucVu"
                         label="Chức Vụ"
                     >
@@ -148,9 +142,9 @@ const SuaNhanVienModal: React.FC<SuaNhanVienModalProps> = ({ visible, onCancel, 
                         rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
                     >
                         <Select placeholder="Chọn trạng thái">
-                            <Select.Option value="Full time">Full time</Select.Option>
-                            <Select.Option value="Part time">Part time</Select.Option>
-                            <Select.Option value="Thực tập sinh">Thực tập sinh</Select.Option>
+                            <Select.Option value="Đang Làm Việc">Đang Làm Việc</Select.Option>
+                            <Select.Option value="Đã Nghỉ">Đã Nghỉ</Select.Option>
+                            {/* <Select.Option value="Thực tập sinh">Thực tập sinh</Select.Option> */}
                         </Select>
                     </Form.Item>
                     <Form.Item

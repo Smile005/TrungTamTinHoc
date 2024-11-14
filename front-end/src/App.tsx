@@ -36,6 +36,7 @@ import DsLop from './pages/DsLop';
 import HoaDon from './pages/HoaDon';
 import NhapDiem from './pages/NhapDiem';
 import DsLopNhapDiem from './pages/DsLopNhapDiem'; // Import trang mới
+import DsHocVienThi from './pages/DsHocVienThi';
 import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
@@ -308,6 +309,7 @@ const App: React.FC = () => {
                   <Route path="/hoa-don" element={isAuthenticated ? <HoaDon /> : <Navigate to="/login" />} />
                   <Route path="/nhapdiem/:maLopHoc" element={isAuthenticated ? <NhapDiem /> : <Navigate to="/login" />} />
                   <Route path="/ds_lop_nhap_diem" element={isAuthenticated ? <DsLopNhapDiem /> : <Navigate to="/login" />} />
+                  <Route path="/ds_thi/:maLopHoc" element={isAuthenticated ? <DsHocVienThi /> : <Navigate to="/login" />} />
                 </Routes>
               </Content>
             </Layout>
