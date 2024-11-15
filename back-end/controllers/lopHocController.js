@@ -7,7 +7,7 @@ const moment = require('moment');
 const getLopHoc = async (req, res) => {
   try {
     const [results] = await pool.query(`
-      SELECT 
+          SELECT 
         LopHoc.maMonHoc, 
         MonHoc.tenMonHoc, 
         LopHoc.maLopHoc, 
@@ -18,12 +18,16 @@ const getLopHoc = async (req, res) => {
         LopHoc.trangThai,
         MonHoc.soBuoiHoc, 
         LopHoc.ngayBatDau
-      FROM 
+    FROM 
         LopHoc
-      JOIN 
+    JOIN 
         MonHoc ON LopHoc.maMonHoc = MonHoc.maMonHoc
-      JOIN 
-        NhanVien ON LopHoc.maNhanVien = NhanVien.maNhanVien`);
+    JOIN 
+        NhanVien ON LopHoc.maNhanVien = NhanVien.maNhanVien
+    JOIN 
+        LichHoc ON LopHoc.maLopHoc = LichHoc.maLopHoc
+    WHERE 
+        LichHoc.maLichHoc IS NOT NULL;`);
     res.json(results);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });
