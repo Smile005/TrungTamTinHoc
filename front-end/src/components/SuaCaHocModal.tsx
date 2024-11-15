@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, TimePicker, message, Select } from 'antd';
+import { Modal, Form, Input, TimePicker, message, Select, Row } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import { CaHocType } from '../types/CaHocType';
@@ -66,7 +66,7 @@ const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
   return (
     <Modal
       title="Sửa Ca Học"
-      visible={visible}
+      open={visible}
       onCancel={() => {
         form.resetFields();
         onCancel();
@@ -82,20 +82,23 @@ const SuaCaHocModal: React.FC<SuaCaHocModalProps> = ({
           >
             <Input disabled placeholder="Mã ca tự động" />
           </Form.Item>
-          <Form.Item
-            name="batDau"
-            label="Thời Gian Bắt Đầu"
-            rules={[{ required: true, message: 'Vui lòng nhập thời gian bắt đầu!' }]}
-          >
-            <TimePicker format="HH:mm" placeholder="Chọn thời gian bắt đầu" />
-          </Form.Item>
-          <Form.Item
-            name="ketThuc"
-            label="Thời Gian Kết Thúc"
-            rules={[{ required: true, message: 'Vui lòng nhập thời gian kết thúc!' }]}
-          >
-            <TimePicker format="HH:mm" placeholder="Chọn thời gian kết thúc" />
-          </Form.Item>
+          <Row >
+            <Form.Item
+              name="batDau"
+              label="Giờ Bắt Đầu"
+              rules={[{ required: true, message: 'Vui lòng chọn giờ bắt đầu!' }]}
+              style={{ marginRight: "100px" }}
+            >
+              <TimePicker format="HH:mm" placeholder="Giờ bắt đầu" />
+            </Form.Item>
+            <Form.Item
+              name="ketThuc"
+              label="Giờ Kết Thúc"
+              rules={[{ required: true, message: 'Vui lòng chọn giờ kết thúc!' }]}
+            >
+              <TimePicker format="HH:mm" placeholder="Giờ kết thúc" />
+            </Form.Item>
+          </Row>
           <Form.Item
             name="trangThai"
             label="Tình Trạng"

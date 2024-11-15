@@ -79,7 +79,7 @@ const SuaTaiKhoanModal: React.FC<SuaTaiKhoanModalProps> = ({
   return (
     <Modal
       title={t('editAccount')}
-      visible={visible}
+      open={visible}
       onCancel={() => {
         form.resetFields();
         onCancel();

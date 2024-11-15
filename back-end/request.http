@@ -3,7 +3,7 @@ POST http://localhost:8081/api/auth/register
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV00002",
+  "maNhanVien": "NV0002",
   "matKhau": "123"
 }
 
@@ -144,7 +144,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 ### Lấy danh sách lớp học đang hoạt động
 GET http://localhost:8081/api/lophoc/ds-lophocHD
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTY0MTQsImV4cCI6MTczMDAwMDAxNH0.AeGjUXVY8vqPmtMf8dYpDoMZey25im_sV5yf3K2JSHw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE2ODIwODUsImV4cCI6MTczMTY5Mjg4NX0.vOZElUS4WRYEhl6_x1Zu3fa-OxWz6_l150-2lUkOjSM
 
 ### Lấy thông tin lớp học theo mã lớp học
 GET http://localhost:8081/api/lophoc/lophocByMa/LH0001
@@ -240,7 +240,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 ### Thêm nhân viên
 POST http://localhost:8081/api/nhanvien/them-nhanvien
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk0MDE2MDMsImV4cCI6MTcyOTQwNTIwM30.CkDMVsqqGUFbHqhNEnSYkcL9prmd9XmJuCFnvMhMT24
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE1OTU0NzksImV4cCI6MTczMTYwNjI3OX0.8NKMenOJlSyM-2uh94N52scvehP5nfVyWDdFHDrnLvY
 Content-Type: application/json
 
 {
@@ -497,7 +497,7 @@ Content-Type: application/json
 
 ### Cập nhật thông tin buổi học (PUT)
 PUT http://localhost:8081/api/lichhoc/updateBuoiHoc/:maLopHoc/:ngayHoc/:maCa
-Authorization: Bearer {token}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE1OTU5NTQsImV4cCI6MTczMTYwNjc1NH0.9sMu58GjXdSn0_Wi0XH72ODwcYEYvrCgq00nK0w9APE
 Content-Type: application/json
 
 {
@@ -517,14 +517,8 @@ Content-Type: application/json
 
 [
     {
-        "maHocVien": "HV0001",
-        "diemThuongKy": 2,
-        "diemCuoiKy": 2
-    },
-    {
-        "maHocVien": "HV0003",
-        "diemThuongKy": 7,
-        "diemGiuaKy": 5
+        "maHocVien": "HV00005",
+        "diemThuongKy": 2
     }
 ]
 

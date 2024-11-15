@@ -51,6 +51,7 @@ const SuaNhanVienModal: React.FC<SuaNhanVienModalProps> = ({ visible, onCancel, 
                     .then(() => {
                         message.success('Sửa thông tin nhân viên thành công');
                         onOk(formattedValues as NhanVienType);
+                        onOk(formattedValues as NhanVienType);
                         form.resetFields();
                     })
                     .catch((error) => {
@@ -65,7 +66,7 @@ const SuaNhanVienModal: React.FC<SuaNhanVienModalProps> = ({ visible, onCancel, 
     return (
         <Modal
             title="Sửa Nhân Viên"
-            visible={visible}
+            open={visible}
             onCancel={() => {
                 form.resetFields();
                 onCancel();
@@ -80,6 +81,12 @@ const SuaNhanVienModal: React.FC<SuaNhanVienModalProps> = ({ visible, onCancel, 
                         rules={[{ required: true, message: 'Vui lòng nhập tên nhân viên!' }]}
                     >
                         <Input placeholder="Nhập họ và tên nhân viên" />
+                    </Form.Item>
+                    <Form.Item
+                        name="img"
+                        label="URL Ảnh"
+                    >
+                        <Input placeholder="Nhập URL hình ảnh" />
                     </Form.Item>
                     <Form.Item
                         name="chucVu"
@@ -142,9 +149,9 @@ const SuaNhanVienModal: React.FC<SuaNhanVienModalProps> = ({ visible, onCancel, 
                         rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
                     >
                         <Select placeholder="Chọn trạng thái">
-                            <Select.Option value="Đang Làm Việc">Đang Làm Việc</Select.Option>
-                            <Select.Option value="Đã Nghỉ">Đã Nghỉ</Select.Option>
-                            {/* <Select.Option value="Thực tập sinh">Thực tập sinh</Select.Option> */}
+                            <Select.Option value="Full time">Full time</Select.Option>
+                            <Select.Option value="Part time">Part time</Select.Option>
+                            <Select.Option value="Thực tập sinh">Thực tập sinh</Select.Option>
                         </Select>
                     </Form.Item>
                     <Form.Item

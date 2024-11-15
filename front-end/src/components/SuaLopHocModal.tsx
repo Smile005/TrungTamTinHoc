@@ -84,7 +84,7 @@ const SuaLopHocModal: React.FC<SuaLopHocModalProps> = ({ visible, onCancel, onSu
   return (
     <Modal
       title="Sửa Lớp Học"
-      visible={visible}
+      open={visible}
       onCancel={() => {
         form.resetFields();
         onCancel();

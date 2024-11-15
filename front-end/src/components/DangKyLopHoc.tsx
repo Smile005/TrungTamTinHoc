@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Input, Modal, Select, Steps, Table, message, theme } from 'antd';
+import { Button, Col, Modal, Row, Select, Steps, Table, message, theme } from 'antd';
 import axios from 'axios';
 import type { TableProps } from 'antd';
 import { HocVienType } from '../types/HocVienType';
@@ -7,6 +7,8 @@ import { ChiTietHDType } from '../types/HoaDonType';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import ChiTietHoaDon from '../components/ChiTietHoaDon';
+import "../styles/ButtonCustom.css"
+import moment from 'moment';
 
 type TableRowSelection<T extends object = object> = TableProps<T>['rowSelection'];
 
@@ -16,10 +18,23 @@ interface DangKyLopHocProps {
   hocVien: HocVienType;
 }
 
+type LopHocType01 = {
+  maLopHoc: string;
+  tenLopHoc: string;
+  maMonHoc: string;
+  soLuongHV: number;
+  soLuongMax: number;
+  trangThai: string;
+  ngayBatDau: string;
+  soBuoiHoc: number;
+  tenGiangVien: string;
+  lichHoc: string;
+};
+
 const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien }) => {
   const { token } = theme.useToken();
   const [monHocList, setMonHocList] = useState<{ maMonHoc: string, tenMonHoc: string, trangThai: string }[]>([]);
-  const [lopHocList, setLopHocList] = useState<{ maLopHoc: string, tenLopHoc: string, maMonHoc: string, soLuongHV: number, soLuongMax: number, trangThai: string }[]>([]);
+  const [lopHocList, setLopHocList] = useState<LopHocType01[]>([]);
   const [current, setCurrent] = useState<number>(0);
   const [selectedMonHoc, setSelectedMonHoc] = useState<string | undefined>(undefined);
   const [selectedLopHoc, setSelectedLopHoc] = useState<string | undefined>(undefined);
@@ -171,7 +186,7 @@ export default DangKyLopHoc;
 const LopHocForm: React.FC<{
   hocVien: HocVienType;
   monHocList: { maMonHoc: string; tenMonHoc: string; trangThai: string }[];
-  lopHocList: { maLopHoc: string; tenLopHoc: string; maMonHoc: string; soLuongHV: number; soLuongMax: number; trangThai: string }[];
+  lopHocList: LopHocType01[];
   selectedMonHoc: string | undefined;
   selectedLopHoc: string | undefined;
   setSelectedMonHoc: (value: string | undefined) => void;
@@ -220,7 +235,7 @@ const LopHocForm: React.FC<{
       try {
         const token = localStorage.getItem('token');
         console.log(selectedLopHoc)
-        console.log(hocVien.maHocVien )
+        console.log(hocVien.maHocVien)
         await axios.post(
           'http://localhost:8081/api/lophoc/xepLop',
           { maLopHoc: selectedLopHoc, maHocVien: hocVien.maHocVien },
@@ -258,26 +273,51 @@ const LopHocForm: React.FC<{
     return (
       <>
         <h1>Thông tin học viên</h1>
-        <p>
-          <span>Mã học viên: {hocVien.maHocVien} - </span>
-          <span>Tên học viên: {hocVien.tenHocVien} - </span>
-          <span>Giới tính: {hocVien.gioiTinh}</span>
-        </p>
-        <p>
-          <span>Ngày vào học: {hocVien.ngayVaoHoc} - </span>
-          <span>Ngày sinh: {hocVien.ngaySinh} - </span>
-          <span>Số điện thoại: {hocVien.sdt}</span>
-        </p>
-        <p>
-          <span>Email: {hocVien.email} - </span>
-          <span>Địa chỉ: {hocVien.diaChi} - </span>
-          <span>Tình trạng: {hocVien.tinhTrang}</span>
-        </p>
+        <div className="custom-info">
+          {/* Dòng 1 */}
+          <Row gutter={[16, 16]}>
+            <Col span={8}>
+              <span><b>Mã học viên:</b> {hocVien.maHocVien}</span>
+            </Col>
+            <Col span={8}>
+              <span><b>Tên học viên:</b> {hocVien.tenHocVien}</span>
+            </Col>
+            <Col span={8}>
+              <span><b>Giới tính:</b> {hocVien.gioiTinh}</span>
+            </Col>
+          </Row>
+
+          {/* Dòng 2 */}
+          <Row gutter={[16, 16]}>
+            <Col span={8}>
+              <span><b>Ngày sinh:</b> {moment(hocVien.ngaySinh).format("DD/MM/YYYY")}</span>
+            </Col>
+            <Col span={8}>
+              <span><b>Email:</b> {hocVien.email}</span>
+            </Col>
+            <Col span={8}>
+              <span><b>SDT:</b> {hocVien.sdt}</span>
+            </Col>
+          </Row>
+
+          {/* Dòng 3 */}
+          <Row gutter={[16, 16]}>
+            <Col span={8}>
+              <span><b>Địa chỉ:</b> {hocVien.diaChi}</span>
+            </Col>
+            <Col span={8}>
+              <span><b>Ngày vào học:</b> {moment(hocVien.ngayVaoHoc).format("DD/MM/YYYY")}</span>
+            </Col>
+            <Col span={8}>
+              <span><b>Tình trạng:</b> {hocVien.tinhTrang}</span>
+            </Col>
+          </Row>
+        </div>
 
         <h1>Đăng ký lớp học</h1>
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-          <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', width: '100%' }}>
-            <Col span={12}>
+        <div className='custom-info' >
+          <Row gutter={[16, 16]}>
+            <Col span={10}>
               <Select
                 placeholder="Chọn môn học"
                 style={{ width: '100%' }}
@@ -294,7 +334,7 @@ const LopHocForm: React.FC<{
                 ))}
               </Select>
             </Col>
-            <Col span={12}>
+            <Col span={10}>
               <Select
                 placeholder="Chọn lớp học"
                 style={{ width: '100%' }}
@@ -309,16 +349,36 @@ const LopHocForm: React.FC<{
                 ))}
               </Select>
             </Col>
-          </div>
+            <Col span={4}>
+              <Button type="primary" onClick={dangKy}>
+                Đăng ký
+              </Button>
+            </Col>
+          </Row>
 
-          <div style={{ display: 'flex', flexDirection: 'row', marginBottom: '10px', width: '100%' }}>
-            <Input addonBefore="Số lượng đăng ký" value={selectedLopHocObj ? `${selectedLopHocObj.soLuongHV} / ${selectedLopHocObj.soLuongMax}` : ''} disabled />
-            <Input addonBefore="Trạng thái" value={selectedLopHocObj ? selectedLopHocObj.trangThai : ''} disabled />
-          </div>
+          <Row gutter={[16, 16]}>
+            <Col span={8}>
+              <span><b>Tên giảng viên:</b> {selectedLopHocObj ? selectedLopHocObj.tenGiangVien : ''}</span>
+            </Col>
+            <Col span={8}>
+              <span><b>Ngày bắt đầu:</b> {moment(selectedLopHocObj?.ngayBatDau).format("DD/MM/YYYY")}</span>
+            </Col>
+            <Col span={8}>
+              <span><b>Số buổi học:</b> {selectedLopHocObj ? selectedLopHocObj.soBuoiHoc : ''}</span>
+            </Col>
+          </Row>
 
-          <Button type="primary" style={{ marginTop: '10px', width: '250px' }} onClick={dangKy}>
-            Đăng ký
-          </Button>
+          <Row gutter={[16, 16]}>
+          <Col span={8}>
+              <span><b>Lịch học:</b> {selectedLopHocObj ? selectedLopHocObj.lichHoc : ''}</span>
+            </Col>
+            <Col span={8}>
+              <span><b>Số lượng học viên:</b> {selectedLopHocObj ? `${selectedLopHocObj.soLuongHV} / ${selectedLopHocObj.soLuongMax}` : ''}</span>
+            </Col>
+            <Col span={8}>
+              <span><b>Trạng thái:</b> {selectedLopHocObj ? selectedLopHocObj.trangThai : ''}</span>
+            </Col>
+          </Row>
         </div>
 
         <h1>Lớp học đã đăng ký</h1>
@@ -434,7 +494,7 @@ const HoaDonForm: React.FC<{
       <h1>Chi tiết hóa đơn</h1>
       <Table<ChiTietHDType> rowSelection={rowSelection} columns={columns} dataSource={dataSource} loading={loading} pagination={false} />
       <h1>Thành tiền: {totalAmount.toLocaleString()} VND</h1>
-      <Button type="primary" onClick={handleCreateInvoice}>Tạo hóa đơn</Button>
+      <Button type="primary" onClick={handleCreateInvoice}>Thanh toán</Button>
     </>
   );
 };

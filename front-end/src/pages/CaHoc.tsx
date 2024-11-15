@@ -163,9 +163,6 @@ const CaHoc: React.FC = () => {
                     <Button className='custom-button' onClick={handleExportExcel}>
                         Xuất Excel
                     </Button>
-                    <Button className='custom-button'>
-                        Nhập Excel
-                    </Button>
                 </div>
             </div>
             <Table
