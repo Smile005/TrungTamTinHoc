@@ -3,7 +3,8 @@ import { Table, Layout, Tag, message, Button, Input } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/TableCustom.css';
-import { DeleteOutlined, LeftCircleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, LeftCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import moment from 'moment';
 import * as XLSX from 'xlsx';
 
@@ -141,6 +142,9 @@ const DsHocVienThi: React.FC = () => {
             enterButton
           />
           <div className="button-container">
+            <Tooltip title="Phải sắp xếp lịch học trước thì mới xét được tư cách thi của lớp" className='top-tip'>
+              <ExclamationCircleOutlined />
+            </Tooltip>
             <Button className='custom-button' onClick={exportDsThiToExcel}>
               Xuất Excel
             </Button>

@@ -3,7 +3,8 @@ import { Table, Layout, message, InputNumber, Button, Input, Checkbox } from 'an
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { DsLopHocType } from '../types/DsHocVienLopHocType';
-import { LeftCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { LeftCircleOutlined, SearchOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import * as XLSX from 'xlsx';
 import '../styles/TableCustom.css';
 
@@ -93,7 +94,7 @@ const NhapDiem: React.FC = () => {
                 },
             });
             message.success('Lưu điểm thành công');
-            setOriginalHocVienList(hocVienList); 
+            setOriginalHocVienList(hocVienList);
             setCheckedRows(new Set());
         } catch (error) {
             message.error('Lỗi khi lưu điểm');
@@ -277,11 +278,14 @@ const NhapDiem: React.FC = () => {
                         enterButton={<SearchOutlined />}
                     />
                     <div className="button-container">
-                        <Button className="custom-button" onClick={exportDiemToExcel}>
-                            Xuất Excel
-                        </Button>
+                        <Tooltip title="Thi giữa kì không cần tính điểm để xét tư cách thi. Điểm thường kì và điểm giữa kì phải lớn hơn 0 mới được xét tư cách thi cuối kì." className='top-tip'>
+                            <ExclamationCircleOutlined />
+                        </Tooltip>
                         <Button type="primary" className="custom-button" onClick={handleSave}>
                             Lưu điểm
+                        </Button>
+                        <Button className="custom-button" onClick={exportDiemToExcel}>
+                            Xuất Excel
                         </Button>
                     </div>
                 </div>

@@ -7,7 +7,7 @@ const moment = require('moment');
 const getLopHoc = async (req, res) => {
   try {
     const [results] = await pool.query(`
-      SELECT 
+          SELECT 
         LopHoc.maMonHoc, 
         MonHoc.tenMonHoc, 
         LopHoc.maLopHoc, 
@@ -18,12 +18,16 @@ const getLopHoc = async (req, res) => {
         LopHoc.trangThai,
         MonHoc.soBuoiHoc, 
         LopHoc.ngayBatDau
-      FROM 
+    FROM 
         LopHoc
-      JOIN 
+    JOIN 
         MonHoc ON LopHoc.maMonHoc = MonHoc.maMonHoc
-      JOIN 
-        NhanVien ON LopHoc.maNhanVien = NhanVien.maNhanVien`);
+    JOIN 
+        NhanVien ON LopHoc.maNhanVien = NhanVien.maNhanVien
+    JOIN 
+        LichHoc ON LopHoc.maLopHoc = LichHoc.maLopHoc
+    WHERE 
+        LichHoc.maLichHoc IS NOT NULL;`);
     res.json(results);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });
@@ -119,16 +123,16 @@ const createTenLop = async (connection, maMonHoc) => {
 
     const nextK = lastLopHocResult.length > 0
       ? (() => {
-          const match = lastLopHocResult[0].tenLopHoc.match(/K(\d+)$/); 
-          if (match) {
-            return parseInt(match[1], 10) + 1; 
-          } else {
-            return 1; // Nếu không khớp với định dạng, bắt đầu từ K1
-          }
-        })()
+        const match = lastLopHocResult[0].tenLopHoc.match(/K(\d+)$/);
+        if (match) {
+          return parseInt(match[1], 10) + 1;
+        } else {
+          return 1; // Nếu không khớp với định dạng, bắt đầu từ K1
+        }
+      })()
       : 1; // Nếu không có lớp học nào, bắt đầu với K1
 
-    return `${tenMonHoc} K${nextK}`; 
+    return `${tenMonHoc} K${nextK}`;
   } catch (error) {
     console.error("Lỗi khi tạo tên lớp:", error);
     throw error;
