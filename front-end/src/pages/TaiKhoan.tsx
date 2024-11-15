@@ -92,9 +92,9 @@ const TaiKhoan: React.FC = () => {
       ...item,
       phanQuyen:
         item.phanQuyen === 1
-          ? 'Quản trị viên'
+          ? 'Nhân Viên Quản Lý'
           : item.phanQuyen === 2
-            ? 'Người dùng'
+            ? 'Nhân Viên Thu Chi'
             : 'Khác',
     }));
 

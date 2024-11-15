@@ -65,3 +65,16 @@
 .ant-picker-calendar-header {
   display: none; /* Ẩn phần header mặc định của lịch */
 }
+
+.custom-info {
+  margin-top: 20px;
+  margin-left: 100px;
+}
+
+.custom-info span {
+  display: block;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+  text-align: left;
+}

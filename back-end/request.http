@@ -144,7 +144,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 ### Lấy danh sách lớp học đang hoạt động
 GET http://localhost:8081/api/lophoc/ds-lophocHD
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5OTY0MTQsImV4cCI6MTczMDAwMDAxNH0.AeGjUXVY8vqPmtMf8dYpDoMZey25im_sV5yf3K2JSHw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE2ODIwODUsImV4cCI6MTczMTY5Mjg4NX0.vOZElUS4WRYEhl6_x1Zu3fa-OxWz6_l150-2lUkOjSM
 
 ### Lấy thông tin lớp học theo mã lớp học
 GET http://localhost:8081/api/lophoc/lophocByMa/LH0001
@@ -420,7 +420,7 @@ Content-Type: application/json
 
 ### Lấy ds lớp học của học viên 
 GET http://localhost:8081/api/lophoc/dsLopCuaHV
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NTc4NDgsImV4cCI6MTcyOTk2MTQ0OH0.FAF3cqO_D8gLNsfxjWcZ0mKguKKeKwArDhBRV8WgVrc
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE1OTU2MzksImV4cCI6MTczMTYwNjQzOX0.1c0OnvC7LGMDE1moM5gJTH5WQOqyH5pUBnubjAURGqM
 Content-Type: application/json
 
 {
@@ -512,22 +512,16 @@ Authorization: Bearer {token}
 
 ### Nhập điểm
 POST http://localhost:8081/api/lophoc/nhapdiem/LH0001
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE1OTgwMzMsImV4cCI6MTczMTYwODgzM30.npAu0iOGkM3Vp096bccT6uUCSdQSVgNPinV4LiLm4zI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzEwNzg3MzQsImV4cCI6MTczMTA4OTUzNH0.UH_1nKHbc9XOE5uTaosJ--0wFWmhMsJ3vLPiQY3REPY
 Content-Type: application/json
 
 [
     {
-        "maHocVien": "HV0001",
-        "diemThuongKy": 2,
-        "diemCuoiKy": 2
-    },
-    {
-        "maHocVien": "HV0003",
-        "diemThuongKy": 7,
-        "diemGiuaKy": 5
+        "maHocVien": "HV00005",
+        "diemThuongKy": 2
     }
 ]
 
 ### Xét tư cách thi cuối kỳ
 GET http://localhost:8081/api/lophoc/xet-thi-cuoi-ky/LH0001
-Authorization: Bearerthe eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE1OTU5NTQsImV4cCI6MTczMTYwNjc1NH0.9sMu58GjXdSn0_Wi0XH72ODwcYEYvrCgq00nK0w9APE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE1OTU2MzksImV4cCI6MTczMTYwNjQzOX0.1c0OnvC7LGMDE1moM5gJTH5WQOqyH5pUBnubjAURGqM

@@ -51,6 +51,7 @@ const SuaNhanVienModal: React.FC<SuaNhanVienModalProps> = ({ visible, onCancel, 
                     .then(() => {
                         message.success('Sửa thông tin nhân viên thành công');
                         onOk(formattedValues as NhanVienType);
+                        onOk(formattedValues as NhanVienType);
                         form.resetFields();
                     })
                     .catch((error) => {

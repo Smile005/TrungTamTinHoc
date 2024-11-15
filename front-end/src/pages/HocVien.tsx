@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
-import { MoreOutlined, EditOutlined, DeleteOutlined, FormOutlined } from '@ant-design/icons';
+import { MoreOutlined, EditOutlined, DeleteOutlined, FormOutlined, PoundOutlined } from '@ant-design/icons';
 import { HocVienType } from '../types/HocVienType';
 import ThemHocVienModal from '../components/ThemHocVienModal';
 import SuaHocVienModal from '../components/SuaHocVienModal';
@@ -232,6 +232,7 @@ const HocVien: React.FC = () => {
                         >
                             Đăng ký
                         </Menu.Item>
+                        <Menu.Item key="thanhToan" icon={<PoundOutlined />}>Thanh toán</Menu.Item>
                         <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
                     </Menu>
                 );
