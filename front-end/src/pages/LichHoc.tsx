@@ -178,7 +178,6 @@ const LichHoc: React.FC = () => {
 
   return (
     <>
-      <h1 className='custom-h1'>Lịch học, lịch thi theo tuần</h1>
       <div className="custom-container">
         <Radio.Group onChange={radioChange} value={radio}>
           <Radio value={1}>Tất cả</Radio>
@@ -194,12 +193,14 @@ const LichHoc: React.FC = () => {
         {/* <Button className="custom-button" icon={<PlusOutlined />}>Thêm lịch</Button> */}
       </div>
       <ConfigProvider>
-        <Calendar
-          value={currentDate}
-          cellRender={cellRender}
-          headerRender={headerRender}
-          onSelect={handleSelect}
-        />
+        <div className="calendar-wrapper">
+          <Calendar
+            value={currentDate}
+            cellRender={cellRender}
+            headerRender={headerRender}
+            onSelect={handleSelect}
+          />
+        </div>
       </ConfigProvider>
 
       <Modal

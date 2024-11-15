@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Form, Input, DatePicker, Select, Radio, message } from 'antd';
+import { Modal, Form, Input, DatePicker, Select, Radio, message, Row } from 'antd';
 import axios from 'axios';
 import { NhanVienType } from '../types/NhanVienType';
 
@@ -59,7 +59,7 @@ const ThemNhanVienModal: React.FC<ThemNhanVienModalProps> = ({ visible, onCancel
             }}
             onOk={handleOk}
             okText="Thêm Nhân Viên"
-            style={{ top: 10}}
+            style={{ top: 10 }}
         >
             <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
                 <Form form={form} layout="vertical">
@@ -85,12 +85,21 @@ const ThemNhanVienModal: React.FC<ThemNhanVienModalProps> = ({ visible, onCancel
                             <Select.Option value="Nhân Viên">Nhân Viên</Select.Option>
                         </Select>
                     </Form.Item>
-                    <Form.Item
-                        name="ngayVaoLam"
-                        label="Ngày Vào Làm"
-                    >
-                        <DatePicker format="YYYY-MM-DD" placeholder="Chọn ngày vào làm" />
-                    </Form.Item>
+                    <Row className='custom-style'>
+                        <Form.Item
+                            name="ngayVaoLam"
+                            label="Ngày Vào Làm"
+                        >
+                            <DatePicker format="YYYY-MM-DD" placeholder="Chọn ngày vào làm" />
+                        </Form.Item>
+                        <Form.Item
+                            name="ngaySinh"
+                            label="Ngày Sinh"
+                        >
+                            <DatePicker format="YYYY-MM-DD" placeholder="Chọn ngày sinh" />
+                        </Form.Item>
+                    </Row>
+
                     <Form.Item
                         name="gioiTinh"
                         label="Giới Tính"
@@ -99,12 +108,6 @@ const ThemNhanVienModal: React.FC<ThemNhanVienModalProps> = ({ visible, onCancel
                             <Radio value="Nam">Nam</Radio>
                             <Radio value="Nữ">Nữ</Radio>
                         </Radio.Group>
-                    </Form.Item>
-                    <Form.Item
-                        name="ngaySinh"
-                        label="Ngày Sinh"
-                    >
-                        <DatePicker format="YYYY-MM-DD" placeholder="Chọn ngày sinh" />
                     </Form.Item>
                     <Form.Item
                         name="sdt"

@@ -79,42 +79,44 @@ const SuaTaiKhoanModal: React.FC<SuaTaiKhoanModalProps> = ({
   return (
     <Modal
       title={t('editAccount')}
-      visible={visible}
+      open={visible}
       onCancel={() => {
         form.resetFields();
         onCancel();
       }}
       onOk={handleOk}
     >
-      <Form form={form} layout="vertical">
-        <Form.Item
-          name="maNhanVien"
-          label={t('employeeId')}
-          rules={[{ required: true, message: t('enterEmployeeId') }]}
-        >
-          <Input disabled />
-        </Form.Item>
-        <Form.Item
-          name="phanQuyen"
-          label={t('role')}
-          rules={[{ required: true, message: t('selectRole') }]}
-        >
-          <Select>
-            <Select.Option value={1}>{t('admin')}</Select.Option>
-            <Select.Option value={2}>{t('user')}</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item
-          label={t('status')}
-          name="trangThai"
-          rules={[{ required: true, message: t('selectStatus') }]}
-        >
-          <Select placeholder={t('selectStatus')}>
-            <Select.Option value="Đang hoạt động">{t('active')}</Select.Option>
-            <Select.Option value="Đã khóa">{t('inactive')}</Select.Option>
-          </Select>
-        </Form.Item>
-      </Form>
+      <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
+        <Form form={form} layout="vertical">
+          <Form.Item
+            name="maNhanVien"
+            label={t('employeeId')}
+            rules={[{ required: true, message: t('enterEmployeeId') }]}
+          >
+            <Input disabled placeholder={t('employeeIdPlaceholder')} />
+          </Form.Item>
+          <Form.Item
+            name="phanQuyen"
+            label={t('role')}
+            rules={[{ required: true, message: t('selectRole') }]}
+          >
+            <Select placeholder={t('selectRolePlaceholder')}>
+              <Select.Option value={1}>{t('admin')}</Select.Option>
+              <Select.Option value={2}>{t('user')}</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label={t('status')}
+            name="trangThai"
+            rules={[{ required: true, message: t('selectStatus') }]}
+          >
+            <Select placeholder={t('selectStatus')}>
+              <Select.Option value="Đang hoạt động">{t('active')}</Select.Option>
+              <Select.Option value="Đã khóa">{t('inactive')}</Select.Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      </div>
     </Modal>
   );
 };

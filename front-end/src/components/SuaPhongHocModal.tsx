@@ -7,7 +7,7 @@ interface SuaPhongHocModalProps {
   visible: boolean;
   onCancel: () => void;
   onSubmit: (values: PhongHocType) => void;
-  initialValues?: PhongHocType | null; 
+  initialValues?: PhongHocType | null;
 }
 
 const SuaPhongHocModal: React.FC<SuaPhongHocModalProps> = ({ visible, onCancel, onSubmit, initialValues }) => {
@@ -15,7 +15,7 @@ const SuaPhongHocModal: React.FC<SuaPhongHocModalProps> = ({ visible, onCancel, 
 
   useEffect(() => {
     if (initialValues) {
-      form.setFieldsValue(initialValues); 
+      form.setFieldsValue(initialValues);
     }
   }, [initialValues, form]);
 
@@ -25,10 +25,9 @@ const SuaPhongHocModal: React.FC<SuaPhongHocModalProps> = ({ visible, onCancel, 
       .then((values) => {
         const formattedValues = {
           ...values,
-          maPhong: initialValues?.maPhong, // Sử dụng `maPhong` từ `initialValues`
+          maPhong: initialValues?.maPhong,
         };
 
-        // Gửi yêu cầu cập nhật phòng học qua API
         axios
           .post('http://localhost:8081/api/phonghoc/sua-phong', formattedValues, {
             headers: {
@@ -38,8 +37,8 @@ const SuaPhongHocModal: React.FC<SuaPhongHocModalProps> = ({ visible, onCancel, 
           })
           .then(() => {
             message.success('Cập nhật phòng học thành công');
-            onSubmit(formattedValues as PhongHocType); // Cập nhật danh sách phòng học sau khi thành công
-            form.resetFields(); // Xóa các trường form sau khi xử lý xong
+            onSubmit(formattedValues as PhongHocType);
+            form.resetFields();
           })
           .catch((error) => {
             message.error('Lỗi khi cập nhật phòng học: ' + error.message);
@@ -53,42 +52,47 @@ const SuaPhongHocModal: React.FC<SuaPhongHocModalProps> = ({ visible, onCancel, 
   return (
     <Modal
       title="Sửa Phòng Học"
-      visible={visible}
+      open={visible}
       onCancel={() => {
-        form.resetFields(); 
+        form.resetFields();
         onCancel();
       }}
       onOk={handleOk}
     >
-      <Form form={form} layout="vertical">
-        <Form.Item
-          name="maPhong"
-          label="Mã Phòng"
-          rules={[{ required: true, message: 'Vui lòng nhập mã phòng!' }]}
-        >
-          <Input disabled />
-        </Form.Item>
-        <Form.Item
-          name="soLuong"
-          label="Số Lượng"
-          rules={[{ required: true, message: 'Vui lòng nhập số lượng chỗ ngồi!' }]}
-        >
-          <InputNumber min={1} style={{ width: '100%' }} />
-        </Form.Item>
-        <Form.Item
-          name="trangThai"
-          label="Tình Trạng"
-          rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
-        >
-          <Select>
-            <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
-            <Select.Option value="Ngưng hoạt động">Ngưng hoạt động</Select.Option>
-          </Select>
-        </Form.Item>
-        <Form.Item name="ghiChu" label="Ghi Chú">
-          <Input />
-        </Form.Item>
-      </Form>
+      <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
+        <Form form={form} layout="vertical">
+          <Form.Item
+            name="maPhong"
+            label="Mã Phòng"
+            rules={[{ required: true, message: 'Vui lòng nhập mã phòng!' }]}
+          >
+            <Input disabled placeholder="Mã phòng tự động" />
+          </Form.Item>
+          <Form.Item
+            name="soLuong"
+            label="Số Lượng"
+            rules={[{ required: true, message: 'Vui lòng nhập số lượng chỗ ngồi!' }]}
+          >
+            <InputNumber min={1} style={{ width: '100%' }} placeholder="Nhập số lượng chỗ ngồi" />
+          </Form.Item>
+          <Form.Item
+            name="trangThai"
+            label="Tình Trạng"
+            rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
+          >
+            <Select placeholder="Chọn tình trạng phòng học">
+              <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
+              <Select.Option value="Ngưng hoạt động">Ngưng hoạt động</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="ghiChu"
+            label="Ghi Chú"
+          >
+            <Input placeholder="Nhập ghi chú (nếu có)" />
+          </Form.Item>
+        </Form>
+      </div>
     </Modal>
   );
 };
