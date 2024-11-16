@@ -75,7 +75,7 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
         </Button>,
         <Button key="submit" type="primary" onClick={handleOk}>
           Thêm Học Viên
-        </Button>,
+        </Button>
       ]}
     >
       <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>

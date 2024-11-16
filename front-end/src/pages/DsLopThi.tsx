@@ -104,7 +104,7 @@ const DsLopThi: React.FC = () => {
   return (
     <div>
       <div className="search-header">
-        <h1 className="page-name">DANH SÁCH LỚP THI</h1>
+        <h1 className="page-name">DANH SÁCH THI</h1>
       </div>
       <div className="button-container">
         <Search

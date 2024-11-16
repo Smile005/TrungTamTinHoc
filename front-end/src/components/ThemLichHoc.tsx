@@ -75,7 +75,6 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
     if (loading) return <div>Đang tải...</div>;
     if (error) return <div>{error}</div>;
 
-    // Hàm để chuyển đổi số thu thành tên ngày trong tuần
     const getDayOfWeek = (thu: number) => {
         const days = ['Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'];
         return days[thu] || '';
@@ -86,7 +85,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
         { title: 'Thứ', dataIndex: 'thu', key: 'thu', render: (thu: number) => getDayOfWeek(thu) },
         { title: 'Ca học', dataIndex: 'maCa', key: 'maCa' },
         { title: 'Phòng học', dataIndex: 'maPhong', key: 'maPhong' },
-        { title: 'Giáo viên', dataIndex: 'tenGiaoVien', key: 'tenGiaoVien' },
+        { title: 'Giảng viên', dataIndex: 'tenGiaoVien', key: 'tenGiaoVien' },
         { title: 'Số buổi học', dataIndex: 'soBuoi', key: 'soBuoi' },
         {
             title: 'Hành động',
@@ -119,6 +118,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
             thu: parseInt(selectedThu),
             maCa: selectedCaHoc,
             maGiaoVien: lopHoc?.maNhanVien,
+            tenGiaoVien: lopHoc?.tenNhanVien,
             maPhong: selectedPhong,
             soBuoi: selectedSoBuoi,
         };
@@ -146,7 +146,6 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
     };
 
     const handleDelete = (maLichHoc: string) => {
-        // Hiển thị modal xác nhận trước khi xóa
         Modal.confirm({
             title: 'Bạn có chắc chắn muốn xóa lịch học này?',
             content: 'Khi xóa, lịch học sẽ không thể phục hồi.',

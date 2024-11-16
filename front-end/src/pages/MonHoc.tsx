@@ -214,9 +214,6 @@ const MonHoc: React.FC = () => {
                     <Button className="custom-button" onClick={exportMonHocToExcel}>
                         Xuất Excel
                     </Button>
-                    <Button className="custom-button" onClick={handleImportExcel}>
-                        Nhập Excel
-                    </Button>
                 </div>
             </div>
             <Table

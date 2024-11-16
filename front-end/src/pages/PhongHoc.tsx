@@ -204,7 +204,6 @@ const PhongHoc: React.FC = () => {
         <div className="button-container">
           <Button className='custom-button' onClick={showModal}>Thêm Phòng Học</Button>
           <Button className='custom-button' onClick={handleExportExcel}>Xuất Excel</Button>
-          <Button className='custom-button'>Nhập Excel</Button>
         </div>
       </div>
       <Table

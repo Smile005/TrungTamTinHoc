@@ -148,6 +148,16 @@ const DsHocVienLopHoc: React.FC = () => {
       render: (_: any, record: DsLopHocType) => getHocVienInfo(record.maHocVien).sdt,
     },
     {
+      title: 'Trạng Thái',
+      dataIndex: 'trangThai',
+      key: 'trangThai',
+      render: (trangThai: string) => (
+        <span style={{ color: trangThai === 'Đã Đóng Học Phí' ? 'green' : 'red' }}>
+          {trangThai}
+        </span>
+      ),
+    },
+    {
       title: 'Quản lý',
       key: 'action',
       render: (_: any, record: DsLopHocType) => (
