@@ -23,11 +23,7 @@ const getLopHoc = async (req, res) => {
     JOIN 
         MonHoc ON LopHoc.maMonHoc = MonHoc.maMonHoc
     JOIN 
-        NhanVien ON LopHoc.maNhanVien = NhanVien.maNhanVien
-    JOIN 
-        LichHoc ON LopHoc.maLopHoc = LichHoc.maLopHoc
-    WHERE 
-        LichHoc.maLichHoc IS NOT NULL;`);
+        NhanVien ON LopHoc.maNhanVien = NhanVien.maNhanVien`);
     res.json(results);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });
