@@ -16,8 +16,8 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
     const [loading, setLoading] = useState<boolean>(true); // Trạng thái loading
     const [error, setError] = useState<string | null>(null);
     const [buoiHocs, setBuoiHocs] = useState<LichHocType[]>([]);
-    const [caHocList, setCaHocList] = useState<{ maCa: string; batDau: string; ketThuc: string }[]>([]);
-    const [phongHocList, setPhongHocList] = useState<{ maPhong: string; soLuong: number }[]>([]);
+    const [caHocList, setCaHocList] = useState<{ maCa: string; batDau: string; ketThuc: string, trangThai: string }[]>([]);
+    const [phongHocList, setPhongHocList] = useState<{ maPhong: string; soLuong: number, trangThai: string }[]>([]);
 
     const [selectedThu, setSelectedThu] = useState<string | undefined>();
     const [selectedCaHoc, setSelectedCaHoc] = useState<string | undefined>();
@@ -222,18 +222,38 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                     </Select>
                 </Col>
                 <Col>
-                    <Select value={selectedCaHoc} placeholder="Chọn ca học" onChange={setSelectedCaHoc} style={{ width: 120 }}>
-                        {caHocList.map(ca => (
-                            <Option key={ca.maCa} value={ca.maCa}>{ca.batDau} - {ca.ketThuc}</Option>
-                        ))}
+                    <Select
+                        value={selectedCaHoc}
+                        placeholder="Chọn ca học"
+                        onChange={setSelectedCaHoc}
+                        style={{ width: 120 }}
+                    >
+                        {caHocList
+                            .filter(ca => ca.trangThai !== 'Ngưng Hoạt Động') 
+                            .map(ca => (
+                                <Option key={ca.maCa} value={ca.maCa}>
+                                    {ca.batDau} - {ca.ketThuc}
+                                </Option>
+                            ))}
                     </Select>
+
                 </Col>
                 <Col>
-                    <Select value={selectedPhong} placeholder="Chọn phòng học" onChange={setSelectedPhong} style={{ width: 150 }}>
-                        {phongHocList.map(phong => (
-                            <Option key={phong.maPhong} value={phong.maPhong}>{phong.maPhong}</Option>
-                        ))}
+                    <Select
+                        value={selectedPhong}
+                        placeholder="Chọn phòng học"
+                        onChange={setSelectedPhong}
+                        style={{ width: 150 }}
+                    >
+                        {phongHocList
+                            .filter(phong => phong.trangThai !== 'Ngưng hoạt động') 
+                            .map(phong => (
+                                <Option key={phong.maPhong} value={phong.maPhong}>
+                                    {phong.maPhong}
+                                </Option>
+                            ))}
                     </Select>
+
                 </Col>
                 <Col>
                     <InputNumber
