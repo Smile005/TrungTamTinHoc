@@ -278,7 +278,7 @@ const NhapDiem: React.FC = () => {
                         enterButton={<SearchOutlined />}
                     />
                     <div className="button-container">
-                        <Tooltip title="Thi giữa kì không cần tính điểm để xét tư cách thi. Điểm giữa kì phải lớn hơn 0 mới được xét tư cách thi cuối kì." className='top-tip'>
+                        <Tooltip title="Thi giữa kỳ không cần tính điểm để xét tư cách thi. Điểm giữa kỳ phải lớn hơn 0 mới được xét tư cách thi cuối kỳ." className='top-tip'>
                             <ExclamationCircleOutlined />
                         </Tooltip>
                         <Button type="primary" className="custom-button" onClick={handleSave}>

@@ -260,9 +260,6 @@ const HocVien: React.FC = () => {
                     <Button className='custom-button' onClick={exportHVToExcel}>
                         Xuất Excel
                     </Button>
-                    <Button className='custom-button' onClick={() => showImportModal('hocvien')}>
-                        Nhập Excel
-                    </Button>
                 </div>
             </div>
             <Table

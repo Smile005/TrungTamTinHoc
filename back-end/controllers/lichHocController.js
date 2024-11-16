@@ -117,7 +117,11 @@ const getLichHocByMaLop = async (req, res) => {
     const { maLopHoc } = req.params; // Lấy maLopHoc từ tham số URL
 
     try {
-        const query = `SELECT * FROM LichHoc WHERE maLopHoc = ?;`;
+        const query = `SELECT lh.*, nv.tenNhanVien AS tenGiaoVien
+        FROM LichHoc lh
+        JOIN NhanVien nv ON lh.maGiaoVien = nv.maNhanVien
+        WHERE lh.maLopHoc = ?;
+        `;
         const [result] = await pool.query(query, [maLopHoc]); // Sử dụng pool để truy vấn
 
         if (result.length === 0) {

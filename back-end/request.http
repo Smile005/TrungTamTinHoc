@@ -441,8 +441,8 @@ GET http://localhost:8081/api/hoadon/hoaDonPDF/maHoaDon=HD0046
 Authorization: Bearer {token}
 
 ### Lấy lịch học theo mã lớp (GET)
-GET http://localhost:8081/api/lichhoc/getLichHocByMaLop/:maLopHoc
-Authorization: Bearer {token}
+GET http://localhost:8081/api/lichhoc/getLichHocByMaLop/LH0005
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE3NzE5NTMsImV4cCI6MTczMTc4Mjc1M30.PArwAKkNSA2e6gMqzvRBpXcGlTUpHkcyje3vBOYlgd0
 
 ### Tạo lịch học (POST)
 POST http://localhost:8081/api/lichhoc/createLichHoc

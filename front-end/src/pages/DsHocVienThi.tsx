@@ -131,7 +131,7 @@ const DsHocVienThi: React.FC = () => {
         </Button>
       </div>
       <h1 className="page-name1">
-        DANH SÁCH HỌC VIÊN ĐỦ TƯ CÁCH THI CUỐI KỲ LỚP: {maLopHoc}
+        DANH SÁCH HỌC VIÊN THI CUỐI KỲ LỚP: {maLopHoc}
       </h1>
       <div className='ds-layout'>
         <div className="button-container">
@@ -142,7 +142,7 @@ const DsHocVienThi: React.FC = () => {
             enterButton
           />
           <div className="button-container">
-            <Tooltip title="Phải sắp xếp lịch học trước thì mới xét được tư cách thi của lớp" className='top-tip'>
+            <Tooltip title="Phải sắp xếp lịch học trước thì mới được xét tư cách thi" className='top-tip'>
               <ExclamationCircleOutlined />
             </Tooltip>
             <Button className='custom-button' onClick={exportDsThiToExcel}>
