@@ -88,12 +88,6 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
           >
             <Input placeholder="Nhập tên học viên" />
           </Form.Item>
-          {/* <Form.Item
-            name="img"
-            label="URL Ảnh"
-          >
-            <Input placeholder="URL hình ảnh" />
-          </Form.Item> */}
           <Row className='custom-style'>
             <Form.Item
               name="ngaySinh"

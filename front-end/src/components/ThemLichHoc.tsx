@@ -4,6 +4,7 @@ import axios from 'axios';
 import { LichHocType } from '../types/LichHocType';
 import { LopHocType } from '../types/LopHocType';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import "../styles/ButtonCustom.css"
 
 const { Option } = Select;
 
@@ -190,22 +191,26 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
         { label: 'Chủ Nhật', value: '0' },
     ];
 
+    const checkLickHoc = () => {
+
+    }
+
     return (
         <div>
             <h2>Thông Tin Lớp Học</h2>
-            <Row>
+            <Row className='custom-style03'>
                 <div style={{ display: 'flex', gap: '8px' }}>
                     <p><strong>Mã lớp học:</strong> {maLopHoc}</p>
                     <p><strong>Tên lớp học:</strong> {lopHoc?.tenLopHoc}</p>
                 </div>
             </Row>
-            <Row>
+            <Row className='custom-style03'>
                 <div style={{ display: 'flex', gap: '8px' }}>
                     <p><strong>Môn học:</strong> {lopHoc?.tenMonHoc}</p>
                     <p><strong>Giảng viên:</strong> {lopHoc?.tenNhanVien}</p>
                 </div>
             </Row>
-            <Row>
+            <Row className='custom-style03'>
                 <div style={{ display: 'flex', gap: '8px' }}>
                     <p><strong>Số học viên:</strong> 0 / {lopHoc?.soLuongMax}</p>
                     <p><strong>Số buổi học:</strong> 0 / {lopHoc?.soBuoiHoc}</p>
@@ -267,6 +272,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                 <Col>
                     <Button type="primary" onClick={createLichHoc}>Thêm lịch học</Button>
                 </Col>
+
             </Row>
 
             <Table dataSource={buoiHocs} columns={columns} rowKey="maLichHoc" />

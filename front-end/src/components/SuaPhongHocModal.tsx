@@ -52,7 +52,7 @@ const SuaPhongHocModal: React.FC<SuaPhongHocModalProps> = ({ visible, onCancel, 
   return (
     <Modal
       title="Sửa Phòng Học"
-      visible={visible}
+      open={visible}
       onCancel={() => {
         form.resetFields();
         onCancel();
