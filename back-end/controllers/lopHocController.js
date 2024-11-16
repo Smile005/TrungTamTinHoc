@@ -69,13 +69,56 @@ const getLopHocByMaLop = async (req, res) => {
 
 // 3. Hàm lấy danh sách các lớp học đang mở đăng ký
 const getLopHocHD = async (req, res) => {
+  const trangThai = 'Có thể đăng ký';
+
   try {
+    // Truy vấn các lớp học có trạng thái 'Có thể đăng ký'
     const [results] = await pool.query(`
       SELECT LopHoc.*, 
-             (SELECT COUNT(*) FROM DsLopHoc WHERE DsLopHoc.maLopHoc = LopHoc.maLopHoc) AS soLuongHV
+        (SELECT COUNT(*) 
+           FROM DsLopHoc 
+           WHERE DsLopHoc.maLopHoc = LopHoc.maLopHoc) AS soLuongHV,
+        MonHoc.soBuoiHoc,
+        NhanVien.tenNhanVien AS tenGiangVien
       FROM LopHoc
-      WHERE trangThai = ?;
-    `, ['Có thể đăng ký']);
+      LEFT JOIN MonHoc ON LopHoc.maMonHoc = MonHoc.maMonHoc
+      LEFT JOIN NhanVien ON LopHoc.maNhanVien = NhanVien.maNhanVien
+      WHERE LopHoc.trangThai = ?;
+    `, [trangThai]);
+
+    // Duyệt qua các lớp học và lấy lịch học cho từng lớp
+    for (let i = 0; i < results.length; i++) {
+      const maLopHoc = results[i].maLopHoc;
+
+      // Truy vấn lịch học cho từng maLopHoc
+      const [lichHoc] = await pool.query(`
+        SELECT thu, maCa
+        FROM LichHoc
+        WHERE maLopHoc = ?
+        GROUP BY thu, maCa
+        ORDER BY thu, maCa
+      `, [maLopHoc]);
+
+      // Tạo chuỗi lichHoc cho từng lớp học
+      const daysMap = {
+        0: "CN",
+        1: "T2",
+        2: "T3",
+        3: "T4",
+        4: "T5",
+        5: "T6",
+        6: "T7",
+      };
+
+      const lichHocChuoi = lichHoc
+        .map((row) => `${daysMap[row.thu]}-${row.maCa}`)
+        .join(", ");
+
+      // Thêm lichHoc vào đối tượng kết quả của lớp học
+      results[i].lichHoc = lichHocChuoi;
+    }
+
+    // Trả về kết quả đã được bổ sung lịch học
     res.json(results);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });

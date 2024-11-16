@@ -19,6 +19,17 @@
   align-items: center; /* Đảm bảo căn giữa theo chiều dọc */
 }
 
+.custom-style02 {
+  display: flex;
+  justify-content: space-around;
+  align-content: "center";
+}
+.custom-style03 {
+  display: flex;
+  justify-content: space-around;
+  align-content: "center";
+}
+
 .custom-button {
   padding: 8px 15px; /* Tăng kích thước padding để nút trông đẹp hơn */
   background-color: #2591de; /* Giữ nguyên màu nền */
@@ -53,4 +64,17 @@
 
 .ant-picker-calendar-header {
   display: none; /* Ẩn phần header mặc định của lịch */
+}
+
+.custom-info {
+  margin-top: 20px;
+  margin-left: 100px;
+}
+
+.custom-info span {
+  display: block;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+  text-align: left;
 }

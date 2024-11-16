@@ -65,7 +65,7 @@ const SuaHocVienModal: React.FC<SuaHocVienModalProps> = ({ visible, onCancel, on
     return (
         <Modal
             title="Chỉnh sửa học viên"
-            visible={visible}
+            open={visible}
             onOk={handleOk}
             onCancel={() => {
                 form.resetFields();
