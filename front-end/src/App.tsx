@@ -109,8 +109,8 @@ const App: React.FC = () => {
 
   const languageMenu = (
     <Menu onClick={(e) => handleLanguageChange(e.key)}>
-      <Menu.Item key="vi">Tiếng Việt</Menu.Item>
-      <Menu.Item key="en">English</Menu.Item>
+      <Menu.Item key="vi">VN_Tiếng Việt</Menu.Item>
+      <Menu.Item key="en">EN_English</Menu.Item>
       {/* <Menu.Item key="jp">日本語</Menu.Item> */}
     </Menu>
   );
