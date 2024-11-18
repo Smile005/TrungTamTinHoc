@@ -154,6 +154,7 @@ const MonHoc: React.FC = () => {
             dataIndex: 'hocPhi',
             key: 'hocPhi',
             width: '10%',
+            render: (hocPhi: number) => `${hocPhi.toLocaleString('vi-VN')} VND`,
         },
         {
             title: 'Trạng Thái',
