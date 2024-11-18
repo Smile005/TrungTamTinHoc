@@ -93,7 +93,7 @@ const DsLopThi: React.FC = () => {
       key: 'soLuongThi',
     },
     {
-      title: 'Chi Tiết Lớp Thi',
+      title: 'Danh Sách Thi',
       key: 'action',
       render: (text: any, record: LopHocTypeWithThi) => (
         <Link to={`/ds_thi/${record.maLopHoc}`}>Xem chi tiết</Link>

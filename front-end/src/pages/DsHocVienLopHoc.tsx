@@ -4,7 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { HocVienType } from '../types/HocVienType';
 import { DsLopHocType } from '../types/DsHocVienLopHocType';
-import { DeleteOutlined, LeftCircleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, LeftCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import '../styles/TableCustom.css';
 import * as XLSX from 'xlsx';
 
@@ -62,15 +63,15 @@ const DsHocVienLopHoc: React.FC = () => {
     const hocVien = hocVienData.find(hv => hv.maHocVien === maHocVien);
     return hocVien
       ? {
-          tenHocVien: hocVien.tenHocVien,
-          sdt: hocVien.sdt,
-          gioiTinh: hocVien.gioiTinh,
-        }
+        tenHocVien: hocVien.tenHocVien,
+        sdt: hocVien.sdt,
+        gioiTinh: hocVien.gioiTinh,
+      }
       : {
-          tenHocVien: 'Không xác định',
-          sdt: 'Không xác định',
-          gioiTinh: 'Không xác định',
-        };
+        tenHocVien: 'Không xác định',
+        sdt: 'Không xác định',
+        gioiTinh: 'Không xác định',
+      };
   };
 
   const onDelete = async (maHocVien: string) => {
@@ -189,6 +190,9 @@ const DsHocVienLopHoc: React.FC = () => {
             enterButton
           />
           <div className="button-container">
+            <Tooltip title="Lớp phải có lịch học thì mới có danh sách thi" className='top-tip'>
+              <ExclamationCircleOutlined />
+            </Tooltip>
             <Button className='custom-button' onClick={() => navigate(`/nhapdiem/${maLopHoc}`)}>
               Nhập Điểm
             </Button>
