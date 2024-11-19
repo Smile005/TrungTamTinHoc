@@ -206,30 +206,32 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
         <div>
             <h2>Thông Tin Lớp Học</h2>
             <div className="custom-info">
-                {/* Dòng 1 */}
-                <Row gutter={[16, 16]}>
-                    <Col span={8}>
+                <Row gutter={[24, 24]} style={{marginBottom: 10}}>
+                    <Col span={8} style={{ border: '1px solid #ddd', padding: '16px', borderRadius: '8px' }}>
                         <span><b>Mã lớp học:</b> {maLopHoc}</span>
                     </Col>
-                    <Col span={8}>
+                    <Col></Col>
+                    <Col span={8} style={{ border: '1px solid #ddd', padding: '16px', borderRadius: '8px' }}>
                         <span><b>Tên lớp học:</b> {lopHoc?.tenLopHoc}</span>
                     </Col>
                 </Row>
                 {/* Dòng 2 */}
-                <Row gutter={[16, 16]}>
-                    <Col span={8}>
+                <Row gutter={[24, 24]} style={{marginBottom: 10}}>
+                    <Col span={8} style={{ border: '1px solid #ddd', padding: '16px', borderRadius: '8px' }}>
                         <span><b>Môn học:</b> {lopHoc?.tenMonHoc}</span>
                     </Col>
-                    <Col span={8}>
+                    <Col></Col>
+                    <Col span={8} style={{ border: '1px solid #ddd', padding: '16px', borderRadius: '8px' }}>
                         <span><b>Giảng viên:</b> {lopHoc?.tenNhanVien}</span>
                     </Col>
                 </Row>
                 {/* Dòng 3 */}
-                <Row gutter={[16, 16]}>
-                    <Col span={8}>
+                <Row gutter={[24, 24]}>
+                    <Col span={8} style={{ border: '1px solid #ddd', padding: '16px', borderRadius: '8px' }}>
                         <span><b>Số học viên:</b> {lopHoc?.SL_HocVien} / {lopHoc?.soLuongMax}</span>
                     </Col>
-                    <Col span={8}>
+                    <Col></Col>
+                    <Col span={8} style={{ border: '1px solid #ddd', padding: '16px', borderRadius: '8px' }}>
                         <span><b>Số buổi học:</b> {totalSoBuoi} / {lopHoc?.soBuoiHoc}</span>
                     </Col>
                 </Row>
