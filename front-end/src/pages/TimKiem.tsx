@@ -10,6 +10,14 @@ import { MonHocType } from '../types/MonHocType';
 import { TaiKhoanType } from '../types/TaiKhoanType';
 import '../styles/TableCustom.css';
 
+const formatDate = (date: string | undefined) => {
+  if (!date) return '';
+  const d = new Date(date);
+  return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1)
+    .toString()
+    .padStart(2, '0')}/${d.getFullYear()}`;
+};
+
 const caHocColumns = [
   { title: 'Mã Ca', dataIndex: 'maCa', key: 'maCa' },
   { title: 'Bắt Đầu', dataIndex: 'batDau', key: 'batDau' },
@@ -22,7 +30,7 @@ const hocVienColumns = [
   { title: 'Mã Học Viên', dataIndex: 'maHocVien', key: 'maHocVien' },
   { title: 'Tên Học Viên', dataIndex: 'tenHocVien', key: 'tenHocVien' },
   { title: 'Giới Tính', dataIndex: 'gioiTinh', key: 'gioiTinh' },
-  { title: 'Ngày Vào Học', dataIndex: 'ngayVaoHoc', key: 'ngayVaoHoc' },
+  { title: 'Ngày Vào Học', dataIndex: 'ngayVaoHoc', key: 'ngayVaoHoc', render: (date: string) => formatDate(date) },
   { title: 'Số Điện Thoại', dataIndex: 'sdt', key: 'sdt' },
   { title: 'Email', dataIndex: 'email', key: 'email' },
   { title: 'Tình Trạng', dataIndex: 'tinhTrang', key: 'tinhTrang' },
@@ -34,8 +42,8 @@ const lopHocColumns = [
   { title: 'Tên Lớp Học', dataIndex: 'tenLopHoc', key: 'tenLopHoc' },
   { title: 'Mã Môn Học', dataIndex: 'maMonHoc', key: 'maMonHoc' },
   { title: 'Mã Nhân Viên', dataIndex: 'maNhanVien', key: 'maNhanVien' },
-  { title: 'Ngày Bắt Đầu', dataIndex: 'ngayBatDau', key: 'ngayBatDau' },
-  { title: 'Số Lượng', dataIndex: 'soLuong', key: 'soLuong' },
+  { title: 'Ngày Bắt Đầu', dataIndex: 'ngayBatDau', key: 'ngayBatDau', render: (date: string) => formatDate(date) },
+  { title: 'Số Lượng', dataIndex: 'soLuongMax', key: 'soLuongMax' },
   { title: 'Trạng Thái', dataIndex: 'trangThai', key: 'trangThai' },
   { title: 'Ghi Chú', dataIndex: 'ghiChu', key: 'ghiChu' },
 ];
