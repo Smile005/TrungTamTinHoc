@@ -149,9 +149,9 @@ const PhongHoc: React.FC = () => {
         let color = '';
         const normalizedTrangThai = trangThai;
         
-        if (normalizedTrangThai === 'Đang hoạt động') {
+        if (normalizedTrangThai === 'Đang Hoạt Động') {
             color = 'geekblue';
-        } else if (normalizedTrangThai === 'Ngưng hoạt động') {
+        } else if (normalizedTrangThai === 'Ngưng Hoạt Động') {
             color = 'green';
         }
         
