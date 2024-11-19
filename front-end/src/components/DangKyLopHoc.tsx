@@ -361,7 +361,12 @@ const LopHocForm: React.FC<{
               <span><b>Tên giảng viên:</b> {selectedLopHocObj ? selectedLopHocObj.tenGiangVien : ''}</span>
             </Col>
             <Col span={8}>
-              <span><b>Ngày bắt đầu:</b> {moment(selectedLopHocObj?.ngayBatDau).format("DD/MM/YYYY")}</span>
+              <span>
+                <b>Ngày bắt đầu:</b>
+                {selectedLopHocObj?.ngayBatDau
+                  ? moment(selectedLopHocObj.ngayBatDau).format("DD/MM/YYYY")
+                  : ""}
+              </span>
             </Col>
             <Col span={8}>
               <span><b>Số buổi học:</b> {selectedLopHocObj ? selectedLopHocObj.soBuoiHoc : ''}</span>
@@ -369,7 +374,7 @@ const LopHocForm: React.FC<{
           </Row>
 
           <Row gutter={[16, 16]}>
-          <Col span={8}>
+            <Col span={8}>
               <span><b>Lịch học:</b> {selectedLopHocObj ? selectedLopHocObj.lichHoc : ''}</span>
             </Col>
             <Col span={8}>
