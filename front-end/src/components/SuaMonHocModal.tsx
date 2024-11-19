@@ -64,6 +64,7 @@ const SuaMonHocModal: React.FC<SuaMonHocModalProps> = ({ visible, onCancel, onSu
         onCancel();
       }}
       onOk={handleOk}
+      style={{top: 1}}
     >
       <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
         <Form form={form} layout="vertical">

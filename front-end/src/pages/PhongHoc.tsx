@@ -149,9 +149,9 @@ const PhongHoc: React.FC = () => {
         let color = '';
         const normalizedTrangThai = trangThai;
         
-        if (normalizedTrangThai === 'Đang hoạt động') {
+        if (normalizedTrangThai === 'Đang Hoạt Động') {
             color = 'geekblue';
-        } else if (normalizedTrangThai === 'Ngưng hoạt động') {
+        } else if (normalizedTrangThai === 'Ngưng Hoạt Động') {
             color = 'green';
         }
         
@@ -204,7 +204,6 @@ const PhongHoc: React.FC = () => {
         <div className="button-container">
           <Button className='custom-button' onClick={showModal}>Thêm Phòng Học</Button>
           <Button className='custom-button' onClick={handleExportExcel}>Xuất Excel</Button>
-          <Button className='custom-button'>Nhập Excel</Button>
         </div>
       </div>
       <Table

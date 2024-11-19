@@ -44,6 +44,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [maHoaDon, setMaHoaDon] = useState<string>('');
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [tenNhanVien, setTenNhanVien] = useState<string>('');
 
   const steps = [
     {
@@ -349,11 +350,6 @@ const LopHocForm: React.FC<{
                 ))}
               </Select>
             </Col>
-            <Col span={4}>
-              <Button type="primary" onClick={dangKy}>
-                Đăng ký
-              </Button>
-            </Col>
           </Row>
 
           <Row gutter={[16, 16]}>
@@ -362,7 +358,7 @@ const LopHocForm: React.FC<{
             </Col>
             <Col span={8}>
               <span>
-                <b>Ngày bắt đầu:</b>
+                <b>Ngày bắt đầu: </b>
                 {selectedLopHocObj?.ngayBatDau
                   ? moment(selectedLopHocObj.ngayBatDau).format("DD/MM/YYYY")
                   : ""}
@@ -384,6 +380,11 @@ const LopHocForm: React.FC<{
               <span><b>Trạng thái:</b> {selectedLopHocObj ? selectedLopHocObj.trangThai : ''}</span>
             </Col>
           </Row>
+          <Row className='dk-row'>
+            <Button type="primary" onClick={dangKy} className='dk-class'>
+              Đăng ký
+            </Button>
+          </Row>
         </div>
 
         <h1>Lớp học đã đăng ký</h1>
@@ -402,6 +403,7 @@ const HoaDonForm: React.FC<{
 }> = ({ hocVien, selectedRowKeys, setSelectedRowKeys, setInvoiceDetails, setTotalAmount, setMaHoaDon }) => {
   const [dataSource, setDataSource] = useState<ChiTietHDType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [tenNhanVien, setTenNhanVien] = useState<string>(''); // Thêm state để lưu tên nhân viên
   const maNhanVien = useSelector((state: RootState) => state.auth.userInfo?.maNhanVien) || '';
   const ngayTaoHoaDon = new Date().toISOString();
   const [totalAmount, internalSetTotalAmount] = useState<number>(0);
@@ -457,6 +459,28 @@ const HoaDonForm: React.FC<{
     }
   };
 
+  // Thêm API call để lấy danh sách nhân viên
+  useEffect(() => {
+    const fetchDanhSachNhanVien = async () => {
+      if (!maNhanVien) return;
+
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        // Tìm tên nhân viên theo mã nhân viên
+        const nhanVien = response.data.find((nv: { maNhanVien: string }) => nv.maNhanVien === maNhanVien);
+        setTenNhanVien(nhanVien ? nhanVien.tenNhanVien : 'Không xác định');
+      } catch (error) {
+        message.error('Không thể lấy danh sách nhân viên');
+      }
+    };
+
+    fetchDanhSachNhanVien();
+  }, [maNhanVien]);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -485,17 +509,33 @@ const HoaDonForm: React.FC<{
   return (
     <>
       <h1>Thông tin hóa đơn</h1>
-      <p>
-        <span>Mã nhân viên: {maNhanVien} - </span>
-        <span>Tên nhân viên: </span>
-      </p>
-      <p>
-        <span>Mã học viên: {hocVien.maHocVien} - </span>
-        <span>Tên học viên: {hocVien.tenHocVien}</span>
-      </p>
-      <p>
-        <span>Ngày tạo hóa đơn: {ngayTaoHoaDon}</span>
-      </p>
+      <div className="custom-info">
+        {/* Dòng 1 */}
+        <Row gutter={[16, 16]}>
+          <Col span={12}>
+            <span><b>Mã nhân viên:</b> {maNhanVien}</span>
+          </Col>
+          <Col span={12}>
+            <span><b>Tên nhân viên:</b> {tenNhanVien}</span>
+          </Col>
+        </Row>
+        {/* Dòng 2 */}
+        <Row gutter={[16, 16]}>
+          <Col span={12}>
+            <span><b>Mã học viên:</b> {hocVien.maHocVien}</span>
+          </Col>
+          <Col span={12}>
+            <span><b>Tên học viên:</b> {hocVien.tenHocVien}</span>
+          </Col>
+        </Row>
+        {/* Dòng 3 */}
+        <Row gutter={[16, 16]}>
+          <Col span={24}>
+            <span><b>Ngày tạo hóa đơn:</b> {moment(ngayTaoHoaDon).format("DD/MM/YYYY")}</span>
+          </Col>
+        </Row>
+      </div>
+
       <h1>Chi tiết hóa đơn</h1>
       <Table<ChiTietHDType> rowSelection={rowSelection} columns={columns} dataSource={dataSource} loading={loading} pagination={false} />
       <h1>Thành tiền: {totalAmount.toLocaleString()} VND</h1>

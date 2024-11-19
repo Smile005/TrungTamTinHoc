@@ -7,6 +7,8 @@ import '../styles/TableCustom.css';
 
 interface LopHocTypeWithMax extends LopHocType {
   soLuongToiDa: number;
+  soLuong: number;
+  trangThai: string; 
 }
 
 const { Search } = Input;
@@ -20,38 +22,58 @@ const DsLop: React.FC = () => {
     const fetchLopHocData = async () => {
       setLoading(true);
       try {
+        const token = localStorage.getItem('token');
         const response = await axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         const lopHocData = response.data;
 
-        const lopHocWithSoLuong = await Promise.all(
+        const lopHocWithDetails = await Promise.all(
           lopHocData.map(async (lopHoc: LopHocTypeWithMax) => {
+            let soLuongHienTai = 0;
+            let hasLichHoc = false;
+
             try {
+              // Kiểm tra lịch học
+              const lichHocResponse = await axios.get(
+                `http://localhost:8081/api/lichhoc/getLichHocByMaLop/${lopHoc.maLopHoc}`,
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              );
+              hasLichHoc = lichHocResponse.data && lichHocResponse.data.length > 0;
+            } catch (error) {
+              console.error(`Lỗi khi kiểm tra lịch học của lớp ${lopHoc.maLopHoc}`);
+            }
+
+            try {
+              // Lấy số lượng học viên
               const hocVienResponse = await axios.get(
                 `http://localhost:8081/api/lophoc/ds-hocvien?maLopHoc=${lopHoc.maLopHoc}`,
                 {
-                  headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                  },
+                  headers: { Authorization: `Bearer ${token}` },
                 }
               );
 
-              const soLuongHienTai = hocVienResponse.data.filter((hocVien: any) => hocVien.maLopHoc === lopHoc.maLopHoc).length;
-
-              return { ...lopHoc, soLuongToiDa: lopHoc.soLuongMax, soLuong: soLuongHienTai };
+              soLuongHienTai = hocVienResponse.data.filter(
+                (hocVien: any) => hocVien.maLopHoc === lopHoc.maLopHoc
+              ).length;
             } catch (error) {
               message.error(`Lỗi khi lấy dữ liệu học viên của lớp ${lopHoc.maLopHoc}`);
-              return { ...lopHoc, soLuongToiDa: lopHoc.soLuongMax, soLuong: 0 };
             }
+
+            return {
+              ...lopHoc,
+              soLuongToiDa: lopHoc.soLuongMax,
+              soLuong: soLuongHienTai,
+              trangThai: hasLichHoc ? 'Đã Có Lịch Học' : 'Chưa Có Lịch Học',
+            };
           })
         );
 
-        setData(lopHocWithSoLuong);
-        setFilteredData(lopHocWithSoLuong); 
+        setData(lopHocWithDetails);
+        setFilteredData(lopHocWithDetails);
       } catch (error) {
         message.error('Lỗi khi lấy dữ liệu lớp học');
       } finally {
@@ -67,7 +89,7 @@ const DsLop: React.FC = () => {
       item.maLopHoc.toLowerCase().includes(value.toLowerCase()) ||
       item.tenLopHoc.toLowerCase().includes(value.toLowerCase())
     );
-    setFilteredData(filtered); 
+    setFilteredData(filtered);
   };
 
   const columns = [
@@ -85,8 +107,16 @@ const DsLop: React.FC = () => {
       title: 'Số Lượng Học Viên',
       dataIndex: 'soLuong',
       key: 'soLuong',
-      render: (soLuong: number, record: LopHocTypeWithMax) => (
-        `${soLuong}/${record.soLuongMax}`
+      render: (soLuong: number, record: LopHocTypeWithMax) => `${soLuong}/${record.soLuongToiDa}`,
+    },
+    {
+      title: 'Trạng Thái',
+      dataIndex: 'trangThai',
+      key: 'trangThai',
+      render: (trangThai: string) => (
+        <span style={{ color: trangThai === 'Đã Có Lịch Học' ? 'green' : 'red' }}>
+          {trangThai}
+        </span>
       ),
     },
     {

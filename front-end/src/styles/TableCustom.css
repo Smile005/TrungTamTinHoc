@@ -184,3 +184,12 @@ body, html {
   position: relative;
   bottom: 50px;
 }
+.top-tip {
+  font-size: 20px;
+  margin-right: 10px;
+  color: #1b6fb8;
+  white-space: pre-wrap; /* Đảm bảo xuống dòng đúng */
+  text-align: justify; /* Căn đều chữ */
+  max-width: 300px; /* Đặt chiều rộng tối đa cho box */
+  word-break: break-word;
+}

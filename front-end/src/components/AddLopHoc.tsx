@@ -24,7 +24,7 @@ const AddLopHoc: React.FC<AddLopHocProps> = ({ visible, onCancel }) => {
         },
         {
             title: 'Bước 2: Tạo lịch học',
-            content: <ThemLichHoc maLopHoc={createdMaLopHoc ?? 'LH0001'}/>,
+            content: <ThemLichHoc maLopHoc={createdMaLopHoc ?? 'LH0001'} />,
         },
     ];
 
@@ -141,15 +141,22 @@ const LopHocForm: React.FC<LopHocFormProps> = ({ onLopHocCreated }) => {
                     ))}
                 </Select>
             </Form.Item>
-            <Form.Item label="Giáo viên" name="maNhanVien" rules={[{ required: true, message: 'Vui lòng chọn giáo viên!' }]}>
-                <Select placeholder="Chọn giáo viên" style={{ width: 400 }}>
-                    {giangViens.map(giangVien => (
-                        <Option key={giangVien.maNhanVien} value={giangVien.maNhanVien}>
-                            {giangVien.maNhanVien} - {giangVien.tenNhanVien}
-                        </Option>
-                    ))}
+            <Form.Item
+                label="Giáo viên"
+                name="maNhanVien"
+                rules={[{ required: true, message: 'Vui lòng chọn giảng viên!' }]}
+            >
+                <Select placeholder="Chọn giảng viên" style={{ width: 400 }}>
+                    {giangViens
+                        .filter(giangVien => giangVien.trangThai !== 'Đã Nghỉ') 
+                        .map(giangVien => (
+                            <Option key={giangVien.maNhanVien} value={giangVien.maNhanVien}>
+                                {giangVien.maNhanVien} - {giangVien.tenNhanVien}
+                            </Option>
+                        ))}
                 </Select>
             </Form.Item>
+
             <Form.Item label="Ngày bắt đầu" name="ngayBatDau" rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu!' }]}>
                 <DatePicker style={{ width: 400 }} />
             </Form.Item>

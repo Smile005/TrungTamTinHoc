@@ -78,3 +78,10 @@
   margin-bottom: 8px;
   text-align: left;
 }
+.dk-row{
+  justify-content: center;
+  margin-right: 150px;
+}
+.dk-class{
+  width: 300px;
+}

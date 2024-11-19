@@ -3,7 +3,8 @@ import { Table, Layout, Tag, message, Button, Input } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/TableCustom.css';
-import { DeleteOutlined, LeftCircleOutlined } from '@ant-design/icons';
+import { LeftCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import moment from 'moment';
 import * as XLSX from 'xlsx';
 
@@ -13,6 +14,7 @@ const DsHocVienThi: React.FC = () => {
   const { maLopHoc } = useParams<{ maLopHoc: string }>();
   const navigate = useNavigate();
   const [hocVienThiList, setHocVienThiList] = useState<any[]>([]);
+  const [tenLopHoc, setTenLopHoc] = useState<string>(''); 
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
 
@@ -20,6 +22,15 @@ const DsHocVienThi: React.FC = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
+        const responseLopHoc = await axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+
+        const danhSachLopHoc = responseLopHoc.data;
+        const lopHoc = danhSachLopHoc.find((lop: any) => lop.maLopHoc === maLopHoc);
+        setTenLopHoc(lopHoc?.tenLopHoc || 'Không rõ');
+
+        // Gọi API lấy danh sách đủ điều kiện thi
         const responseThi = await axios.get(
           `http://localhost:8081/api/lophoc/xet-thi-cuoi-ky/${maLopHoc}`,
           {
@@ -31,6 +42,7 @@ const DsHocVienThi: React.FC = () => {
 
         const { danhSachThi } = responseThi.data;
 
+        // Gọi API lấy danh sách học viên
         const responseHocVien = await axios.get(
           `http://localhost:8081/api/hocvien/ds-hocvien`,
           {
@@ -55,7 +67,7 @@ const DsHocVienThi: React.FC = () => {
 
         setHocVienThiList(hocVienThiDetails);
       } catch (error) {
-        message.error('Lỗi khi lấy danh sách học viên đủ điều kiện thi');
+        message.error('Lỗi khi lấy dữ liệu');
       } finally {
         setLoading(false);
       }
@@ -130,7 +142,7 @@ const DsHocVienThi: React.FC = () => {
         </Button>
       </div>
       <h1 className="page-name1">
-        DANH SÁCH HỌC VIÊN ĐỦ TƯ CÁCH THI CUỐI KỲ LỚP: {maLopHoc}
+        DANH SÁCH HỌC VIÊN THI CUỐI KỲ LỚP: {tenLopHoc} ({maLopHoc})
       </h1>
       <div className='ds-layout'>
         <div className="button-container">
@@ -141,6 +153,9 @@ const DsHocVienThi: React.FC = () => {
             enterButton
           />
           <div className="button-container">
+            <Tooltip title="Phải sắp xếp lịch học trước thì mới được xét tư cách thi" className='top-tip'>
+              <ExclamationCircleOutlined />
+            </Tooltip>
             <Button className='custom-button' onClick={exportDsThiToExcel}>
               Xuất Excel
             </Button>

@@ -37,6 +37,7 @@ import HoaDon from './pages/HoaDon';
 import NhapDiem from './pages/NhapDiem';
 import DsLopNhapDiem from './pages/DsLopNhapDiem'; // Import trang mới
 import DsHocVienThi from './pages/DsHocVienThi';
+import DsLopThi from './pages/DsLopThi';
 import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
@@ -86,51 +87,7 @@ const App: React.FC = () => {
 
   const isLoginPage = location.pathname === '/login';
 
-  const currentPathKey = (() => {
-    switch (true) {
-      case location.pathname.startsWith('/nhapdiem'):
-        return '12';
-      case location.pathname.startsWith('/ds_lop_nhap_diem'):
-        return '12';
-      case location.pathname.startsWith('/taikhoan'):
-        return '1';
-      case location.pathname.startsWith('/nhanvien'):
-        return '2';
-      case location.pathname.startsWith('/hocvien'):
-        return '3';
-      case location.pathname.startsWith('/cahoc'):  
-        return '4';
-      case location.pathname.startsWith('/phonghoc'):
-        return '5';
-      case location.pathname.startsWith('/monhoc'):
-        return '6';
-      case location.pathname.startsWith('/timkiem'):
-        return '16';
-      case location.pathname.startsWith('/lophoc'):
-        return '7';
-      case location.pathname.startsWith('/lichhoc'):
-        return '8';
-      case location.pathname.startsWith('/ds_lop'):
-        return '10';
-      case location.pathname.startsWith('/hoa-don'):
-        return '15';
-      case location.pathname.startsWith('/ds_thi'):
-        return '11';
-      case location.pathname.startsWith('/tk_hocvien'):
-        return '13';
-      case location.pathname.startsWith('/tk_giangvien'):
-        return '14';
-      case location.pathname.startsWith('/tk_coso'):
-        return '17';
-      case location.pathname.startsWith('/testing'):
-        return '99';
-        case location.pathname.startsWith('/ds-hoc-vien-lop'):
-        return '10';
-      default:
-        return '0';
-    }
-  })();
-
+  
   const handleLogout = () => {
     dispatch(logout());
     message.success(t('logout'));
@@ -152,8 +109,8 @@ const App: React.FC = () => {
 
   const languageMenu = (
     <Menu onClick={(e) => handleLanguageChange(e.key)}>
-      <Menu.Item key="vi">Tiếng Việt</Menu.Item>
-      <Menu.Item key="en">English</Menu.Item>
+      <Menu.Item key="vi">VN_Tiếng Việt</Menu.Item>
+      <Menu.Item key="en">EN_English</Menu.Item>
       {/* <Menu.Item key="jp">日本語</Menu.Item> */}
     </Menu>
   );
@@ -207,7 +164,7 @@ const App: React.FC = () => {
                 </div>
               }
             >
-              <Menu className="custom-menu" mode="inline" selectedKeys={[currentPathKey]}>
+              <Menu className="custom-menu" mode="inline" >
                 <Menu.Item key="0" icon={<AppstoreOutlined />}>
                   <Link to="/">{t('home')}</Link>
                 </Menu.Item>
@@ -243,19 +200,16 @@ const App: React.FC = () => {
                   </Menu.Item>
                 </SubMenu>
                 <SubMenu key="group03" icon={<SolutionOutlined />} title={t('enrollment')}>
-                  {/* <Menu.Item key="9">
-                    <Link to="/dangky">{t('registration')}</Link>
-                  </Menu.Item> */}
                   <Menu.Item key="10">
                     <Link to="/ds_lop">{t('classList')}</Link>
                   </Menu.Item>
                   <Menu.Item key="15">
-                    <Link to="/hoa-don">{t('invoiceDetails')}</Link> 
+                    <Link to="/hoa-don">{t('invoiceDetails')}</Link>
                   </Menu.Item>
                 </SubMenu>
                 <SubMenu key="group04" icon={<ReadOutlined />} title={t('exam')}>
                   <Menu.Item key="11">
-                    <Link to="/ds_thi">{t('examList')}</Link>
+                    <Link to="/ds_lop_thi">{t('examList')}</Link>
                   </Menu.Item>
                   <Menu.Item key="12">
                     <Link to="/ds_lop_nhap_diem">{t('enterGrades')}</Link>
@@ -310,6 +264,7 @@ const App: React.FC = () => {
                   <Route path="/nhapdiem/:maLopHoc" element={isAuthenticated ? <NhapDiem /> : <Navigate to="/login" />} />
                   <Route path="/ds_lop_nhap_diem" element={isAuthenticated ? <DsLopNhapDiem /> : <Navigate to="/login" />} />
                   <Route path="/ds_thi/:maLopHoc" element={isAuthenticated ? <DsHocVienThi /> : <Navigate to="/login" />} />
+                  <Route path="/ds_lop_thi" element={isAuthenticated ? <DsLopThi /> : <Navigate to="/login" />} />
                 </Routes>
               </Content>
             </Layout>

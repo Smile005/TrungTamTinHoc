@@ -195,7 +195,6 @@ const NhanVien: React.FC = () => {
         <div className="button-container">
           <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>{t('addnv')}</Button> 
           <Button className='custom-button' onClick={handleExportExcel}>{t('exportExcel')}</Button> 
-          <Button className='custom-button'>{t('importExcel')}</Button>
         </div>
       </div>
       <Table

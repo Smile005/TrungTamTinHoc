@@ -253,7 +253,6 @@ const LopHoc: React.FC = () => {
           <Button className='custom-button' onClick={exportLopHocToExcel}>
             Xuất Excel
           </Button>
-          <Button className='custom-button'>Nhập Excel</Button>
         </div>
       </div>
       <Table

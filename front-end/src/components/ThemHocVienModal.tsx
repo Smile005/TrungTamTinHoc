@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, DatePicker, Radio, Button, message, Row } from 'antd';
+import { Modal, Form, Input, DatePicker, Radio, Button, message, Row, Col } from 'antd';
 import axios from 'axios';
 import { HocVienType } from '../types/HocVienType';
 import '../styles/ButtonCustom.css';
@@ -69,79 +69,61 @@ const ThemHocVienModal: React.FC<ThemHocVienModalProps> = ({ visible, onCancel, 
         form.resetFields();
         onCancel();
       }}
-      style={{ top: 10 }}
       footer={[
         <Button key="cancel" onClick={onCancel}>
           Hủy
         </Button>,
         <Button key="submit" type="primary" onClick={handleOk}>
           Thêm Học Viên
-        </Button>,
+        </Button>
       ]}
     >
       <div style={{ border: '1px solid #d9d9d9', padding: '16px', borderRadius: '8px' }}>
         <Form form={form} layout="vertical">
-          <Form.Item
-            name="tenHocVien"
-            label="Tên Học Viên"
-            rules={[{ required: true, message: 'Vui lòng nhập tên học viên!' }]}
-          >
-            <Input placeholder="Nhập tên học viên" />
-          </Form.Item>
-          {/* <Form.Item
-            name="img"
-            label="URL Ảnh"
-          >
-            <Input placeholder="URL hình ảnh" />
-          </Form.Item> */}
-          <Row className='custom-style'>
-            <Form.Item
-              name="ngaySinh"
-              label="Ngày Sinh"
-              rules={[{ required: true, message: 'Vui lòng nhập ngày sinh!' }]}
-            >
-              <DatePicker format="DD/MM/YYYY" placeholder="Chọn ngày sinh" />
-            </Form.Item>
-            <Form.Item
-              name="ngayVaoHoc"
-              label="Ngày Vào Học"
-            >
-              <DatePicker format="DD/MM/YYYY" placeholder="Chọn ngày vào học" />
-            </Form.Item>
+          <Row gutter={16}>
+            {/* Cột 1 */}
+            <Col span={12}>
+              <Form.Item
+                name="tenHocVien"
+                label="Tên Học Viên"
+                rules={[{ required: true, message: 'Vui lòng nhập tên học viên!' }]}
+              >
+                <Input placeholder="Nhập tên học viên" />
+              </Form.Item>
+              <Form.Item
+                name="ngaySinh"
+                label="Ngày Sinh"
+                rules={[{ required: true, message: 'Vui lòng nhập ngày sinh!' }]}
+              >
+                <DatePicker format="DD/MM/YYYY" placeholder="Chọn ngày sinh" style={{ width: '100%' }} />
+              </Form.Item>
+              <Form.Item name="gioiTinh" label="Giới Tính">
+                <Radio.Group>
+                  <Radio value="Nam">Nam</Radio>
+                  <Radio value="Nữ">Nữ</Radio>
+                </Radio.Group>
+              </Form.Item>
+              <Form.Item name="sdt" label="Số Điện Thoại">
+                <Input placeholder="Nhập số điện thoại" />
+              </Form.Item>
+            </Col>
+
+            {/* Cột 2 */}
+            <Col span={12}>
+              <Form.Item name="email" label="Email">
+                <Input placeholder="Nhập email" />
+              </Form.Item>
+              <Form.Item name="ngayVaoHoc" label="Ngày Vào Học">
+                <DatePicker format="DD/MM/YYYY" placeholder="Chọn ngày vào học" style={{ width: '100%' }} />
+              </Form.Item>
+              <Form.Item name="diaChi" label="Địa Chỉ">
+                <Input placeholder="Nhập địa chỉ" />
+              </Form.Item>
+              <Form.Item name="ghiChu" label="Ghi Chú">
+                <Input.TextArea placeholder="Nhập ghi chú" />
+              </Form.Item>
+            </Col>
           </Row>
-          <Form.Item
-            name="gioiTinh"
-            label="Giới Tính"
-          >
-            <Radio.Group>
-              <Radio value="Nam">Nam</Radio>
-              <Radio value="Nữ">Nữ</Radio>
-            </Radio.Group>
-          </Form.Item>
-          <Form.Item
-            name="sdt"
-            label="Số Điện Thoại"
-          >
-            <Input placeholder="Nhập số điện thoại" />
-          </Form.Item>
-          <Form.Item
-            name="email"
-            label="Email"
-          >
-            <Input placeholder="Nhập email" />
-          </Form.Item>
-          <Form.Item
-            name="diaChi"
-            label="Địa Chỉ"
-          >
-            <Input placeholder="Nhập địa chỉ" />
-          </Form.Item>
-          <Form.Item
-            name="ghiChu"
-            label="Ghi Chú"
-          >
-            <Input.TextArea placeholder="Nhập ghi chú" />
-          </Form.Item>
         </Form>
       </div>
     </Modal>

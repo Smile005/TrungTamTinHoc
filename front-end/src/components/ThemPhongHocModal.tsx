@@ -47,7 +47,7 @@ const ThemPhongHocModal: React.FC<ThemPhongHocModalProps> = ({ visible, onCancel
     return (
         <Modal
             title="Thêm Phòng Học"
-            visible={visible}
+            open={visible}
             onCancel={() => {
                 form.resetFields();
                 onCancel();

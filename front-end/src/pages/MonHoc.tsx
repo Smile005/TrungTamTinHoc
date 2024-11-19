@@ -154,6 +154,7 @@ const MonHoc: React.FC = () => {
             dataIndex: 'hocPhi',
             key: 'hocPhi',
             width: '10%',
+            render: (hocPhi: number) => `${hocPhi.toLocaleString('vi-VN')} VND`,
         },
         {
             title: 'Trạng Thái',
@@ -213,9 +214,6 @@ const MonHoc: React.FC = () => {
                     </Button>
                     <Button className="custom-button" onClick={exportMonHocToExcel}>
                         Xuất Excel
-                    </Button>
-                    <Button className="custom-button" onClick={handleImportExcel}>
-                        Nhập Excel
                     </Button>
                 </div>
             </div>
