@@ -6,7 +6,8 @@ export interface LopHocType {
     tenMonHoc?:string;
     maNhanVien?: string;
     tenNhanVien?: string;
-    ngayBatDau: string; 
+    ngayBatDau: string;
+    SL_HocVien?: number; 
     soLuongMax: string;
     soBuoiHoc?: number;
     trangThai: string;

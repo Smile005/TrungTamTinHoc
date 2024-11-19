@@ -12,7 +12,7 @@ const getMonHoc = async (req, res) => {
 
 const getMonHocHD = async (req, res) => {
   try {
-    const [results] = await pool.query('SELECT * FROM MonHoc WHERE trangThai = ?', ['Đang Giảng Dạy']);
+    const [results] = await pool.query('SELECT * FROM MonHoc WHERE trangThai = ?', ['Đang Hoạt Động']);
     res.json(results);
   } catch (error) {
     res.status(500).json({ message: 'Lỗi server', error });

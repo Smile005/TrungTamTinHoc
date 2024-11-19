@@ -83,7 +83,7 @@ const ThemLopHocModal: React.FC<ThemLopHocModalProps> = ({ visible, onCancel, on
     return (
         <Modal
             title="Thêm Lớp Học"
-            visible={visible}
+            open={visible}
             onCancel={() => {
                 form.resetFields();
                 onCancel();

@@ -16,7 +16,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
     const [lopHoc, setLopHoc] = useState<LopHocType | null>(null);
     const [loading, setLoading] = useState<boolean>(true); // Trạng thái loading
     const [error, setError] = useState<string | null>(null);
-    const [buoiHocs, setBuoiHocs] = useState<LichHocType[]>([]);
+    const [lichHocs, setLichHocs] = useState<LichHocType[]>([]);
     const [caHocList, setCaHocList] = useState<{ maCa: string; batDau: string; ketThuc: string, trangThai: string }[]>([]);
     const [phongHocList, setPhongHocList] = useState<{ maPhong: string; soLuong: number, trangThai: string }[]>([]);
 
@@ -24,6 +24,14 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
     const [selectedCaHoc, setSelectedCaHoc] = useState<string | undefined>();
     const [selectedPhong, setSelectedPhong] = useState<string | undefined>();
     const [selectedSoBuoi, setSelectedSoBuoi] = useState<number | undefined>(10);
+
+    const [totalSoBuoi, setTotalSoBuoi] = useState(0);
+
+    useEffect(() => {
+        // Tính tổng số buổi học
+        const total = lichHocs.reduce((sum, lopHoc) => sum + (lopHoc.soBuoi || 0), 0);
+        setTotalSoBuoi(total);
+    }, [lichHocs]);
 
     useEffect(() => {
         const fetchLopHocData = async () => {
@@ -45,7 +53,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                         headers: { Authorization: `Bearer ${token}` },
                     }).catch((error) => {
                         if (error.response && error.response.status === 404) {
-                            setBuoiHocs([]);
+                            setLichHocs([]);
                         }
                     }),
                     axios.get('http://localhost:8081/api/cahoc', {
@@ -57,7 +65,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                 ]);
 
                 setLopHoc(lopHocResponse.data || null);
-                setBuoiHocs(lichHocResponse?.data || []);
+                setLichHocs(lichHocResponse?.data || []);
                 setCaHocList(caHocResponse.data || []);
                 setPhongHocList(phongHocResponse.data || []);
                 setLoading(false);
@@ -132,7 +140,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                 },
             });
 
-            setBuoiHocs((prevBuoiHocs) => [...prevBuoiHocs, response.data.lichHoc]);
+            setLichHocs((prevBuoiHocs) => [...prevBuoiHocs, response.data.lichHoc]);
             message.success('Lịch học đã được tạo thành công!');
             resetForm();
         } catch (error: any) {
@@ -159,7 +167,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                         headers: { Authorization: `Bearer ${token}` },
                     });
 
-                    setBuoiHocs(buoiHocs.filter(buoiHoc => buoiHoc.maLichHoc !== maLichHoc));
+                    setLichHocs(lichHocs.filter(lichHoc => lichHoc.maLichHoc !== maLichHoc));
                     message.success('Xóa lịch học thành công!');
                 } catch (error) {
                     console.error('Lỗi khi xóa lịch học:', error);
@@ -197,84 +205,106 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
     return (
         <div>
             <h2>Thông Tin Lớp Học</h2>
-            <Row className='custom-style03'>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <p><strong>Mã lớp học:</strong> {maLopHoc}</p>
-                    <p><strong>Tên lớp học:</strong> {lopHoc?.tenLopHoc}</p>
-                </div>
-            </Row>
-            <Row className='custom-style03'>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <p><strong>Môn học:</strong> {lopHoc?.tenMonHoc}</p>
-                    <p><strong>Giảng viên:</strong> {lopHoc?.tenNhanVien}</p>
-                </div>
-            </Row>
-            <Row className='custom-style03'>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <p><strong>Số học viên:</strong> 0 / {lopHoc?.soLuongMax}</p>
-                    <p><strong>Số buổi học:</strong> 0 / {lopHoc?.soBuoiHoc}</p>
-                </div>
-            </Row>
+            <div className="custom-info">
+                {/* Dòng 1 */}
+                <Row gutter={[16, 16]}>
+                    <Col span={8}>
+                        <span><b>Mã lớp học:</b> {maLopHoc}</span>
+                    </Col>
+                    <Col span={8}>
+                        <span><b>Tên lớp học:</b> {lopHoc?.tenLopHoc}</span>
+                    </Col>
+                </Row>
+                {/* Dòng 2 */}
+                <Row gutter={[16, 16]}>
+                    <Col span={8}>
+                        <span><b>Môn học:</b> {lopHoc?.tenMonHoc}</span>
+                    </Col>
+                    <Col span={8}>
+                        <span><b>Giảng viên:</b> {lopHoc?.tenNhanVien}</span>
+                    </Col>
+                </Row>
+                {/* Dòng 3 */}
+                <Row gutter={[16, 16]}>
+                    <Col span={8}>
+                        <span><b>Số học viên:</b> {lopHoc?.SL_HocVien} / {lopHoc?.soLuongMax}</span>
+                    </Col>
+                    <Col span={8}>
+                        <span><b>Số buổi học:</b> {totalSoBuoi} / {lopHoc?.soBuoiHoc}</span>
+                    </Col>
+                </Row>
+            </div>
 
             <h3>Thêm Lịch Học</h3>
-            <Row gutter={16}>
-                <Col>
-                    <Select value={selectedThu} placeholder="Chọn thứ" onChange={setSelectedThu} style={{ width: 100 }}>
+            <Row gutter={[16, 16]}>
+                <Col span={3} style={{ width: '100%' }}>
+                    <Select
+                        value={selectedThu}
+                        placeholder="Chọn thứ"
+                        onChange={setSelectedThu}
+                        style={{ width: '100%' }}
+                    >
                         {daysOfWeek.map(day => (
                             <Option key={day.value} value={day.value}>{day.label}</Option>
                         ))}
                     </Select>
                 </Col>
-                <Col>
+
+                <Col span={5} style={{ width: '100%' }}>
                     <Select
                         value={selectedCaHoc}
                         placeholder="Chọn ca học"
                         onChange={setSelectedCaHoc}
-                        style={{ width: 120 }}
+                        style={{ width: '100%' }}
                     >
                         {caHocList
-                            .filter(ca => ca.trangThai !== 'Ngưng Hoạt Động') 
+                            .filter(ca => ca.trangThai !== 'Ngưng Hoạt Động')
                             .map(ca => (
                                 <Option key={ca.maCa} value={ca.maCa}>
-                                    {ca.batDau} - {ca.ketThuc}
+                                    {ca.maCa}: {ca.batDau} - {ca.ketThuc}
                                 </Option>
                             ))}
                     </Select>
-
                 </Col>
-                <Col>
+
+                <Col span={5} style={{ width: '100%' }}>
                     <Select
                         value={selectedPhong}
                         placeholder="Chọn phòng học"
                         onChange={setSelectedPhong}
-                        style={{ width: 150 }}
+                        style={{ width: '100%' }}
                     >
                         {phongHocList
-                            .filter(phong => phong.trangThai !== 'Ngưng hoạt động') 
+                            .filter(phong => phong.trangThai !== 'Ngưng hoạt động')
                             .map(phong => (
                                 <Option key={phong.maPhong} value={phong.maPhong}>
-                                    {phong.maPhong}
+                                    {phong.maPhong} - {phong.soLuong} chỗ ngồi
                                 </Option>
                             ))}
                     </Select>
-
                 </Col>
-                <Col>
+
+                <Col span={3} style={{ width: '100%' }}>
                     <InputNumber
                         min={1}
                         max={lopHoc?.soBuoiHoc}
                         value={selectedSoBuoi}
                         onChange={handleSoBuoiChange}
                         placeholder="Số buổi học"
+                        style={{ width: '100%' }}
                     />
                 </Col>
-                <Col>
-                    <Button type="primary" onClick={createLichHoc}>Thêm lịch học</Button>
+
+                <Col span={4} style={{ width: '100%' }}>
+                    <Button type="primary" onClick={checkLickHoc} style={{ width: '100%' }}>Kiểm tra</Button>
                 </Col>
 
+                <Col span={4} style={{ width: '100%' }}>
+                    <Button type="primary" onClick={createLichHoc} style={{ width: '100%' }}>Thêm lịch học</Button>
+                </Col>
             </Row>
 
-            <Table dataSource={buoiHocs} columns={columns} rowKey="maLichHoc" />
+            <Table dataSource={lichHocs} columns={columns} rowKey="maLichHoc" />
         </div>
     );
 };

@@ -393,141 +393,157 @@ const LopHocForm: React.FC<{
     );
   };
 
-  const HoaDonForm: React.FC<{
-    hocVien: { maHocVien: string; tenHocVien: string };
-    selectedRowKeys: React.Key[];
-    setSelectedRowKeys: (value: React.Key[]) => void;
-    setInvoiceDetails: (details: ChiTietHDType[]) => void;
-    setTotalAmount: (amount: number) => void;
-    setMaHoaDon: (maHoaDon: string) => void;
-  }> = ({ hocVien, selectedRowKeys, setSelectedRowKeys, setInvoiceDetails, setTotalAmount, setMaHoaDon }) => {
-    const [dataSource, setDataSource] = useState<ChiTietHDType[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [tenNhanVien, setTenNhanVien] = useState<string>(''); // Thêm state để lưu tên nhân viên
-    const maNhanVien = useSelector((state: RootState) => state.auth.userInfo?.maNhanVien) || '';
-    const ngayTaoHoaDon = new Date().toISOString();
-    const [totalAmount, internalSetTotalAmount] = useState<number>(0);
-  
-    const columns = [
-      { title: 'Mã lớp học', dataIndex: 'maLopHoc' },
-      { title: 'Tên lớp học', dataIndex: 'tenLopHoc' },
-      { title: 'Học phí', dataIndex: 'hocPhi', render: (hocPhi: number) => hocPhi.toLocaleString() },
-      { title: 'Trạng thái', dataIndex: 'trangThai' },
-    ];
-  
-    const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-      setSelectedRowKeys(newSelectedRowKeys);
-      const selectedRows = dataSource.filter((item) => newSelectedRowKeys.includes(item.maLopHoc));
-      const total = selectedRows.reduce((sum, row) => sum + row.hocPhi, 0);
-      internalSetTotalAmount(total);
-      setTotalAmount(total);
-    };
-  
-    const rowSelection: TableRowSelection<ChiTietHDType> = {
-      selectedRowKeys,
-      onChange: onSelectChange,
-    };
-  
-    const handleCreateInvoice = async () => {
-      if (selectedRowKeys.length === 0) {
-        message.error('Vui lòng chọn ít nhất một lớp học để tạo hóa đơn.');
-        return;
-      }
-  
-      try {
-        const chiTietHD = selectedRowKeys.map((maLopHoc) => ({ maLopHoc: maLopHoc as string }));
-        const payload = { maNhanVien, maHocVien: hocVien.maHocVien, chiTietHD };
-        const response = await axios.post('http://localhost:8081/api/hoadon/them-hoadon', payload, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
-          },
-        });
-  
-        message.success('Tạo hóa đơn thành công!');
-        const invoiceDetailsResponse = await axios.get(`http://localhost:8081/api/hoadon/ds-hoadon?maHocVien=${hocVien.maHocVien}&maHoaDon=${response.data.maHoaDon}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-  
-        setInvoiceDetails(invoiceDetailsResponse.data);
-        setMaHoaDon(response.data.maHoaDon);
-      } catch (error) {
-        console.error('Error details:', error);
-        message.error('Lỗi khi tạo hóa đơn');
-      }
-    };
-  
-    // Thêm API call để lấy danh sách nhân viên
-    useEffect(() => {
-      const fetchDanhSachNhanVien = async () => {
-        if (!maNhanVien) return;
-  
-        try {
-          const token = localStorage.getItem('token');
-          const response = await axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-  
-          // Tìm tên nhân viên theo mã nhân viên
-          const nhanVien = response.data.find((nv: { maNhanVien: string }) => nv.maNhanVien === maNhanVien);
-          setTenNhanVien(nhanVien ? nhanVien.tenNhanVien : 'Không xác định');
-        } catch (error) {
-          message.error('Không thể lấy danh sách nhân viên');
-        }
-      };
-  
-      fetchDanhSachNhanVien();
-    }, [maNhanVien]);
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        setLoading(true);
-        try {
-          const token = localStorage.getItem('token');
-          const response = await axios.get(
-            `http://localhost:8081/api/lophoc/ds-theo-maHV/${hocVien.maHocVien}`,
-            { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
-          );
-  
-          const dataWithKeys = response.data.map((item: any) => ({ ...item, key: item.maLopHoc }));
-          setDataSource(dataWithKeys);
-          setLoading(false);
-        } catch (error) {
-          message.error('Không thể lấy danh sách lớp học');
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      if (hocVien.maHocVien) {
-        fetchData();
-      }
-    }, [hocVien.maHocVien]);
-  
-    return (
-      <>
-        <h1>Thông tin hóa đơn</h1>
-        <p>
-          <span>Mã nhân viên: {maNhanVien} - </span>
-          <span>Tên nhân viên: {tenNhanVien}</span> {/* Hiển thị tên nhân viên */}
-        </p>
-        <p>
-          <span>Mã học viên: {hocVien.maHocVien} - </span>
-          <span>Tên học viên: {hocVien.tenHocVien}</span>
-        </p>
-        <p>
-          <span>Ngày tạo hóa đơn: {moment(ngayTaoHoaDon).format("DD/MM/YYYY")}</span>
-        </p>
-        <h1>Chi tiết hóa đơn</h1>
-        <Table<ChiTietHDType> rowSelection={rowSelection} columns={columns} dataSource={dataSource} loading={loading} pagination={false} />
-        <h1>Thành tiền: {totalAmount.toLocaleString()} VND</h1>
-        <Button type="primary" onClick={handleCreateInvoice}>Thanh toán</Button>
-      </>
-    );
+const HoaDonForm: React.FC<{
+  hocVien: { maHocVien: string; tenHocVien: string };
+  selectedRowKeys: React.Key[];
+  setSelectedRowKeys: (value: React.Key[]) => void;
+  setInvoiceDetails: (details: ChiTietHDType[]) => void;
+  setTotalAmount: (amount: number) => void;
+  setMaHoaDon: (maHoaDon: string) => void;
+}> = ({ hocVien, selectedRowKeys, setSelectedRowKeys, setInvoiceDetails, setTotalAmount, setMaHoaDon }) => {
+  const [dataSource, setDataSource] = useState<ChiTietHDType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [tenNhanVien, setTenNhanVien] = useState<string>(''); // Thêm state để lưu tên nhân viên
+  const maNhanVien = useSelector((state: RootState) => state.auth.userInfo?.maNhanVien) || '';
+  const ngayTaoHoaDon = new Date().toISOString();
+  const [totalAmount, internalSetTotalAmount] = useState<number>(0);
+
+  const columns = [
+    { title: 'Mã lớp học', dataIndex: 'maLopHoc' },
+    { title: 'Tên lớp học', dataIndex: 'tenLopHoc' },
+    { title: 'Học phí', dataIndex: 'hocPhi', render: (hocPhi: number) => hocPhi.toLocaleString() },
+    { title: 'Trạng thái', dataIndex: 'trangThai' },
+  ];
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+    const selectedRows = dataSource.filter((item) => newSelectedRowKeys.includes(item.maLopHoc));
+    const total = selectedRows.reduce((sum, row) => sum + row.hocPhi, 0);
+    internalSetTotalAmount(total);
+    setTotalAmount(total);
   };
-  
+
+  const rowSelection: TableRowSelection<ChiTietHDType> = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  const handleCreateInvoice = async () => {
+    if (selectedRowKeys.length === 0) {
+      message.error('Vui lòng chọn ít nhất một lớp học để tạo hóa đơn.');
+      return;
+    }
+
+    try {
+      const chiTietHD = selectedRowKeys.map((maLopHoc) => ({ maLopHoc: maLopHoc as string }));
+      const payload = { maNhanVien, maHocVien: hocVien.maHocVien, chiTietHD };
+      const response = await axios.post('http://localhost:8081/api/hoadon/them-hoadon', payload, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      message.success('Tạo hóa đơn thành công!');
+      const invoiceDetailsResponse = await axios.get(`http://localhost:8081/api/hoadon/ds-hoadon?maHocVien=${hocVien.maHocVien}&maHoaDon=${response.data.maHoaDon}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      setInvoiceDetails(invoiceDetailsResponse.data);
+      setMaHoaDon(response.data.maHoaDon);
+    } catch (error) {
+      console.error('Error details:', error);
+      message.error('Lỗi khi tạo hóa đơn');
+    }
+  };
+
+  // Thêm API call để lấy danh sách nhân viên
+  useEffect(() => {
+    const fetchDanhSachNhanVien = async () => {
+      if (!maNhanVien) return;
+
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        // Tìm tên nhân viên theo mã nhân viên
+        const nhanVien = response.data.find((nv: { maNhanVien: string }) => nv.maNhanVien === maNhanVien);
+        setTenNhanVien(nhanVien ? nhanVien.tenNhanVien : 'Không xác định');
+      } catch (error) {
+        message.error('Không thể lấy danh sách nhân viên');
+      }
+    };
+
+    fetchDanhSachNhanVien();
+  }, [maNhanVien]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(
+          `http://localhost:8081/api/lophoc/ds-theo-maHV/${hocVien.maHocVien}`,
+          { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+        );
+
+        const dataWithKeys = response.data.map((item: any) => ({ ...item, key: item.maLopHoc }));
+        setDataSource(dataWithKeys);
+        setLoading(false);
+      } catch (error) {
+        message.error('Không thể lấy danh sách lớp học');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (hocVien.maHocVien) {
+      fetchData();
+    }
+  }, [hocVien.maHocVien]);
+
+  return (
+    <>
+      <h1>Thông tin hóa đơn</h1>
+      <div className="custom-info">
+        {/* Dòng 1 */}
+        <Row gutter={[16, 16]}>
+          <Col span={12}>
+            <span><b>Mã nhân viên:</b> {maNhanVien}</span>
+          </Col>
+          <Col span={12}>
+            <span><b>Tên nhân viên:</b> {tenNhanVien}</span>
+          </Col>
+        </Row>
+        {/* Dòng 2 */}
+        <Row gutter={[16, 16]}>
+          <Col span={12}>
+            <span><b>Mã học viên:</b> {hocVien.maHocVien}</span>
+          </Col>
+          <Col span={12}>
+            <span><b>Tên học viên:</b> {hocVien.tenHocVien}</span>
+          </Col>
+        </Row>
+        {/* Dòng 3 */}
+        <Row gutter={[16, 16]}>
+          <Col span={24}>
+            <span><b>Ngày tạo hóa đơn:</b> {moment(ngayTaoHoaDon).format("DD/MM/YYYY")}</span>
+          </Col>
+        </Row>
+      </div>
+
+      <h1>Chi tiết hóa đơn</h1>
+      <Table<ChiTietHDType> rowSelection={rowSelection} columns={columns} dataSource={dataSource} loading={loading} pagination={false} />
+      <h1>Thành tiền: {totalAmount.toLocaleString()} VND</h1>
+      <Button type="primary" onClick={handleCreateInvoice}>Thanh toán</Button>
+    </>
+  );
+};
+
 const InvoiceSummary: React.FC<{ invoiceDetails: ChiTietHDType[], totalAmount: number, tenHocVien: string, maHoaDon: string }> = ({ invoiceDetails, totalAmount, tenHocVien, maHoaDon }) => {
   const filteredInvoiceDetails = invoiceDetails.filter(item => item.maHoaDon === maHoaDon);
 

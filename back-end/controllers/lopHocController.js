@@ -35,23 +35,27 @@ const getLopHocByMaLop = async (req, res) => {
   const { maLopHoc } = req.params; // Lấy mã lớp học từ URL params
   try {
     const [results] = await pool.query(`
-      SELECT 
-        LopHoc.maMonHoc, 
-        MonHoc.tenMonHoc, 
-        LopHoc.maLopHoc, 
-        LopHoc.tenLopHoc, 
-        LopHoc.maNhanVien, 
-        NhanVien.tenNhanVien, 
-        MonHoc.soBuoiHoc, 
-        LopHoc.ngayBatDau
-      FROM 
-        LopHoc
-      JOIN 
-        MonHoc ON LopHoc.maMonHoc = MonHoc.maMonHoc
-      JOIN 
-        NhanVien ON LopHoc.maNhanVien = NhanVien.maNhanVien
-      WHERE
-        LopHoc.maLopHoc = ?;
+    SELECT 
+      LopHoc.maMonHoc, 
+      MonHoc.tenMonHoc, 
+      LopHoc.maLopHoc, 
+      LopHoc.tenLopHoc, 
+      LopHoc.maNhanVien, 
+      NhanVien.tenNhanVien, 
+      MonHoc.soBuoiHoc, 
+      LopHoc.ngayBatDau,
+      (SELECT COUNT(*) 
+      FROM dsLopHoc 
+      WHERE dsLopHoc.maLopHoc = LopHoc.maLopHoc) AS SL_HocVien,
+      LopHoc.soLuongMax
+    FROM 
+      LopHoc
+    JOIN 
+      MonHoc ON LopHoc.maMonHoc = MonHoc.maMonHoc
+    JOIN 
+      NhanVien ON LopHoc.maNhanVien = NhanVien.maNhanVien
+    WHERE 
+      LopHoc.maLopHoc = ?;
     `, [maLopHoc]);
 
     if (results.length === 0) {

@@ -69,23 +69,27 @@ const checkTrungGiaoVien = async (maCa, maGiaoVien, ngayHoc) => {
 const kiemTraLichHoc = async (req, res) => {
     const { maCa, maPhong, soBuoi, thu, maGiaoVien, maLopHoc } = req.query;
     try {
-        // 1. Lấy thông tin lớp học
-        const lopHocResponse = await axios.get(`/api/lopHoc/${maLopHoc}`);
-        if (lopHocResponse.status !== 200) {
+        // 1. Lấy thông tin lớp học từ cơ sở dữ liệu
+        const query = 'SELECT ngayBatDau FROM LopHoc WHERE maLopHoc = ?';
+
+        // Sử dụng pool.promise().execute() để thực hiện truy vấn với await
+        const [results] = await pool.execute(query, [maLopHoc]);
+
+        if (results.length === 0) {
             return res.status(404).json({ message: 'Lớp học không tồn tại' });
         }
-        const { ngayBatDau } = lopHocResponse.data;
+
+        const { ngayBatDau } = results[0];
 
         // 2. Kiểm tra các buổi học cụ thể
         const buoiHoc = calculateLichHoc(ngayBatDau, thu, soBuoi);
-        console.log(buoiHoc)
+        console.log(buoiHoc);
 
         // 3. Kiểm tra phòng học có trống không
         for (const ngayHoc of buoiHoc) {
             const resultBuoiHoc = await checkTrungLichHoc(maCa, maPhong, ngayHoc);
             console.log(resultBuoiHoc.message);
 
-            // Nếu phát hiện trùng lịch, trả về thông báo lỗi
             if (resultBuoiHoc.trungLich) {
                 return res.status(400).json({ message: resultBuoiHoc.message });
             }
@@ -96,7 +100,6 @@ const kiemTraLichHoc = async (req, res) => {
             const resultGiaoVien = await checkTrungGiaoVien(maCa, maGiaoVien, ngayHoc);
             console.log(resultGiaoVien.message);
 
-            // Nếu phát hiện giáo viên trùng lịch, trả về thông báo lỗi
             if (resultGiaoVien.trungLich) {
                 return res.status(400).json({ message: resultGiaoVien.message });
             }
@@ -110,7 +113,6 @@ const kiemTraLichHoc = async (req, res) => {
         return res.status(500).json({ message: 'Lỗi hệ thống' });
     }
 };
-
 
 // Lấy lịch học theo mã lớp
 const getLichHocByMaLop = async (req, res) => {
