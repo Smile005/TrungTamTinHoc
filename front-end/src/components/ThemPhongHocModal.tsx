@@ -76,15 +76,15 @@ const ThemPhongHocModal: React.FC<ThemPhongHocModalProps> = ({ visible, onCancel
                         rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
                     >
                         <Select placeholder="Chọn tình trạng phòng học">
-                            <Select.Option value="Đang hoạt động">Đang Hoạt Động</Select.Option>
-                            <Select.Option value="Ngưng hoạt động">Ngưng Hoạt Động</Select.Option>
+                            <Select.Option value="Đang Hoạt Động">Đang Hoạt Động</Select.Option>
+                            <Select.Option value="Ngưng Hoạt Động">Ngưng Hoạt Động</Select.Option>
                         </Select>
                     </Form.Item>
                     <Form.Item
                         name="ghiChu"
                         label="Ghi Chú"
                     >
-                        <Input placeholder="Nhập ghi chú" />
+                        <Input.TextArea placeholder="Nhập ghi chú" />
                     </Form.Item>
                 </Form>
             </div>
