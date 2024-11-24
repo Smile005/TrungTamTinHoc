@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Select, DatePicker, Input, Button, Form, Modal, Steps, message, theme, Table, InputNumber } from 'antd';
+import { Select, DatePicker, Input, Button, Form, Modal, Steps, message, InputNumber } from 'antd';
 import axios from 'axios';
 import type { MonHocType } from '../types/MonHocType';
 import type { NhanVienType } from '../types/NhanVienType';
@@ -13,7 +13,7 @@ interface AddLopHocProps {
 }
 
 const AddLopHoc: React.FC<AddLopHocProps> = ({ visible, onCancel }) => {
-    const { token } = theme.useToken();
+    // const { token } = theme.useToken();
     const [current, setCurrent] = useState<number>(0);
     const [createdMaLopHoc, setCreatedMaLopHoc] = useState<string | null>(null);
 

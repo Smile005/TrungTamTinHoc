@@ -46,7 +46,7 @@ const DoiMatKhauModal: React.FC<DoiMatKhauModalProps> = ({ visible, onCancel, ma
   return (
     <Modal
       title="Đổi Mật Khẩu"
-      visible={visible}
+      open={visible}
       onCancel={onCancel}
       footer={[
         <Button key="cancel" onClick={onCancel}>

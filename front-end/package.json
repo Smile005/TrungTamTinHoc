@@ -2,6 +2,7 @@
   "name": "font-end",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8081",
   "dependencies": {
     "@ant-design/icons": "^5.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
@@ -43,7 +44,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && webpack-bundle-analyzer build/static/js/*.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -68,6 +69,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/react-router-dom": "^5.3.3",
-    "@types/react-router-hash-link": "^2.4.9"
+    "@types/react-router-hash-link": "^2.4.9",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }

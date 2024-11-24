@@ -3,7 +3,7 @@ POST http://localhost:8081/api/auth/register
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV0001",
+  "maNhanVien": "NV0002",
   "matKhau": "123"
 }
 
@@ -259,14 +259,27 @@ Content-Type: application/json
 
 ### Cập nhật nhân viên
 POST http://localhost:8081/api/nhanvien/sua-nhanvien
-Authorization: Bearer <JWT_TOKEN>
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzI0MTk2OTUsImV4cCI6MTczMjQzMDQ5NX0.n8p9ky-rIJT3r19jRy9UfA8f6VFny9IVV0yJ_cGsb8k
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV001",
+  "maNhanVien": "NV0002",
   "tenNhanVien": "Le Van C",
   "chucVu": "Trưởng phòng",
   "ngayVaoLam": "2023-12-01",
+  "gioiTinh": "Nam",
+  "sdt": "0906543210",
+  "email": "levanc@example.com"
+}
+
+### Thay đổi thông tin cá nhân
+POST http://localhost:8081/api/nhanvien/thong-tin-ca-nhan
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAyIiwicGhhblF1eWVuIjozLCJpYXQiOjE3MzI0MTg5OTQsImV4cCI6MTczMjQyOTc5NH0.RZzfC1M6BDgHTCOupyDs68Dkd3Mf9hqnwsVQovbjQhE
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV0002",
+  "tenNhanVien": "Le Van C",
   "gioiTinh": "Nam",
   "sdt": "0906543210",
   "email": "levanc@example.com"
@@ -480,19 +493,20 @@ Content-Type: application/json
 
 ### Lấy danh sách buổi học theo tháng (GET)
 GET http://localhost:8081/api/lichhoc/getBuoiHocByThang?month=2&year=2024
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzE0MjU0MDgsImV4cCI6MTczMTQzNjIwOH0.Q1Pd3wYexnSkTDpfhfdMV21klwW-9FcpdwIMYeh7NFY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzI0NjExMjMsImV4cCI6MTczMjQ3MTkyM30.CVG_NUDUcKmJB-z9JRY5bKb5K6WYWixsLsRZGgGL7XA
 
 ### Tạo buổi học (POST)
 POST http://localhost:8081/api/lichhoc/createBuoiHoc
-Authorization: Bearer {token}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzI0NjExMjMsImV4cCI6MTczMjQ3MTkyM30.CVG_NUDUcKmJB-z9JRY5bKb5K6WYWixsLsRZGgGL7XA
 Content-Type: application/json
 
 {
     "maLopHoc": "LH0001",
-    "maGiaoVien": "GV01",
-    "maCa": "CA01",
-    "maPhong": "PH01",
+    "maNhanVien": "NV0001",
+    "maCa": "CA001",
+    "maPhong": "P001",
     "ngayHoc": "2024-10-30",
+    "loai": "Ngày học",
     "ghiChu": "Buổi học đầu tiên"
 }
 
