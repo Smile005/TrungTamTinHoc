@@ -7,6 +7,8 @@ import { DsLopHocType } from '../types/DsHocVienLopHocType';
 import { DeleteOutlined, LeftCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import '../styles/TableCustom.css';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 import * as XLSX from 'xlsx';
 
 const { Search } = Input;
@@ -19,6 +21,7 @@ const DsHocVienLopHoc: React.FC = () => {
   const [hocVienData, setHocVienData] = useState<HocVienType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -193,15 +196,19 @@ const DsHocVienLopHoc: React.FC = () => {
             <Tooltip title="Lớp phải có lịch học thì mới có danh sách thi" className='top-tip'>
               <ExclamationCircleOutlined />
             </Tooltip>
-            <Button className='custom-button' onClick={() => navigate(`/nhapdiem/${maLopHoc}`)}>
-              Nhập Điểm
-            </Button>
-            <Button
-              className='custom-button'
-              onClick={() => navigate(`/ds_thi/${maLopHoc}`)}
-            >
-              Danh Sách Thi
-            </Button>
+            {userInfo?.phanQuyen !== 2 && (
+              <>
+                <Button className='custom-button' onClick={() => navigate(`/nhapdiem/${maLopHoc}`)}>
+                  Nhập Điểm
+                </Button>
+                <Button
+                  className='custom-button'
+                  onClick={() => navigate(`/ds_thi/${maLopHoc}`)}
+                >
+                  Danh Sách Thi
+                </Button>
+              </>
+            )}
             <Button className='custom-button' onClick={exportDsLopHocToExcel}>
               Xuất Excel
             </Button>
