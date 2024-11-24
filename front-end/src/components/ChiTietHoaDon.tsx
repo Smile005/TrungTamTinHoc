@@ -57,7 +57,7 @@ const ChiTietHoaDon: React.FC<ChiTietHoaDonProps> = ({ visible, onCancel, maHoaD
 
   return (
     <Modal
-      visible={visible}
+      open={visible}
       onCancel={onCancel}
       title="Hóa Đơn Điện Tử"
       footer={[

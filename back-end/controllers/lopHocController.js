@@ -69,7 +69,7 @@ const getLopHocByMaLop = async (req, res) => {
 
 // 3. Hàm lấy danh sách các lớp học đang mở đăng ký
 const getLopHocHD = async (req, res) => {
-  const trangThai = 'Có thể đăng ký';
+  const trangThai = 'Có Thể Đăng Ký';
 
   try {
     // Truy vấn các lớp học có trạng thái 'Có thể đăng ký'
@@ -234,7 +234,7 @@ const createLopHoc = async (req, res) => {
         maNhanVien,
         ngayBatDau,
         soLuongMax,
-        trangThai || 'Chưa mở đăng ký',
+        trangThai || 'Chưa Mở Đăng Ký',
         ghiChu || null
       ]);
 

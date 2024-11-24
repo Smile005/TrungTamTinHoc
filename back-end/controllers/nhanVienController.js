@@ -311,6 +311,7 @@ const xoaNhanVien = async (req, res) => {
     res.status(500).json({ message: 'Xóa nhân viên không thành công', error });
   }
 }
+
 const exportNhanVienToExcel = async (req, res) => {
   try {
     const [results] = await pool.query(`

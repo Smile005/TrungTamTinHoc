@@ -41,7 +41,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({ visible, onCancel, onLogo
       setLoading(false);
     }
   };
-
+    
   return (
     <Modal
       open={visible}

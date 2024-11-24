@@ -44,7 +44,7 @@ const DangKyLopHoc: React.FC<DangKyLopHocProps> = ({ visible, onCancel, hocVien 
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [maHoaDon, setMaHoaDon] = useState<string>('');
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-  const [tenNhanVien, setTenNhanVien] = useState<string>('');
+  // const [tenNhanVien, setTenNhanVien] = useState<string>('');
 
   const steps = [
     {

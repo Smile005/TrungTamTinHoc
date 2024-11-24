@@ -60,7 +60,7 @@ const HocVien: React.FC = () => {
 
     const showHocVienModal = () => setIsThemHocVienModalVisible(true);
 
-    const showImportModal = (type: 'hocvien' | 'nhanvien') => setIsImportModalVisible(true);
+    // const showImportModal = (type: 'hocvien' | 'nhanvien') => setIsImportModalVisible(true);
 
     const handleThemHocVien = (hocVien: HocVienType) => {
         fetchHocVien();

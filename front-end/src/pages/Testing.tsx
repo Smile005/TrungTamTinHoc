@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
-import AddLopHoc from '../components/AddLopHoc';
+import ThemBuoiHoc from '../components/ThemBuoiHoc';
 
 const Testing = () => {
   const [visible, setVisible] = useState(false);
@@ -17,7 +17,8 @@ const Testing = () => {
       <Button type="primary" onClick={openModal}>
         Open Steps Modal
       </Button>
-      <AddLopHoc
+      <ThemBuoiHoc
+        maLopHoc='LH0001'
         visible={visible}
         onCancel={closeModal}
       />
