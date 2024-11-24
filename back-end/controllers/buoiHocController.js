@@ -19,6 +19,7 @@ const getBuoiHocByThang = async (req, res) => {
                 bh.maCa, 
                 bh.maPhong, 
                 bh.ngayHoc, 
+                bh.loai,
                 bh.trangThai, 
                 bh.ghiChu
             FROM BuoiHoc bh
@@ -65,10 +66,10 @@ const getBuoiHocByMaLichHoc = async (req, res) => {
 };
 
 const createBuoiHoc = async (req, res) => {
-    const { maLopHoc, maGiaoVien, maCa, maPhong, ngayHoc, ghiChu } = req.body;
+    const { maLopHoc, maNhanVien, maCa, maPhong, ngayHoc, ghiChu } = req.body;
 
     // Xác thực cơ bản
-    if (!maLopHoc || !maGiaoVien || !maCa || !maPhong || !ngayHoc) {
+    if (!maLopHoc || !maNhanVien || !maCa || !maPhong || !ngayHoc) {
         return res.status(400).json({ message: "Thiếu thông tin cần thiết" });
     }
 
@@ -79,7 +80,7 @@ const createBuoiHoc = async (req, res) => {
             VALUES (?, ?, ?, ?, ?, ?, ?)
         `, [
             maLopHoc,
-            maGiaoVien,
+            maNhanVien,
             maCa,
             maPhong,
             moment(ngayHoc).format('YYYY-MM-DD'), // Đảm bảo ngày được định dạng chính xác

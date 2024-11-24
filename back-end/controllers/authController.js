@@ -41,6 +41,7 @@ const login = async (req, res) => {
     const token = jwt.sign({ maNhanVien: user[0].maNhanVien, phanQuyen: user[0].phanQuyen }, process.env.JWT_SECRET, { expiresIn: '3h' });
 
     const [nhanVien] = await pool.query('SELECT * FROM NhanVien WHERE maNhanVien = ?', [maNhanVien]);
+    nhanVien[0].phanQuyen = user[0]?.phanQuyen;
 
     res.json({ token, nhanVien: nhanVien[0] });
   } catch (error) {

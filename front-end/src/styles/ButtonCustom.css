@@ -85,3 +85,8 @@
 .dk-class{
   width: 300px;
 }
+
+.custom-label {
+  border-radius: 8px;
+  padding: 8px;
+}

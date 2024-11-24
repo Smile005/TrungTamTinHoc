@@ -21,7 +21,7 @@ const LichHocModal01: React.FC<EventModalProps> = ({
   return (
     <Modal
       title="Chức năng"
-      visible={visible}
+      open={visible}
       onCancel={onCancel}
       footer={null} // Không hiển thị các nút mặc định ở dưới modal
     >

@@ -74,7 +74,7 @@ const ImportExcelModal: React.FC<ImportExcelModalProps> = ({ visible, onCancel, 
     return (
         <Modal
             title={modalType === 'hocvien' ? 'Nhập Excel Học Viên' : 'Nhập Excel Nhân Viên'}
-            visible={visible}
+            open={visible}
             onCancel={onCancel}
             footer={null}
         >

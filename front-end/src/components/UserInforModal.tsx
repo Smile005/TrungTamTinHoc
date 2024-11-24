@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Table, Spin, message, Form, Input, Button, DatePicker, Select, Radio, Row, Col } from 'antd';
+import { Modal, Table, Spin, message, Form, Input, Button, DatePicker, Select, Radio } from 'antd';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
@@ -93,7 +93,7 @@ const UserInfoModal: React.FC<UserInfoModalProps> = ({ visible, onCancel, onLogo
 
   const tableData = nhanVien
     ? [
-      { key: 'Mã Nhân Viên', value: nhanVien.maNhanVien },
+      { key: 'Mã Nhân Viên', value: userInfo?.maNhanVien || 'Không có dữ liệu' },
       { key: 'Tên Nhân Viên', value: <Form.Item style={{ height: '8px' }} name="tenNhanVien" rules={[{ required: true, message: 'Vui lòng nhập tên nhân viên!' }]}><Input /></Form.Item> },
       { key: 'Chức Vụ', value: <Form.Item style={{ height: '8px' }} name="chucVu" rules={[{ required: true, message: 'Vui lòng chọn!' }]}><Select><Select.Option value="Giảng Viên">Giảng Viên</Select.Option><Select.Option value="Nhân Viên">Nhân Viên</Select.Option></Select></Form.Item> },
       { key: 'Giới Tính', value: <Form.Item style={{ height: '8px' }} name="gioiTinh"><Radio.Group><Radio value="Nam">Nam</Radio><Radio value="Nữ">Nữ</Radio></Radio.Group></Form.Item> },

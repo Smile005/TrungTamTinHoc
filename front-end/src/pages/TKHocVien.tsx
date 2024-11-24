@@ -152,7 +152,7 @@ const TKHocVien: React.FC = () => {
 
                 pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
 
-                let yPosition = pdfHeight + 30;
+                // let yPosition = pdfHeight + 30;
                 studentData.forEach((data) => {
                     
                 });

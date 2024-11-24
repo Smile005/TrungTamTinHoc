@@ -127,13 +127,17 @@ const LichHoc: React.FC = () => {
           <li
             key={`${item.maLopHoc}-${item.maCa}-${item.maPhong}`}
             style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Badge
-              color={
-                item.loai === 'Ngày học' ? 'primary'
-                  : item.loai === 'Ngày thi' ? 'warning'
-                    : 'default'}
-              text={item.tenLopHoc}
-            />
+            <div
+              className="custom-label"
+              style={{
+                backgroundColor: item.loai === 'Ngày học' ? '#33CCFF'
+                  : item.loai === 'Ngày thi' ? '#CCCC33'
+                    : '',
+              }}
+            >
+              {item.tenLopHoc}
+            </div>
+
           </li>
         ))}
       </ul>
@@ -229,9 +233,23 @@ const LichHoc: React.FC = () => {
                       borderBottom: '1px solid #e8e8e8',
                     }}
                   >
-                    <span style={{ fontWeight: 'bold', flex: 1 }}>
-                      - {item.tenLopHoc} - {item.maCa} - {item.maPhong} - {item.tenGiaoVien}
-                    </span>
+                    <div className='custom-label'
+                      style={{
+                        backgroundColor: item.loai === 'Ngày học' ? '#33CCFF'
+                          : item.loai === 'Ngày thi' ? '#CCCC33'
+                            : '',
+                      }}
+                    >
+                      <span style={{ fontWeight: 'bold', display: 'block' }}>
+                        Lớp: {item.tenLopHoc}
+                      </span>
+                      <span style={{ display: 'block' }}>
+                        Ca: {item.maCa} - Phòng: {item.maPhong}
+                      </span>
+                      <span style={{ display: 'block' }}>
+                        GV: {item.tenGiaoVien}
+                      </span>
+                    </div>
                     <Dropdown overlay={menu} trigger={['click']}>
                       <Button icon={<MoreOutlined />} />
                     </Dropdown>

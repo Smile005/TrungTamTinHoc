@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, Routes, Navigate, useLocation, Link, useNavigate } from 'react-router-dom';
+import { Route, Routes, Navigate, useLocation, Link } from 'react-router-dom';
 import { Layout, Menu, Button, message, Dropdown, theme } from 'antd';
 import {
   ScheduleOutlined,
@@ -87,7 +87,7 @@ const App: React.FC = () => {
 
   const isLoginPage = location.pathname === '/login';
 
-  
+
   const handleLogout = () => {
     dispatch(logout());
     message.success(t('logout'));
