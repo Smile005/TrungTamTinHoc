@@ -76,7 +76,7 @@ const App: React.FC = () => {
         });
         setUserList(response.data);
       } catch (error) {
-        message.error('Lỗi khi lấy danh sách tài khoản');
+        // message.error('Lỗi khi lấy danh sách tài khoản');
       }
     };
 
@@ -87,7 +87,7 @@ const App: React.FC = () => {
 
   const isLoginPage = location.pathname === '/login';
 
-  
+
   const handleLogout = () => {
     dispatch(logout());
     message.success(t('logout'));
@@ -140,6 +140,7 @@ const App: React.FC = () => {
                   <Button type="link" className='user-info' onClick={handleUserInfo}>
                     <p className='user-icon'><UserOutlined /></p>
                     <p className='user-name'>{getTenNhanVien(userInfo.maNhanVien)}</p>
+                    <p className='user-name'>{(userInfo.phanQuyen)}</p>
                   </Button>
                   <Button type="link" className='logout-btn' onClick={handleLogout} icon={<LogoutOutlined />} />
                 </div>
@@ -164,57 +165,80 @@ const App: React.FC = () => {
                 </div>
               }
             >
-              <Menu className="custom-menu" mode="inline" >
+              <Menu className="custom-menu" mode="inline">
                 <Menu.Item key="0" icon={<AppstoreOutlined />}>
                   <Link to="/">{t('home')}</Link>
                 </Menu.Item>
+
                 <SubMenu key="group01" icon={<AuditOutlined />} title={t('organization')}>
-                  <Menu.Item key="1">
-                    <Link to="/taikhoan">{t('accounts')}</Link>
-                  </Menu.Item>
-                  <Menu.Item key="2">
-                    <Link to="/nhanvien">{t('employees')}</Link>
-                  </Menu.Item>
+                  {userInfo?.phanQuyen !== 2 && (
+                    <>
+                      <Menu.Item key="1">
+                        <Link to="/taikhoan">{t('accounts')}</Link>
+                      </Menu.Item>
+                      <Menu.Item key="2">
+                        <Link to="/nhanvien">{t('employees')}</Link>
+                      </Menu.Item>
+                    </>
+                  )}
                   <Menu.Item key="3">
                     <Link to="/hocvien">{t('students')}</Link>
                   </Menu.Item>
-                  <Menu.Item key="4">
-                    <Link to="/cahoc">{t('shifts')}</Link>
-                  </Menu.Item>
-                  <Menu.Item key="5">
-                    <Link to="/phonghoc">{t('classrooms')}</Link>
-                  </Menu.Item>
-                  <Menu.Item key="6">
-                    <Link to="/monhoc">{t('subjects')}</Link>
-                  </Menu.Item>
-                  <Menu.Item key="16">
-                    <Link to="/timkiem">{t('search')}</Link>
-                  </Menu.Item>
+                  {userInfo?.phanQuyen !== 2 && (
+                    <>
+                      <Menu.Item key="4">
+                        <Link to="/cahoc">{t('shifts')}</Link>
+                      </Menu.Item>
+                      <Menu.Item key="5">
+                        <Link to="/phonghoc">{t('classrooms')}</Link>
+                      </Menu.Item>
+                      <Menu.Item key="6">
+                        <Link to="/monhoc">{t('subjects')}</Link>
+                      </Menu.Item>
+                      <Menu.Item key="16">
+                        <Link to="/timkiem">{t('search')}</Link>
+                      </Menu.Item>
+                    </>
+                  )}
+
                 </SubMenu>
-                <SubMenu key="group02" icon={<ScheduleOutlined />} title={t('planning')}>
-                  <Menu.Item key="7">
-                    <Link to="/lophoc">{t('classes')}</Link>
-                  </Menu.Item>
-                  <Menu.Item key="8">
-                    <Link to="/lichhoc">{t('schedule')}</Link>
-                  </Menu.Item>
-                </SubMenu>
+
+                {userInfo?.phanQuyen !== 2 && (
+                  <SubMenu key="group02" icon={<ScheduleOutlined />} title={t('planning')}>
+                    <Menu.Item key="7">
+                      <Link to="/lophoc">{t('classes')}</Link>
+                    </Menu.Item>
+                    {userInfo?.phanQuyen !== 2 && (
+                      <Menu.Item key="8">
+                        <Link to="/lichhoc">{t('schedule')}</Link>
+                      </Menu.Item>
+                    )}
+                  </SubMenu>
+                )}
+
                 <SubMenu key="group03" icon={<SolutionOutlined />} title={t('enrollment')}>
+
                   <Menu.Item key="10">
                     <Link to="/ds_lop">{t('classList')}</Link>
                   </Menu.Item>
+
                   <Menu.Item key="15">
                     <Link to="/hoa-don">{t('invoiceDetails')}</Link>
                   </Menu.Item>
                 </SubMenu>
+
                 <SubMenu key="group04" icon={<ReadOutlined />} title={t('exam')}>
                   <Menu.Item key="11">
                     <Link to="/ds_lop_thi">{t('examList')}</Link>
                   </Menu.Item>
-                  <Menu.Item key="12">
-                    <Link to="/ds_lop_nhap_diem">{t('enterGrades')}</Link>
-                  </Menu.Item>
+                  {userInfo?.phanQuyen !== 2 && (
+                    <Menu.Item key="12">
+                      <Link to="/ds_lop_nhap_diem">{t('enterGrades')}</Link>
+                    </Menu.Item>
+                  )}
                 </SubMenu>
+
+
                 <SubMenu key="group05" icon={<FundOutlined />} title={t('statistics')}>
                   <Menu.Item key="13">
                     <Link to="/tk_hocvien">{t('studentStatistics')}</Link>
@@ -226,10 +250,12 @@ const App: React.FC = () => {
                     <Link to="/tk_coso">{t('statusStatistics')}</Link>
                   </Menu.Item>
                 </SubMenu>
+
                 <Menu.Item key="99" icon={<SettingOutlined />}>
                   <Link to="/testing">{t('testing')}</Link>
                 </Menu.Item>
               </Menu>
+
             </Sider>
 
             <Layout style={{ padding: '0 24px 24px' }}>

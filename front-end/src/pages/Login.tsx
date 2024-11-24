@@ -33,8 +33,18 @@ const Login: React.FC = () => {
         // Tạo userInfo object từ dữ liệu trả về
         const userInfo = {
           maNhanVien: nhanVien.maNhanVien,
-          name: nhanVien.tenNhanVien,
+          tenNhanVien: nhanVien.tenNhanVien,
+          img: nhanVien.img,
+          chucVu: nhanVien.chucVu,
+          ngayVaoLam: nhanVien.ngayVaoLam,
+          gioiTinh: nhanVien.gioiTinh,
+          ngaySinh: nhanVien.ngaySinh,
+          sdt: nhanVien.sdt,
           email: nhanVien.email,
+          diaChi: nhanVien.diaChi,
+          trangThai: nhanVien.trangThai,
+          ghiChu: nhanVien.ghiChu,
+          phanQuyen: nhanVien.phanQuyen,
         };
 
         // Dispatch action login với token và userInfo

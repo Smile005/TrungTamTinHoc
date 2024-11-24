@@ -135,34 +135,87 @@ const createNhanVien = async (req, res) => {
 };
 
 const updateNhanVien = async (req, res) => {
-  const { maNhanVien, tenNhanVien, chucVu, ngayVaoLam, gioiTinh, ngaySinh, sdt, email, diaChi, trangThai, ghiChu } = req.body;
+  const {
+    maNhanVien,
+    tenNhanVien,
+    chucVu,
+    ngayVaoLam,
+    gioiTinh,
+    ngaySinh,
+    sdt,
+    email,
+    diaChi,
+    trangThai,
+    ghiChu,
+  } = req.body;
 
   if (!maNhanVien || !tenNhanVien) {
     return res.status(400).json({ message: 'Mã nhân viên và tên nhân viên là bắt buộc.' });
   }
 
   try {
+    // Kiểm tra nhân viên có tồn tại hay không
     const [existingNhanVien] = await pool.query('SELECT * FROM NhanVien WHERE maNhanVien = ?', [maNhanVien]);
     if (existingNhanVien.length === 0) {
       return res.status(404).json({ message: 'Nhân viên không tồn tại.' });
     }
 
-    await pool.query(
-      'UPDATE NhanVien SET tenNhanVien = ?, chucVu = ?, ngayVaoLam = ?, gioiTinh = ?, ngaySinh = ?, sdt = ?, email = ?, diaChi = ?, trangThai = ?, ghiChu = ? WHERE maNhanVien = ?',
-      [
-        tenNhanVien,
-        chucVu || null,
-        ngayVaoLam || null,
-        gioiTinh || null,
-        ngaySinh || null,
-        sdt || null,
-        email || null,
-        diaChi || null,
-        trangThai || 'Đang hoạt động',
-        ghiChu || null,
-        maNhanVien
-      ]
-    );
+    // Tạo danh sách các trường và giá trị cần cập nhật
+    const fieldsToUpdate = [];
+    const values = [];
+
+    if (tenNhanVien) {
+      fieldsToUpdate.push('tenNhanVien = ?');
+      values.push(tenNhanVien);
+    }
+    if (chucVu) {
+      fieldsToUpdate.push('chucVu = ?');
+      values.push(chucVu);
+    }
+    if (ngayVaoLam) {
+      fieldsToUpdate.push('ngayVaoLam = ?');
+      values.push(ngayVaoLam);
+    }
+    if (gioiTinh) {
+      fieldsToUpdate.push('gioiTinh = ?');
+      values.push(gioiTinh);
+    }
+    if (ngaySinh) {
+      fieldsToUpdate.push('ngaySinh = ?');
+      values.push(ngaySinh);
+    }
+    if (sdt) {
+      fieldsToUpdate.push('sdt = ?');
+      values.push(sdt);
+    }
+    if (email) {
+      fieldsToUpdate.push('email = ?');
+      values.push(email);
+    }
+    if (diaChi) {
+      fieldsToUpdate.push('diaChi = ?');
+      values.push(diaChi);
+    }
+    if (trangThai) {
+      fieldsToUpdate.push('trangThai = ?');
+      values.push(trangThai);
+    }
+    if (ghiChu) {
+      fieldsToUpdate.push('ghiChu = ?');
+      values.push(ghiChu);
+    }
+
+    // Nếu không có trường nào cần cập nhật
+    if (fieldsToUpdate.length === 0) {
+      return res.status(400).json({ message: 'Không có dữ liệu để cập nhật.' });
+    }
+
+    // Tạo truy vấn động
+    const query = `UPDATE NhanVien SET ${fieldsToUpdate.join(', ')} WHERE maNhanVien = ?`;
+    values.push(maNhanVien);
+
+    // Thực thi truy vấn
+    await pool.query(query, values);
 
     res.status(200).json({ message: 'Cập nhật nhân viên thành công.' });
   } catch (error) {
@@ -170,8 +223,17 @@ const updateNhanVien = async (req, res) => {
   }
 };
 
+
 const updateProfile = async (req, res) => {
-  const { maNhanVien, tenNhanVien, gioiTinh, ngaySinh, sdt, email, diaChi } = req.body;
+  const {
+    maNhanVien,
+    tenNhanVien,
+    gioiTinh,
+    ngaySinh,
+    sdt,
+    email,
+    diaChi,
+  } = req.body;
 
   try {
     const token = req.header('Authorization').replace('Bearer ', '');
@@ -186,22 +248,46 @@ const updateProfile = async (req, res) => {
       return res.status(404).json({ message: 'Nhân viên không tồn tại.' });
     }
 
-    await pool.query(
-      'UPDATE NhanVien SET tenNhanVien = ?, chucVu = ?, ngayVaoLam = ?, gioiTinh = ?, ngaySinh = ?, sdt = ?, email = ?, diaChi = ?, trangThai = ?, ghiChu = ? WHERE maNhanVien = ?',
-      [
-        tenNhanVien,
-        null,
-        null,
-        gioiTinh || null,
-        ngaySinh || null,
-        sdt || null,
-        email || null,
-        diaChi || null,
-        'Đang hoạt động',
-        null,
-        maNhanVien
-      ]
-    );
+    // Tạo danh sách các trường và giá trị cần cập nhật
+    const fieldsToUpdate = [];
+    const values = [];
+
+    if (tenNhanVien) {
+      fieldsToUpdate.push('tenNhanVien = ?');
+      values.push(tenNhanVien);
+    }
+    if (gioiTinh) {
+      fieldsToUpdate.push('gioiTinh = ?');
+      values.push(gioiTinh);
+    }
+    if (ngaySinh) {
+      fieldsToUpdate.push('ngaySinh = ?');
+      values.push(ngaySinh);
+    }
+    if (sdt) {
+      fieldsToUpdate.push('sdt = ?');
+      values.push(sdt);
+    }
+    if (email) {
+      fieldsToUpdate.push('email = ?');
+      values.push(email);
+    }
+    if (diaChi) {
+      fieldsToUpdate.push('diaChi = ?');
+      values.push(diaChi);
+    }
+
+    // Kiểm tra nếu không có trường nào cần cập nhật
+    if (fieldsToUpdate.length === 0) {
+      return res.status(400).json({ message: 'Không có dữ liệu để cập nhật.' });
+    }
+
+    // Tạo truy vấn động
+    const query = `UPDATE NhanVien SET ${fieldsToUpdate.join(', ')} WHERE maNhanVien = ?`;
+    values.push(maNhanVien);
+
+    // Thực thi truy vấn
+    await pool.query(query, values);
 
     res.status(200).json({ message: 'Cập nhật thông tin cá nhân thành công.' });
   } catch (error) {

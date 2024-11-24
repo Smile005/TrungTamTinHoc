@@ -14,7 +14,7 @@ POST http://localhost:8081/api/auth/login
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV0001",
+  "maNhanVien": "NV00016",
   "matKhau": "123"
 }
 
@@ -301,7 +301,7 @@ Content-Type: application/json
 
 ### Lấy danh sách tài khoản
 GET http://localhost:8081/api/auth/ds-taikhoan
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjg0NzEwNzIsImV4cCI6MTcyODQ3NDY3Mn0.M2_mlM4f99_gtaRNVpStuEFSHfsqsht0rNb9x4XH6WI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxMSIsInBoYW5RdXllbiI6MiwiaWF0IjoxNzMyNDE2NjY2LCJleHAiOjE3MzI0Mjc0NjZ9.ORHur_HFAjyS_M3TNHGm9xrA7GV-y2Vw_9vyUuGxBj4
 
 ### Cập nhập trạng thái tài khoản
 POST http://localhost:8081/api/auth/update-trangthai
@@ -532,3 +532,16 @@ GET http://localhost:8081/api/lichhoc//kiem-tra-lich-hoc?maCa=CA001&maPhong=P001
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzIwMDg5NjIsImV4cCI6MTczMjAxOTc2Mn0.Q25z6sbYpgbh-ZCsTHjDKTXcWM0xfhRrDjHM8IZxouI
 
 Content-Type: application/json
+
+### Thay đổi thông tin cá nhân
+POST http://localhost:8081/api/nhanvien/thong-tin-ca-nhan
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxNiIsInBoYW5RdXllbiI6MiwiaWF0IjoxNzMyNDE5NDYwLCJleHAiOjE3MzI0MzAyNjB9.Pkw5bZ60yV5FbyeWapcjHp119xsVn6PEjIzGLHWscS8
+Content-Type: application/json
+
+{
+  "maNhanVien": "NV00016",
+  "tenNhanVien": "Phú",
+  "gioiTinh": "Nam",
+  "sdt": "0906543210",
+  "email": "levanc@example.com"
+}
