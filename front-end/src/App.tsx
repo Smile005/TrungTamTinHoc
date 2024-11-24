@@ -140,7 +140,7 @@ const App: React.FC = () => {
                   <Button type="link" className='user-info' onClick={handleUserInfo}>
                     <p className='user-icon'><UserOutlined /></p>
                     <p className='user-name'>{getTenNhanVien(userInfo.maNhanVien)}</p>
-                    <p className='user-name'>{(userInfo.phanQuyen)}</p>
+                    {/* <p className='user-name'>{(userInfo.phanQuyen)}</p> */}
                   </Button>
                   <Button type="link" className='logout-btn' onClick={handleLogout} icon={<LogoutOutlined />} />
                 </div>

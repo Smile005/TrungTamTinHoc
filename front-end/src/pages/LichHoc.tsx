@@ -126,7 +126,7 @@ const LichHoc: React.FC = () => {
         {listDataForDay.map((item: BuoiHocType) => (
           <li
             key={`${item.maLopHoc}-${item.maCa}-${item.maPhong}`}
-            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
             <div
               className="custom-label"
               style={{
@@ -208,7 +208,7 @@ const LichHoc: React.FC = () => {
       </ConfigProvider>
 
       <Modal
-        title={`Details for ${selectedDate?.format('DD/MM/YYYY')}`}
+        title={`Chi tiết ngày ${selectedDate?.format('DD/MM/YYYY')}`}
         open={isLichHocVisible}
         onOk={handleOk}
         onCancel={handleCancel}
