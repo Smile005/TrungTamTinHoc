@@ -54,14 +54,31 @@ const DsHocVienThi: React.FC = () => {
 
         const danhSachHocVien = responseHocVien.data;
 
+        // Gọi API lấy điểm thường kỳ và giữa kỳ
+        const responseDiem = await axios.get(
+          `http://localhost:8081/api/lophoc/ds-hocvien?maLopHoc=${maLopHoc}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+          }
+        );
+
+        const danhSachDiem = responseDiem.data;
+
         const hocVienThiDetails = danhSachThi.map((maHocVien: string) => {
           const hocVien = danhSachHocVien.find((hv: any) => hv.maHocVien === maHocVien);
+          const diemHocVien = danhSachDiem.find(
+            (diem: any) => diem.maHocVien === maHocVien && diem.maLopHoc === maLopHoc // Kiểm tra cả maHocVien và maLopHoc
+          );
           return {
             maHocVien,
             tenHocVien: hocVien?.tenHocVien || 'Không rõ',
             gioiTinh: hocVien?.gioiTinh || 'Không rõ',
             ngaySinh: hocVien?.ngaySinh ? moment(hocVien.ngaySinh).format('DD/MM/YYYY') : 'Không rõ',
             sdt: hocVien?.sdt || 'Không rõ',
+            diemThuongKy: diemHocVien?.diemThuongKy || 'Chưa có',
+            diemGiuaKy: diemHocVien?.diemGiuaKy || 'Chưa có',
           };
         });
 
@@ -126,6 +143,16 @@ const DsHocVienThi: React.FC = () => {
       title: 'Số Điện Thoại',
       dataIndex: 'sdt',
       key: 'sdt',
+    },
+    {
+      title: 'Điểm Thường Kỳ',
+      dataIndex: 'diemThuongKy',
+      key: 'diemThuongKy',
+    },
+    {
+      title: 'Điểm Giữa Kỳ',
+      dataIndex: 'diemGiuaKy',
+      key: 'diemGiuaKy',
     },
   ];
 

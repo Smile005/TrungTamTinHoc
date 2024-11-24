@@ -65,7 +65,9 @@ const MonHoc: React.FC = () => {
                 }
             );
             message.success(`Xóa môn học thành công: ${maMonHoc}`);
-            setFilteredData(filteredData.filter((item) => item.maMonHoc !== maMonHoc));
+            const newData = filteredData.filter((item) => item.maMonHoc !== maMonHoc);
+            setFilteredData(newData);
+            setData(newData);
         } catch (error: any) {
             message.error(`Lỗi khi xóa môn học: ${error.response?.data?.message || error.message}`);
         }
@@ -94,17 +96,26 @@ const MonHoc: React.FC = () => {
     };
 
     const handleOk = (values: MonHocType) => {
-        setFilteredData((prevData) => [...prevData, values]);
+        const isDuplicate = data.some((item) => item.maMonHoc === values.maMonHoc);
+        if (isDuplicate) {
+            message.error('Mã môn học đã tồn tại!');
+            return;
+        }
+
+        const newData = [...data, values];
+        setData(newData);
+        setFilteredData(newData);
         setIsModalVisible(false);
     };
 
     const handleEditSubmit = (values: MonHocType) => {
         const updatedData = filteredData.map((item) =>
-            item.key === selectedRecord?.key ? { ...selectedRecord, ...values } : item
+            item.maMonHoc === selectedRecord?.maMonHoc ? { ...item, ...values } : item
         );
         setFilteredData(updatedData);
+        setData(updatedData); // Đảm bảo dữ liệu gốc cũng được cập nhật
         setIsEditModalVisible(false);
-        message.success('Sửa môn học thành công!');
+        // message.success('Sửa môn học thành công!');
     };
 
     // const handleImportExcel = () => {

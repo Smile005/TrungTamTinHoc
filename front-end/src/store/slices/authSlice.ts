@@ -2,8 +2,17 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 interface UserInfo {
   maNhanVien: string;
-  name: string;
+  tenNhanVien: string;
+  chucVu: string;
+  ngayVaoLam: string; // ISO Date format
+  gioiTinh: string;
+  ngaySinh: string; // ISO Date format
+  sdt: string;
   email: string;
+  diaChi: string;
+  trangThai: string;
+  ghiChu?: string; // Optional field
+  phanQuyen:number;
 }
 
 interface AuthState {

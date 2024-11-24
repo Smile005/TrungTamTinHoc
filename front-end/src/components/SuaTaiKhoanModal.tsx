@@ -111,8 +111,8 @@ const SuaTaiKhoanModal: React.FC<SuaTaiKhoanModalProps> = ({
             rules={[{ required: true, message: t('selectStatus') }]}
           >
             <Select placeholder={t('selectStatus')}>
-              <Select.Option value="Đang hoạt động">{t('active')}</Select.Option>
-              <Select.Option value="Đã khóa">{t('inactive')}</Select.Option>
+              <Select.Option value="Đang Hoạt Động">{t('active')}</Select.Option>
+              <Select.Option value="Đã Khóa">{t('inactive')}</Select.Option>
             </Select>
           </Form.Item>
         </Form>

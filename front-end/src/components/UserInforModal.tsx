@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Table, Spin, message, Form, Input, Button, DatePicker, Select, Radio } from 'antd';
+import React, { useState } from 'react';
+import { Modal, Spin, message, Form, Input, Button, Radio, Row, Col } from 'antd';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import { NhanVienType } from '../types/NhanVienType';
 import moment from 'moment';
 
 interface UserInfoModalProps {
@@ -14,134 +13,177 @@ interface UserInfoModalProps {
 
 const UserInfoModal: React.FC<UserInfoModalProps> = ({ visible, onCancel, onLogout }) => {
   const userInfo = useSelector((state: RootState) => state.auth.userInfo);
-  const [nhanVien, setNhanVien] = useState<NhanVienType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
 
-  useEffect(() => {
-    const fetchTaiKhoan = async () => {
-      if (userInfo && userInfo.maNhanVien) {
-        setLoading(true);
-        try {
-          const response = await axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            },
-          });
-
-          const danhSachTaiKhoan: NhanVienType[] = response.data;
-          const nhanVienData = danhSachTaiKhoan.find(tk => tk.maNhanVien === userInfo.maNhanVien);
-          setNhanVien(nhanVienData || null);
-
-          if (nhanVienData) {
-            form.setFieldsValue({
-              ...nhanVienData,
-              ngaySinh: nhanVienData.ngaySinh ? moment(nhanVienData.ngaySinh, 'YYYY-MM-DD') : null,
-              ngayVaoLam: nhanVienData.ngayVaoLam ? moment(nhanVienData.ngayVaoLam, 'YYYY-MM-DD') : null,
-            });
-          }
-        } catch (error) {
-          message.error('Lỗi khi lấy thông tin tài khoản');
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchTaiKhoan();
-  }, [userInfo, form]);
-
-  const handleUpdate = async () => {
+  const handleUpdate = async (values: any) => {
+    setLoading(true);
     try {
-      const values = await form.validateFields();
-      const formattedValues = {
-        ...values,
-        maNhanVien: nhanVien?.maNhanVien,
-        ngaySinh: values.ngaySinh ? values.ngaySinh.format('YYYY-MM-DD') : null,
-        ngayVaoLam: values.ngayVaoLam ? values.ngayVaoLam.format('YYYY-MM-DD') : null,
-      };
-
-      await axios.post('http://localhost:8081/api/nhanvien/sua-nhanvien', formattedValues, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json',
+      await axios.post(
+        'http://localhost:8081/api/nhanvien/thong-tin-ca-nhan',
+        {
+          ...values,
+          maNhanVien: userInfo?.maNhanVien,
+          ngaySinh: values.ngaySinh ? moment(values.ngaySinh).format('YYYY-MM-DD') : null,
         },
-      });
-
-      message.success('Cập nhật thông tin thành công');
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      message.success('Cập nhật thông tin cá nhân thành công!');
       onCancel();
     } catch (error) {
-      message.error('Cập nhật thông tin thất bại');
+      message.error('Cập nhật thông tin cá nhân thất bại!');
+    } finally {
+      setLoading(false);
     }
   };
-
-  const columns = [
-    {
-      title: 'Thông Tin',
-      dataIndex: 'key',
-      key: 'key',
-      width: '50%',
-      render: (text: string) => <strong>{text}</strong>,
-    },
-    {
-      title: 'Giá Trị',
-      dataIndex: 'value',
-      key: 'value',
-      width: '50%',
-    },
-  ];
-
-  const tableData = nhanVien
-    ? [
-      { key: 'Mã Nhân Viên', value: userInfo?.maNhanVien || 'Không có dữ liệu' },
-      { key: 'Tên Nhân Viên', value: <Form.Item style={{ height: '8px' }} name="tenNhanVien" rules={[{ required: true, message: 'Vui lòng nhập tên nhân viên!' }]}><Input /></Form.Item> },
-      { key: 'Chức Vụ', value: <Form.Item style={{ height: '8px' }} name="chucVu" rules={[{ required: true, message: 'Vui lòng chọn!' }]}><Select><Select.Option value="Giảng Viên">Giảng Viên</Select.Option><Select.Option value="Nhân Viên">Nhân Viên</Select.Option></Select></Form.Item> },
-      { key: 'Giới Tính', value: <Form.Item style={{ height: '8px' }} name="gioiTinh"><Radio.Group><Radio value="Nam">Nam</Radio><Radio value="Nữ">Nữ</Radio></Radio.Group></Form.Item> },
-      { key: 'Ngày Vào Làm', value: nhanVien.ngayVaoLam },
-      { key: 'Ngày Sinh', value: <Form.Item style={{ height: '8px' }} name="ngaySinh" rules={[{ required: true, message: 'Vui lòng chọn ngày sinh!' }]}><DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} /></Form.Item> },
-      { key: 'Số Điện Thoại', value: <Form.Item style={{ height: '8px' }} name="sdt"><Input /></Form.Item> },
-      { key: 'Email', value: <Form.Item style={{ height: '8px' }} name="email" rules={[{ type: 'email', message: 'Email không hợp lệ!' }]}><Input /></Form.Item> },
-      { key: 'Địa Chỉ', value: <Form.Item style={{ height: '8px' }} name="diaChi"><Input /></Form.Item> },
-      { key: 'Trạng Thái', value: nhanVien.trangThai },
-    ]
-    : [];
-
-
+    
   return (
     <Modal
       open={visible}
       onCancel={onCancel}
       footer={null}
       title="Thông Tin Người Dùng"
-      style={{ top: 0, left: 0, margin: '0 auto' }}
-      styles={{
-        body: {
-          padding: 0,
-        },
-      }}
+      style={{ top: 60, left: 0, margin: '0 auto' }}
     >
       {loading ? (
         <Spin size="large" />
       ) : (
-        <Form form={form} layout="vertical" onFinish={handleUpdate}>
-          <Table
-            dataSource={tableData}
-            columns={columns}
-            pagination={false}
-            rowKey="key"
-            bordered
-            showHeader={false}
-            style={{ marginTop: '16px' }}
-          />
+        <Form
+          form={form}
+          layout="vertical"
+          initialValues={{
+            ...userInfo,
+            ngayVaoLam: userInfo?.ngayVaoLam
+              ? moment(userInfo.ngayVaoLam, 'YYYY-MM-DD').format('DD/MM/YYYY')
+              : '',
+            ngaySinh: userInfo?.ngaySinh
+              ? moment(userInfo.ngaySinh, 'YYYY-MM-DD')
+              : null,
+          }}
+          onFinish={handleUpdate}
+        >
+          <Row gutter={16}>
+            {/* Cột bên trái */}
+            <Col span={12}>
+              <Row>
+                <Col span={24}>
+                  <Form.Item label="Mã Nhân Viên">
+                    <Input disabled value={userInfo?.maNhanVien} />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item label="Ngày Vào Làm">
+                    <Input
+                      disabled
+                      value={
+                        userInfo?.ngayVaoLam
+                          ? moment(userInfo.ngayVaoLam, 'YYYY-MM-DD')
+                            .add(1, 'days')
+                            .format('DD/MM/YYYY')
+                          : ''
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item label="Chức Vụ">
+                    <Input disabled value={userInfo?.chucVu} />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item label="Phân Quyền">
+                    <Input
+                      disabled
+                      value={
+                        userInfo?.phanQuyen === 1
+                          ? 'Nhân Viên Quản Lý'
+                          : userInfo?.phanQuyen === 2
+                            ? 'Nhân Viên Thu Chi'
+                            : 'Khác'
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    name="gioiTinh"
+                    label="Giới Tính"
+                    rules={[{ required: true, message: 'Vui lòng chọn giới tính!' }]}
+                  >
+                    <Radio.Group>
+                      <Radio value="Nam">Nam</Radio>
+                      <Radio value="Nữ">Nữ</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Col>
+
+            {/* Cột bên phải */}
+            <Col span={12}>
+              <Row>
+                <Col span={24}>
+                  <Form.Item label="Tên Nhân Viên">
+                    <Input disabled value={userInfo?.tenNhanVien} />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item label="Ngày Sinh">
+                    <Input
+                      disabled
+                      value={
+                        userInfo?.ngaySinh
+                          ? moment(userInfo.ngaySinh, 'YYYY-MM-DD')
+                            .add(1, 'days')
+                            .format('DD/MM/YYYY')
+                          : ''
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    name="sdt"
+                    label="Số Điện Thoại"
+                    rules={[{ required: true, message: 'Vui lòng nhập số điện thoại!' }]}
+                  >
+                    <Input placeholder="Nhập số điện thoại" />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item
+                    name="email"
+                    label="Email"
+                    rules={[{ type: 'email', message: 'Email không hợp lệ!' }]}
+                  >
+                    <Input placeholder="Nhập email" />
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item name="diaChi" label="Địa Chỉ">
+                    <Input placeholder="Nhập địa chỉ" />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ marginLeft: '385px', top: '20px' }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ marginLeft: '91%', top: '20px', transform: 'translateX(-50%)' }}
+            >
               Cập nhật
             </Button>
           </Form.Item>
         </Form>
-      )
-      }
-    </Modal >
+      )}
+    </Modal>
   );
 };
 

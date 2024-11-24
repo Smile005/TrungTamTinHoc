@@ -81,15 +81,15 @@ const SuaPhongHocModal: React.FC<SuaPhongHocModalProps> = ({ visible, onCancel, 
             rules={[{ required: true, message: 'Vui lòng chọn tình trạng!' }]}
           >
             <Select placeholder="Chọn tình trạng phòng học">
-              <Select.Option value="Đang hoạt động">Đang hoạt động</Select.Option>
-              <Select.Option value="Ngưng hoạt động">Ngưng hoạt động</Select.Option>
+              <Select.Option value="Đang Hoạt Động">Đang Hoạt Động</Select.Option>
+              <Select.Option value="Ngưng Hoạt Động">Ngưng Hoạt Động</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item
             name="ghiChu"
             label="Ghi Chú"
           >
-            <Input placeholder="Nhập ghi chú (nếu có)" />
+            <Input.TextArea placeholder="Nhập ghi chú (nếu có)" />
           </Form.Item>
         </Form>
       </div>

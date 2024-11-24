@@ -223,6 +223,7 @@ const updateNhanVien = async (req, res) => {
   }
 };
 
+
 const updateProfile = async (req, res) => {
   const {
     maNhanVien,
