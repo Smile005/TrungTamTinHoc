@@ -7,10 +7,13 @@ import SuaMonHocModal from '../components/SuaMonHocModal';
 import '../styles/TableCustom.css';
 import axios from 'axios';
 import * as XLSX from 'xlsx';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const { Search } = Input;
 
 const MonHoc: React.FC = () => {
+    const phanQuyen = useSelector((state: RootState) => state.auth.userInfo?.phanQuyen);
     const [searchText, setSearchText] = useState('');
     const [filteredData, setFilteredData] = useState<MonHocType[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -115,12 +118,7 @@ const MonHoc: React.FC = () => {
         setFilteredData(updatedData);
         setData(updatedData); // Đảm bảo dữ liệu gốc cũng được cập nhật
         setIsEditModalVisible(false);
-        // message.success('Sửa môn học thành công!');
     };
-
-    // const handleImportExcel = () => {
-    //     message.info('Chức năng nhập từ Excel!');
-    // };
 
     const exportMonHocToExcel = async () => {
         try {
@@ -206,6 +204,11 @@ const MonHoc: React.FC = () => {
             },
         },
     ];
+
+    const hasPermission = phanQuyen === 0 || phanQuyen === 1 || phanQuyen === 2;
+    if (!hasPermission) {
+      return <div>Bạn không có quyền truy cập trang này.</div>;
+    }
 
     return (
         <Layout>

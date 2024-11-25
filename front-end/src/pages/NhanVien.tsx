@@ -9,12 +9,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { fetchNhanVienData } from '../store/slices/nhanVienSlice';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next'; 
+import { useTranslation } from 'react-i18next';
 
 const { Search } = Input;
 
 const NhanVien: React.FC = () => {
-  const { t } = useTranslation(); 
+  const phanQuyen = useSelector((state: RootState) => state.auth.userInfo?.phanQuyen);
+  const { t } = useTranslation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isThemModalVisible, setIsThemModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<NhanVienType | null>(null);
@@ -25,7 +26,7 @@ const NhanVien: React.FC = () => {
   const [filteredData, setFilteredData] = useState<NhanVienType[]>([]);
 
   useEffect(() => {
-    dispatch(fetchNhanVienData()); 
+    dispatch(fetchNhanVienData());
   }, [dispatch]);
 
   const onSearch = (value: string) => {
@@ -43,7 +44,7 @@ const NhanVien: React.FC = () => {
       setSelectedRecord(record);
       setIsModalVisible(true);
     } else if (e.key === 'delete') {
-      deleteNhanVien(record.maNhanVien); 
+      deleteNhanVien(record.maNhanVien);
     }
   };
 
@@ -65,18 +66,18 @@ const NhanVien: React.FC = () => {
 
   const handleAddOk = () => {
     setIsThemModalVisible(false);
-    dispatch(fetchNhanVienData()); 
+    dispatch(fetchNhanVienData());
   };
 
   const deleteNhanVien = async (maNhanVien: string | undefined) => {
     if (!maNhanVien) {
-      message.error(t('deleteError')); 
+      message.error(t('deleteError'));
       return;
     }
 
     try {
-      await axios.post('http://localhost:8081/api/nhanvien/xoa-nhanvien', 
-        { maNhanVien }, 
+      await axios.post('http://localhost:8081/api/nhanvien/xoa-nhanvien',
+        { maNhanVien },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -84,18 +85,18 @@ const NhanVien: React.FC = () => {
           },
         }
       );
-      message.success(t('deleteSuccess')); 
-      dispatch(fetchNhanVienData()); 
+      message.success(t('deleteSuccess'));
+      dispatch(fetchNhanVienData());
     } catch (error) {
       console.error('Lỗi khi xóa nhân viên:', error);
-      message.error(t('deleteError')); 
+      message.error(t('deleteError'));
     }
   };
 
   const handleExportExcel = async () => {
     try {
       const response = await axios.get('http://localhost:8081/api/nhanvien/export-nhanvien', {
-        responseType: 'blob', 
+        responseType: 'blob',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -104,7 +105,7 @@ const NhanVien: React.FC = () => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'nhanvien_data.xlsx'); 
+      link.setAttribute('download', 'nhanvien_data.xlsx');
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -116,22 +117,22 @@ const NhanVien: React.FC = () => {
 
   const columns: TableColumnsType<NhanVienType> = [
     {
-      title: t('employeeId'), 
+      title: t('employeeId'),
       dataIndex: 'maNhanVien',
       key: 'maNhanVien',
     },
     {
-      title: t('employeeName'), 
+      title: t('employeeName'),
       dataIndex: 'tenNhanVien',
       key: 'tenNhanVien',
     },
     {
-      title: t('role'), 
+      title: t('role'),
       dataIndex: 'chucVu',
       key: 'chucVu',
     },
     {
-      title: t('gender'), 
+      title: t('gender'),
       dataIndex: 'gioiTinh',
       key: 'gioiTinh',
       filters: [
@@ -145,12 +146,12 @@ const NhanVien: React.FC = () => {
       },
     },
     {
-      title: t('startDate'), 
+      title: t('startDate'),
       dataIndex: 'ngayVaoLam',
       key: 'ngayVaoLam',
     },
     {
-      title: t('status'), 
+      title: t('status'),
       dataIndex: 'trangThai',
       key: 'trangThai',
       filters: [
@@ -164,13 +165,13 @@ const NhanVien: React.FC = () => {
       },
     },
     {
-      title: t('action'), 
+      title: t('action'),
       key: 'action',
       render: (_: any, record: NhanVienType) => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>
-            <Menu.Item key="edit" icon={<EditOutlined />}>{t('edit&detail')}</Menu.Item> 
-            <Menu.Item key="delete" icon={<DeleteOutlined />}>{t('delete')}</Menu.Item> 
+            <Menu.Item key="edit" icon={<EditOutlined />}>{t('edit&detail')}</Menu.Item>
+            <Menu.Item key="delete" icon={<DeleteOutlined />}>{t('delete')}</Menu.Item>
           </Menu>
         );
         return (
@@ -182,26 +183,31 @@ const NhanVien: React.FC = () => {
     },
   ];
 
+  const hasPermission = phanQuyen === 0 || phanQuyen === 1;
+  if (!hasPermission) {
+    return <div>Bạn không có quyền truy cập trang này.</div>;
+  }
+
   return (
     <Layout>
       <h1 className='page-name'>{t('employeeManagement')}</h1>
       <div className="button-container">
         <Search
           className="custom-search"
-          placeholder={t('searchPlaceholder')} 
+          placeholder={t('searchPlaceholder')}
           onSearch={onSearch}
           enterButton
         />
         <div className="button-container">
-          <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>{t('addnv')}</Button> 
-          <Button className='custom-button' onClick={handleExportExcel}>{t('exportExcel')}</Button> 
+          <Button className='custom-button' onClick={() => setIsThemModalVisible(true)}>{t('addnv')}</Button>
+          <Button className='custom-button' onClick={handleExportExcel}>{t('exportExcel')}</Button>
         </div>
       </div>
       <Table
         className="custom-table"
         columns={columns}
-        dataSource={filteredData.length ? filteredData : data} 
-        loading={loading} 
+        dataSource={filteredData.length ? filteredData : data}
+        loading={loading}
         pagination={{ pageSize: 5 }}
         style={{ backgroundColor: '#f0f0f0', border: '1px solid #ddd' }}
       />
@@ -214,7 +220,7 @@ const NhanVien: React.FC = () => {
       <ThemNhanVienModal
         visible={isThemModalVisible}
         onCancel={handleAddCancel}
-        onSubmit={handleAddOk} 
+        onSubmit={handleAddOk}
       />
     </Layout>
   );

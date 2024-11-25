@@ -11,10 +11,13 @@ import axios from 'axios';
 import moment from 'moment';
 import { Key } from 'antd/es/table/interface';
 import * as XLSX from 'xlsx';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const { Search } = Input;
 
 const HocVien: React.FC = () => {
+    const phanQuyen = useSelector((state: RootState) => state.auth.userInfo?.phanQuyen);
     const [isThemHocVienModalVisible, setIsThemHocVienModalVisible] = useState(false);
     const [isImportModalVisible, setIsImportModalVisible] = useState(false);
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -244,6 +247,11 @@ const HocVien: React.FC = () => {
             },
         }
     ];
+
+    const hasPermission = phanQuyen === 0 || phanQuyen === 1 || phanQuyen === 2;
+    if (!hasPermission) {
+        return <div>Bạn không có quyền truy cập trang này.</div>;
+    }
 
     return (
         <Layout>

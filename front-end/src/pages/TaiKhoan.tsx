@@ -15,6 +15,7 @@ import * as XLSX from 'xlsx'; // Import thư viện xlsx
 const { Search } = Input;
 
 const TaiKhoan: React.FC = () => {
+  const phanQuyen = useSelector((state: RootState) => state.auth.userInfo?.phanQuyen);
   const { t } = useTranslation();
   const [searchText, setSearchText] = useState('');
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -157,6 +158,11 @@ const TaiKhoan: React.FC = () => {
       },
     },
   ];
+
+  const hasPermission = phanQuyen === 0 || phanQuyen === 1;
+  if (!hasPermission) {
+    return <div>Bạn không có quyền truy cập trang này.</div>;
+  }
 
   return (
     <Layout>

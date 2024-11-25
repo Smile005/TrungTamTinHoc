@@ -11,10 +11,13 @@ import moment from 'moment';
 import * as XLSX from 'xlsx';
 import ThemLichHoc from '../components/ThemLichHoc';
 import { Modal } from 'antd';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const { Search } = Input;
 
 const LopHoc: React.FC = () => {
+  const phanQuyen = useSelector((state: RootState) => state.auth.userInfo?.phanQuyen);
   const [searchText, setSearchText] = useState('');
   const [data, setData] = useState<LopHocType[]>([]); // Dữ liệu gốc
   const [filteredData, setFilteredData] = useState<LopHocType[]>([]);
@@ -235,6 +238,11 @@ const LopHoc: React.FC = () => {
       },
     },
   ];
+
+  const hasPermission = phanQuyen === 0 || phanQuyen === 1 || phanQuyen === 2;
+  if (!hasPermission) {
+    return <div>Bạn không có quyền truy cập trang này.</div>;
+  }
 
   return (
     <Layout>
