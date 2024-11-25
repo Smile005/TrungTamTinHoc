@@ -13,6 +13,7 @@ import { fetchCaHoc, deleteCaHoc } from '../store/slices/caHocSlice';
 const { Search } = Input;
 
 const CaHoc: React.FC = () => {
+    const phanQuyen = useSelector((state: RootState) => state.auth.userInfo?.phanQuyen);
     const dispatch = useDispatch<AppDispatch>();
     const caHocState = useSelector((state: RootState) => state.caHoc);
     const { data: reduxData, loading: reduxLoading } = caHocState;
@@ -144,6 +145,11 @@ const CaHoc: React.FC = () => {
             },
         },
     ];
+
+    const hasPermission = phanQuyen === 0 || phanQuyen === 1 || phanQuyen === 2;
+    if (!hasPermission) {
+      return <div>Bạn không có quyền truy cập trang này.</div>;
+    }
 
     return (
         <Layout>
