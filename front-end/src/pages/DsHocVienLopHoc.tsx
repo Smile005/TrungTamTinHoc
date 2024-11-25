@@ -14,8 +14,9 @@ import * as XLSX from 'xlsx';
 const { Search } = Input;
 
 const DsHocVienLopHoc: React.FC = () => {
-  const { maLopHoc } = useParams<{ maLopHoc: string }>();
   const navigate = useNavigate();
+  const phanQuyen = useSelector((state: RootState) => state.auth.userInfo?.phanQuyen);
+  const { maLopHoc } = useParams<{ maLopHoc: string }>();
   const [hocVienList, setHocVienList] = useState<DsLopHocType[]>([]);
   const [tenLopHoc, setTenLopHoc] = useState<string>('');
   const [hocVienData, setHocVienData] = useState<HocVienType[]>([]);
@@ -175,6 +176,11 @@ const DsHocVienLopHoc: React.FC = () => {
       ),
     },
   ];
+
+  const hasPermission = phanQuyen === 0 || phanQuyen === 1 || phanQuyen === 2;
+    if (!hasPermission) {
+      return <div>Bạn không có quyền truy cập trang này.</div>;
+    }
 
   return (
     <Layout>

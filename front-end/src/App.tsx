@@ -35,7 +35,7 @@ import DsHocVienLopHoc from './pages/DsHocVienLopHoc';
 import DsLop from './pages/DsLop';
 import HoaDon from './pages/HoaDon';
 import NhapDiem from './pages/NhapDiem';
-import DsLopNhapDiem from './pages/DsLopNhapDiem'; // Import trang mới
+import DsLopNhapDiem from './pages/DsLopNhapDiem'; 
 import DsHocVienThi from './pages/DsHocVienThi';
 import DsLopThi from './pages/DsLopThi';
 import { NhanVienType } from './types/NhanVienType';

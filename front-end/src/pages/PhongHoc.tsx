@@ -6,13 +6,16 @@ import ThemPhongHocModal from '../components/ThemPhongHocModal';
 import SuaPhongHocModal from '../components/SuaPhongHocModal';
 import '../styles/TableCustom.css';
 import axios from 'axios';
+import { RootState } from '../store/store';
+import { useSelector } from 'react-redux';
 
 const { Search } = Input;
 
 const PhongHoc: React.FC = () => {
-  const [searchText, setSearchText] = useState(''); 
+  const phanQuyen = useSelector((state: RootState) => state.auth.userInfo?.phanQuyen);
+  const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState<PhongHocType[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<PhongHocType | null>(null);
   const [data, setData] = useState<PhongHocType[]>([]);
@@ -70,10 +73,10 @@ const PhongHoc: React.FC = () => {
 
   const handleMenuClick = (e: any, record: PhongHocType) => {
     if (e.key === 'edit') {
-      setSelectedRecord(record); 
-      setIsEditModalVisible(true); 
+      setSelectedRecord(record);
+      setIsEditModalVisible(true);
     } else if (e.key === 'delete') {
-      deletePhongHoc(record.maPhong); 
+      deletePhongHoc(record.maPhong);
     }
   };
 
@@ -90,8 +93,8 @@ const PhongHoc: React.FC = () => {
 
   const deletePhongHoc = async (maPhong: string) => {
     try {
-      await axios.post(`http://localhost:8081/api/phonghoc/xoa-phong`, 
-        { maPhong }, 
+      await axios.post(`http://localhost:8081/api/phonghoc/xoa-phong`,
+        { maPhong },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -148,20 +151,20 @@ const PhongHoc: React.FC = () => {
       render: (trangThai: string): JSX.Element => {
         let color = '';
         const normalizedTrangThai = trangThai;
-        
+
         if (normalizedTrangThai === 'Đang Hoạt Động') {
-            color = 'geekblue';
+          color = 'geekblue';
         } else if (normalizedTrangThai === 'Ngưng Hoạt Động') {
-            color = 'green';
+          color = 'green';
         }
-        
+
         return (
-            <Tag color={color} key={trangThai}>
-                {trangThai}
-            </Tag>
+          <Tag color={color} key={trangThai}>
+            {trangThai}
+          </Tag>
         );
-    },
-    
+      },
+
     },
     {
       title: 'Ghi Chú',
@@ -188,6 +191,11 @@ const PhongHoc: React.FC = () => {
       },
     },
   ];
+
+  const hasPermission = phanQuyen === 0 || phanQuyen === 1 || phanQuyen === 2;
+  if (!hasPermission) {
+    return <div>Bạn không có quyền truy cập trang này.</div>;
+  }
 
   return (
     <Layout>
@@ -226,7 +234,7 @@ const PhongHoc: React.FC = () => {
         visible={isEditModalVisible}
         onCancel={handleEditCancel}
         onSubmit={handleEditSubmit}
-        initialValues={selectedRecord} 
+        initialValues={selectedRecord}
       />
     </Layout>
   );

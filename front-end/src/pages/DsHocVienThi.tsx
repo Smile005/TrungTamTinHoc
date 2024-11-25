@@ -7,14 +7,17 @@ import { LeftCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons
 import { Tooltip } from 'antd';
 import moment from 'moment';
 import * as XLSX from 'xlsx';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/store';
 
 const { Search } = Input;
 
 const DsHocVienThi: React.FC = () => {
+  const phanQuyen = useSelector((state: RootState) => state.auth.userInfo?.phanQuyen);
   const { maLopHoc } = useParams<{ maLopHoc: string }>();
   const navigate = useNavigate();
   const [hocVienThiList, setHocVienThiList] = useState<any[]>([]);
-  const [tenLopHoc, setTenLopHoc] = useState<string>(''); 
+  const [tenLopHoc, setTenLopHoc] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [searchText, setSearchText] = useState<string>('');
 
@@ -155,6 +158,11 @@ const DsHocVienThi: React.FC = () => {
       key: 'diemGiuaKy',
     },
   ];
+
+  const hasPermission = phanQuyen === 0 || phanQuyen === 1 || phanQuyen === 2;
+  if (!hasPermission) {
+    return <div>Bạn không có quyền truy cập trang này.</div>;
+  }
 
   return (
     <Layout>
