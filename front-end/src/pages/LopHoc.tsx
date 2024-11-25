@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message } from 'antd';
+import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message, Modal } from 'antd';
 import { MoreOutlined, EditOutlined, DeleteOutlined, OrderedListOutlined, FileAddOutlined, ContactsOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { LopHocType } from '../types/LopHocType';
 import SuaLopHocModal from '../components/SuaLopHocModal';
+import ThemBuoiHocModal from '../components/ThemBuoiHoc';
 import AddLopHoc from '../components/AddLopHoc';
 import { useNavigate } from 'react-router-dom';
 import '../styles/TableCustom.css';
 import moment from 'moment';
 import * as XLSX from 'xlsx';
 import ThemLichHoc from '../components/ThemLichHoc';
-import { Modal } from 'antd';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 
@@ -18,54 +18,27 @@ const { Search } = Input;
 
 const LopHoc: React.FC = () => {
   const phanQuyen = useSelector((state: RootState) => state.auth.userInfo?.phanQuyen);
+  const userInfo = useSelector((state: RootState) => state.auth.userInfo);
   const [searchText, setSearchText] = useState('');
-  const [data, setData] = useState<LopHocType[]>([]); // Dữ liệu gốc
+  const [data, setData] = useState<LopHocType[]>([]);
   const [filteredData, setFilteredData] = useState<LopHocType[]>([]);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isThemLichHocVisible, setIsThemLichHocVisible] = useState(false);
+  const [isThemBuoiHocVisible, setIsThemBuoiHocVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<LopHocType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [monHocMap, setMonHocMap] = useState<{ [key: string]: string }>({});
-  const [nhanVienMap, setNhanVienMap] = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
 
   const fetchLopHocData = async () => {
     setLoading(true);
     try {
-      const [lopHocResponse, nhanVienResponse, monHocResponse] = await Promise.all([
-        axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }),
-        axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }),
-        axios.get('http://localhost:8081/api/monhoc/ds-monhoc', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }),
-      ]);
+      const lopHocResponse = await axios.get('http://localhost:8081/api/lophoc/ds-lophoc', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
 
-      const monHocMap = monHocResponse.data.reduce((acc: any, monHoc: any) => {
-        acc[monHoc.maMonHoc] = monHoc.tenMonHoc;
-        return acc;
-      }, {});
-
-      const nhanVienMap = nhanVienResponse.data.reduce((acc: any, nhanVien: any) => {
-        acc[nhanVien.maNhanVien] = nhanVien.tenNhanVien;
-        return acc;
-      }, {});
-
-      setMonHocMap(monHocMap);
-      setNhanVienMap(nhanVienMap);
-
-      const formattedLopHoc = lopHocResponse.data.map((lopHoc: LopHocType) => ({
-        ...lopHoc,
-        tenMonHoc: lopHoc.maMonHoc ? monHocMap[lopHoc.maMonHoc] : 'Không xác định',
-        tenNhanVien: lopHoc.maNhanVien ? nhanVienMap[lopHoc.maNhanVien] : 'Không xác định',
-      }));
-
-      setData(formattedLopHoc);
-      setFilteredData(formattedLopHoc);
+      setData(lopHocResponse.data);
+      setFilteredData(lopHocResponse.data);
     } catch (error) {
       console.error('Lỗi khi gọi API:', error);
       message.error('Lỗi khi lấy dữ liệu');
@@ -97,7 +70,10 @@ const LopHoc: React.FC = () => {
       navigate(`/ds-hoc-vien-lop/${record.maLopHoc}`);
     } else if (e.key === 'themLichHoc') {
       setSelectedRecord(record);
-      setIsThemLichHocVisible(true)
+      setIsThemLichHocVisible(true);
+    } else if (e.key === 'themBuoiHoc') {
+      setSelectedRecord(record);
+      setIsThemBuoiHocVisible(true);
     } else if (e.key === 'nhapDiem') {
       navigate(`/nhapdiem/${record.maLopHoc}`);
     } else if (e.key === 'delete') {
@@ -108,14 +84,17 @@ const LopHoc: React.FC = () => {
   const handleEditCancel = () => {
     setIsEditModalVisible(false);
     setSelectedRecord(null);
-    setIsThemLichHocVisible(false)
+    setIsThemLichHocVisible(false);
+    setIsThemBuoiHocVisible(false);
   };
 
-  const handleEditSubmit = (values: any) => {
-    const updatedData = filteredData.map((item) =>
-      item.maLopHoc === selectedRecord?.maLopHoc ? { ...selectedRecord, ...values } : item
+  const onEditSubmit = (values: LopHocType) => {
+    const updatedData = data.map((item) =>
+      item.maLopHoc === values.maLopHoc ? { ...item, ...values } : item
     );
+    setData(updatedData);
     setFilteredData(updatedData);
+    message.success('Cập nhật lớp học thành công');
     setIsEditModalVisible(false);
   };
 
@@ -136,7 +115,7 @@ const LopHoc: React.FC = () => {
         }
       );
       message.success('Xóa lớp học thành công');
-      fetchLopHocData(); // Cập nhật dữ liệu sau khi xóa
+      fetchLopHocData();
     } catch (error) {
       console.error('Lỗi khi xóa lớp học:', error);
       message.error('Lỗi khi xóa lớp học');
@@ -148,9 +127,9 @@ const LopHoc: React.FC = () => {
       const response = await axios.get('http://localhost:8081/api/lophoc/xuat-lophoc', {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         },
-        responseType: 'arraybuffer'
+        responseType: 'arraybuffer',
       });
 
       const workbook = XLSX.read(response.data, { type: 'array' });
@@ -191,7 +170,7 @@ const LopHoc: React.FC = () => {
       title: 'Ngày Bắt Đầu',
       dataIndex: 'ngayBatDau',
       key: 'ngayBatDau',
-      render: (ngayBatDau: string) => moment(ngayBatDau).format("DD/MM/YYYY"),
+      render: (ngayBatDau: string) => moment(ngayBatDau).format('DD/MM/YYYY'),
       width: '15%',
     },
     {
@@ -223,11 +202,26 @@ const LopHoc: React.FC = () => {
       render: (_: any, record: LopHocType) => {
         const menu = (
           <Menu onClick={(e) => handleMenuClick(e, record)}>
-            <Menu.Item key="edit" icon={<EditOutlined />}>Xem và sửa thông tin</Menu.Item>
-            <Menu.Item key="danhSachLop" icon={<OrderedListOutlined />}>Danh sách lớp</Menu.Item>
-            <Menu.Item key="themLichHoc" icon={<ContactsOutlined />}>Thêm/Sửa lịch học</Menu.Item>
-            <Menu.Item key="nhapDiem" icon={<FileAddOutlined />}>Nhập Điểm</Menu.Item>
-            <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
+            <Menu.Item key="edit" icon={<EditOutlined />}>
+              Xem và sửa thông tin
+            </Menu.Item>
+            <Menu.Item key="danhSachLop" icon={<OrderedListOutlined />}>
+              Danh sách lớp
+            </Menu.Item>
+            <Menu.Item key="themLichHoc" icon={<ContactsOutlined />}>
+              Thêm/Sửa lịch học
+            </Menu.Item>
+            <Menu.Item key="themBuoiHoc" icon={<ContactsOutlined />}>
+              Thêm/Sửa lịch thi
+            </Menu.Item>
+            {userInfo?.phanQuyen !== 2 && (
+              <Menu.Item key="nhapDiem" icon={<FileAddOutlined />}>
+                Nhập Điểm
+              </Menu.Item>
+            )}
+            <Menu.Item key="delete" icon={<DeleteOutlined />}>
+              Xóa
+            </Menu.Item>
           </Menu>
         );
         return (
@@ -246,7 +240,7 @@ const LopHoc: React.FC = () => {
 
   return (
     <Layout>
-      <h1 className='page-name'>QUẢN LÝ LỚP HỌC</h1>
+      <h1 className="page-name">QUẢN LÝ LỚP HỌC</h1>
       <div className="button-container">
         <Search
           className="custom-search"
@@ -257,8 +251,10 @@ const LopHoc: React.FC = () => {
           onChange={(e) => onSearch(e.target.value)}
         />
         <div className="button-container">
-          <Button className='custom-button' onClick={() => setIsAddModalVisible(true)}>Thêm Lớp Học</Button>
-          <Button className='custom-button' onClick={exportLopHocToExcel}>
+          <Button className="custom-button" onClick={() => setIsAddModalVisible(true)}>
+            Thêm Lớp Học
+          </Button>
+          <Button className="custom-button" onClick={exportLopHocToExcel}>
             Xuất Excel
           </Button>
         </div>
@@ -276,7 +272,7 @@ const LopHoc: React.FC = () => {
       <SuaLopHocModal
         visible={isEditModalVisible}
         onCancel={handleEditCancel}
-        onSubmit={handleEditSubmit}
+        onSubmit={onEditSubmit}
         initialValues={selectedRecord}
       />
 
@@ -284,7 +280,7 @@ const LopHoc: React.FC = () => {
         visible={isAddModalVisible}
         onCancel={() => {
           setIsAddModalVisible(false);
-          fetchLopHocData(); // Cập nhật dữ liệu sau khi thêm lớp học mới
+          fetchLopHocData();
         }}
       />
 
@@ -296,6 +292,12 @@ const LopHoc: React.FC = () => {
       >
         <ThemLichHoc maLopHoc={selectedRecord?.maLopHoc || ''} />
       </Modal>
+
+      <ThemBuoiHocModal
+        maLopHoc={selectedRecord?.maLopHoc || ''}
+        visible={isThemBuoiHocVisible}
+        onCancel={() => setIsThemBuoiHocVisible(false)}
+      />
     </Layout>
   );
 };

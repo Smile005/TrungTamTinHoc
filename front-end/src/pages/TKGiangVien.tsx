@@ -27,7 +27,7 @@ const TKGiangVien: React.FC = () => {
                 },
             });
 
-            const nhanVienResponse = await axios.get('http://localhost:8081/api/nhanvien/ds-nhanvien', {
+            const nhanVienResponse = await axios.get('http://localhost:8081/api/nhanvien/ds-giangvien', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
