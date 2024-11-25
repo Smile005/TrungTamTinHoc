@@ -38,6 +38,7 @@ import NhapDiem from './pages/NhapDiem';
 import DsLopNhapDiem from './pages/DsLopNhapDiem'; 
 import DsHocVienThi from './pages/DsHocVienThi';
 import DsLopThi from './pages/DsLopThi';
+import ThemLichThiModal from './components/ThemLichThi';
 import { NhanVienType } from './types/NhanVienType';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/store';
@@ -203,7 +204,6 @@ const App: React.FC = () => {
 
                 </SubMenu>
 
-                {userInfo?.phanQuyen !== 2 && (
                   <SubMenu key="group02" icon={<ScheduleOutlined />} title={t('planning')}>
                     <Menu.Item key="7">
                       <Link to="/lophoc">{t('classes')}</Link>
@@ -214,7 +214,6 @@ const App: React.FC = () => {
                       </Menu.Item>
                     )}
                   </SubMenu>
-                )}
 
                 <SubMenu key="group03" icon={<SolutionOutlined />} title={t('enrollment')}>
 
@@ -237,7 +236,6 @@ const App: React.FC = () => {
                     </Menu.Item>
                   )}
                 </SubMenu>
-
 
                 <SubMenu key="group05" icon={<FundOutlined />} title={t('statistics')}>
                   <Menu.Item key="13">
