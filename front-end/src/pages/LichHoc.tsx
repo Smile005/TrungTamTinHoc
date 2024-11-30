@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Modal, Button, Menu, Dropdown, DatePicker, DatePickerProps, Radio, RadioChangeEvent, ConfigProvider, Badge } from 'antd';
-import { CalendarOutlined, LeftOutlined, MoreOutlined, PlusOutlined, RightOutlined } from '@ant-design/icons';
+import { CalendarOutlined, LeftOutlined, MoreOutlined, PlusOutlined, RightOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { CalendarProps } from 'antd/es/calendar';
 import axios from 'axios';
 import { BuoiHocType } from '../types/BuoiHocType';
 import dayjs, { type Dayjs } from 'dayjs';
 import SuaBuoiHocModal from '../components/SuaBuoiHocModal';
 import "../styles/ButtonCustom.css";
+import '../styles/TableCustom.css';
+import { Tooltip } from 'antd';
 
 const LichHoc: React.FC = () => {
   const [isLichHocVisible, setIsLichHocVisible] = useState(false);
@@ -101,6 +103,18 @@ const LichHoc: React.FC = () => {
         break;
     }
   };
+  const handleSaveUpdatedBuoiHoc = (updatedBuoiHoc: BuoiHocType) => {
+    // Cập nhật listData với buổi học đã sửa
+    setListData((prevData) => {
+      return prevData.map((item) =>
+        item.maLopHoc === updatedBuoiHoc.maLopHoc && item.maCa === updatedBuoiHoc.maCa
+          ? { ...item, ...updatedBuoiHoc, isUpdated: true } // Thêm trường isUpdated
+          : item
+      );
+    });
+    setIsSuaBuoiHocVisible(false); // Đóng modal sửa
+  };
+
 
   const menu = (
     <Menu>
@@ -190,6 +204,9 @@ const LichHoc: React.FC = () => {
         </Radio.Group>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <DatePicker onChange={datePickerChange} value={currentDate} format="DD/MM/YYYY" />
+          <Tooltip title="Màu xanh là lịch học không có màu là lịch thi" className='top-tip'>
+            <ExclamationCircleOutlined />
+          </Tooltip>
           <Button className="custom-button" icon={<CalendarOutlined />} onClick={handleTodayClick}>Hiện tại</Button>
         </div>
         <Button className="custom-button" icon={<LeftOutlined />} onClick={handleTroVeClick}>Trở về</Button>
@@ -219,7 +236,6 @@ const LichHoc: React.FC = () => {
             <ul>
               {listData
                 .filter((item: BuoiHocType) => {
-                  // So sánh ngày (ngayHoc) với selectedDate
                   return dayjs(item.ngayHoc).isSame(selectedDate, 'day');
                 })
                 .map((item: BuoiHocType) => (
@@ -248,6 +264,9 @@ const LichHoc: React.FC = () => {
                       </span>
                       <span style={{ display: 'block' }}>
                         GV: {item.tenGiaoVien}
+                      </span>
+                      <span style={{ display: 'block' }}>
+                        Ghi Chú: {item.ghiChu}
                       </span>
                     </div>
                     <Dropdown overlay={menu} trigger={['click']}>

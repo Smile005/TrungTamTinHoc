@@ -62,28 +62,37 @@ const ThemBuoiHocModal: React.FC<ThemBuoiHocModalProps> = ({ maLopHoc, visible, 
     }, [maLopHoc]);
 
     const handleOk = async () => {
-        const loai = "Ngày học";
+        const loai = "Thi"; // Thay đổi giá trị loại để thể hiện "Thi"
         try {
             const values = await form.validateFields();
             const token = localStorage.getItem('token');
-            console.log(values)
+    
+            // Gắn thêm cụm từ "(Thi)" vào trường `ghiChu` hoặc trường khác nếu cần
+            const updatedValues = {
+                ...values,
+                ghiChu: `${values.ghiChu || ''} (Thi)`,
+                maLopHoc,
+                loai, // Thêm loại "Thi" vào payload
+            };
+    
             const response = await axios.post(
                 'http://localhost:8081/api/lichhoc/createBuoiHoc',
-                { ...values, maLopHoc, loai },
+                updatedValues,
                 { headers: { Authorization: `Bearer ${token}` } },
             );
-
+    
             if (response.status === 200 || response.status === 201) {
-                message.success('Buổi học đã được thêm thành công!');
+                message.success('Đã được thêm thành công!');
                 onCancel();
             } else {
-                message.error('Thêm buổi học thất bại. Vui lòng thử lại!');
+                message.error('Thêm lịch thất bại. Vui lòng thử lại!');
             }
         } catch (error) {
-            console.error('Lỗi khi thêm buổi học:', error);
-            message.error('Không thể thêm buổi học. Vui lòng thử lại!');
+            console.error('Lỗi khi thêm lịch:', error);
+            message.error('Không thể thêm lịch. Vui lòng thử lại!');
         }
     };
+    
 
     const handleCheck = async () => {
 

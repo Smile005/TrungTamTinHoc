@@ -8,8 +8,10 @@ export interface BuoiHocType {
     tenGiaoVien: string;
     maCa: string;
     maPhong: string;
-    ngayHoc: string; 
+    ngayHoc: string;
     loai: "Ngày học" | "Ngày nghỉ" | "Ngày thi";
     trangThai: "Đã lên lịch" | "Đã hủy";
     ghiChu: string;
-}
+    isUpdated?: boolean; // Thêm trường isUpdated (boolean) vào đây
+  }
+  
