@@ -146,7 +146,7 @@ const LichHoc: React.FC = () => {
               style={{
                 backgroundColor: item.loai === 'Ngày học' ? '#33CCFF'
                   : item.loai === 'Ngày thi' ? '#CCCC33'
-                    : '',
+                    : '#eded27', //chỉnh màu cho ô lịch
               }}
             >
               {item.tenLopHoc}
@@ -204,7 +204,7 @@ const LichHoc: React.FC = () => {
         </Radio.Group>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
           <DatePicker onChange={datePickerChange} value={currentDate} format="DD/MM/YYYY" />
-          <Tooltip title="Màu xanh là lịch học không có màu là lịch thi" className='top-tip'>
+          <Tooltip title="Màu xanh là lịch học, màu vàng là lịch thi" className='top-tip'>
             <ExclamationCircleOutlined />
           </Tooltip>
           <Button className="custom-button" icon={<CalendarOutlined />} onClick={handleTodayClick}>Hiện tại</Button>
@@ -253,7 +253,7 @@ const LichHoc: React.FC = () => {
                       style={{
                         backgroundColor: item.loai === 'Ngày học' ? '#33CCFF'
                           : item.loai === 'Ngày thi' ? '#CCCC33'
-                            : '',
+                            : '#eded27', //chỉnh màu cho ô lịch
                       }}
                     >
                       <span style={{ fontWeight: 'bold', display: 'block' }}>
