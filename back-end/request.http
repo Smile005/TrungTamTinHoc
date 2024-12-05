@@ -3,7 +3,7 @@ POST http://localhost:8081/api/auth/register
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV0002",
+  "maNhanVien": "NV0001",
   "matKhau": "123"
 }
 
@@ -14,7 +14,7 @@ POST http://localhost:8081/api/auth/login
 Content-Type: application/json
 
 {
-  "maNhanVien": "NV00011",
+  "maNhanVien": "NV0001",
   "matKhau": "123"
 }
 
@@ -196,13 +196,13 @@ Content-Type: application/json
 
 # Lấy danh sách môn học
 GET http://localhost:8081/api/monhoc/ds-monhoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3Mjk5NDIyMDQsImV4cCI6MTcyOTk0NTgwNH0.bTIFV1VUQm0FZtq0w_hAQtVWBvqAwuitYP8x11OUWFk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzMzNjY3NDMsImV4cCI6MTczMzM3NzU0M30.Ha6hcmkupYNXCzxTjziPwA1X1lgAQQXjvCQFAx6T1qU
 
 ###
 
 # Lấy danh sách môn học đang hoạt động
 GET http://localhost:8081/api/monhoc/ds-monhocHD
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxMSIsInBoYW5RdXllbiI6MiwiaWF0IjoxNzMyNTQ2OTM4LCJleHAiOjE3MzI1NTc3Mzh9.kBO4jcbJKNx75pDT7hQPTEk7WfbBWrJ7gKnmgesOa9E
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzMzNjY3NDMsImV4cCI6MTczMzM3NzU0M30.Ha6hcmkupYNXCzxTjziPwA1X1lgAQQXjvCQFAx6T1qU
 
 ###
 
@@ -497,7 +497,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiT
 
 ### Tạo buổi học (POST)
 POST http://localhost:8081/api/lichhoc/createBuoiHoc
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzI0NjExMjMsImV4cCI6MTczMjQ3MTkyM30.CVG_NUDUcKmJB-z9JRY5bKb5K6WYWixsLsRZGgGL7XA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzM0MDk2MjQsImV4cCI6MTczMzQyMDQyNH0.A60fr2IzOWJGCKvPmcCo8NyniYoCPxqzwVU3GYKmdXo
 Content-Type: application/json
 
 {
@@ -505,8 +505,21 @@ Content-Type: application/json
     "maNhanVien": "NV0001",
     "maCa": "CA001",
     "maPhong": "P001",
-    "ngayHoc": "2024-10-30",
-    "loai": "Ngày học",
+    "ngayHoc": "2024-12-03",
+    "ghiChu": "Buổi học đầu tiên"
+}
+
+### Tạo buổi học (POST)
+POST http://localhost:8081/api/lichhoc/createLichThi
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzM0MDk2MjQsImV4cCI6MTczMzQyMDQyNH0.A60fr2IzOWJGCKvPmcCo8NyniYoCPxqzwVU3GYKmdXo
+Content-Type: application/json
+
+{
+    "maLopHoc": "LH0001",
+    "maNhanVien": "NV0001",
+    "maCa": "CA001",
+    "maPhong": "P001",
+    "ngayHoc": "2024-12-03",
     "ghiChu": "Buổi học đầu tiên"
 }
 

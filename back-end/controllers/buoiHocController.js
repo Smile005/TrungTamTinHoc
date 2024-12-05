@@ -73,11 +73,12 @@ const createBuoiHoc = async (req, res) => {
         return res.status(400).json({ message: "Thiếu thông tin cần thiết" });
     }
 
+    const loai = 'Ngày học';
     const trangThai = 'Đã lên lịch';
     try {
         await pool.query(`
-            INSERT INTO BuoiHoc (maLopHoc, maGiaoVien, maCa, maPhong, ngayHoc, trangThai, ghiChu)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO BuoiHoc (maLopHoc, maGiaoVien, maCa, maPhong, ngayHoc, trangThai, ghiChu, loai)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `, [
             maLopHoc,
             maNhanVien,
@@ -85,7 +86,38 @@ const createBuoiHoc = async (req, res) => {
             maPhong,
             moment(ngayHoc).format('YYYY-MM-DD'), // Đảm bảo ngày được định dạng chính xác
             trangThai,
-            ghiChu || null
+            ghiChu || null,
+            loai
+        ]);
+        res.status(201).json({ message: "Buổi học đã được tạo thành công" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const createLichThi = async (req, res) => {
+    const { maLopHoc, maNhanVien, maCa, maPhong, ngayHoc, ghiChu } = req.body;
+
+    // Xác thực cơ bản
+    if (!maLopHoc || !maNhanVien || !maCa || !maPhong || !ngayHoc) {
+        return res.status(400).json({ message: "Thiếu thông tin cần thiết" });
+    }
+
+    const loai = 'Ngày thi';
+    const trangThai = 'Đã lên lịch';
+    try {
+        await pool.query(`
+            INSERT INTO BuoiHoc (maLopHoc, maGiaoVien, maCa, maPhong, ngayHoc, trangThai, ghiChu, loai)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+            maLopHoc,
+            maNhanVien,
+            maCa,
+            maPhong,
+            moment(ngayHoc).format('YYYY-MM-DD'), // Đảm bảo ngày được định dạng chính xác
+            trangThai,
+            ghiChu || null,
+            loai
         ]);
         res.status(201).json({ message: "Buổi học đã được tạo thành công" });
     } catch (error) {
@@ -129,5 +161,6 @@ module.exports = {
     getBuoiHocByMaLichHoc,
     createBuoiHoc,
     updateBuoiHoc,
-    deleteBuoiHoc
+    deleteBuoiHoc,
+    createLichThi
 };

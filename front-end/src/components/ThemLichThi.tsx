@@ -68,7 +68,7 @@ const ThemLichThiModal: React.FC<ThemBuoiHocModalProps> = ({ maLopHoc, visible, 
             const token = localStorage.getItem('token');
             console.log(values)
             const response = await axios.post(
-                'http://localhost:8081/api/lichhoc/createBuoiHoc',
+                'http://localhost:8081/api/lichhoc/createLichThi',
                 { ...values, maLopHoc, loai },
                 { headers: { Authorization: `Bearer ${token}` } },
             );
