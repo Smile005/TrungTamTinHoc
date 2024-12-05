@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Dropdown, Menu, Layout, Tag, Input, message, Modal } from 'antd';
-import { MoreOutlined, EditOutlined, DeleteOutlined, OrderedListOutlined, FileAddOutlined, ContactsOutlined } from '@ant-design/icons';
+import { MoreOutlined, EditOutlined, DeleteOutlined, OrderedListOutlined, FileAddOutlined, ContactsOutlined, SnippetsOutlined, DiffOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { LopHocType } from '../types/LopHocType';
 import SuaLopHocModal from '../components/SuaLopHocModal';
 import ThemBuoiHocModal from '../components/ThemBuoiHoc';
+import ThemLichThiModal from '../components/ThemLichThi';
 import AddLopHoc from '../components/AddLopHoc';
 import { useNavigate } from 'react-router-dom';
 import '../styles/TableCustom.css';
@@ -26,6 +27,7 @@ const LopHoc: React.FC = () => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isThemLichHocVisible, setIsThemLichHocVisible] = useState(false);
   const [isThemBuoiHocVisible, setIsThemBuoiHocVisible] = useState(false);
+  const [isThemLichThiVisible, setIsThemLichThiVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<LopHocType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -74,6 +76,9 @@ const LopHoc: React.FC = () => {
     } else if (e.key === 'themBuoiHoc') {
       setSelectedRecord(record);
       setIsThemBuoiHocVisible(true);
+    } else if (e.key === 'themLichThi') {
+      setSelectedRecord(record);
+      setIsThemLichThiVisible(true);
     } else if (e.key === 'nhapDiem') {
       navigate(`/nhapdiem/${record.maLopHoc}`);
     } else if (e.key === 'delete') {
@@ -86,6 +91,7 @@ const LopHoc: React.FC = () => {
     setSelectedRecord(null);
     setIsThemLichHocVisible(false);
     setIsThemBuoiHocVisible(false);
+    setIsThemLichThiVisible(false);
   };
 
   const onEditSubmit = (values: LopHocType) => {
@@ -211,8 +217,11 @@ const LopHoc: React.FC = () => {
             <Menu.Item key="themLichHoc" icon={<ContactsOutlined />}>
               Thêm/Sửa lịch học
             </Menu.Item>
-            <Menu.Item key="themBuoiHoc" icon={<ContactsOutlined />}>
-              Thêm/Sửa lịch thi
+            <Menu.Item key="themBuoiHoc" icon={<DiffOutlined />}>
+              Thêm/Sửa buổi học
+            </Menu.Item>
+            <Menu.Item key="themLichThi" icon={<SnippetsOutlined />}>
+              Thêm/Sửa buổi thi
             </Menu.Item>
             {userInfo?.phanQuyen !== 2 && (
               <Menu.Item key="nhapDiem" icon={<FileAddOutlined />}>
@@ -297,6 +306,12 @@ const LopHoc: React.FC = () => {
         maLopHoc={selectedRecord?.maLopHoc || ''}
         visible={isThemBuoiHocVisible}
         onCancel={() => setIsThemBuoiHocVisible(false)}
+      />
+
+      <ThemLichThiModal
+        maLopHoc={selectedRecord?.maLopHoc || ''}
+        visible={isThemLichThiVisible}
+        onCancel={() => setIsThemLichThiVisible(false)}
       />
     </Layout>
   );

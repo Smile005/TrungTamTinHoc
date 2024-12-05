@@ -145,8 +145,8 @@ const LichHoc: React.FC = () => {
               className="custom-label"
               style={{
                 backgroundColor: item.loai === 'Ngày học' ? '#33CCFF'
-                  : item.loai === 'Ngày thi' ? '#CCCC33'
-                    : '#eded27', //chỉnh màu cho ô lịch
+                  : item.loai === 'Ngày thi' ? '#eded27'
+                    : '#33CCFF', //chỉnh màu cho ô lịch
               }}
             >
               {item.tenLopHoc}
@@ -252,8 +252,8 @@ const LichHoc: React.FC = () => {
                     <div className='custom-label'
                       style={{
                         backgroundColor: item.loai === 'Ngày học' ? '#33CCFF'
-                          : item.loai === 'Ngày thi' ? '#CCCC33'
-                            : '#eded27', //chỉnh màu cho ô lịch
+                          : item.loai === 'Ngày thi' ? '#eded27'
+                            : '#33CCFF', //chỉnh màu cho ô lịch
                       }}
                     >
                       <span style={{ fontWeight: 'bold', display: 'block' }}>

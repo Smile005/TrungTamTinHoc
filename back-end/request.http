@@ -509,7 +509,7 @@ Content-Type: application/json
     "ghiChu": "Buổi học đầu tiên"
 }
 
-### Tạo buổi học (POST)
+### Tạo lich thi (POST)
 POST http://localhost:8081/api/lichhoc/createLichThi
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYU5oYW5WaWVuIjoiTlYwMDAxIiwicGhhblF1eWVuIjoxLCJpYXQiOjE3MzM0MDk2MjQsImV4cCI6MTczMzQyMDQyNH0.A60fr2IzOWJGCKvPmcCo8NyniYoCPxqzwVU3GYKmdXo
 Content-Type: application/json
