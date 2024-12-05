@@ -5,7 +5,8 @@ const {
     getBuoiHocByMaLichHoc,
     createBuoiHoc,
     updateBuoiHoc,
-    deleteBuoiHoc
+    deleteBuoiHoc,
+    createLichThi
 } = require('../controllers/buoiHocController');
 
 const { getLichHocByMaLop, createLichHoc, deleteLichHoc, updateLichHoc, kiemTraLichHoc } = require('../controllers/lichHocController');
@@ -25,6 +26,7 @@ router.get('/getBuoiHocByThang', authMiddleware(2), getBuoiHocByThang); // Lấy
 router.get('/getBuoiHocByMaLop/:maLopHoc', authMiddleware(2), getBuoiHocByMaLop); // Lấy danh sách buổi học theo mã lớp
 router.get('/getBuoiHocByMaLichHoc/:maLichHoc', authMiddleware(2), getBuoiHocByMaLichHoc); // Lấy danh sách buổi học theo mã lịch học
 router.post('/createBuoiHoc', authMiddleware(2), createBuoiHoc); // Tạo buổi học
+router.post('/createLichThi', authMiddleware(2), createLichThi); // Tạo buổi học
 router.put('/updateBuoiHoc/:maLopHoc/:ngayHoc/:maCa', authMiddleware(2), updateBuoiHoc); // Cập nhật thông tin buổi học
 router.delete('/deleteBuoiHoc/:maLopHoc/:ngayHoc/:maCa', authMiddleware(2), deleteBuoiHoc); // Xóa buổi học
 

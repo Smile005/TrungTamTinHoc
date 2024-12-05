@@ -205,6 +205,7 @@ const HocVien: React.FC = () => {
                 { text: 'Chưa đăng ký', value: 'Chưa đăng ký' },
                 { text: 'Đang học', value: 'Đang học' },
                 { text: 'Đã tốt nghiệp', value: 'Đã tốt nghiệp' },
+                { text: 'Đã khóa', value: 'Đã khóa' },
             ],
             onFilter: (value: Key | boolean, record: HocVienType) => record.tinhTrang?.indexOf(value as string) === 0,
             render: (tinhTrang: string): JSX.Element => {
@@ -231,7 +232,7 @@ const HocVien: React.FC = () => {
                         <Menu.Item
                             key="dangKy"
                             icon={<FormOutlined />}
-                            disabled={record.tinhTrang === 'Đã Tốt Nghiệp'}
+                            disabled={record.tinhTrang === 'Đã Khóa'}
                         >
                             Đăng ký
                         </Menu.Item>
