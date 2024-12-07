@@ -214,7 +214,7 @@ const LopHoc: React.FC = () => {
             <Menu.Item key="danhSachLop" icon={<OrderedListOutlined />}>
               Danh sách lớp
             </Menu.Item>
-            <Menu.Item key="themLichHoc" icon={<ContactsOutlined />}>
+            {/* <Menu.Item key="themLichHoc" icon={<ContactsOutlined />}>
               Thêm/Sửa lịch học
             </Menu.Item>
             <Menu.Item key="themBuoiHoc" icon={<DiffOutlined />}>
@@ -222,11 +222,34 @@ const LopHoc: React.FC = () => {
             </Menu.Item>
             <Menu.Item key="themLichThi" icon={<SnippetsOutlined />}>
               Thêm/Sửa buổi thi
-            </Menu.Item>
+            </Menu.Item> */}
             {userInfo?.phanQuyen !== 2 && (
-              <Menu.Item key="nhapDiem" icon={<FileAddOutlined />}>
-                Nhập Điểm
-              </Menu.Item>
+              <>
+                <Menu.Item key="themLichHoc" icon={<ContactsOutlined />}>
+                  Thêm/Sửa lịch học
+                </Menu.Item>
+              </>
+            )}
+            {userInfo?.phanQuyen !== 2 && (
+              <>
+                <Menu.Item key="themBuoiHoc" icon={<DiffOutlined />}>
+                  Thêm/Sửa buổi học
+                </Menu.Item>
+              </>
+            )}
+            {userInfo?.phanQuyen !== 2 && (
+              <>
+                <Menu.Item key="themLichThi" icon={<SnippetsOutlined />}>
+                  Thêm/Sửa buổi thi
+                </Menu.Item>
+              </>
+            )}
+            {userInfo?.phanQuyen !== 2 && (
+              <>
+                <Menu.Item key="nhapDiem" icon={<FileAddOutlined />}>
+                  Nhập Điểm
+                </Menu.Item>
+              </>
             )}
             <Menu.Item key="delete" icon={<DeleteOutlined />}>
               Xóa
