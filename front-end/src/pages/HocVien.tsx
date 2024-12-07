@@ -236,7 +236,7 @@ const HocVien: React.FC = () => {
                         >
                             Đăng ký
                         </Menu.Item>
-                        <Menu.Item key="thanhToan" icon={<PoundOutlined />}>Thanh toán</Menu.Item>
+                        {/* <Menu.Item key="thanhToan" icon={<PoundOutlined />}>Thanh toán</Menu.Item> */}
                         <Menu.Item key="delete" icon={<DeleteOutlined />}>Xóa</Menu.Item>
                     </Menu>
                 );

@@ -100,7 +100,7 @@ const ThemBuoiHocModal: React.FC<ThemBuoiHocModalProps> = ({ maLopHoc, visible, 
 
     return (
         <Modal
-            title="Thêm Lịch Thi"
+            title="Thêm Buổi Học"
             open={visible}
             onCancel={() => {
                 form.resetFields();

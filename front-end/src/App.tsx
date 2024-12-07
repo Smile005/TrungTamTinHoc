@@ -249,9 +249,9 @@ const App: React.FC = () => {
                   </Menu.Item>
                 </SubMenu>
 
-                <Menu.Item key="99" icon={<SettingOutlined />}>
+                {/* <Menu.Item key="99" icon={<SettingOutlined />}>
                   <Link to="/testing">{t('testing')}</Link>
-                </Menu.Item>
+                </Menu.Item> */}
               </Menu>
 
             </Sider>

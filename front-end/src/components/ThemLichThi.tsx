@@ -91,7 +91,7 @@ const ThemLichThiModal: React.FC<ThemBuoiHocModalProps> = ({ maLopHoc, visible, 
 
     return (
         <Modal
-            title="Thêm Buổi Học"
+            title="Thêm Buổi Thi"
             open={visible}
             onCancel={() => {
                 form.resetFields();
@@ -138,11 +138,11 @@ const ThemLichThiModal: React.FC<ThemBuoiHocModalProps> = ({ maLopHoc, visible, 
                     </Form.Item>
 
                     <Form.Item
-                        label="Ca học"
+                        label="Ca thi"
                         name="maCa"
-                        rules={[{ required: true, message: 'Vui lòng chọn ca học!' }]}
+                        rules={[{ required: true, message: 'Vui lòng chọn ca thi!' }]}
                     >
-                        <Select placeholder="Chọn ca học">
+                        <Select placeholder="Chọn ca thi">
                             {caHocs
                                 .filter((caHoc) => caHoc.trangThai === 'Đang Hoạt Động')
                                 .map((caHoc) => (
@@ -154,11 +154,11 @@ const ThemLichThiModal: React.FC<ThemBuoiHocModalProps> = ({ maLopHoc, visible, 
                     </Form.Item>
 
                     <Form.Item
-                        label="Phòng học"
+                        label="Phòng thi"
                         name="maPhong"
-                        rules={[{ required: true, message: 'Vui lòng chọn phòng học!' }]}
+                        rules={[{ required: true, message: 'Vui lòng chọn phòng thi!' }]}
                     >
-                        <Select placeholder="Chọn phòng học">
+                        <Select placeholder="Chọn phòng thi">
                             {phongHocs
                                 .filter((phongHoc) => phongHoc.trangThai === 'Đang Hoạt Động')
                                 .map((phongHoc) => (
@@ -171,10 +171,10 @@ const ThemLichThiModal: React.FC<ThemBuoiHocModalProps> = ({ maLopHoc, visible, 
 
                     <Form.Item
                         name="ngayHoc"
-                        label="Ngày học"
-                        rules={[{ required: true, message: 'Vui lòng chọn ngày học!' }]}
+                        label="Ngày thi"
+                        rules={[{ required: true, message: 'Vui lòng chọn ngày thi!' }]}
                     >
-                        <DatePicker format="DD/MM/YYYY" placeholder="Chọn ngày học" style={{ width: '100%' }} />
+                        <DatePicker format="DD/MM/YYYY" placeholder="Chọn ngày thi" style={{ width: '100%' }} />
                     </Form.Item>
 
                     <Form.Item name="ghiChu" label="Ghi Chú">
