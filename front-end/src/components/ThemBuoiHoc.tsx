@@ -70,7 +70,8 @@ const ThemBuoiHocModal: React.FC<ThemBuoiHocModalProps> = ({ maLopHoc, visible, 
             // Gắn thêm cụm từ "(Thi)" vào trường `ghiChu` hoặc trường khác nếu cần
             const updatedValues = {
                 ...values,
-                ghiChu: `${values.ghiChu || ''} (Thi)`,
+                // ghiChu: `${values.ghiChu || ''} (Thi)`,
+                ghiChu: `${values.ghiChu || ''} `,
                 maLopHoc,
                 loai, // Thêm loại "Thi" vào payload
             };
