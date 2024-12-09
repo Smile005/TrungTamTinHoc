@@ -67,6 +67,9 @@ const ThemLichThiModal: React.FC<ThemBuoiHocModalProps> = ({ maLopHoc, visible, 
             const values = await form.validateFields();
             const token = localStorage.getItem('token');
             console.log(values)
+            
+            //Vị trí
+
             const response = await axios.post(
                 'http://localhost:8081/api/lichhoc/createLichThi',
                 { ...values, maLopHoc, loai },
