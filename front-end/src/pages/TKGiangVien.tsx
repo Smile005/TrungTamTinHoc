@@ -5,6 +5,7 @@ import { Chart, CategoryScale, LinearScale, BarElement, PointElement, LineElemen
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import RobotoRegular from '../fonts/Roboto-regular';
 
 const { Option } = Select;
 
@@ -40,7 +41,7 @@ const TKGiangVien: React.FC = () => {
 
             const classData = lopHocResponse.data.reduce((acc: any, lopHoc: any) => {
                 const teacherId = lopHoc.maNhanVien;
-                const teacherName = nhanVienMap[teacherId] || 'Giảng viên không xác định';
+                const teacherName = nhanVienMap[teacherId] || 'Chưa sắp xếp giảng viên';
                 if (!acc[teacherName]) {
                     acc[teacherName] = 0;
                 }
@@ -138,27 +139,58 @@ const TKGiangVien: React.FC = () => {
         if (chartRef.current) {
             const chartContainer = chartRef.current.querySelector('.chart-container');
             if (chartContainer) {
-                const canvas = await html2canvas(chartContainer as HTMLElement);
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF();
-
-                const imgProps = pdf.getImageProperties(imgData);
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-                pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight);
-               
-
-                teacherData.forEach((data, index) => {
-                    
-                });
-
-                pdf.save('ThongKeGiangVien.pdf');
+                try {
+                    const canvas = await html2canvas(chartContainer as HTMLElement);
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF();
+    
+                    // Thêm font Roboto hỗ trợ tiếng Việt
+                    pdf.addFileToVFS('Roboto-Regular.ttf', RobotoRegular);
+                    pdf.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+                    pdf.setFont('Roboto'); // Sử dụng font Roboto
+    
+                    // Tiêu đề nằm giữa
+                    const title = 'Thống kê số lớp giảng viên phụ trách';
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const titleWidth = pdf.getTextWidth(title);
+                    const titleX = (pdfWidth - titleWidth) / 2; // Tính toán vị trí x để căn giữa tiêu đề
+                    pdf.text(title, titleX, 20); // Vị trí tiêu đề căn giữa
+    
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const imgWidth = pdf.internal.pageSize.getWidth();
+                    const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+    
+                    // Lùi hình ảnh xuống 5px
+                    pdf.addImage(imgData, 'PNG', 0, 25, imgWidth, imgHeight); // Hình ảnh lùi xuống 5px
+    
+                    // Thêm tiêu đề chi tiết số lượng lớp học
+                    pdf.setFontSize(14);
+                    pdf.text('Chi tiết số lượng lớp học giảng viên phụ trách:', 10, imgHeight + 40);
+    
+                    let yPosition = imgHeight + 50;
+                    pdf.text('STT', 10, yPosition);
+                    pdf.text('Tên Giảng Viên', 30, yPosition);
+                    pdf.text('Số Lượng Lớp', 130, yPosition);
+    
+                    pdf.setFontSize(12);
+                    teacherData.forEach((data, index) => {
+                        yPosition += 10;
+                        pdf.text((index + 1).toString(), 10, yPosition);
+                        pdf.text(data.teacher, 30, yPosition);
+                        pdf.text(data.classCount.toString(), 130, yPosition);
+                    });
+    
+                    pdf.save('ThongKeGiangVien.pdf');
+                } catch (error) {
+                    console.error('Lỗi khi xuất PDF:', error);
+                    message.error('Không thể xuất PDF.');
+                }
             } else {
                 message.error('Không tìm thấy phần tử biểu đồ để xuất PDF.');
             }
         }
     };
+    
 
     return (
         <div style={{ width: '80%', margin: '0 auto' }} ref={chartRef}>
