@@ -180,6 +180,34 @@ const createHoaDon = async (req, res) => {
   }
 };
 
+const tongDoanhThu = async (req, res) => {
+  try {
+    const [results] = await pool.query(`
+      SELECT 
+        YEAR(hd.ngayTaoHoaDon) AS nam,
+        SUM(mh.hocPhi) AS tongDoanhThu
+      FROM 
+        chiTiet_HoaDon ct
+      JOIN 
+        HoaDon hd ON ct.maHoaDon = hd.maHoaDon
+      JOIN 
+        LopHoc lh ON ct.maLopHoc = lh.maLopHoc
+      JOIN 
+        MonHoc mh ON lh.maMonHoc = mh.maMonHoc
+      GROUP BY 
+        YEAR(hd.ngayTaoHoaDon)
+      ORDER BY 
+        nam ASC
+    `);
+
+    res.status(200).json({
+      message: 'Tổng doanh thu theo năm',
+      data: results
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi server khi tính tổng doanh thu', error });
+  }
+};
 
 const exportHoaDonPDF = async (req, res) => {
   const { maHoaDon } = req.params;
@@ -301,4 +329,4 @@ const exportHoaDonPDF = async (req, res) => {
   }
 };
 
-module.exports = { getHoaDon, createHoaDon, getHoaDonByMa, exportHoaDonPDF };
+module.exports = { getHoaDon, createHoaDon, getHoaDonByMa, exportHoaDonPDF, tongDoanhThu  };

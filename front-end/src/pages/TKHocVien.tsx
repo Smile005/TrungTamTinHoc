@@ -24,9 +24,26 @@ const TKHocVien: React.FC = () => {
     fetchData(year);
     fetchAvailableYears();
     calculateGrowthRate();
+    fetchTotalRevenue();
   }, [year, studentData]);
 
   const [growthRate, setGrowthRate] = useState<number | null>(null);
+  const [totalRevenue, setTotalRevenue] = useState<number>(0);
+
+  const fetchTotalRevenue = async () => {
+    try {
+      const response = await axios.get('http://localhost:8081/api/hoadon/doanhthu', {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      });
+  
+      const revenueData = response.data.data;
+      const currentYearRevenue = revenueData.find((item: any) => item.nam === year);
+  
+      setTotalRevenue(currentYearRevenue?.tongDoanhThu || 0);
+    } catch (error) {
+      message.error('Lỗi khi lấy tổng doanh thu');
+    }
+  };
 
   const calculateGrowthRate = async () => {
     try {
@@ -288,7 +305,6 @@ const TKHocVien: React.FC = () => {
 
   const totalStudents = studentData.reduce((acc, curr) => acc + curr.students, 0);
   const maxStudentMonth = studentData.reduce((prev, curr) => (curr.students > prev.students ? curr : prev), { month: '', students: 0 });
-  const totalRevenue = totalAmountData.reduce((acc, curr) => acc + (curr.totalAmount || 0), 0);
 
   return (
     <div style={{ width: '80%', margin: '0 auto' }} ref={chartRef}>
@@ -344,7 +360,7 @@ const TKHocVien: React.FC = () => {
                     <strong>
                       {growthRate > 0
                         ? `Tăng trưởng ${growthRate.toFixed(2)}% so với năm ${year - 1}`
-                        : `Suy giảm ${Math.abs(growthRate).toFixed(2)}% so với năm ${year - 1}`}
+                        : `Thuyên giảm ${Math.abs(growthRate).toFixed(2)}% so với năm ${year - 1}`}
                     </strong>
                   </p>
                 </>
@@ -393,7 +409,7 @@ const TKHocVien: React.FC = () => {
               justifyContent: 'center',
               alignItems: 'center',
             }}
-            title="Tổng Doanh Thu"
+            title="Tổng Doanh Thu Theo Năm"
           >
             <h3>{totalRevenue.toLocaleString()} VND</h3>
           </Card>
