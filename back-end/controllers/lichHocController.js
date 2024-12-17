@@ -203,7 +203,7 @@ const createBuoiHocByMaLichHoc = async (maLichHoc) => {
                         trangThai
                     ]
                 );
-                createdBuoiHoc++;
+                createBBuodBuoiHoc++;
             }
             // Di chuyển đến ngày tiếp theo
             currentDate.add(1, 'day');
