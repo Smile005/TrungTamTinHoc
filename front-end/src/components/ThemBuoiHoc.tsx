@@ -132,7 +132,7 @@ const ThemBuoiHocModal: React.FC<ThemBuoiHocModalProps> = ({ maLopHoc, visible, 
                     </Form.Item>
 
                     <Form.Item
-                        label="Giáo viên"
+                        label="Giảng viên"
                         name="maNhanVien"
                         rules={[{ required: true, message: 'Vui lòng chọn giảng viên!' }]}
                     >

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Bar, Line, PolarArea } from 'react-chartjs-2';
-import { Select, message, Button } from 'antd';
+import { Select, message, Button, Card } from 'antd';
 import { Chart, CategoryScale, LinearScale, BarElement, LineElement, PointElement, RadialLinearScale, Title, Tooltip, Legend } from 'chart.js';
 import axios from 'axios';
 import moment from 'moment';
@@ -17,13 +17,42 @@ const TKHocVien: React.FC = () => {
   const [totalAmountData, setTotalAmountData] = useState<{ month: string; totalAmount: number }[]>([]);
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [availableYears, setAvailableYears] = useState<number[]>([]);
-  const [chartType, setChartType] = useState<string>('bar'); 
+  const [chartType, setChartType] = useState<string>('bar');
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetchData(year); 
-    fetchAvailableYears(); 
-  }, [year]);
+    fetchData(year);
+    fetchAvailableYears();
+    calculateGrowthRate();
+  }, [year, studentData]);
+
+  const [growthRate, setGrowthRate] = useState<number | null>(null);
+
+  const calculateGrowthRate = async () => {
+    try {
+      if (availableYears.includes(year - 1)) {
+        const response = await axios.get('http://localhost:8081/api/hocvien/ds-hocvien', {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        });
+
+        const previousYearStudents = response.data.filter((student: any) =>
+          moment(student.ngayVaoHoc).year() === year - 1
+        );
+
+        const totalStudentsPreviousYear = previousYearStudents.length;
+        const growth =
+          totalStudentsPreviousYear > 0
+            ? ((totalStudents - totalStudentsPreviousYear) / totalStudentsPreviousYear) * 100
+            : null;
+
+        setGrowthRate(growth);
+      } else {
+        setGrowthRate(null); // Không có dữ liệu năm trước
+      }
+    } catch (error) {
+      message.error('Không thể tính toán mức tăng trưởng.');
+    }
+  };
 
   const fetchData = async (selectedYear: number) => {
     try {
@@ -139,159 +168,240 @@ const TKHocVien: React.FC = () => {
     'rgba(255, 206, 86, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'
   ];
 
-    const chartData = {
-        labels: studentData.map((data) => data.month),
-        datasets: [
-            {
-                label: 'Số lượng học viên',
-                data: studentData.map((data) => data.students),
-                backgroundColor: barColors,
-                borderColor: borderColors,
-                borderWidth: 1,
-            },
-        ],
-    };
+  const chartData = {
+    labels: studentData.map((data) => data.month),
+    datasets: [
+      {
+        label: 'Số lượng học viên',
+        data: studentData.map((data) => data.students),
+        backgroundColor: barColors,
+        borderColor: borderColors,
+        borderWidth: 1,
+      },
+    ],
+  };
 
-    const chartOptions = {
-        responsive: true,
-        plugins: {
-            legend: { position: 'top' as const },
-            title: {
-                display: true,
-                text: `Thống kê số lượng học viên nhập học năm ${year}`,
-            },
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: { stepSize: 10 },
-            },
-        },
-    };
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: { position: 'top' as const },
+      title: {
+        display: true,
+        text: `Thống kê số lượng học viên nhập học năm ${year}`,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { stepSize: 10 },
+      },
+    },
+  };
 
-    const renderChart = () => {
-        switch (chartType) {
-            case 'bar':
-                return <Bar data={chartData} options={chartOptions} />;
-            case 'line':
-                return <Line data={chartData} options={chartOptions} />;
-            case 'polar':
-                return (
-                    <div style={{ width: '500px', height: '500px', marginLeft: '280px' }}>  
-                        <PolarArea data={chartData} options={chartOptions} />
-                    </div>
-                );
-            default:
-                return <Bar data={chartData} options={chartOptions} />;
+  const renderChart = () => {
+    switch (chartType) {
+      case 'bar':
+        return <Bar data={chartData} options={chartOptions} />;
+      case 'line':
+        return <Line data={chartData} options={chartOptions} />;
+      case 'polar':
+        return (
+          <div style={{ width: '500px', height: '500px', marginLeft: '100px' }}>
+            <PolarArea data={chartData} options={chartOptions} />
+          </div>
+        );
+      default:
+        return <Bar data={chartData} options={chartOptions} />;
+    }
+  };
+
+  const exportToPDF = async () => {
+    if (chartRef.current) {
+      const chartElement = chartRef.current.querySelector('.chart-container');
+      if (chartElement) {
+        try {
+          const canvas = await html2canvas(chartElement as HTMLElement);
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF();
+
+          // Add the custom font
+          pdf.addFileToVFS('Roboto-Regular.ttf', RobotoRegular);
+          pdf.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+          pdf.setFont('Roboto', 'normal');
+
+          const imgProps = pdf.getImageProperties(imgData);
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+          // Add image with adjusted position (15px down)
+          const imageYPosition = 10 + 15; // 15px offset
+          pdf.addImage(imgData, 'PNG', 0, imageYPosition, pdfWidth, pdfHeight);
+
+          // Add the title "Thống kê số lượng học viên nhập học" at the top center of the page
+          const title = 'Thống kê số lượng học viên nhập học';
+          const titleWidth = pdf.getStringUnitWidth(title) * pdf.getFontSize() / pdf.internal.scaleFactor;
+          const titleX = (pdfWidth - titleWidth) / 2;
+          pdf.setFontSize(16);
+          pdf.setTextColor(0, 0, 0); // Black text
+          pdf.text(title, titleX, 20);
+
+          let yPosition = pdfHeight + 30 + 15; // Adjust yPosition based on image height and 15px offset
+          pdf.setFontSize(12);
+          pdf.setTextColor(0, 0, 0); // Black text
+          pdf.text('Tháng', 10, yPosition);
+          pdf.text('Số Lượng Học Viên Nhập Học', 80, yPosition);
+          // pdf.text('Tổng Tiền Đã Đóng', 150, yPosition);
+
+          const monthMap: { [key: string]: string } = {
+            'January': 'Tháng 1',
+            'February': 'Tháng 2',
+            'March': 'Tháng 3',
+            'April': 'Tháng 4',
+            'May': 'Tháng 5',
+            'June': 'Tháng 6',
+            'July': 'Tháng 7',
+            'August': 'Tháng 8',
+            'September': 'Tháng 9',
+            'October': 'Tháng 10',
+            'November': 'Tháng 11',
+            'December': 'Tháng 12'
+          };
+
+          studentData.forEach((data, index) => {
+            yPosition += 10;
+            const monthInVietnamese = monthMap[data.month] || data.month; // Convert month to Vietnamese
+            pdf.text(monthInVietnamese, 10, yPosition);
+            pdf.text(`${data.students} Học Viên`, 80, yPosition); // Added "Học Viên" after the student count
+            // pdf.text(`${data.totalAmount} VND`, 150, yPosition); // Hiển thị số tiền
+          });
+
+          pdf.save(`ThongKeHocVien_${year}.pdf`);
+        } catch (error) {
+          console.error('Error generating PDF:', error);
+          message.error('Không thể xuất PDF.');
         }
-    };
+      } else {
+        message.error('Không tìm thấy phần tử biểu đồ để xuất PDF.');
+      }
+    }
+  };
 
-    const exportToPDF = async () => {
-        if (chartRef.current) {
-            const chartElement = chartRef.current.querySelector('.chart-container');
-            if (chartElement) {
-                try {
-                    const canvas = await html2canvas(chartElement as HTMLElement);
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF();
-    
-                    // Add the custom font
-                    pdf.addFileToVFS('Roboto-Regular.ttf', RobotoRegular);
-                    pdf.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
-                    pdf.setFont('Roboto', 'normal');
-    
-                    const imgProps = pdf.getImageProperties(imgData);
-                    const pdfWidth = pdf.internal.pageSize.getWidth();
-                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    
-                    // Add image with adjusted position (15px down)
-                    const imageYPosition = 10 + 15; // 15px offset
-                    pdf.addImage(imgData, 'PNG', 0, imageYPosition, pdfWidth, pdfHeight);
-    
-                    // Add the title "Thống kê số lượng học viên nhập học" at the top center of the page
-                    const title = 'Thống kê số lượng học viên nhập học';
-                    const titleWidth = pdf.getStringUnitWidth(title) * pdf.getFontSize() / pdf.internal.scaleFactor;
-                    const titleX = (pdfWidth - titleWidth) / 2;
-                    pdf.setFontSize(16);
-                    pdf.setTextColor(0, 0, 0); // Black text
-                    pdf.text(title, titleX, 20);
-    
-                    let yPosition = pdfHeight + 30 + 15; // Adjust yPosition based on image height and 15px offset
-                    pdf.setFontSize(12);
-                    pdf.setTextColor(0, 0, 0); // Black text
-                    pdf.text('Tháng', 10, yPosition);
-                    pdf.text('Số Lượng Học Viên Nhập Học', 80, yPosition);
-                    // pdf.text('Tổng Tiền Đã Đóng', 150, yPosition);
-    
-                    const monthMap: { [key: string]: string } = {
-                        'January': 'Tháng 1',
-                        'February': 'Tháng 2',
-                        'March': 'Tháng 3',
-                        'April': 'Tháng 4',
-                        'May': 'Tháng 5',
-                        'June': 'Tháng 6',
-                        'July': 'Tháng 7',
-                        'August': 'Tháng 8',
-                        'September': 'Tháng 9',
-                        'October': 'Tháng 10',
-                        'November': 'Tháng 11',
-                        'December': 'Tháng 12'
-                    };
-    
-                    studentData.forEach((data, index) => {
-                        yPosition += 10;
-                        const monthInVietnamese = monthMap[data.month] || data.month; // Convert month to Vietnamese
-                        pdf.text(monthInVietnamese, 10, yPosition);
-                        pdf.text(`${data.students} Học Viên`, 80, yPosition); // Added "Học Viên" after the student count
-                        // pdf.text(`${data.totalAmount} VND`, 150, yPosition); // Hiển thị số tiền
-                    });
-    
-                    pdf.save(`ThongKeHocVien_${year}.pdf`);
-                } catch (error) {
-                    console.error('Error generating PDF:', error);
-                    message.error('Không thể xuất PDF.');
-                }
-            } else {
-                message.error('Không tìm thấy phần tử biểu đồ để xuất PDF.');
-            }
-        }
-    };
- 
-    return (
-        <div style={{ width: '80%', margin: '0 auto' }} ref={chartRef}>
-            <h1 className='page-name'>Thống Kê Học Viên</h1>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div>
-                    <Select 
-                        defaultValue={year} 
-                        style={{ width: 120, marginBottom: 20 }}
-                        onChange={handleYearChange}
-                    >
-                        {availableYears.map((year) => (
-                            <Option key={year} value={year}>
-                                {year}
-                            </Option>
-                        ))}
-                    </Select>
-                    <Select
-                        defaultValue="bar"
-                        style={{ width: 120, marginLeft: 20, marginBottom: 20 }}
-                        onChange={handleChartTypeChange}
-                    >
-                        <Option value="bar">Bar Chart</Option>
-                        <Option value="line">Line Chart</Option>
-                        <Option value="polar">Polar Chart</Option>
-                    </Select>
-                </div>
-                <Button type="primary" style={{ bottom: 10}} onClick={exportToPDF}>
-                    Xuất PDF
-                </Button>
-            </div>
-            <div className="chart-container">
-                {renderChart()}
-            </div>
+  const totalStudents = studentData.reduce((acc, curr) => acc + curr.students, 0);
+  const maxStudentMonth = studentData.reduce((prev, curr) => (curr.students > prev.students ? curr : prev), { month: '', students: 0 });
+  const totalRevenue = totalAmountData.reduce((acc, curr) => acc + (curr.totalAmount || 0), 0);
+
+  return (
+    <div style={{ width: '80%', margin: '0 auto' }} ref={chartRef}>
+      <h1 className='page-name'>Thống Kê Học Viên</h1>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div>
+          <Select
+            defaultValue={year}
+            style={{ width: 120, marginBottom: 20 }}
+            onChange={handleYearChange}
+          >
+            {availableYears.map((year) => (
+              <Option key={year} value={year}>
+                {year}
+              </Option>
+            ))}
+          </Select>
+          <Select
+            defaultValue="bar"
+            style={{ width: 120, marginLeft: 20, marginBottom: 20 }}
+            onChange={handleChartTypeChange}
+          >
+            <Option value="bar">Bar Chart</Option>
+            <Option value="line">Line Chart</Option>
+            <Option value="polar">Polar Chart</Option>
+          </Select>
         </div>
-    );
+        <Button type="primary" style={{ bottom: 10 }} onClick={exportToPDF}>
+          Xuất PDF
+        </Button>
+      </div>
+
+      {/* Bọc chart và card trong một div để tạo bố cục flex */}
+      <div style={{ display: 'flex', marginTop: 20 }}>
+        {/* Biểu đồ (chart) bên trái */}
+        <div style={{ flex: 4, marginRight: 20 }}>
+          <div className="chart-container">{renderChart()}</div>
+          <div style={{ marginTop: 20 }}>
+            <Card
+              style={{
+                backgroundColor: growthRate !== null && growthRate > 0 ? '#D4EDDA' : '#F8D7DA', // Màu xanh nếu tăng, đỏ nếu giảm
+                border: growthRate !== null && growthRate > 0 ? '1px solid #28A745' : '1px solid #DC3545',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              title="Thông Số Thống Kê Số Lượng Học Viên Nhập Học So Với Năm Trước"
+            >
+              {growthRate !== null ? (
+                <>
+                  <p style={{ fontSize: '16px', marginTop: '10px', textAlign: 'center' }}>
+                    <strong>
+                      {growthRate > 0
+                        ? `Tăng trưởng ${growthRate.toFixed(2)}% so với năm ${year - 1}`
+                        : `Suy giảm ${Math.abs(growthRate).toFixed(2)}% so với năm ${year - 1}`}
+                    </strong>
+                  </p>
+                </>
+              ) : (
+                <h3>Không Có Dữ Liệu</h3>
+              )}
+            </Card>
+          </div>
+        </div>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <Card
+            style={{
+              flex: 1,
+              backgroundColor: 'rgb(206, 190, 240)', // Đỏ nhạt
+              border: '1px solid rgba(184, 160, 233)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            title="Tổng Học Viên"
+          >
+            <h3>{totalStudents}</h3>
+          </Card>
+          <Card
+            style={{
+              flex: 1,
+              backgroundColor: '#FFFFCC', // Vàng nhạt
+              border: '1px solid #FFCC66',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            title="Tháng Nhiều Học Viên Nhất"
+          >
+            <h3>{maxStudentMonth.month || 'N/A'} ({maxStudentMonth.students} HV)</h3>
+          </Card>
+          <Card
+            style={{
+              flex: 1,
+              backgroundColor: '#CCE5FF', // Xanh dương nhạt
+              border: '1px solid #66B2FF',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            title="Tổng Doanh Thu"
+          >
+            <h3>{totalRevenue.toLocaleString()} VND</h3>
+          </Card>
+        </div>
+      </div>
+    </div>
+
+  );
 };
 
 export default TKHocVien;
