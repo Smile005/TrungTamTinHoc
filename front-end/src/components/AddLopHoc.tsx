@@ -24,7 +24,7 @@ const AddLopHoc: React.FC<AddLopHocProps> = ({ visible, onCancel }) => {
         },
         {
             title: 'Bước 2: Tạo lịch học',
-            content: <ThemLichHoc maLopHoc={createdMaLopHoc ?? 'LH0001'} />,
+            content: <ThemLichHoc maLopHoc={createdMaLopHoc ?? " "} />,
         },
     ];
 
@@ -51,7 +51,7 @@ const AddLopHoc: React.FC<AddLopHocProps> = ({ visible, onCancel }) => {
             style={{ maxWidth: '100%', margin: '0 auto', top: 33 }}
         >
             <Steps current={current} items={steps.map(item => ({ key: item.title, title: item.title }))} />
-            <div style={{ padding: '24px', textAlign: 'center', border: '1px dashed #e6e6e6', borderRadius: '8px' }}>
+            <div style={{ padding: '24px', border: '1px dashed #e6e6e6', borderRadius: '8px' }}>
                 {steps[current].content}
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>

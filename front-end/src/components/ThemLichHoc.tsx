@@ -23,7 +23,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
     const [selectedThu, setSelectedThu] = useState<string | undefined>();
     const [selectedCaHoc, setSelectedCaHoc] = useState<string | undefined>();
     const [selectedPhong, setSelectedPhong] = useState<string | undefined>();
-    const [selectedSoBuoi, setSelectedSoBuoi] = useState<number | undefined>(10);
+    const [selectedSoBuoi, setSelectedSoBuoi] = useState<number | undefined>(1);
 
     const [totalSoBuoi, setTotalSoBuoi] = useState(0);
 
@@ -71,7 +71,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                 setLoading(false);
             } catch (error) {
                 setLoading(false);
-                setError("Không thể tải dữ liệu. Vui lòng thử lại sau.");
+                setError("Không thể tải dữ liệu. Vui lòng thực hiện lại bước 1 !!");
                 console.error("Lỗi khi lấy dữ liệu:", error);
             }
         };
@@ -121,6 +121,13 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
             return;
         }
 
+        const maxSoBuoi = lopHoc?.soBuoiHoc ?? 0;
+
+        if (totalSoBuoi + selectedSoBuoi > maxSoBuoi) {
+            message.error('Không thể tạo lịch học do vượt quá số buổi học tối đa');
+            return;
+        }
+
         const lichHocData = {
             maLopHoc,
             thu: parseInt(selectedThu),
@@ -146,7 +153,9 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
         } catch (error: any) {
             console.error('Lỗi khi tạo lịch học:', error);
             message.error('Không thể tạo lịch học.');
+            resetForm();
         }
+
     };
 
     const handleEdit = async (record: LichHocType) => {
@@ -181,7 +190,7 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
         setSelectedThu(undefined);
         setSelectedCaHoc(undefined);
         setSelectedPhong(undefined);
-        setSelectedSoBuoi(10);
+        setSelectedSoBuoi(1);
     };
 
     const handleSoBuoiChange = (value: number | null) => {
@@ -205,40 +214,33 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
     return (
         <div>
             <h2>Thông Tin Lớp Học</h2>
-            <div className="custom-info">
-                <Row gutter={[24, 24]} style={{marginBottom: 10}}>
-                    <Col span={8} style={{ border: '1px solid #ddd', padding: '16px', borderRadius: '8px' }}>
+            <div>
+                <Row gutter={[24, 24]}>
+                    <Col span={8}>
                         <span><b>Mã lớp học:</b> {maLopHoc}</span>
                     </Col>
-                    <Col></Col>
-                    <Col span={8} style={{ border: '1px solid #ddd', padding: '16px', borderRadius: '8px' }}>
+                    <Col span={8}>
+                        <span><b>Môn học:</b> {lopHoc?.tenMonHoc}</span>
+                    </Col >
+                    <Col span={8}>
                         <span><b>Tên lớp học:</b> {lopHoc?.tenLopHoc}</span>
                     </Col>
                 </Row>
-                {/* Dòng 2 */}
-                <Row gutter={[24, 24]} style={{marginBottom: 10}}>
-                    <Col span={8} style={{ border: '1px solid #ddd', padding: '16px', borderRadius: '8px' }}>
-                        <span><b>Môn học:</b> {lopHoc?.tenMonHoc}</span>
-                    </Col>
-                    <Col></Col>
-                    <Col span={8} style={{ border: '1px solid #ddd', padding: '16px', borderRadius: '8px' }}>
+                <Row gutter={[24, 24]}>
+                    <Col span={8}>
                         <span><b>Giảng viên:</b> {lopHoc?.tenNhanVien}</span>
                     </Col>
-                </Row>
-                {/* Dòng 3 */}
-                <Row gutter={[24, 24]}>
-                    <Col span={8} style={{ border: '1px solid #ddd', padding: '16px', borderRadius: '8px' }}>
+                    <Col span={8}>
                         <span><b>Số học viên:</b> {lopHoc?.SL_HocVien} / {lopHoc?.soLuongMax}</span>
                     </Col>
-                    <Col></Col>
-                    <Col span={8} style={{ border: '1px solid #ddd', padding: '16px', borderRadius: '8px' }}>
+                    <Col span={8}>
                         <span><b>Số buổi học:</b> {totalSoBuoi} / {lopHoc?.soBuoiHoc}</span>
                     </Col>
                 </Row>
+
             </div>
 
-            <h3>Thêm Lịch Học</h3>
-            <Row gutter={[16, 16]}>
+            <Row gutter={[16, 16]} style={{ padding: "20px 10px" }}>
                 <Col span={3} style={{ width: '100%' }}>
                     <Select
                         value={selectedThu}
@@ -285,8 +287,10 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                             ))}
                     </Select>
                 </Col>
-
-                <Col span={3} style={{ width: '100%' }}>
+                <Col span={3} style={{ width: '100%', }}>
+                    Số buổi học:
+                </Col>
+                <Col span={4} style={{ width: '100%' }}>
                     <InputNumber
                         min={1}
                         max={lopHoc?.soBuoiHoc}
@@ -298,15 +302,15 @@ const ThemLichHoc: React.FC<ThemLichHocProps> = ({ maLopHoc }) => {
                 </Col>
 
                 <Col span={4} style={{ width: '100%' }}>
-                    <Button type="primary" onClick={checkLickHoc} style={{ width: '100%' }}>Kiểm tra</Button>
-                </Col>
-
-                <Col span={4} style={{ width: '100%' }}>
                     <Button type="primary" onClick={createLichHoc} style={{ width: '100%' }}>Thêm lịch học</Button>
                 </Col>
             </Row>
 
             <Table dataSource={lichHocs} columns={columns} rowKey="maLichHoc" />
+
+            {/* <Row>
+                <h3>Các buổi học khác</h3>
+            </Row> */}
         </div>
     );
 };
