@@ -290,14 +290,15 @@ const TKGiangVien: React.FC = () => {
             borderRadius: '5px',
             border: '1px solid #28A745',
             bottom: 240,
+            height: 190,
           }}
           title="Nhận Xét"
         >
-          <h4 style={{ textAlign: 'justify' }}>
+          <p style={{ textAlign: 'justify', fontSize: '16px'}}>
             Tổng số lớp học hiện tại là <strong>{totalClasses}</strong>, được phân bổ giữa{' '}
             <strong>{teacherData.length}</strong> giảng viên. Giảng viên phụ trách nhiều nhất là{' '}
-            <strong>{maxClassTeacher.teacher}</strong> với <strong>{maxClassTeacher.classCount}</strong> lớp.
-          </h4>
+            <strong>{maxClassTeacher.teacher}</strong> với <strong>{maxClassTeacher.classCount}</strong> lớp đang đảm nhiệm.
+          </p>
         </Card>
       </div>
     </div>
